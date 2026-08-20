@@ -1,0 +1,65 @@
+{
+  "cert": 2308,
+  "ips": 1280,
+  "n": 40,
+  "rows": [
+    {
+      "rtt_ms": 10.0,
+      "group": "x25519",
+      "k": 1,
+      "base_p50": 11.096,
+      "drop_p50": 211.996,
+      "t_recover_ms": 200.9,
+      "t_recover_rtt": 20.09
+    },
+    {
+      "rtt_ms": 10.0,
+      "group": "X25519MLKEM768",
+      "k": 2,
+      "base_p50": 11.125,
+      "drop_p50": 23.75,
+      "t_recover_ms": 12.625,
+      "t_recover_rtt": 1.2625
+    },
+    {
+      "rtt_ms": 50.0,
+      "group": "x25519",
+      "k": 1,
+      "base_p50": 51.163,
+      "drop_p50": 252.12,
+      "t_recover_ms": 200.957,
+      "t_recover_rtt": 4.01914
+    },
+    {
+      "rtt_ms": 50.0,
+      "group": "X25519MLKEM768",
+      "k": 2,
+      "base_p50": 51.301,
+      "drop_p50": 109.075,
+      "t_recover_ms": 57.774,
+      "t_recover_rtt": 1.15548
+    },
+    {
+      "rtt_ms": 100.0,
+      "group": "x25519",
+      "k": 1,
+      "base_p50": 101.174,
+      "drop_p50": 301.904,
+      "t_recover_ms": 200.73,
+      "t_recover_rtt": 2.0073
+    },
+    {
+      "rtt_ms": 100.0,
+      "group": "X25519MLKEM768",
+      "k": 2,
+      "base_p50": 101.356,
+      "drop_p50": 215.237,
+      "t_recover_ms": 113.881,
+      "t_recover_rtt": 1.13881
+    }
+  ],
+  "verdict": {
+    "1": "고정 상수에 가깝다",
+    "2": "RTT 에 비례한다"
+  }
+}

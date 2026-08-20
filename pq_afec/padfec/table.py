@@ -82,6 +82,15 @@ def emit_go(tab, jtab, out):
     w("// 않고 이름 있는 값으로 둔다. 정의는 padfec/policy.py 한 곳뿐이다.\n")
     w("const defaultAssumedBurst = %g\n\n" % policy.DEFAULT_ASSUMED_BURST)
 
+    w("// 복구 실패 한 번의 대가. 2026-08-20 결정적 소거 실측\n")
+    w("//   (experiments/_probe_trecover_rtt.py -> results/probe_trecover_rtt.json)\n")
+    w("//   서버가 0 개 받음 -> ACK 없음 -> PTO.  RTT 와 무관한 상수.\n")
+    w("//   1 개 이상       -> ACK -> 즉시 재전송. RTT 에 비례.\n")
+    w("// 정의는 padfec/policy.py 한 곳뿐이다.\n")
+    w("const tPTONoAckMs = %.10g\n" % policy.T_PTO_NO_ACK_MS)
+    w("const tAckRetxSlope = %.10g\n" % policy.T_ACK_RETX_SLOPE)
+    w("const tAckRetxBaseMs = %.10g\n\n" % policy.T_ACK_RETX_BASE_MS)
+
     w("var pfailK = []int{%s}\n" % ", ".join(str(v) for v in K_VALS))
     w("var pfailM = []int{%s}\n" % ", ".join(str(v) for v in M_VALS))
     w("var pfailP = []float64{%s}\n"

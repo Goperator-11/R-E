@@ -1,6 +1,6 @@
 {
  "group": "x25519",
- "cert": 4000,
+ "cert": 4032,
  "rtt_ms": 50.0,
  "n": 40,
  "rows": [
@@ -17,10 +17,10 @@
    "err": "",
    "n": 40,
    "ok": 40,
-   "p50": 104.496,
-   "p95": 105.973,
+   "p50": 101.779,
+   "p95": 102.218,
    "two_rtt_rate": 1.0,
-   "rtt_multiple": 2.0899199999999998,
+   "rtt_multiple": 2.03558,
    "initial_datagrams_median": 2,
    "first_flight_bytes": 1279,
    "n_rtt_obs": 2
@@ -38,10 +38,10 @@
    "err": "",
    "n": 40,
    "ok": 40,
-   "p50": 104.838,
-   "p95": 106.71,
+   "p50": 101.889,
+   "p95": 102.317,
    "two_rtt_rate": 1.0,
-   "rtt_multiple": 2.0967599999999997,
+   "rtt_multiple": 2.0377799999999997,
    "initial_datagrams_median": 2,
    "first_flight_bytes": 1280,
    "n_rtt_obs": 2
@@ -59,10 +59,10 @@
    "err": "",
    "n": 40,
    "ok": 40,
-   "p50": 52.854,
-   "p95": 55.045,
-   "two_rtt_rate": 0.025,
-   "rtt_multiple": 1.05708,
+   "p50": 51.22,
+   "p95": 51.532,
+   "two_rtt_rate": 0.0,
+   "rtt_multiple": 1.0244,
    "initial_datagrams_median": 2,
    "first_flight_bytes": 1281,
    "n_rtt_obs": 1
@@ -80,10 +80,10 @@
    "err": "",
    "n": 40,
    "ok": 40,
-   "p50": 53.468,
-   "p95": 54.846,
+   "p50": 51.279,
+   "p95": 51.667,
    "two_rtt_rate": 0.0,
-   "rtt_multiple": 1.06936,
+   "rtt_multiple": 1.0255800000000002,
    "initial_datagrams_median": 2,
    "first_flight_bytes": 1282,
    "n_rtt_obs": 1
@@ -101,10 +101,10 @@
    "err": "",
    "n": 40,
    "ok": 40,
-   "p50": 53.452,
-   "p95": 55.843,
+   "p50": 51.256,
+   "p95": 51.7,
    "two_rtt_rate": 0.0,
-   "rtt_multiple": 1.06904,
+   "rtt_multiple": 1.02512,
    "initial_datagrams_median": 2,
    "first_flight_bytes": 1350,
    "n_rtt_obs": 1
@@ -114,12 +114,12 @@
   {
    "check": "1280 은 2-RTT, 1281 은 1-RTT (1 바이트 절벽)",
    "ok": true,
-   "detail": "1280: n_rtt=2 p50=104.838 / 1281: n_rtt=1 p50=52.854"
+   "detail": "1280: n_rtt=2 p50=101.889 / 1281: n_rtt=1 p50=51.22"
   },
   {
    "check": "절벽의 크기가 왕복 하나(>= 0.8 RTT)",
    "ok": true,
-   "detail": "차 51.98 ms = 1.040 RTT"
+   "detail": "차 50.67 ms = 1.013 RTT"
   },
   {
    "check": "부정 시험: 1279 와 1280 은 같은 칸",

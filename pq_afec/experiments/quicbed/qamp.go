@@ -1031,10 +1031,17 @@ func runServer(addr string, certSize int, mode string, statsPath string) {
 		CurvePreferences: []tls.CurveID{
 			tls.X25519MLKEM768, tls.X25519, tls.CurveP256,
 		},
+		// 실험환경 명세서 5절: 세션 재개 차단.
+		// 재개하면 키 교환을 건너뛰어 측정이 무효화된다. 그리고 티켓을
+		// 발급하면 NewSessionTicket 이 서버 비행 뒤에 붙어 server_bytes 를
+		// 부풀린다 - s0 추정에 직접 섞이는 잡음이다.
+		SessionTicketsDisabled: true,
 	}
 	ln, err := tr.Listen(tlsConf, &quic.Config{
 		MaxIdleTimeout:  30 * time.Second,
 		KeepAlivePeriod: 0,
+		// 명세 5절: Path MTU Discovery 비활성 - 측정 중 패킷 크기 변동 방지.
+		DisablePathMTUDiscovery: true,
 	})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "quic listen:", err)
@@ -1153,11 +1160,19 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			NextProtos:         []string{"padfec"},
 			MinVersion:         tls.VersionTLS13,
 			CurvePreferences:   []tls.CurveID{curveFor(group)},
+			// 명세 5절: 세션 재개 차단. ClientSessionCache 가 nil 이면 Go 는
+			// 재개하지 않지만, **기본값에 기대지 않고** 명시한다.
+			ClientSessionCache:     nil,
+			SessionTicketsDisabled: true,
 		}
 		qconf := &quic.Config{
 			MaxIdleTimeout:  timeout,
 			KeepAlivePeriod: 0,
 			Allow0RTT:       false,
+			// 명세 5절: Path MTU Discovery 비활성. 켜 두면 연결 도중 quic-go 가
+			// MTU 탐침을 보내 데이터그램 크기가 변한다 - countConn 이 세는
+			// 바이트가 흔들려 증폭 회계가 오염된다.
+			DisablePathMTUDiscovery: true,
 		}
 		if ips > 0 {
 			qconf.InitialPacketSize = uint16(ips)

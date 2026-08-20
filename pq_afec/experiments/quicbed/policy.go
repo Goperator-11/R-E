@@ -141,8 +141,24 @@ func jointLookup(k, m int, p, l float64) []float64 {
 //
 // 복구된 원본의 바이트는 **세지 않는다** - 회계 규칙상 복구본을 넣을 때
 // 패리티를 버리므로, 서버가 실제로 센 바이트만 예산이 된다.
+// defaultTRecover 는 복구 실패 한 번의 대가다. arrivedAny = 서버가 하나라도
+// 받았는가. 상수의 출처는 pfail_table.go 머리말(결정적 소거 실측)에 있다.
+func defaultTRecover(rttMs float64, arrivedAny bool) float64 {
+	if arrivedAny {
+		return tAckRetxSlope*rttMs + tAckRetxBaseMs
+	}
+	return tPTONoAckMs
+}
+
+// flightOutcome 은 기대 왕복 수와 **두 갈래의** 복구 실패 확률을 낸다.
+//
+// 🩸 2026-08-20 실측 수리. 그전에는 실패 가지가 하나였고 그 값이 rtt 였다.
+// 결정적 소거(-drop-initial)로 재 보니 대가가 **서버가 하나라도 받았는지**로
+// 갈렸다: 0 개면 ACK 가 없어 PTO(RTT 무관 200.86 ms), 1 개 이상이면 ACK 로
+// 구멍이 드러나 즉시 재전송(1.125·RTT + 1.42). k=1 은 실패가 곧 전멸이라
+// 항상 PTO 가지인데 기본값이 rtt 였으니 RTT 10 ms 에서 20 배 작았다.
 func flightOutcome(k, m, w int, p, l float64,
-	serverFlight float64) (nExp, pFail float64) {
+	serverFlight float64) (nExp, pFailPTO, pFailACK float64) {
 	parity := parityDatagramBytes(w, k)
 	pm := jointLookup(k, m, p, l)
 	cols := m + 1
@@ -158,7 +174,11 @@ func flightOutcome(k, m, w int, p, l float64,
 			}
 			// MDS: 받은 심볼이 k 개 이상이면 복구된다.
 			if k-a > b {
-				pFail += pr
+				if a+b == 0 {
+					pFailPTO += pr
+				} else {
+					pFailACK += pr
+				}
 				continue
 			}
 			if serverFlight > float64(allowedBytes(a*w+b*parity)) {
@@ -168,7 +188,7 @@ func flightOutcome(k, m, w int, p, l float64,
 			}
 		}
 	}
-	return nExp, pFail
+	return nExp, pFailPTO, pFailACK
 }
 
 // ------------------------------------------------------------ 목적지 캐시
@@ -314,26 +334,34 @@ func (c *destCache) decide(addr string, w, mMax, coldM,
 		pConn = 0.99
 	}
 	p := 1 - math.Pow(1-pConn, 1.0/float64(k))
-	// 복구 실패 비용도 관측값이다. 아직 손실을 본 적이 없으면 보수적으로
-	// 왕복 하나로 둔다(과대평가하면 쓸데없이 m 을 키우게 된다).
-	extra := snap.LossHCT - rtt
-	if extra <= 0 {
-		extra = rtt
-	}
+	// 복구 실패 비용.
+	//
+	// 🩸 2026-08-20 실측 수리. 그전에는 관측값 하나(LossHCT-rtt)를 쓰고 없으면
+	// rtt 로 뒀다. 두 문제가 있었다.
+	//   (1) 없을 때의 기본값 rtt 가 PTO 가지에서 4~20 배 작다.
+	//   (2) LossHCT 는 두 실패 유형(PTO/ACK)을 **뭉뚱그린 평균**이라 어느
+	//       가지에 넣어도 틀린다.
+	// 그래서 PTO 가지는 측정 상수를, ACK 가지는 측정 적합식을 쓴다. 관측값은
+	// 캐시에 계속 쌓되(경로가 달라졌는지 보는 신호로 쓸 수 있다) 비용에는
+	// 넣지 않는다 - 어느 가지의 것인지 모르는 값이기 때문이다.
+	tPTO := defaultTRecover(rtt, false)
+	tACK := defaultTRecover(rtt, true)
 
 	best, bestCost, why := 0, math.Inf(1), ""
 	for m := 0; m <= mMax; m++ {
-		n, pf := flightOutcome(k, m, w, p, burst, snap.ServerFlight)
+		n, pfPTO, pfACK := flightOutcome(k, m, w, p, burst,
+			snap.ServerFlight)
+		pf := pfPTO + pfACK
 		// 추가 바이트를 밀어내는 시간. 작지만 0 은 아니다 - 이 항이 없으면
 		// 이득이 같을 때도 무조건 큰 m 을 고른다.
 		tx := float64(m*parityDatagramBytes(w, k)) * 8.0 / 10e6 * 1000.0
-		// 복구 실패 가지는 (재전송 + 그 뒤 핸드셰이크 왕복) 으로 한 번만 문다.
-		cost := n*rtt + pf*(rtt+extra) + tx
+		// 실패 가지는 (재전송 + 그 뒤 핸드셰이크 왕복) 으로 한 번만 문다.
+		cost := n*rtt + pfPTO*(rtt+tPTO) + pfACK*(rtt+tACK) + tx
 		if cost < bestCost {
 			bestCost, best = cost, m
-			why = fmt.Sprintf("S=%.0f p=%.4f 실패비용=%.0fms E[n_rtt]=%.3f "+
-				"P(실패)=%.4f 비용=%.2fms", snap.ServerFlight, p, extra, n,
-				pf, cost)
+			why = fmt.Sprintf("S=%.0f p=%.4f T_pto=%.0f T_ack=%.0f "+
+				"E[n_rtt]=%.3f P(실패)=%.4f(pto %.4f) 비용=%.2fms",
+				snap.ServerFlight, p, tPTO, tACK, n, pf, pfPTO, cost)
 		}
 	}
 	// ------------------------------------------------------------- 탐색
@@ -346,8 +374,8 @@ func (c *destCache) decide(addr string, w, mMax, coldM,
 	//
 	// 그래서 **탐색 비용이 RTT 의 1% 를 넘지 않도록** 주기를 늘린다.
 	// 탐색이 싼 곳(임계 아래)에서는 자주 재고, 비싼 곳에서는 드물게 잰다.
-	n0, pf0 := flightOutcome(k, 0, w, p, burst, snap.ServerFlight)
-	cost0 := n0*rtt + pf0*(rtt+extra)
+	n0, pf0PTO, pf0ACK := flightOutcome(k, 0, w, p, burst, snap.ServerFlight)
+	cost0 := n0*rtt + pf0PTO*(rtt+tPTO) + pf0ACK*(rtt+tACK)
 	probeCost := cost0 - bestCost
 	every := probeEvery
 	if probeCost > 0 && rtt > 0 {

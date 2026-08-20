@@ -55,6 +55,21 @@ DEV_LOCAL, DEV_PEER = "v0", "v1"
 TX_IP, RX_IP = "10.9.0.1", "10.9.0.2"
 SERVER_PORT = 44433
 QAMP = "/tmp/qamp"          # 문서 5절: 경로 공백 회피를 위해 /tmp 로 복사
+
+# 실험환경 명세서 5절: CPU 코어를 4개에 고정한다.
+#   "40코어 중 4개에 고정. 코어 간 이동에 따른 캐시 미스와 측정 분산 억제"
+# 코어 수가 4 미만인 기계에서는 있는 만큼만 쓴다(taskset 이 실패하면 실험 자체가
+# 안 도는 것보다 낫다 - 대신 무엇을 썼는지 env 에 남긴다).
+def _cpu_list():
+    try:
+        ncpu = len(os.sched_getaffinity(0))
+    except AttributeError:
+        ncpu = os.cpu_count() or 1
+    return "0-%d" % (min(4, ncpu) - 1) if ncpu > 1 else "0"
+
+
+CPU_LIST = _cpu_list()
+TASKSET = ["taskset", "-c", CPU_LIST] if shutil.which("taskset") else []
 WORK = "/tmp/padfec"
 
 os.makedirs(RESULTS, exist_ok=True)
@@ -206,7 +221,7 @@ def start_server(certsize, fec="off", stats_path=None, extra=()):
         os.unlink(stats_path)
     except OSError:
         pass
-    cmd = ["ip", "netns", "exec", NS, qamp,
+    cmd = ["ip", "netns", "exec", NS] + TASKSET + [qamp,
            "-mode", "server", "-addr", "%s:%d" % (RX_IP, SERVER_PORT),
            "-certsize", str(certsize), "-fec", fec, "-stats", stats_path]
     cmd += list(extra)
@@ -241,7 +256,13 @@ def stop_server(p):
 
 def run_client(group, n, fec="off", m=1, ips=0, gap_ms=25, timeout_s=12,
                stats_path=None, quiet=True, expect_k=0, dump=None,
-               extra=()):
+               extra=(), warmup=0):
+    """warmup - 명세 5절의 "워밍업 20~50회, 통계에서 제외".
+
+    앞의 warmup 개 행을 버린다. 캐시·분기예측기·목적지 캐시가 데워지기 전의
+    표본이 섞이면 p50/p95 가 위로 끌린다. **버리는 것도 기록에 남긴다** -
+    조용히 버리면 표본 수가 왜 다른지 나중에 아무도 모른다.
+    """
     qamp = require_bin()
     if stats_path is None:
         stats_path = os.path.join(WORK, "cli_stats.json")
@@ -250,7 +271,8 @@ def run_client(group, n, fec="off", m=1, ips=0, gap_ms=25, timeout_s=12,
     except OSError:
         pass
     # 문서 6절: 모든 실행에 timeout 을 붙인다.
-    cmd = ["timeout", str(int(timeout_s * n + 120)), qamp, "-mode", "client",
+    cmd = ["timeout", str(int(timeout_s * n + 120))] + TASKSET + [qamp,
+           "-mode", "client",
            "-addr", "%s:%d" % (RX_IP, SERVER_PORT),
            "-group", group, "-n", str(n),
            "-fec", fec, "-m", str(m),
@@ -277,12 +299,18 @@ def run_client(group, n, fec="off", m=1, ips=0, gap_ms=25, timeout_s=12,
                 rows.append(json.loads(line))
             except Exception:
                 pass
+    n_warm = 0
+    if warmup > 0 and len(rows) > warmup:
+        n_warm = warmup
+        rows = rows[warmup:]
     stats = {}
     if os.path.exists(stats_path):
         try:
             stats = json.load(open(stats_path))
         except Exception:
             stats = {}
+    stats["warmup_dropped"] = n_warm
+    stats["cpu_list"] = CPU_LIST
     return rows, stats, ""
 
 

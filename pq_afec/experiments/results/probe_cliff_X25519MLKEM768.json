@@ -17,10 +17,10 @@
    "err": "",
    "n": 40,
    "ok": 40,
-   "p50": 104.897,
-   "p95": 106.183,
+   "p50": 102.09,
+   "p95": 102.369,
    "two_rtt_rate": 1.0,
-   "rtt_multiple": 2.09794,
+   "rtt_multiple": 2.0418000000000003,
    "initial_datagrams_median": 3,
    "first_flight_bytes": 2558,
    "n_rtt_obs": 2
@@ -38,10 +38,10 @@
    "err": "",
    "n": 40,
    "ok": 40,
-   "p50": 104.899,
-   "p95": 106.392,
+   "p50": 102,
+   "p95": 102.36,
    "two_rtt_rate": 1.0,
-   "rtt_multiple": 2.09798,
+   "rtt_multiple": 2.04,
    "initial_datagrams_median": 3,
    "first_flight_bytes": 2560,
    "n_rtt_obs": 2
@@ -59,10 +59,10 @@
    "err": "",
    "n": 40,
    "ok": 40,
-   "p50": 54.044,
-   "p95": 55.212,
+   "p50": 51.432,
+   "p95": 51.795,
    "two_rtt_rate": 0.0,
-   "rtt_multiple": 1.0808799999999998,
+   "rtt_multiple": 1.02864,
    "initial_datagrams_median": 3,
    "first_flight_bytes": 2562,
    "n_rtt_obs": 1
@@ -80,10 +80,10 @@
    "err": "",
    "n": 40,
    "ok": 40,
-   "p50": 54.128,
-   "p95": 56.265,
-   "two_rtt_rate": 0.025,
-   "rtt_multiple": 1.08256,
+   "p50": 51.442,
+   "p95": 51.869,
+   "two_rtt_rate": 0.0,
+   "rtt_multiple": 1.02884,
    "initial_datagrams_median": 3,
    "first_flight_bytes": 2564,
    "n_rtt_obs": 1
@@ -101,10 +101,10 @@
    "err": "",
    "n": 40,
    "ok": 40,
-   "p50": 54.177,
-   "p95": 55.529,
+   "p50": 51.501,
+   "p95": 51.846,
    "two_rtt_rate": 0.0,
-   "rtt_multiple": 1.08354,
+   "rtt_multiple": 1.03002,
    "initial_datagrams_median": 3,
    "first_flight_bytes": 2700,
    "n_rtt_obs": 1
@@ -114,12 +114,12 @@
   {
    "check": "1280 은 2-RTT, 1281 은 1-RTT (1 바이트 절벽)",
    "ok": true,
-   "detail": "1280: n_rtt=2 p50=104.899 / 1281: n_rtt=1 p50=54.044"
+   "detail": "1280: n_rtt=2 p50=102 / 1281: n_rtt=1 p50=51.432"
   },
   {
    "check": "절벽의 크기가 왕복 하나(>= 0.8 RTT)",
    "ok": true,
-   "detail": "차 50.86 ms = 1.017 RTT"
+   "detail": "차 50.57 ms = 1.011 RTT"
   },
   {
    "check": "부정 시험: 1279 와 1280 은 같은 칸",

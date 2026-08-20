@@ -15,6 +15,15 @@ package main
 // 않고 이름 있는 값으로 둔다. 정의는 padfec/policy.py 한 곳뿐이다.
 const defaultAssumedBurst = 1
 
+// 복구 실패 한 번의 대가. 2026-08-20 결정적 소거 실측
+//   (experiments/_probe_trecover_rtt.py -> results/probe_trecover_rtt.json)
+//   서버가 0 개 받음 -> ACK 없음 -> PTO.  RTT 와 무관한 상수.
+//   1 개 이상       -> ACK -> 즉시 재전송. RTT 에 비례.
+// 정의는 padfec/policy.py 한 곳뿐이다.
+const tPTONoAckMs = 200.86
+const tAckRetxSlope = 1.125
+const tAckRetxBaseMs = 1.424
+
 var pfailK = []int{1, 2, 3, 4}
 var pfailM = []int{0, 1, 2}
 var pfailP = []float64{0, 0.002, 0.005, 0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.2, 0.3}

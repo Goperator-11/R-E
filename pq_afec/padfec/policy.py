@@ -56,6 +56,47 @@ PTO_NO_SAMPLE_MS = 999.0
 #    안 된다.** 이름을 주고 인자로 흘린다 — 추정이 생기면 양쪽이 같이 받는다.
 DEFAULT_ASSUMED_BURST = 1.0
 
+# ---------------------------------------------------------------------------
+# 복구 실패 비용 — 2026-08-20 결정적 소거로 직접 측정한 값.
+#
+# 🩸 그전 기본값은 `t_recover_ms = rtt_ms` 였다. **k=1 에서 4~20 배 작았다.**
+#
+# 실측(`experiments/_probe_trecover_rtt.py`, `results/probe_trecover_rtt.json`).
+# `-drop-initial 0` 으로 매 판마다 첫 비행을 버리고 기준선과의 p50 차를 쟀다.
+#
+#     RTT     k=1 (x25519)          k=2 (X25519MLKEM768)
+#     10 ms   200.90 ms (20.09x)     12.62 ms (1.26x)
+#     50 ms   200.96 ms ( 4.02x)     57.77 ms (1.16x)
+#    100 ms   200.73 ms ( 2.01x)    113.88 ms (1.14x)
+#     판정    고정 상수(폭 0.23 ms)   RTT 비례(배수 폭 0.10)
+#
+# 가르는 것은 k 가 아니라 **실패한 순간 서버가 하나라도 받았는가**다.
+#   받은 게 0 개  -> 서버가 ACK 를 못 준다 -> 클라가 PTO 타이머를 문다.
+#                   그 타이머는 RTT 표본이 없을 때의 값이라 **경로와 무관한 상수**다.
+#   1 개 이상     -> 서버가 ACK 를 준다 -> 클라가 패킷번호 구멍을 보고 즉시
+#                   재전송한다 -> 대가는 왕복 하나 + 처리 오버헤드.
+#
+# k=1·m=0 은 실패가 곧 전멸이라 항상 PTO 가지이고, k>=2 는 대개 ACK 가지다.
+# 그래서 겉보기에 "k 에 따라 다르다"로 보였다. 결합분포가 두 가지를 이미
+# 구분해 주므로 **k 로 분기하지 않고 도착 개수로 나눈다.**
+#
+# v2 명세 §3 의 "서버가 ACK 를 주므로 대가는 왕복 하나다" 는 **ACK 가지에서만**
+# 참이다. 코드 주석은 PTO 경로를 알고 있었는데(아래 cost_of_v2 참고) 기본값이
+# 말없이 틀린 가지를 탔다.
+#
+# ⚠️ 이 세 수는 **quic-go v0.61.0 의 타이머**를 잰 것이다. 다른 스택에서는
+#    다시 재야 한다. 상수를 쓰는 게 아니라 상수의 출처를 밝히는 게 요점이다.
+T_PTO_NO_ACK_MS = 200.86        # 실측 200.90 / 200.96 / 200.73 의 평균
+T_ACK_RETX_SLOPE = 1.1250       # 최소제곱 적합, 잔차 |0.10| ms 이내
+T_ACK_RETX_BASE_MS = 1.424
+
+
+def default_t_recover(rtt_ms, arrived_any):
+    """복구 실패 한 번의 대가. arrived_any = 서버가 하나라도 받았는가."""
+    if arrived_any:
+        return T_ACK_RETX_SLOPE * float(rtt_ms) + T_ACK_RETX_BASE_MS
+    return T_PTO_NO_ACK_MS
+
 
 def erasure_probs(n_symbols, p, burst):
     """n 개 심볼 중 e 개가 소거될 확률 벡터."""
@@ -200,7 +241,13 @@ def p_fail_of(cand, p, burst):
 
 
 def cost_of(cand, rtt_ms, p, burst, t_recover_ms=None, uplink_mbps=10.0):
-    """명세 §3 의 J. 낮을수록 좋다."""
+    """명세 §3 의 J (결정론 n_rtt 판, 보고용). 낮을수록 좋다.
+
+    ⚠️ 정책은 이걸 안 쓴다 — decide_v2 는 cost_of_v2 를 쓴다. 여기 기본값
+    `t_recover_ms = rtt_ms` 는 2026-08-20 실측으로 **PTO 가지에서 4~20 배
+    작다**는 게 밝혀졌다(T_PTO_NO_ACK_MS 주석). 호환을 위해 남겨 두되
+    새 코드는 default_t_recover() 를 쓴다.
+    """
     if t_recover_ms is None:
         t_recover_ms = rtt_ms
     pf = p_fail_of(cand, p, burst)
@@ -241,7 +288,8 @@ def decide_v2(C, cert_bytes, rtt_ms, p, burst=DEFAULT_ASSUMED_BURST, s0=None,
               W=quantum.P_SERVER, h=51, f=16,
               max_steps=2, m_max=2,
               s0_base=None, c_pkt=0.0,
-              t_recover_ms=None, uplink_mbps=10.0,
+              t_recover_ms=None, t_recover_ack_ms=None,
+              uplink_mbps=10.0,
               max_ips=QUICGO_MAX_IPS, allow_repack=False):
     """이 조건에서 첫 비행을 어떻게 만들지 고른다 (δ 와 m 을 함께).
 
@@ -282,7 +330,7 @@ def decide_v2(C, cert_bytes, rtt_ms, p, burst=DEFAULT_ASSUMED_BURST, s0=None,
         # cost_of(결정론 n_rtt)가 아니라 cost_of_v2(Go 이식: 기대 왕복 수 +
         # 실제 패리티 크기)를 쓴다. 이유는 "Go 이식 정합" 절 참고.
         e = cost_of_v2(c, W, rtt_ms, p, burst, t_recover_ms, uplink_mbps,
-                       k0=k0)
+                       k0=k0, t_recover_ack_ms=t_recover_ack_ms)
         e["cand"] = c
         scored.append(e)
     scored.sort(key=_rank_key)
@@ -325,7 +373,9 @@ def decide_v2(C, cert_bytes, rtt_ms, p, burst=DEFAULT_ASSUMED_BURST, s0=None,
         "warnings": ([("고른 후보에 late_parity_risk 가 있다 — 명세 §2.6, "
                        "p13 전까지 신용이 과대평가일 수 있다")]
                      if bc["late_parity_risk"] else []),
-        "t_recover_ms": rtt_ms if t_recover_ms is None else t_recover_ms,
+        # 실패 가지가 둘이므로 값도 둘이다. 어느 쪽을 썼는지 밝힌다.
+        "t_pto_ms": best["t_pto_ms"],
+        "t_ack_ms": best["t_ack_ms"],
     }
 
 
@@ -452,6 +502,8 @@ def flight_outcome(k, m, w, p, burst, server_flight):
     pm = joint_arrival_pmf(k, m, p, burst)
     n_sum = 0.0
     p_fail = 0.0
+    p_fail_pto = 0.0
+    p_fail_ack = 0.0
     p_two = 0.0
     for a_ in range(k + 1):
         for b_ in range(m + 1):
@@ -461,6 +513,14 @@ def flight_outcome(k, m, w, p, burst, server_flight):
             # MDS: 받은 심볼이 k 개 이상이면 복구된다(잃은 원본 <= 도착 패리티).
             if (k - a_) > b_:
                 p_fail += pr
+                # 실패의 대가는 **서버가 하나라도 받았는지**로 갈린다.
+                # 0 개면 ACK 자체가 없어 PTO(경로 무관 상수), 1 개 이상이면
+                # ACK 로 구멍이 드러나 즉시 재전송(왕복 하나). 실측 근거는
+                # 위 T_PTO_NO_ACK_MS 주석.
+                if (a_ + b_) == 0:
+                    p_fail_pto += pr
+                else:
+                    p_fail_ack += pr
                 continue
             # 복구된 원본의 바이트는 신용에 안 넣는다 — 회계 규칙상 복구본을
             # 넣을 때 패리티를 버리므로 서버가 실제로 센 바이트만 예산이 된다.
@@ -478,6 +538,9 @@ def flight_outcome(k, m, w, p, burst, server_flight):
         "n_rtt_expected": n_sum,
         "n_rtt_given_ok": (n_sum / ok if ok > 1e-15 else 2.0),
         "p_fail": p_fail,
+        # 실패 질량을 두 가지로 나눈다. 합은 p_fail 이다.
+        "p_fail_pto": p_fail_pto,   # 서버가 0 개 받음 -> ACK 없음 -> PTO
+        "p_fail_ack": p_fail_ack,   # 1 개 이상 받음 -> ACK -> 즉시 재전송
         "p_two_rtt": p_two,
         "p_recoverable": ok,
     }
@@ -490,22 +553,37 @@ def client_bytes_of(cand):
 
 
 def cost_of_v2(cand, W_base, rtt_ms, p, burst,
-               t_recover_ms=None, uplink_mbps=10.0, k0=None):
+               t_recover_ms=None, uplink_mbps=10.0, k0=None,
+               t_recover_ack_ms=None):
     """명세 §3 의 J — Go(policy.go) 와 같은 식으로 계산한다.
 
-        J = E[n_rtt | 복구 성공]·RTT  +  P(실패)·(RTT + T_recover)  +  t_tx
+        J = E[n_rtt | 복구 성공]·RTT
+          + P(실패·PTO)·(RTT + T_pto)
+          + P(실패·ACK)·(RTT + T_ack)
+          + t_tx
 
-    세 항 전부가 **하나의 결합분포**(joint_arrival_pmf)에서 나온다.
+    네 항 전부가 **하나의 결합분포**(joint_arrival_pmf)에서 나온다.
+
+    🩸 2026-08-20 실측 수리. 그전에는 실패 가지가 하나였고 그 값이
+       `t_recover_ms = rtt_ms` 였다. **k=1 에서 4~20 배 작았다** — 결정적 소거로
+       재 보니 서버가 아무것도 못 받는 경우는 RTT 와 무관한 **200.86 ms 상수**
+       (quic-go 의 PTO 타이머)였다. 기본값을 그대로 두면 손실 한 번이 201 ms 인
+       자리에서 정책이 무방비를 고른다(스윕 2,640 조건 중 405 건, k=1 만 보면
+       1,320 중 286 건에서 결정이 뒤집혔다).
+
+    t_recover_ms — PTO 가지 값을 직접 주고 싶을 때. None 이면 측정 상수.
+    t_recover_ack_ms — ACK 가지 값. None 이면 측정 적합식(1.125·RTT + 1.42).
+        Go 의 목적지 캐시가 관측값을 갖고 있으면 그것을 여기로 넘긴다 -
+        **양쪽이 같은 인자를 받아야 같은 답이 나온다.**
 
     k0 — 기준선("아무것도 안 함")의 데이터그램 수. 추가 바이트를 이것 대비로
     센다. 안 주면 후보 자신의 k 를 쓴다(pad/parity 는 levers 가 k_floor=k0 로
     고정하므로 같다).
-    🩸 2026-08-20 감사 결함 4: pad_repack 은 k 가 줄어드는 유일한 후보인데
-       기준선을 후보 자신의 k 로 잡는 바람에, **1,119 B 를 아끼는 후보를
-       81 B 를 썼다고** 계산했다. 이제 k0 를 받는다.
     """
-    if t_recover_ms is None:
-        t_recover_ms = rtt_ms
+    t_pto = (default_t_recover(rtt_ms, False) if t_recover_ms is None
+             else float(t_recover_ms))
+    t_ack = (default_t_recover(rtt_ms, True) if t_recover_ack_ms is None
+             else float(t_recover_ack_ms))
     k, m, w = cand["k"], cand["m"], cand["W_eff"]
     base_k = k if k0 is None else k0
     cb = client_bytes_of(cand)
@@ -513,10 +591,11 @@ def cost_of_v2(cand, W_base, rtt_ms, p, burst,
     out = flight_outcome(k, m, w, p, burst, cand["server_flight"])
     n_exp = out["n_rtt_expected"]
     pf = out["p_fail"]
+    stall = (out["p_fail_pto"] * (rtt_ms + t_pto)
+             + out["p_fail_ack"] * (rtt_ms + t_ack))
     tx = tx_cost_ms(added, uplink_mbps)
     return {
-        # 복구 실패 가지는 (재전송 1회 + 그 뒤 핸드셰이크 왕복) 으로 값을 매긴다.
-        "j_ms": n_exp * rtt_ms + pf * (rtt_ms + t_recover_ms) + tx,
+        "j_ms": n_exp * rtt_ms + stall + tx,
         "n_rtt_expected": n_exp,
         "n_rtt_given_ok": out["n_rtt_given_ok"],
         "p_two_rtt": out["p_two_rtt"],
@@ -524,26 +603,34 @@ def cost_of_v2(cand, W_base, rtt_ms, p, burst,
         "added_bytes_real": added,
         "allowed_real": quantum.allowed(cb),
         "base_ms": n_exp * rtt_ms,
-        "stall_ms": pf * (rtt_ms + t_recover_ms),
+        "stall_ms": stall,
         "tx_ms": tx,
         "p_fail": pf,
+        "p_fail_pto": out["p_fail_pto"],
+        "p_fail_ack": out["p_fail_ack"],
+        "t_pto_ms": t_pto,
+        "t_ack_ms": t_ack,
     }
 
 
 # ---------------------------------------------------------------------------
 # 자체시험. 출력은 ASCII 로만 한다 - 윈도우 콘솔이 cp949 라 한글이 깨진다.
 #
-# 여기 있는 검사는 전부 **2026-08-20 감사가 실제로 잡은 결함**을 고정한 것이다.
+# 여기 있는 검사는 전부 **감사나 실측이 실제로 잡은 결함**을 고정한 것이다.
 # 하나라도 붉어지면 그 결함이 되살아난 것이다.
+#   1~12  2026-08-20 반증 감사 (결함 4 건)
+#   5c~5h 2026-08-20 결정적 소거 실측 (T_recover)
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     import sys
 
     _fail = [0]
+    _n = [0]
 
     def _chk(name, cond, detail=""):
         mark = "ok  " if cond else "FAIL"
+        _n[0] += 1
         if not cond:
             _fail[0] += 1
         print("  [%s] %s%s" % (mark, name, ("  " + detail) if detail else ""))
@@ -562,7 +649,6 @@ if __name__ == "__main__":
     _chk("1. joint_arrival_pmf is a distribution", not _bad, str(_bad[:3]))
 
     # 2. 주변분포가 채널의 erasure_pmf 와 일치하는가.
-    #    어긋나면 DP 규약이 afec.channel 과 갈라진 것이다.
     worst = 0.0
     for k in (1, 2, 3):
         for m in (0, 1, 2):
@@ -592,7 +678,6 @@ if __name__ == "__main__":
     _chk("3. p_fail_of == p_unrecoverable", worst < 1e-12, "worst %.3g" % worst)
 
     # 4. 결함 1 - n_rtt 항이 버스트에 반응해야 한다.
-    #    예전에는 독립 이항이라 burst 를 바꿔도 값이 꿈쩍도 안 했다.
     o1 = flight_outcome(2, 1, 1280, 0.05, 1.0, 6000.0)
     o5 = flight_outcome(2, 1, 1280, 0.05, 5.0, 6000.0)
     _chk("4. n_rtt term reacts to burst (defect 1)",
@@ -601,26 +686,53 @@ if __name__ == "__main__":
                                    o5["n_rtt_expected"]))
 
     # 5. 결함 2 - 같은 손실 사건을 두 번 청구하지 않는다.
-    #    k=1,m=0 이면 손실 = 전멸이므로 n_rtt 항의 질량은 (1-p) 여야 한다.
     o = flight_outcome(1, 0, 1280, 0.2, 1.0, 3000.0)
     _chk("5. n-term mass == 1 - p_fail (defect 2)",
          abs(o["p_recoverable"] - 0.8) < 1e-12
          and abs(o["n_rtt_expected"] - 0.8) < 1e-12,
          "n=%.6f p_ok=%.6f" % (o["n_rtt_expected"], o["p_recoverable"]))
     e = cost_of_v2({"k": 1, "m": 0, "W_eff": 1280, "server_flight": 3000.0},
-                   1280, 50.0, 0.2, 1.0)
-    _chk("5b. J = 60ms not 70ms  (k=1 m=0 p=0.2 rtt=50)",
+                   1280, 50.0, 0.2, 1.0, t_recover_ms=50.0,
+                   t_recover_ack_ms=50.0)
+    _chk("5b. J = 60ms not 70ms  (k=1 m=0 p=0.2 rtt=50, T_rec forced to RTT)",
          abs(e["j_ms"] - 60.0) < 1e-9, "J=%.4f" % e["j_ms"])
+
+    # 5c~5h. 2026-08-20 결정적 소거 실측을 고정한다.
+    _chk("5c. k=1,m=0 failure is always the PTO branch",
+         abs(o["p_fail_pto"] - o["p_fail"]) < 1e-12 and o["p_fail_ack"] == 0.0,
+         "pto=%.6f ack=%.6f" % (o["p_fail_pto"], o["p_fail_ack"]))
+    o2 = flight_outcome(2, 0, 1280, 0.2, 1.0, 3000.0)
+    _chk("5d. k=2,m=0 failure splits into both branches",
+         o2["p_fail_pto"] > 0 and o2["p_fail_ack"] > 0
+         and abs(o2["p_fail_pto"] + o2["p_fail_ack"] - o2["p_fail"]) < 1e-12,
+         "pto=%.6f ack=%.6f fail=%.6f" % (o2["p_fail_pto"], o2["p_fail_ack"],
+                                          o2["p_fail"]))
+    # results/probe_trecover.json, RTT 50 ms:
+    #   k=1 기준 51.27 -> 소거 252.09 (PTO)   k=2 기준 51.30 -> 소거 109.07 (ACK)
+    _chk("5e. PTO branch reproduces measured 252.09 ms",
+         abs((51.27 + default_t_recover(50.0, False)) - 252.09) < 0.3,
+         "pred %.2f" % (51.27 + default_t_recover(50.0, False)))
+    _chk("5f. ACK branch reproduces measured 109.07 ms",
+         abs((51.30 + default_t_recover(50.0, True)) - 109.07) < 0.3,
+         "pred %.2f" % (51.30 + default_t_recover(50.0, True)))
+    _chk("5g. PTO cost is RTT-independent (measured constant)",
+         default_t_recover(10.0, False) == default_t_recover(200.0, False),
+         "%.2f / %.2f" % (default_t_recover(10.0, False),
+                          default_t_recover(200.0, False)))
+    _chk("5h. ACK cost scales with RTT",
+         default_t_recover(200.0, True) > 3 * default_t_recover(50.0, True),
+         "%.2f vs %.2f" % (default_t_recover(50.0, True),
+                           default_t_recover(200.0, True)))
 
     # 6. p=0 이면 예전 결정론 식과 정확히 같아야 한다 (헤드라인 불변)
     _bad = []
     for k in (1, 2, 3):
         for m in (0, 1, 2):
             for sf in (3000.0, 5000.0, 9000.0):
-                o = flight_outcome(k, m, 1280, 0.0, 1.0, sf)
+                oo = flight_outcome(k, m, 1280, 0.0, 1.0, sf)
                 det = 1.0 if sf <= quantum.allowed(
                     k * 1280 + m * parity_datagram_bytes(1280, k)) else 2.0
-                if abs(o["n_rtt_expected"] - det) > 1e-12 or o["p_fail"] != 0.0:
+                if abs(oo["n_rtt_expected"] - det) > 1e-12 or oo["p_fail"] != 0.0:
                     _bad.append((k, m, sf))
     _chk("6. p=0 reduces to the deterministic rule", not _bad, str(_bad[:3]))
 
@@ -639,8 +751,7 @@ if __name__ == "__main__":
                       s0_base=396.5, c_pkt=34.5)
         for c in r["candidates"]:
             if c["added_bytes"] != c["added_bytes_real"]:
-                _bad.append((cert, c["mode"], c["m"],
-                             c["added_bytes"], c["added_bytes_real"]))
+                _bad.append((cert, c["mode"], c["m"]))
     _chk("8. cand added_bytes == added_bytes_real (defect 4)",
          not _bad, str(_bad[:3]))
 
@@ -651,8 +762,7 @@ if __name__ == "__main__":
                       s0_base=396.5, c_pkt=34.5)
         for c in r["candidates"]:
             if abs(c["n_rtt"] - c["n_rtt_expected"]) > 1e-9:
-                _bad.append((cert, c["mode"], c["m"],
-                             c["n_rtt"], c["n_rtt_expected"]))
+                _bad.append((cert, c["mode"], c["m"]))
     _chk("9. levers n_rtt == expected n_rtt at p=0 (defect 4)",
          not _bad, str(_bad[:3]))
 
@@ -660,7 +770,7 @@ if __name__ == "__main__":
     r = decide_v2(C=1150, cert_bytes=6000, rtt_ms=50.0, p=0.0, burst=1.0,
                   s0=1734.5, W=1200, allow_repack=True, max_ips=None)
     _k0 = capacity.natural_k(1150, 1200, 51)
-    _bad = [(c["mode"], c["added_bytes_real"], c["client_bytes_real"])
+    _bad = [(c["mode"], c["added_bytes_real"])
             for c in r["candidates"] if c["mode"] == "pad_repack"
             and c["added_bytes_real"] != max(0, c["client_bytes_real"]
                                              - _k0 * 1200)]
@@ -690,5 +800,5 @@ if __name__ == "__main__":
     _chk("12. chosen m is non-decreasing in p", not _bad, str(_bad[:2]))
 
     print("")
-    print("13 checks, %d failed" % _fail[0])
+    print("%d checks, %d failed" % (_n[0], _fail[0]))
     sys.exit(1 if _fail[0] else 0)
