@@ -1,0 +1,112 @@
+{
+  "rtt_ms": 50.0,
+  "cert": 4032,
+  "n_per_round": 400,
+  "kept_cache": false,
+  "rounds": [
+    {
+      "round": 1,
+      "p_est": 0.0377,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=2 ips=1280 추가=2636B | S=4677 p=0.0377 T_pto=201 T_ack=59 비용=53.13ms",
+      "err": "",
+      "p50": 52.291,
+      "two_rtt": 0.0025,
+      "ips_used": {
+        "1280": 388,
+        "1281": 12
+      },
+      "m_used": {
+        "0": 13,
+        "2": 387
+      }
+    },
+    {
+      "round": 2,
+      "p_est": 0.0171,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=1 ips=1280 추가=1318B | S=4673 p=0.0171 T_pto=201 T_ack=59 비용=52.90ms",
+      "err": "",
+      "p50": 52.3,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 380,
+        "1281": 20
+      },
+      "m_used": {
+        "2": 278,
+        "0": 20,
+        "1": 102
+      }
+    },
+    {
+      "round": 3,
+      "p_est": 0.0118,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=1 ips=1280 추가=1318B | S=4676 p=0.0118 T_pto=201 T_ack=59 비용=52.61ms",
+      "err": "",
+      "p50": 52.273,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 380,
+        "1281": 20
+      },
+      "m_used": {
+        "1": 380,
+        "0": 20
+      }
+    },
+    {
+      "round": 4,
+      "p_est": 0.0094,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=1 ips=1280 추가=1318B | S=4680 p=0.0094 T_pto=201 T_ack=59 비용=52.48ms",
+      "err": "",
+      "p50": 52.274,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 380,
+        "1281": 20
+      },
+      "m_used": {
+        "1": 380,
+        "0": 20
+      }
+    },
+    {
+      "round": 5,
+      "p_est": 0.0081,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=1 ips=1280 추가=1318B | S=4679 p=0.0081 T_pto=201 T_ack=59 비용=52.41ms",
+      "err": "",
+      "p50": 52.263,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 380,
+        "1281": 20
+      },
+      "m_used": {
+        "1": 380,
+        "0": 20
+      }
+    },
+    {
+      "round": 6,
+      "p_est": 0.0073,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=1 ips=1280 추가=1318B | S=4677 p=0.0073 T_pto=201 T_ack=59 비용=52.36ms",
+      "err": "",
+      "p50": 52.291,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 380,
+        "1281": 20
+      },
+      "m_used": {
+        "1": 380,
+        "0": 20
+      }
+    }
+  ],
+  "flipped": false
+}

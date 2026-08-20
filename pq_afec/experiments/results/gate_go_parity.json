@@ -1,0 +1,16 @@
+{
+ "grid_points": 5670,
+ "source": "/tmp/qamp",
+ "mismatch": 0,
+ "mismatches": [],
+ "picks": {
+  "none": 1791,
+  "parity": 3673,
+  "pad": 206
+ },
+ "pad_deltas": {
+  "81": 108,
+  "1": 98
+ },
+ "ok": true
+}

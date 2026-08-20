@@ -91,6 +91,14 @@ def emit_go(tab, jtab, out):
     w("const tAckRetxSlope = %.10g\n" % policy.T_ACK_RETX_SLOPE)
     w("const tAckRetxBaseMs = %.10g\n\n" % policy.T_ACK_RETX_BASE_MS)
 
+    w("// 정책이 쓰는 상수. 정의는 padfec/policy.py 한 곳뿐이다.\n")
+    w("//   quicgoMaxIPS  실측: -ips 1707 을 줘도 클라는 1452 로 깎아 보낸다\n")
+    w("//   cPktDefault   서버 패킷 오버헤드. 34.5~40.0 구간이라 상단을 쓴다\n")
+    w("//                 (크게 잡아야 1-RTT 를 살 수 있다고 과신하지 않는다)\n")
+    w("const quicgoMaxIPS = %d\n" % policy.QUICGO_MAX_IPS)
+    w("const maxStepsDefault = %d\n" % policy.MAX_STEPS_DEFAULT)
+    w("const cPktDefault = %.10g\n\n" % policy.C_PKT_POLICY_DEFAULT)
+
     w("var pfailK = []int{%s}\n" % ", ".join(str(v) for v in K_VALS))
     w("var pfailM = []int{%s}\n" % ", ".join(str(v) for v in M_VALS))
     w("var pfailP = []float64{%s}\n"

@@ -27,6 +27,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"sort"
 	"sync"
 )
 
@@ -191,6 +192,244 @@ func flightOutcome(k, m, w int, p, l float64,
 	return nExp, pFailPTO, pFailACK
 }
 
+
+// ---------------------------------------------------------------------------
+// 양자 지렛대 (padfec/quantum.py 이식) — 2026-08-20
+//
+// v2 는 결정 변수가 둘이다. m(패리티 개수)만 고르던 v1 에서 δ(데이터그램을
+// 몇 바이트 키울지)가 추가됐다. 여기까지 이식하기 전에는 `-fec auto` 가
+// m 만 골랐고, 헤드라인인 "1 바이트로 왕복 하나 사기"는 사람이 -ips 를
+// 직접 줄 때만 실현됐다.
+//
+// **이 부분은 Go 로 다시 짜도 된다.** 정수 산술뿐이라 갈라질 여지가 없다.
+// 갈라질 수 있는 것은 확률 모형(결합분포)이고 그건 표로 심는다 —
+// padfec/table.py 머리말의 규칙 그대로다. 대신 padfec/policy.py 와 같은
+// 답을 내는지 격자 대조로 못 박는다.
+// ---------------------------------------------------------------------------
+
+const typicalMTU = 1500
+
+// ceilDiv 는 올림 나눗셈이다.
+//
+// 🩸 Python 의 `-((-a) // b)` 를 그대로 옮기면 안 된다. Python `//` 는
+// **내림**이라 그 식이 올림이 되지만, Go `/` 는 **0 쪽으로 자른다**.
+// 그대로 옮기면 올림이 아니라 내림이 나온다: ceilDiv(161,2) 가 81 이 아니라 80.
+// 그러면 binIndex 가 한 칸씩 낮게 나오고 δ 후보가 칸을 못 올려 pad 가
+// 통째로 쓸모없어진다(격자 대조에서 92/5670 불일치로 잡혔다).
+// a >= 0, b > 0 만 쓰므로 (a+b-1)/b 로 쓴다.
+func ceilDiv(a, b int) int {
+	if b <= 0 {
+		panic("ceilDiv: 나눗수는 양수여야 한다")
+	}
+	if a <= 0 {
+		return 0
+	}
+	return (a + b - 1) / b
+}
+
+// binIndex 는 이 비행이 들어앉은 양자 칸 번호다. ceil(3B/P).
+func binIndex(clientBytes int) int {
+	if clientBytes <= 0 {
+		return 0
+	}
+	return ceilDiv(amplificationFactor*clientBytes, serverPacketSize)
+}
+
+// deltaMin 은 steps 칸 위로 올라가는 최소 추가 바이트다 (명세 보조정리 2).
+//
+//	Δ_min = floor(A_target/3 − B) + 1
+//
+// W = 1280 = P 이면 3B 가 항상 P 의 배수라 Δ_min = 1 이다. k 와 무관하다 —
+// quic-go 기본값이 증폭 양자 경계에 정확히 걸터앉아 있다는 뜻이고,
+// 이것이 이 연구의 헤드라인이다.
+func deltaMin(clientBytes, steps int) int {
+	if steps <= 0 {
+		return 0
+	}
+	b := clientBytes
+	if b < 0 {
+		b = 0
+	}
+	target := (binIndex(b) + steps - 1) * serverPacketSize
+	return (target-amplificationFactor*b)/amplificationFactor + 1
+}
+
+// cand 는 후보 하나다. padfec/quantum.py 의 _candidate 와 같은 필드를 갖는다.
+type cand struct {
+	mode        string // none | pad | parity
+	m           int
+	delta       int // 데이터그램당 추가 바이트
+	wEff        int
+	k           int
+	clientBytes int
+	steps       int // 기준선 대비 실제로 올라간 칸 수
+	lateParity  bool
+	overMTU     bool
+}
+
+// levers 는 명세 §3 의 후보 집합이다. 연속 스윕이 아니라 **경계점만** 본다.
+//
+//	후보 = {(0,0)}
+//	     ∪ {(ceil(Δ_j/k), 0) : j = 1..maxSteps}   # δ 로 j 칸
+//	     ∪ {(0, m)           : m = 1..mMax}       # 패리티만
+//	     ∪ {(0, ceil(Δ_j/파)) : j, Δ_j >= W}      # 패리티로 j 칸
+//
+// k 는 관측값(첫 비행 데이터그램 수)을 그대로 고정한다. Python 은 k_floor=k0
+// 로 같은 일을 한다 - W 를 키울 때 k 를 다시 계산하면 k 가 줄어 칸이
+// **내려가고** δ 지렛대가 후보에서 통째로 사라지기 때문이다.
+func levers(k, w, maxSteps, mMax int) []cand {
+	base := k * w
+	baseBin := binIndex(base)
+
+	mk := func(mode string, m, delta int) cand {
+		wEff := w + delta
+		cb := k*wEff + m*parityDatagramBytes(wEff, k)
+		return cand{
+			mode: mode, m: m, delta: delta, wEff: wEff, k: k,
+			clientBytes: cb,
+			steps:       binIndex(cb) - baseBin,
+			// 명세 §2.6(가설): k=1·m=1 배치는 [원본, 패리티] 라 원본 하나로
+			// 서버가 곧장 응답 비행을 만들기 시작하고, 뒤따르는 패리티는
+			// 결정 시점 이후에 도착해 신용을 못 살 수 있다. 같은 값이면 피한다.
+			lateParity: k == 1 && m == 1,
+			overMTU:    wEff > typicalMTU,
+		}
+	}
+
+	out := []cand{mk("none", 0, 0)}
+	for j := 1; j <= maxSteps; j++ { // δ 지렛대
+		out = append(out, mk("pad", 0, ceilDiv(deltaMin(base, j), k)))
+	}
+	for m := 1; m <= mMax; m++ { // m 지렛대(복구 목적)
+		out = append(out, mk("parity", m, 0))
+	}
+	for j := 1; j <= maxSteps; j++ { // m 지렛대(칸 올리기 목적)
+		dj := deltaMin(base, j)
+		if dj >= w {
+			// 패리티 하나가 실제로 싣는 바이트로 나눈다. W 로 나누면
+			// 필요한 개수를 과대평가한다(패리티가 원본보다 크다).
+			out = append(out, mk("parity", ceilDiv(dj, parityDatagramBytes(w, k)), 0))
+		}
+	}
+
+	// 🩸 Python quantum.levers 에는 후보가 하나 더 있다 - `pad_repack`
+	// (데이터그램을 합쳐 재패킹). **일부러 안 옮겼다.** 그건 CRYPTO 를 다시
+	// 쪼개는 실제 구현 변경을 요구하는데 우리 테스트베드는 그걸 안 한다.
+	// 모형에만 있는 선택지를 정책이 고르면 실현할 수 없는 답이 나온다.
+	// Python 도 기본값 allow_repack=False 로 같은 자리에서 뺀다 - 그래서
+	// 격자 대조가 성립한다. 재패킹을 구현하는 날 양쪽을 같이 열어야 한다.
+
+	// 중복 제거. mode 가 다르면 바이트가 같아도 남긴다 - 같은 바이트에서
+	// 복구 유무가 갈리는 것이 시험 대상이기 때문이다.
+	seen := map[string]bool{}
+	uniq := out[:0]
+	for _, c := range out {
+		key := fmt.Sprintf("%s|%d|%d", c.mode, c.clientBytes, c.m)
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		uniq = append(uniq, c)
+	}
+	return uniq
+}
+
+// scored 는 후보 하나의 점수다.
+type scored struct {
+	c     cand
+	j     float64
+	added int
+}
+
+// evalCands 는 후보 전부에 J 를 매기고 명세 §3 의 순서로 정렬해 돌려준다.
+//
+//	J = E[n_rtt|복구성공]·RTT
+//	  + P(실패·PTO)·(RTT + T_pto)
+//	  + P(실패·ACK)·(RTT + T_ack)
+//	  + t_tx
+//
+// cPkt — 서버 패킷 오버헤드(명세 §2.5). 칸이 오르면 서버가 패킷을 하나 더
+// 쓰므로 서버 비행이 그만큼 커진다. 관측 S 는 **지금 칸**의 값이므로
+// 올라간 칸 수만큼 더해 준다. Python 의 s0_at() 과 같은 식이다
+// (Python 은 절대값 s0_base + n·c, 여기는 상대값 S_obs + Δn·c — S_obs 의
+// 정의상 둘이 같다).
+func evalCands(cs []cand, k, w int, serverFlight, rtt, p, burst, cPkt float64,
+	maxIPS int) []scored {
+	tPTO := defaultTRecover(rtt, false)
+	tACK := defaultTRecover(rtt, true)
+	baseBytes := k * w
+
+	out := []scored{}
+	for _, c := range cs {
+		if maxIPS > 0 && c.wEff > maxIPS {
+			// 보낼 수 없는 후보다. 2026-08-20 실측: -ips 1707 을 줘도
+			// quic-go 는 1452 B 로 깎아 보낸다.
+			continue
+		}
+		sf := serverFlight + float64(c.steps)*cPkt
+		n, pto, ack := flightOutcome(c.k, c.m, c.wEff, p, burst, sf)
+		added := c.clientBytes - baseBytes
+		if added < 0 {
+			added = 0
+		}
+		// 업링크 10 Mbps 고정. Python cost_of_v2 의 기본값과 같은 값이다.
+		// 🩸 인자로 빼지 않았다 - Go 는 업링크를 관측할 수단이 없어서
+		// 인자로 만들면 호출부가 또 리터럴을 박게 된다(버스트에서 그 일을
+		// 이미 겪었다). 재려면 재는 쪽을 먼저 만들어야 한다.
+		// 참고: 이 테스트베드는 netem 이 대역을 안 걸어서 이 항이 실측과
+		// 안 맞는다(m=1 대 m=2 실측 차 0.001 ms vs 모형 1.054 ms).
+		tx := float64(added) * 8.0 / 10e6 * 1000.0
+		j := n*rtt + pto*(rtt+tPTO) + ack*(rtt+tACK) + tx
+		out = append(out, scored{c: c, j: j, added: added})
+	}
+
+	// 동점 처리 (명세 §3): J -> 실제 추가 바이트 -> 같은 바이트면 패리티 우선
+	//                    -> late_parity 없는 쪽 -> over_mtu 없는 쪽 -> mode 이름.
+	sort.SliceStable(out, func(a, b int) bool {
+		x, y := out[a], out[b]
+		jx := math.Round(x.j*1e6) / 1e6
+		jy := math.Round(y.j*1e6) / 1e6
+		if jx != jy {
+			return jx < jy
+		}
+		if x.added != y.added {
+			return x.added < y.added
+		}
+		px, py := 1, 1
+		if x.c.m > 0 {
+			px = 0
+		}
+		if y.c.m > 0 {
+			py = 0
+		}
+		if px != py {
+			return px < py
+		}
+		lx, ly := 0, 0
+		if x.c.lateParity {
+			lx = 1
+		}
+		if y.c.lateParity {
+			ly = 1
+		}
+		if lx != ly {
+			return lx < ly
+		}
+		ox, oy := 0, 0
+		if x.c.overMTU {
+			ox = 1
+		}
+		if y.c.overMTU {
+			oy = 1
+		}
+		if ox != oy {
+			return ox < oy
+		}
+		return x.c.mode < y.c.mode
+	})
+	return out
+}
+
 // ------------------------------------------------------------ 목적지 캐시
 //
 // 1 차 연구에서 목적지별 사전분포 캐시(afec/cache.py)를 만들었다가 2 차에서
@@ -295,8 +534,7 @@ func (c *destCache) observe(addr string, k int, flightBytes, hctMs float64,
 	st.Conns++
 }
 
-// decide 는 이 목적지에 대해 m 을 고른다.
-// decide 는 이 목적지에 대해 m 을 고른다.
+// decide 는 이 목적지에 쓸 (InitialPacketSize, m) 을 고른다.
 //
 // probeEvery 번마다 한 번은 **일부러 m=0 으로** 간다. 그러지 않으면 손실을
 // 관측할 길이 없다(위 observe 주석 참고). 탐색 비용은 작다 - 손실률 5%,
@@ -307,8 +545,13 @@ func (c *destCache) observe(addr string, k int, flightBytes, hctMs float64,
 // 준다. 🩸 예전에는 pfailLookup(..., 1.0) 으로 **호출부에 리터럴을 박아** 뒀고
 // Python 은 실제 버스트를 썼다. 같은 입력에 두 구현이 다른 m 을 골랐다
 // (90 조건 중 17 건). 못 재는 것은 사실이지만 숨기지는 않는다.
-func (c *destCache) decide(addr string, w, mMax, coldM,
-	probeEvery int, burst float64) (int, string, bool) {
+// 돌려주는 것: (쓸 InitialPacketSize, 패리티 개수 m, 근거, 손실관측에 쓸 수 있나)
+//
+// 🩸 2026-08-20 v2 이식. 그전에는 m 만 골랐다(반환값도 m 하나였다). δ 지렛대가
+// 없으니 "1 바이트로 왕복 하나 사기"는 사람이 -ips 를 직접 줄 때만 실현됐다.
+// 이제 후보 집합이 Python decide_v2 와 같다: {none, pad(δ), parity(m)}.
+func (c *destCache) decide(addr string, w, mMax, coldM, probeEvery int,
+	burst, cPkt float64, maxSteps, maxIPS int) (int, int, string, bool) {
 	c.mu.Lock()
 	st := c.M[addr]
 	var snap destStat
@@ -319,7 +562,7 @@ func (c *destCache) decide(addr string, w, mMax, coldM,
 
 	if st == nil || snap.Conns < 1 || snap.MinHCT <= 0 || snap.K < 1 ||
 		snap.ObsCount < 1 {
-		return coldM, "콜드스타트(이 목적지 기록 없음)", true
+		return w, coldM, "콜드스타트(이 목적지 기록 없음)", true
 	}
 	// 탐색 주기는 뒤에서 정한다 - 얼마나 비싼지 알아야 하기 때문이다.
 	k := snap.K
@@ -347,23 +590,18 @@ func (c *destCache) decide(addr string, w, mMax, coldM,
 	tPTO := defaultTRecover(rtt, false)
 	tACK := defaultTRecover(rtt, true)
 
-	best, bestCost, why := 0, math.Inf(1), ""
-	for m := 0; m <= mMax; m++ {
-		n, pfPTO, pfACK := flightOutcome(k, m, w, p, burst,
-			snap.ServerFlight)
-		pf := pfPTO + pfACK
-		// 추가 바이트를 밀어내는 시간. 작지만 0 은 아니다 - 이 항이 없으면
-		// 이득이 같을 때도 무조건 큰 m 을 고른다.
-		tx := float64(m*parityDatagramBytes(w, k)) * 8.0 / 10e6 * 1000.0
-		// 실패 가지는 (재전송 + 그 뒤 핸드셰이크 왕복) 으로 한 번만 문다.
-		cost := n*rtt + pfPTO*(rtt+tPTO) + pfACK*(rtt+tACK) + tx
-		if cost < bestCost {
-			bestCost, best = cost, m
-			why = fmt.Sprintf("S=%.0f p=%.4f T_pto=%.0f T_ack=%.0f "+
-				"E[n_rtt]=%.3f P(실패)=%.4f(pto %.4f) 비용=%.2fms",
-				snap.ServerFlight, p, tPTO, tACK, n, pf, pfPTO, cost)
-		}
+	// 후보 집합을 만들고 J 로 줄 세운다 (명세 §3). Python decide_v2 와 같다.
+	ranked := evalCands(levers(k, w, maxSteps, mMax), k, w,
+		snap.ServerFlight, rtt, p, burst, cPkt, maxIPS)
+	if len(ranked) == 0 {
+		return w, 0, "후보가 하나도 안 남았다", true
 	}
+	bestC := ranked[0]
+	bestCost := bestC.j
+	why := fmt.Sprintf("%s δ=%d m=%d ips=%d 추가=%dB | S=%.0f p=%.4f "+
+		"T_pto=%.0f T_ack=%.0f 비용=%.2fms",
+		bestC.c.mode, bestC.c.delta, bestC.c.m, bestC.c.wEff, bestC.added,
+		snap.ServerFlight, p, tPTO, tACK, bestC.j)
 	// ------------------------------------------------------------- 탐색
 	//
 	// 🩸 탐색 주기를 고정하면 안 된다. 무방비(m=0) 로 가는 값이 조건마다
@@ -374,9 +612,25 @@ func (c *destCache) decide(addr string, w, mMax, coldM,
 	//
 	// 그래서 **탐색 비용이 RTT 의 1% 를 넘지 않도록** 주기를 늘린다.
 	// 탐색이 싼 곳(임계 아래)에서는 자주 재고, 비싼 곳에서는 드물게 잰다.
-	n0, pf0PTO, pf0ACK := flightOutcome(k, 0, w, p, burst, snap.ServerFlight)
-	cost0 := n0*rtt + pf0PTO*(rtt+tPTO) + pf0ACK*(rtt+tACK)
-	probeCost := cost0 - bestCost
+	// 탐색은 **가장 싼 m=0 후보**로 간다.
+	//
+	// 🩸 2026-08-20 δ 이식이 열어 준 개선. 그전에는 맨몸 기준선(δ=0, m=0)으로만
+	// 탐색했는데, 임계 위에서는 그게 곧 2-RTT 라 적응 주기가 늘어나고 관측이
+	// 안 쌓였다. 실측: 400 연결에 무편향 관측 3 회, p 가 Jeffreys 사전값
+	// 근처(0.126)에 정체 -> 그 p 로는 패리티가 늘 이겨 δ 후보가 영영 안 뽑힌다.
+	//
+	// **δ 는 복구를 주지 않으므로 손실 관측을 편향시키지 않는다.** m=0 이기만
+	// 하면 무엇이든 탐색으로 쓸 수 있고, 후보는 이미 J 로 정렬돼 있으니
+	// 첫 m=0 후보가 가장 싼 탐색이다. m 만 있던 시절엔 m=0 후보가 맨몸
+	// 하나뿐이라 이 선택지가 존재하지 않았다.
+	probeC := ranked[0]
+	for i := range ranked {
+		if ranked[i].c.m == 0 {
+			probeC = ranked[i]
+			break
+		}
+	}
+	probeCost := probeC.j - bestCost
 	every := probeEvery
 	if probeCost > 0 && rtt > 0 {
 		need := int(math.Ceil(probeCost / (0.01 * rtt)))
@@ -391,11 +645,64 @@ func (c *destCache) decide(addr string, w, mMax, coldM,
 			if cur.SinceProbe >= every {
 				cur.SinceProbe = 0
 				c.mu.Unlock()
-				return 0, fmt.Sprintf("탐색(주기 %d, 탐색비용 %.1fms)",
+				return probeC.c.wEff, 0, fmt.Sprintf(
+					"탐색 %s δ=%d ips=%d (주기 %d, 탐색비용 %.2fms)",
+					probeC.c.mode, probeC.c.delta, probeC.c.wEff,
 					every, probeCost), true
 			}
 		}
 		c.mu.Unlock()
 	}
-	return best, why, best == 0
+	// 손실 관측에 쓸 수 있는가 = 패리티가 손실을 가리지 않는가.
+	// δ 는 복구를 주지 않으므로 관측을 편향시키지 않는다.
+	return bestC.c.wEff, bestC.c.m, why, bestC.c.m == 0
+}
+
+// ---------------------------------------------------------------------------
+// 격자 덤프 — Python decide_v2 와 글자 단위로 같은 답을 내는지 재는 자
+// ---------------------------------------------------------------------------
+//
+// 🩸 이 함수는 **검증용인데 제품 바이너리 안에 있다.** 일부러다. 2026-08-20
+// v2 이식을 대조할 때 똑같은 프로그램을 임시 폴더에 만들어 돌렸는데, 세션이
+// 끝나면 사라져서 다음 사람에게는 "5,670 격자점 불일치 0 건"이라는 **문장만**
+// 남는다. padfec/policy.py 머리말은 "격자 대조로 못 박는다"고 적어 뒀지만
+// 정작 그 자가 저장소에 없었다. 자를 코드 옆에 둬야 관문에서 매번 돌아간다.
+//
+// 격자의 정본은 여기다. Python 쪽(experiments/gate_go_parity.py)은 이 출력을
+// 읽어서 따라간다 - 양쪽에 같은 목록을 적으면 언젠가 갈라지기 때문이다.
+//
+// 한 줄 형식: k w cert s0base rtt p L mode δ m ips
+func policyGrid() {
+	// k       첫 비행 데이터그램 수. 실측에서 본 범위.
+	// w       InitialPacketSize. 1280 은 quic-go 기본값,
+	//         1200 은 RFC 9000 최소, 1350 은 그 위 고원.
+	// cert    인증서 크기. 임계 양쪽과 실측에 쓴 값들.
+	// s0base  서버 비행의 인증서 무관 성분. x25519 / ML-KEM 두 값.
+	// p, L    손실률과 평균 버스트 길이.
+	for _, k := range []int{1, 2, 3} {
+		for _, w := range []int{1200, 1280, 1350} {
+			for _, cert := range []int{1000, 2308, 3000, 4032, 5609, 6500, 8000} {
+				for _, s0base := range []float64{396.5, 1527.5} {
+					for _, rtt := range []float64{10, 50, 100} {
+						for _, p := range []float64{0, 0.005, 0.02, 0.05, 0.2} {
+							for _, l := range []float64{1, 2, 3} {
+								// 관측 S 는 **지금 칸**의 값이다. Python 은
+								// s0_at(n) = s0_base + n·c 로 절대값을 쓰므로,
+								// 같은 것을 가리키도록 지금 칸 수를 곱해 준다.
+								base := k * w
+								S := float64(cert) + s0base +
+									float64(binIndex(base))*cPktDefault
+								r := evalCands(levers(k, w, maxStepsDefault, 2),
+									k, w, S, rtt, p, l, cPktDefault, quicgoMaxIPS)
+								b := r[0].c
+								fmt.Printf("%d %d %d %g %g %g %g %s %d %d %d\n",
+									k, w, cert, s0base, rtt, p, l,
+									b.mode, b.delta, b.m, b.wEff)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

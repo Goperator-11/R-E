@@ -1,0 +1,144 @@
+{
+  "rtt_ms": 50.0,
+  "cert": 4032,
+  "n_per_round": 400,
+  "kept_cache": true,
+  "rounds": [
+    {
+      "round": 1,
+      "p_est": 0.0377,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=2 ips=1280 추가=2636B | S=4678 p=0.0377 T_pto=201 T_ack=59 비용=53.29ms",
+      "err": "",
+      "p50": 52.35,
+      "two_rtt": 0.0025,
+      "ips_used": {
+        "1280": 388,
+        "1281": 12
+      },
+      "m_used": {
+        "0": 13,
+        "2": 387
+      }
+    },
+    {
+      "round": 2,
+      "p_est": 0.0171,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=1 ips=1280 추가=1318B | S=4679 p=0.0171 T_pto=201 T_ack=59 비용=53.07ms",
+      "err": "",
+      "p50": 52.363,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 380,
+        "1281": 20
+      },
+      "m_used": {
+        "2": 277,
+        "0": 20,
+        "1": 103
+      }
+    },
+    {
+      "round": 3,
+      "p_est": 0.0118,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=1 ips=1280 추가=1318B | S=4680 p=0.0118 T_pto=201 T_ack=59 비용=52.78ms",
+      "err": "",
+      "p50": 52.401,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 380,
+        "1281": 20
+      },
+      "m_used": {
+        "1": 380,
+        "0": 20
+      }
+    },
+    {
+      "round": 4,
+      "p_est": 0.0094,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=1 ips=1280 추가=1318B | S=4677 p=0.0094 T_pto=201 T_ack=59 비용=52.65ms",
+      "err": "",
+      "p50": 52.379,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 380,
+        "1281": 20
+      },
+      "m_used": {
+        "1": 380,
+        "0": 20
+      }
+    },
+    {
+      "round": 5,
+      "p_est": 0.0081,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=1 ips=1280 추가=1318B | S=4678 p=0.0081 T_pto=201 T_ack=59 비용=52.48ms",
+      "err": "",
+      "p50": 52.552,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 380,
+        "1281": 20
+      },
+      "m_used": {
+        "1": 380,
+        "0": 20
+      }
+    },
+    {
+      "round": 6,
+      "p_est": 0.0073,
+      "mode_last": "parity",
+      "why_last": "parity δ=0 m=1 ips=1280 추가=1318B | S=4677 p=0.0073 T_pto=201 T_ack=59 비용=52.44ms",
+      "err": "",
+      "p50": 52.406,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 380,
+        "1281": 20
+      },
+      "m_used": {
+        "1": 380,
+        "0": 20
+      }
+    },
+    {
+      "round": 7,
+      "p_est": 0.005,
+      "mode_last": "pad",
+      "why_last": "pad δ=1 m=0 ips=1281 추가=1B | S=4679 p=0.0050 T_pto=201 T_ack=59 비용=51.96ms",
+      "err": "",
+      "p50": 51.327,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1280": 106,
+        "1281": 294
+      },
+      "m_used": {
+        "1": 106,
+        "0": 294
+      }
+    },
+    {
+      "round": 8,
+      "p_est": 0.005,
+      "mode_last": "pad",
+      "why_last": "pad δ=1 m=0 ips=1281 추가=1B | S=4680 p=0.0050 T_pto=201 T_ack=59 비용=51.90ms",
+      "err": "",
+      "p50": 51.294,
+      "two_rtt": 0.0,
+      "ips_used": {
+        "1281": 400
+      },
+      "m_used": {
+        "0": 400
+      }
+    }
+  ],
+  "flipped": true
+}

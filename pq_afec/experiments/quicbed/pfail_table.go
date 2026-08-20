@@ -24,6 +24,14 @@ const tPTONoAckMs = 200.86
 const tAckRetxSlope = 1.125
 const tAckRetxBaseMs = 1.424
 
+// 정책이 쓰는 상수. 정의는 padfec/policy.py 한 곳뿐이다.
+//   quicgoMaxIPS  실측: -ips 1707 을 줘도 클라는 1452 로 깎아 보낸다
+//   cPktDefault   서버 패킷 오버헤드. 34.5~40.0 구간이라 상단을 쓴다
+//                 (크게 잡아야 1-RTT 를 살 수 있다고 과신하지 않는다)
+const quicgoMaxIPS = 1452
+const maxStepsDefault = 2
+const cPktDefault = 40
+
 var pfailK = []int{1, 2, 3, 4}
 var pfailM = []int{0, 1, 2}
 var pfailP = []float64{0, 0.002, 0.005, 0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.2, 0.3}

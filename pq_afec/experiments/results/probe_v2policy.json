@@ -1,0 +1,90 @@
+{
+  "rtt_ms": 50.0,
+  "cert": 4032,
+  "ips_base": 1280,
+  "n": 400,
+  "arms": [
+    {
+      "arm": "기준선 off (ips 1280)",
+      "err": "",
+      "n": 400,
+      "p50": 101.847,
+      "two_rtt_rate": 1.0,
+      "tail_p50": 101.932,
+      "tail_two_rtt": 1.0,
+      "ips_used": {
+        "1280": 400
+      },
+      "m_used": {
+        "1": 400
+      },
+      "why_last": null
+    },
+    {
+      "arm": "사람이 준 ips 1281",
+      "err": "",
+      "n": 400,
+      "p50": 51.25,
+      "two_rtt_rate": 0.0,
+      "tail_p50": 51.257,
+      "tail_two_rtt": 0.0,
+      "ips_used": {
+        "1281": 400
+      },
+      "m_used": {
+        "1": 400
+      },
+      "why_last": null
+    },
+    {
+      "arm": "auto (v2 정책)",
+      "err": "",
+      "n": 400,
+      "p50": 52.449,
+      "two_rtt_rate": 0.0025,
+      "tail_p50": 52.438,
+      "tail_two_rtt": 0.0,
+      "ips_used": {
+        "1280": 388,
+        "1281": 12
+      },
+      "m_used": {
+        "0": 13,
+        "2": 387
+      },
+      "why_last": "parity δ=0 m=2 ips=1280 추가=2636B | S=4682 p=0.0377 T_pto=201 T_ack=59 비용=53.29ms"
+    }
+  ],
+  "checks": [
+    {
+      "check": "기준선(ips 1280)은 2-RTT",
+      "ok": true,
+      "detail": "2rtt=1.0 p50=101.847"
+    },
+    {
+      "check": "사람이 준 1281 은 1-RTT",
+      "ok": true,
+      "detail": "2rtt=0.0 p50=51.25"
+    },
+    {
+      "check": "auto 가 스스로 ips=1281 을 골랐다",
+      "ok": true,
+      "detail": "쓴 ips: {1280: 388, 1281: 12}"
+    },
+    {
+      "check": "auto 뒤절반이 1-RTT",
+      "ok": true,
+      "detail": "뒤절반 2rtt=0.0 p50=52.438"
+    },
+    {
+      "check": "정책이 스스로 왕복 하나를 벌었다 (>= 0.8 RTT)",
+      "ok": true,
+      "detail": "49.41 ms = 0.988 RTT"
+    },
+    {
+      "check": "무손실에서 패리티 없이(m=0) 도는 판이 다수",
+      "ok": false,
+      "detail": "m 분포: {0: 13, 2: 387}"
+    }
+  ]
+}

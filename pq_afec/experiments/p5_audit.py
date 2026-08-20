@@ -38,6 +38,39 @@ from padfec import amplif, capacity, policy      # noqa: E402
 from padfec.codec import FlightCode, unpack_footer  # noqa: E402
 
 QAMP = os.path.join(HERE, "quicbed", "qamp.go")
+QBED = os.path.join(HERE, "quicbed")
+BUILD_SH = os.path.join(QBED, "build.sh")
+
+
+def qamp_sources():
+    """qamp 바이너리에 링크되는 .go 를 build.sh 에서 읽어 온다.
+
+    🩸 2026-08-20. 여기서 qamp.go **하나만** 복사하고 있었다. `decide` 가
+       policy.go 로 나가면서 qamp.go 가 `newDestCache` 를 부르게 되자 감사용
+       빌드가 `undefined: newDestCache` 로 죽었고, 교차구현 검사가 통째로
+       "빌드 실패" 로 넘어갔다 - **부호가 갈라져도 안 잡히는 상태**로.
+       (감사가 통과로 남아 있던 마지막 기록은 그 이동 이전 것이다.)
+
+       목록을 손으로 늘리면 파일이 하나 더 늘 때 또 같은 일이 난다.
+       loop2._quicbed_go_sources 가 같은 이유로 디렉터리를 훑듯이, 여기서는
+       **build.sh 를 읽는다** - 무엇이 링크되는지의 정본이 거기다.
+       (디렉터리를 통째로 훑으면 안 된다. client/server/dataapp/mlkemcheck 은
+        각자 main 을 갖고 있어서 같이 넣으면 빌드가 안 된다.)
+    """
+    out = []
+    try:
+        with open(BUILD_SH, encoding="utf-8") as f:
+            for line in f:
+                if "cmd/qamp/" not in line or "$SRC/" not in line:
+                    continue
+                name = line.split("$SRC/", 1)[1].split(chr(34), 1)[0]
+                if name.endswith(".go"):
+                    out.append(os.path.join(QBED, name))
+    except OSError:
+        pass
+    if not out:                      # build.sh 를 못 읽어도 이것만은 있다
+        out = [QAMP]
+    return out
 
 VEC_MAIN = """package main
 
@@ -104,11 +137,15 @@ func main() {
 def build_vector_tool():
     """qamp.go 를 복사해 main 을 갈아끼운 감사용 바이너리를 만든다."""
     tmp = tempfile.mkdtemp(prefix="padfec_audit_")
-    src = open(QAMP, encoding="utf-8").read()
-    src = src.replace("func main() {", "func qfecMainUnused() {", 1)
-    with open(os.path.join(tmp, "qamp.go"), "w", encoding="utf-8",
-              newline="\n") as f:
-        f.write(src)
+    for path in qamp_sources():
+        src = open(path, encoding="utf-8").read()
+        # main 은 하나만 있어야 한다. qamp.go 것만 비활성화하면 된다 -
+        # 나머지 파일에는 애초에 main 이 없다.
+        src = src.replace("func main() {",
+                          "func qfecMainUnused() {", 1)
+        with open(os.path.join(tmp, os.path.basename(path)), "w",
+                  encoding="utf-8", newline="\n") as f:
+            f.write(src)
     with open(os.path.join(tmp, "vec.go"), "w", encoding="utf-8",
               newline="\n") as f:
         f.write(VEC_MAIN)

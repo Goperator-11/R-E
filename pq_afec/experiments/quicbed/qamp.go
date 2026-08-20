@@ -1099,6 +1099,7 @@ type trial struct {
 	FFDgrams int     `json:"first_flight_datagrams"`
 	FFBytes  int64   `json:"first_flight_bytes"`
 	MUsed    int     `json:"m_used"`
+	IPSUsed  int     `json:"ips_used"`
 	MWhy     string  `json:"m_why,omitempty"`
 	SrvBytes int64   `json:"server_bytes"`
 	LossEvt  bool    `json:"loss_event"`
@@ -1129,11 +1130,17 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 
 	for i := 0; i < n; i++ {
 		trialM, why := m, ""
+		// 이 판에서 실제로 쓸 InitialPacketSize. auto 가 아니면 플래그 그대로.
+		trialIPS := ips
 		unbiased := true
 		fmode := mode
 		if mode == "auto" {
-			trialM, why, unbiased = cache.decide(addr, wSize, mMax, coldM,
-				probeEvery, defaultAssumedBurst)
+			// 🩸 2026-08-20 v2 이식. 그전에는 m 만 받아서 δ 지렛대를 쓸 수
+			// 없었다. 이제 정책이 고른 ips 를 그대로 이 판에 적용한다 -
+			// 헤드라인("1 바이트로 왕복 하나")이 정책의 손에서 실현된다.
+			trialIPS, trialM, why, unbiased = cache.decide(addr, wSize,
+				mMax, coldM, probeEvery, defaultAssumedBurst, cPktDefault,
+				maxStepsDefault, quicgoMaxIPS)
 			if trialM <= 0 {
 				fmode = "off" // 정책이 0 을 골랐으면 패리티를 안 보낸다
 				trialM = 0
@@ -1174,8 +1181,8 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			// 바이트가 흔들려 증폭 회계가 오염된다.
 			DisablePathMTUDiscovery: true,
 		}
-		if ips > 0 {
-			qconf.InitialPacketSize = uint16(ips)
+		if trialIPS > 0 {
+			qconf.InitialPacketSize = uint16(trialIPS)
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		start := time.Now()
@@ -1214,7 +1221,8 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			OK: err == nil, Group: group,
 			Dgrams: st.InitialDgram, Parity: st.ParitySent,
 			FFDgrams: st.FirstFlightDgrams, FFBytes: st.FirstFlightBytes,
-			MUsed: trialM, MWhy: why, SrvBytes: srvBytes, LossEvt: lossEvt}
+			MUsed: trialM, IPSUsed: trialIPS,
+			MWhy: why, SrvBytes: srvBytes, LossEvt: lossEvt}
 		if err != nil {
 			t.Err = err.Error()
 		} else {
@@ -1361,7 +1369,8 @@ func parseIdx(v string) map[int]bool {
 }
 
 func main() {
-	mode := flag.String("mode", "client", "client | server | selftest")
+	mode := flag.String("mode", "client",
+		"client | server | selftest | policygrid")
 	addr := flag.String("addr", "127.0.0.1:44433", "address")
 	group := flag.String("group", "X25519MLKEM768", "key exchange group")
 	certSize := flag.Int("certsize", 2955, "target certificate DER size")
@@ -1403,6 +1412,12 @@ func main() {
 	switch *mode {
 	case "selftest":
 		os.Exit(selfTest())
+	case "policygrid":
+		// 정책 결정을 격자 전체에서 찍는다. experiments/gate_go_parity.py 가
+		// 이걸 읽어 Python decide_v2 와 대조한다 - 왜 제품 바이너리에
+		// 들어 있는지는 policy.go 의 policyGrid 머리말에 적었다.
+		policyGrid()
+		return
 	case "server":
 		runServer(*addr, *certSize, fmode, *stats)
 	default:

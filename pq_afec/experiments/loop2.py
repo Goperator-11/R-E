@@ -282,13 +282,23 @@ def build_stages():
         "wsl", "bash /mnt/c/dev/pq_afec/experiments/quicbed/build.sh",
         outputs=[], scripts=BED, timeout=900))
 
+    # 🩸 2026-08-20 v2 이식 마무리. 관문이 부호(rsEncode/recoverOne)만 봤다.
+    #    그런데 `-fec auto` 의 **결정**은 Go 안에서 나고 검증·보고·모형 탐색은
+    #    Python padfec.policy 로 한다. 둘이 갈라지면 우리가 검증한 것과 실제로
+    #    도는 것이 다른 물건이 되는데, 그걸 재는 자가 관문에 없었다.
+    #    이 연구에서 이미 두 번 갈라졌다(1차 Cauchy 행렬, 2차 버스트 리터럴).
+    #    격자 대조를 여기 붙인다 - 5,670 점에 0.6 초라 관문 비용이 사실상 0 이다.
     S.append(Stage(
-        "gate", "관문 - 부호 자체시험 (Go) + 기준 구현 시험 (Python)",
+        "gate", "관문 - 부호 자체시험 (Go) + 기준 구현 시험 (Python) "
+                "+ 정책 격자 대조",
         "wsl",
         "cd /mnt/c/dev/pq_afec && "
         "[ -x /tmp/qamp ] || cp \"$HOME/quicbed/bin/qamp\" /tmp/qamp; "
-        "/tmp/qamp -mode selftest",
-        outputs=[], scripts=BED + ALGO, deps=["build"], timeout=300,
+        "/tmp/qamp -mode selftest && "
+        "python3 -u experiments/gate_go_parity.py",
+        outputs=["experiments/results/gate_go_parity.json"],
+        scripts=BED + ALGO + deps_py("gate_go_parity.py"),
+        deps=["build"], timeout=600,
         note="여기서 실패하면 아래 모든 측정의 근거가 없다"))
 
     S.append(Stage(
