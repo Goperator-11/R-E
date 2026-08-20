@@ -1,0 +1,73 @@
+{
+  "rate_mbit": 10.0,
+  "probe_n": 6000,
+  "size": 1200,
+  "rtt_sweep": {
+    "20": {
+      "min": 20.085,
+      "avg": 20.814,
+      "max": 40.642,
+      "mdev": 3.177,
+      "target": 20.0
+    }
+  },
+  "congestion": {
+    "120": {
+      "load_pct": 120.0,
+      "offered_pps": 1250.0000000000002,
+      "idle_rtt": {
+        "min": 20.102,
+        "avg": 20.257,
+        "max": 20.5,
+        "mdev": 0.097
+      },
+      "busy_rtt": {
+        "min": 346.61,
+        "avg": 503.75,
+        "max": 656.887,
+        "mdev": 92.856
+      },
+      "loss_rate": 0.8817333333333334
+    }
+  },
+  "detector": {
+    "링크 오류 (손실 5%, 큐 여유)": {
+      "idle_rtt": {
+        "min": 20.087,
+        "avg": 20.237,
+        "max": 20.416,
+        "mdev": 0.092
+      },
+      "busy_rtt": {
+        "min": 20.032,
+        "avg": 20.113,
+        "max": 20.228,
+        "mdev": 0.046
+      },
+      "g": 0.0,
+      "inflation": 0.0012708027337909487,
+      "r_under_g": 4,
+      "overhead_under_g": 0.2
+    },
+    "혼잡 (대역 초과, 손실설정 없음)": {
+      "idle_rtt": {
+        "min": 20.075,
+        "avg": 20.299,
+        "max": 20.707,
+        "mdev": 0.172
+      },
+      "busy_rtt": {
+        "min": 274.262,
+        "avg": 430.011,
+        "max": 583.812,
+        "mdev": 92.715
+      },
+      "g": 1.0,
+      "inflation": 20.048430399983427,
+      "r_under_g": 1,
+      "overhead_under_g": 0.05
+    }
+  },
+  "congestion_suppresses_redundancy": true,
+  "detector_discriminates": true
+}

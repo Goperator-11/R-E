@@ -1,0 +1,890 @@
+{
+  "n": 4000,
+  "size": 1100,
+  "pps": 40.0,
+  "rtt_ms": 20.0,
+  "rate_mbps": 50.0,
+  "runs": {
+    "noloss/none": {
+      "condition": "noloss",
+      "netem": "delay 10.0ms",
+      "policy": "none",
+      "summary": {
+        "sent": 4000,
+        "received": 4000,
+        "lost": 0,
+        "loss_rate": 0,
+        "duration_ms": 99975.090503,
+        "goodput_mbps": 0.35208770327588484,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.32749,
+        "latency_p95_ms": 10.577207,
+        "latency_p99_ms": 10.704716,
+        "latency_max_ms": 11.285328,
+        "latency_mean_ms": 10.357426131750012,
+        "latency_samples": 4000,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 147,
+        "originals": 4126,
+        "repairs": 0,
+        "r_sum": 0,
+        "encode_ms": 0.0,
+        "feedback": 147,
+        "tail_blocks": 1,
+        "mean_r": 0.0
+      },
+      "rx": {
+        "delivered": 4125,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 148,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 147,
+        "feedback_late": 147,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100000.3,
+        "timed_out": false
+      },
+      "overhead": 0.0,
+      "delivery_rate": 1.0,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.352,
+      "valid": true
+    },
+    "noloss/static": {
+      "condition": "noloss",
+      "netem": "delay 10.0ms",
+      "policy": "static",
+      "summary": {
+        "sent": 4000,
+        "received": 4000,
+        "lost": 0,
+        "loss_rate": 0,
+        "duration_ms": 99975.333572,
+        "goodput_mbps": 0.35208684724867406,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.331578,
+        "latency_p95_ms": 10.541802,
+        "latency_p99_ms": 10.633212,
+        "latency_max_ms": 11.952783,
+        "latency_mean_ms": 10.354636621999974,
+        "latency_samples": 4000,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 147,
+        "originals": 4126,
+        "repairs": 1029,
+        "r_sum": 1029,
+        "encode_ms": 202.85467899986998,
+        "feedback": 147,
+        "tail_blocks": 1,
+        "mean_r": 7.0
+      },
+      "rx": {
+        "delivered": 4125,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 148,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 147,
+        "feedback_late": 147,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100000.7,
+        "timed_out": false
+      },
+      "overhead": 0.24939408628211343,
+      "delivery_rate": 1.0,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.352,
+      "valid": true
+    },
+    "noloss/adaptive": {
+      "condition": "noloss",
+      "netem": "delay 10.0ms",
+      "policy": "adaptive",
+      "summary": {
+        "sent": 4000,
+        "received": 4000,
+        "lost": 0,
+        "loss_rate": 0,
+        "duration_ms": 99975.73548,
+        "goodput_mbps": 0.35208543184002594,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.340204,
+        "latency_p95_ms": 10.585302,
+        "latency_p99_ms": 10.704974,
+        "latency_max_ms": 11.358696,
+        "latency_mean_ms": 10.367847699499986,
+        "latency_samples": 4000,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 147,
+        "originals": 4137,
+        "repairs": 133,
+        "r_sum": 133,
+        "encode_ms": 127.430603999926,
+        "feedback": 149,
+        "tail_blocks": 2,
+        "mean_r": 0.9047619047619048
+      },
+      "rx": {
+        "delivered": 4136,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 150,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 149,
+        "feedback_late": 149,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100001.0,
+        "timed_out": false
+      },
+      "overhead": 0.032148900169204735,
+      "delivery_rate": 1.0,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.352,
+      "valid": true
+    },
+    "uniform_p2/none": {
+      "condition": "uniform_p2",
+      "netem": "loss 2% delay 10.0ms",
+      "policy": "none",
+      "summary": {
+        "sent": 4000,
+        "received": 3918,
+        "lost": 82,
+        "loss_rate": 0.0205,
+        "duration_ms": 99975.283998,
+        "goodput_mbps": 0.3448692378877337,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.327554,
+        "latency_p95_ms": 10.543623,
+        "latency_p99_ms": 10.646898,
+        "latency_max_ms": 11.166224,
+        "latency_mean_ms": 10.352922276161316,
+        "latency_samples": 3918,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 147,
+        "originals": 4128,
+        "repairs": 0,
+        "r_sum": 0,
+        "encode_ms": 0.0,
+        "feedback": 145,
+        "tail_blocks": 1,
+        "mean_r": 0.0
+      },
+      "rx": {
+        "delivered": 4045,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 149,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 148,
+        "feedback_late": 148,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100001.0,
+        "timed_out": false
+      },
+      "overhead": 0.0,
+      "delivery_rate": 0.9795,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.344784,
+      "valid": true
+    },
+    "uniform_p2/static": {
+      "condition": "uniform_p2",
+      "netem": "loss 2% delay 10.0ms",
+      "policy": "static",
+      "summary": {
+        "sent": 4000,
+        "received": 3974,
+        "lost": 26,
+        "loss_rate": 0.0065,
+        "duration_ms": 99975.134685,
+        "goodput_mbps": 0.3497989786179001,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.341664,
+        "latency_p95_ms": 10.590138,
+        "latency_p99_ms": 87.526769,
+        "latency_max_ms": 637.089546,
+        "latency_mean_ms": 13.409535108958243,
+        "latency_samples": 3974,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 147,
+        "originals": 4131,
+        "repairs": 1029,
+        "r_sum": 1029,
+        "encode_ms": 193.3916610002484,
+        "feedback": 145,
+        "tail_blocks": 1,
+        "mean_r": 7.0
+      },
+      "rx": {
+        "delivered": 4131,
+        "recovered": 77,
+        "decode_fail": 0,
+        "blocks_seen": 149,
+        "decode_ms": 18.843226999990748,
+        "block_id_wraps": 0,
+        "feedback_sent": 148,
+        "feedback_late": 148,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100000.6,
+        "timed_out": false
+      },
+      "overhead": 0.24909222948438633,
+      "delivery_rate": 0.9935,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.349712,
+      "valid": true,
+      "recovery_reaches_app": true
+    },
+    "uniform_p2/adaptive": {
+      "condition": "uniform_p2",
+      "netem": "loss 2% delay 10.0ms",
+      "policy": "adaptive",
+      "summary": {
+        "sent": 4000,
+        "received": 3969,
+        "lost": 31,
+        "loss_rate": 0.00775,
+        "duration_ms": 99974.73256399999,
+        "goodput_mbps": 0.34936027438373934,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.335367,
+        "latency_p95_ms": 10.587025,
+        "latency_p99_ms": 86.894727,
+        "latency_max_ms": 686.835404,
+        "latency_mean_ms": 13.239634804484785,
+        "latency_samples": 3969,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 147,
+        "originals": 4134,
+        "repairs": 559,
+        "r_sum": 559,
+        "encode_ms": 196.3655680000329,
+        "feedback": 146,
+        "tail_blocks": 1,
+        "mean_r": 3.802721088435374
+      },
+      "rx": {
+        "delivered": 4131,
+        "recovered": 78,
+        "decode_fail": 0,
+        "blocks_seen": 149,
+        "decode_ms": 18.751238999811903,
+        "block_id_wraps": 0,
+        "feedback_sent": 148,
+        "feedback_late": 148,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100000.5,
+        "timed_out": false
+      },
+      "overhead": 0.13522012578616352,
+      "delivery_rate": 0.99225,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.349272,
+      "valid": true,
+      "recovery_reaches_app": true
+    },
+    "uniform_p5/none": {
+      "condition": "uniform_p5",
+      "netem": "loss 5% delay 10.0ms",
+      "policy": "none",
+      "summary": {
+        "sent": 4000,
+        "received": 3793,
+        "lost": 207,
+        "loss_rate": 0.05175,
+        "duration_ms": 99975.657071,
+        "goodput_mbps": 0.3338652725862613,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.381961,
+        "latency_p95_ms": 10.693602,
+        "latency_p99_ms": 10.875271,
+        "latency_max_ms": 32.912974,
+        "latency_mean_ms": 10.414436625362514,
+        "latency_samples": 3793,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 147,
+        "originals": 4144,
+        "repairs": 0,
+        "r_sum": 0,
+        "encode_ms": 0.0,
+        "feedback": 141,
+        "tail_blocks": 1,
+        "mean_r": 0.0
+      },
+      "rx": {
+        "delivered": 3924,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 149,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 148,
+        "feedback_late": 148,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100000.6,
+        "timed_out": false
+      },
+      "overhead": 0.0,
+      "delivery_rate": 0.94825,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.333784,
+      "valid": true
+    },
+    "uniform_p5/static": {
+      "condition": "uniform_p5",
+      "netem": "loss 5% delay 10.0ms",
+      "policy": "static",
+      "summary": {
+        "sent": 4000,
+        "received": 3931,
+        "lost": 69,
+        "loss_rate": 0.01725,
+        "duration_ms": 99974.848606,
+        "goodput_mbps": 0.3460150276028916,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.370003,
+        "latency_p95_ms": 10.839043,
+        "latency_p99_ms": 436.471734,
+        "latency_max_ms": 687.254213,
+        "latency_mean_ms": 20.250222098957007,
+        "latency_samples": 3931,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 147,
+        "originals": 4141,
+        "repairs": 1029,
+        "r_sum": 1029,
+        "encode_ms": 230.3171909992443,
+        "feedback": 138,
+        "tail_blocks": 1,
+        "mean_r": 7.0
+      },
+      "rx": {
+        "delivered": 4139,
+        "recovered": 221,
+        "decode_fail": 0,
+        "blocks_seen": 149,
+        "decode_ms": 49.33244600033504,
+        "block_id_wraps": 0,
+        "feedback_sent": 148,
+        "feedback_late": 148,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100000.3,
+        "timed_out": false
+      },
+      "overhead": 0.24849070272880946,
+      "delivery_rate": 0.98275,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.345928,
+      "valid": true,
+      "recovery_reaches_app": true
+    },
+    "uniform_p5/adaptive": {
+      "condition": "uniform_p5",
+      "netem": "loss 5% delay 10.0ms",
+      "policy": "adaptive",
+      "summary": {
+        "sent": 4000,
+        "received": 3918,
+        "lost": 82,
+        "loss_rate": 0.0205,
+        "duration_ms": 99975.271564,
+        "goodput_mbps": 0.3448692807793812,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.44845,
+        "latency_p95_ms": 10.911615,
+        "latency_p99_ms": 413.123246,
+        "latency_max_ms": 691.434281,
+        "latency_mean_ms": 19.591626326952543,
+        "latency_samples": 3918,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 148,
+        "originals": 4146,
+        "repairs": 966,
+        "r_sum": 966,
+        "encode_ms": 332.7474309999161,
+        "feedback": 141,
+        "tail_blocks": 1,
+        "mean_r": 6.527027027027027
+      },
+      "rx": {
+        "delivered": 4146,
+        "recovered": 220,
+        "decode_fail": 0,
+        "blocks_seen": 150,
+        "decode_ms": 65.32837199983987,
+        "block_id_wraps": 0,
+        "feedback_sent": 149,
+        "feedback_late": 149,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100000.1,
+        "timed_out": false
+      },
+      "overhead": 0.23299565846599132,
+      "delivery_rate": 0.9795,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.344784,
+      "valid": true,
+      "recovery_reaches_app": false
+    },
+    "burst_p5_L4/none": {
+      "condition": "burst_p5_L4",
+      "netem": "loss gemodel 1.3158% 25.0000% delay 10.0ms",
+      "policy": "none",
+      "summary": {
+        "sent": 4000,
+        "received": 3799,
+        "lost": 201,
+        "loss_rate": 0.05025,
+        "duration_ms": 99975.20442600001,
+        "goodput_mbps": 0.33439491513863545,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.422016,
+        "latency_p95_ms": 10.711616,
+        "latency_p99_ms": 11.038171,
+        "latency_max_ms": 82.458386,
+        "latency_mean_ms": 10.578956971308234,
+        "latency_samples": 3799,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 148,
+        "originals": 4157,
+        "repairs": 0,
+        "r_sum": 0,
+        "encode_ms": 0.0,
+        "feedback": 139,
+        "tail_blocks": 1,
+        "mean_r": 0.0
+      },
+      "rx": {
+        "delivered": 3942,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 150,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 149,
+        "feedback_late": 149,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100000.2,
+        "timed_out": false
+      },
+      "overhead": 0.0,
+      "delivery_rate": 0.94975,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.334312,
+      "valid": true
+    },
+    "burst_p5_L4/static": {
+      "condition": "burst_p5_L4",
+      "netem": "loss gemodel 1.3158% 25.0000% delay 10.0ms",
+      "policy": "static",
+      "summary": {
+        "sent": 4000,
+        "received": 3921,
+        "lost": 79,
+        "loss_rate": 0.01975,
+        "duration_ms": 99976.179422,
+        "goodput_mbps": 0.34513021201135374,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.401537,
+        "latency_p95_ms": 10.816515,
+        "latency_p99_ms": 247.510816,
+        "latency_max_ms": 614.714266,
+        "latency_mean_ms": 16.335521276205043,
+        "latency_samples": 3921,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 147,
+        "originals": 4142,
+        "repairs": 1029,
+        "r_sum": 1029,
+        "encode_ms": 308.0620690013802,
+        "feedback": 139,
+        "tail_blocks": 2,
+        "mean_r": 7.0
+      },
+      "rx": {
+        "delivered": 4085,
+        "recovered": 103,
+        "decode_fail": 0,
+        "blocks_seen": 150,
+        "decode_ms": 24.146160999634958,
+        "block_id_wraps": 0,
+        "feedback_sent": 149,
+        "feedback_late": 149,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 0,
+        "elapsed_ms": 100000.4,
+        "timed_out": false
+      },
+      "overhead": 0.248430709802028,
+      "delivery_rate": 0.98025,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.345048,
+      "valid": true,
+      "recovery_reaches_app": true
+    },
+    "burst_p5_L4/adaptive": {
+      "condition": "burst_p5_L4",
+      "netem": "loss gemodel 1.3158% 25.0000% delay 10.0ms",
+      "policy": "adaptive",
+      "summary": {
+        "sent": 4000,
+        "received": 1896,
+        "lost": 2104,
+        "loss_rate": 0.526,
+        "duration_ms": 48200.622963,
+        "goodput_mbps": 0.34615320247640097,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.437218,
+        "latency_p95_ms": 28.920249,
+        "latency_p99_ms": 462.029409,
+        "latency_max_ms": 690.448651,
+        "latency_mean_ms": 23.220788646624467,
+        "latency_samples": 1896,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 71,
+        "originals": 2023,
+        "repairs": 903,
+        "r_sum": 903,
+        "encode_ms": 128.04117299924656,
+        "feedback": 70,
+        "tail_blocks": 7,
+        "mean_r": 12.71830985915493
+      },
+      "rx": {
+        "delivered": 1975,
+        "recovered": 85,
+        "decode_fail": 0,
+        "blocks_seen": 75,
+        "decode_ms": 17.205866000949754,
+        "block_id_wraps": 0,
+        "feedback_sent": 75,
+        "feedback_late": 75,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 2018,
+        "elapsed_ms": 100000.3,
+        "timed_out": false
+      },
+      "overhead": 0.4463667820069204,
+      "delivery_rate": 0.474,
+      "skip_fraction": 0.33532735127949487,
+      "goodput_nominal_mbps": 0.166848,
+      "valid": false
+    },
+    "burst_p5_L8/none": {
+      "condition": "burst_p5_L8",
+      "netem": "loss gemodel 0.6579% 12.5000% delay 10.0ms",
+      "policy": "none",
+      "summary": {
+        "sent": 4000,
+        "received": 827,
+        "lost": 3173,
+        "loss_rate": 0.79325,
+        "duration_ms": 24454.245004,
+        "goodput_mbps": 0.2976006823686275,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.338767,
+        "latency_p95_ms": 10.556255,
+        "latency_p99_ms": 55.829822,
+        "latency_max_ms": 2739.296569,
+        "latency_mean_ms": 21.868190892382106,
+        "latency_samples": 827,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 32,
+        "originals": 914,
+        "repairs": 0,
+        "r_sum": 0,
+        "encode_ms": 0.0,
+        "feedback": 30,
+        "tail_blocks": 7,
+        "mean_r": 0.0
+      },
+      "rx": {
+        "delivered": 870,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 39,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 39,
+        "feedback_late": 39,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 3091,
+        "elapsed_ms": 100000.3,
+        "timed_out": false
+      },
+      "overhead": 0.0,
+      "delivery_rate": 0.20675,
+      "skip_fraction": 0.4359046678888732,
+      "goodput_nominal_mbps": 0.072776,
+      "valid": false
+    },
+    "burst_p5_L8/static": {
+      "condition": "burst_p5_L8",
+      "netem": "loss gemodel 0.6579% 12.5000% delay 10.0ms",
+      "policy": "static",
+      "summary": {
+        "sent": 4000,
+        "received": 1204,
+        "lost": 2796,
+        "loss_rate": 0.699,
+        "duration_ms": 34080.940125,
+        "goodput_mbps": 0.31088344280232794,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.341767,
+        "latency_p95_ms": 10.578057,
+        "latency_p99_ms": 87.019075,
+        "latency_max_ms": 2741.199007,
+        "latency_mean_ms": 20.22106439617942,
+        "latency_samples": 1204,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 46,
+        "originals": 1310,
+        "repairs": 322,
+        "r_sum": 322,
+        "encode_ms": 63.09815700092258,
+        "feedback": 48,
+        "tail_blocks": 7,
+        "mean_r": 7.0
+      },
+      "rx": {
+        "delivered": 1257,
+        "recovered": 10,
+        "decode_fail": 0,
+        "blocks_seen": 53,
+        "decode_ms": 1.6175680000287684,
+        "block_id_wraps": 0,
+        "feedback_sent": 53,
+        "feedback_late": 53,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 2706,
+        "elapsed_ms": 100000.8,
+        "timed_out": false
+      },
+      "overhead": 0.24580152671755726,
+      "delivery_rate": 0.301,
+      "skip_fraction": 0.40351923650462274,
+      "goodput_nominal_mbps": 0.105952,
+      "valid": false
+    },
+    "burst_p5_L8/adaptive": {
+      "condition": "burst_p5_L8",
+      "netem": "loss gemodel 0.6579% 12.5000% delay 10.0ms",
+      "policy": "adaptive",
+      "summary": {
+        "sent": 4000,
+        "received": 3056,
+        "lost": 944,
+        "loss_rate": 0.236,
+        "duration_ms": 82623.608842,
+        "goodput_mbps": 0.32548566174865023,
+        "payload_bytes": 1100,
+        "latency_p50_ms": 10.355812,
+        "latency_p95_ms": 136.517997,
+        "latency_p99_ms": 2425.148111,
+        "latency_max_ms": 3031.411911,
+        "latency_mean_ms": 76.9291276969895,
+        "latency_samples": 3056,
+        "latency_skipped": {
+          "huge": 0,
+          "negative": 0,
+          "short": 0
+        }
+      },
+      "tx": {
+        "blocks": 116,
+        "originals": 3301,
+        "repairs": 1538,
+        "r_sum": 1538,
+        "encode_ms": 144.29646999951729,
+        "feedback": 112,
+        "tail_blocks": 14,
+        "mean_r": 13.258620689655173
+      },
+      "rx": {
+        "delivered": 3193,
+        "recovered": 87,
+        "decode_fail": 0,
+        "blocks_seen": 129,
+        "decode_ms": 11.494285000253512,
+        "block_id_wraps": 0,
+        "feedback_sent": 129,
+        "feedback_late": 129,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 4000,
+        "skipped": 784,
+        "elapsed_ms": 109625.8,
+        "timed_out": false
+      },
+      "overhead": 0.4659194183580733,
+      "delivery_rate": 0.764,
+      "skip_fraction": 0.16387959866220736,
+      "goodput_nominal_mbps": 0.268928,
+      "valid": false
+    }
+  },
+  "invalid_runs": [
+    "burst_p5_L4/adaptive",
+    "burst_p5_L8/none",
+    "burst_p5_L8/static",
+    "burst_p5_L8/adaptive"
+  ]
+}

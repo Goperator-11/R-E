@@ -1,0 +1,142 @@
+{
+ "group": "X25519MLKEM768",
+ "cert": 6500,
+ "rtt_ms": 50.0,
+ "n": 40,
+ "rows": [
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1279,
+   "k_expect": 2,
+   "client_bytes": 2558,
+   "allowed": 7680,
+   "n_bin": 6,
+   "s0_pred": 1734.5,
+   "threshold_pred": 5945.5,
+   "n_rtt_pred": 2,
+   "err": "",
+   "n": 40,
+   "ok": 40,
+   "p50": 104.897,
+   "p95": 106.183,
+   "two_rtt_rate": 1.0,
+   "rtt_multiple": 2.09794,
+   "initial_datagrams_median": 3,
+   "first_flight_bytes": 2558,
+   "n_rtt_obs": 2
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1280,
+   "k_expect": 2,
+   "client_bytes": 2560,
+   "allowed": 7680,
+   "n_bin": 6,
+   "s0_pred": 1734.5,
+   "threshold_pred": 5945.5,
+   "n_rtt_pred": 2,
+   "err": "",
+   "n": 40,
+   "ok": 40,
+   "p50": 104.899,
+   "p95": 106.392,
+   "two_rtt_rate": 1.0,
+   "rtt_multiple": 2.09798,
+   "initial_datagrams_median": 3,
+   "first_flight_bytes": 2560,
+   "n_rtt_obs": 2
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1281,
+   "k_expect": 2,
+   "client_bytes": 2562,
+   "allowed": 8960,
+   "n_bin": 7,
+   "s0_pred": 1769.0,
+   "threshold_pred": 7191.0,
+   "n_rtt_pred": 1,
+   "err": "",
+   "n": 40,
+   "ok": 40,
+   "p50": 54.044,
+   "p95": 55.212,
+   "two_rtt_rate": 0.0,
+   "rtt_multiple": 1.0808799999999998,
+   "initial_datagrams_median": 3,
+   "first_flight_bytes": 2562,
+   "n_rtt_obs": 1
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1282,
+   "k_expect": 2,
+   "client_bytes": 2564,
+   "allowed": 8960,
+   "n_bin": 7,
+   "s0_pred": 1769.0,
+   "threshold_pred": 7191.0,
+   "n_rtt_pred": 1,
+   "err": "",
+   "n": 40,
+   "ok": 40,
+   "p50": 54.128,
+   "p95": 56.265,
+   "two_rtt_rate": 0.025,
+   "rtt_multiple": 1.08256,
+   "initial_datagrams_median": 3,
+   "first_flight_bytes": 2564,
+   "n_rtt_obs": 1
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1350,
+   "k_expect": 2,
+   "client_bytes": 2700,
+   "allowed": 8960,
+   "n_bin": 7,
+   "s0_pred": 1769.0,
+   "threshold_pred": 7191.0,
+   "n_rtt_pred": 1,
+   "err": "",
+   "n": 40,
+   "ok": 40,
+   "p50": 54.177,
+   "p95": 55.529,
+   "two_rtt_rate": 0.0,
+   "rtt_multiple": 1.08354,
+   "initial_datagrams_median": 3,
+   "first_flight_bytes": 2700,
+   "n_rtt_obs": 1
+  }
+ ],
+ "checks": [
+  {
+   "check": "1280 은 2-RTT, 1281 은 1-RTT (1 바이트 절벽)",
+   "ok": true,
+   "detail": "1280: n_rtt=2 p50=104.899 / 1281: n_rtt=1 p50=54.044"
+  },
+  {
+   "check": "절벽의 크기가 왕복 하나(>= 0.8 RTT)",
+   "ok": true,
+   "detail": "차 50.86 ms = 1.017 RTT"
+  },
+  {
+   "check": "부정 시험: 1279 와 1280 은 같은 칸",
+   "ok": true,
+   "detail": "1279 n_rtt=2 / 1280 n_rtt=2"
+  },
+  {
+   "check": "1281 과 1350 이 같은 칸 (1 바이트가 170 바이트와 같은 효과)",
+   "ok": true,
+   "detail": "1281 n_rtt=1 / 1350 n_rtt=1"
+  },
+  {
+   "check": "모든 설정에서 첫 비행 = k x ips",
+   "ok": true,
+   "detail": "어긋난 설정: []"
+  }
+ ],
+ "passed": 5,
+ "total": 5
+}

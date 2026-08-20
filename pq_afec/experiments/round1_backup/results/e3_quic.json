@@ -1,0 +1,860 @@
+{
+  "analytic": {
+    "1200B dgram, DCID8/SCID8, PN4, offset0": {
+      "datagram": 1200,
+      "dcid": 8,
+      "scid": 8,
+      "pn_len": 4,
+      "token_len": 0,
+      "crypto_offset": 0,
+      "header_bytes": 30,
+      "aead_tag": 16,
+      "payload_budget": 1154,
+      "crypto_frame_header": 4,
+      "crypto_capacity": 1150
+    },
+    "1200B dgram, DCID8/SCID8, PN1, offset0": {
+      "datagram": 1200,
+      "dcid": 8,
+      "scid": 8,
+      "pn_len": 1,
+      "token_len": 0,
+      "crypto_offset": 0,
+      "header_bytes": 27,
+      "aead_tag": 16,
+      "payload_budget": 1157,
+      "crypto_frame_header": 4,
+      "crypto_capacity": 1153
+    },
+    "1200B dgram, DCID20/SCID20, PN4": {
+      "datagram": 1200,
+      "dcid": 20,
+      "scid": 20,
+      "pn_len": 4,
+      "token_len": 0,
+      "crypto_offset": 0,
+      "header_bytes": 54,
+      "aead_tag": 16,
+      "payload_budget": 1130,
+      "crypto_frame_header": 4,
+      "crypto_capacity": 1126
+    },
+    "1200B dgram, DCID8/SCID0, PN4": {
+      "datagram": 1200,
+      "dcid": 8,
+      "scid": 0,
+      "pn_len": 4,
+      "token_len": 0,
+      "crypto_offset": 0,
+      "header_bytes": 22,
+      "aead_tag": 16,
+      "payload_budget": 1162,
+      "crypto_frame_header": 4,
+      "crypto_capacity": 1158
+    },
+    "1252B dgram (IPv4 min PMTU), DCID8/SCID8, PN4": {
+      "datagram": 1252,
+      "dcid": 8,
+      "scid": 8,
+      "pn_len": 4,
+      "token_len": 0,
+      "crypto_offset": 0,
+      "header_bytes": 30,
+      "aead_tag": 16,
+      "payload_budget": 1206,
+      "crypto_frame_header": 4,
+      "crypto_capacity": 1202
+    },
+    "1200B, 2nd packet (offset>=1024 -> 2B varint)": {
+      "datagram": 1200,
+      "dcid": 8,
+      "scid": 8,
+      "pn_len": 4,
+      "token_len": 0,
+      "crypto_offset": 1200,
+      "header_bytes": 30,
+      "aead_tag": 16,
+      "payload_budget": 1154,
+      "crypto_frame_header": 5,
+      "crypto_capacity": 1149
+    }
+  },
+  "capture": {
+    "cloudflare.com/x25519": {
+      "reps": [
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 1,
+          "clienthello_flight_initial_packets": 1,
+          "clienthello_flight_initial_bytes": 1200,
+          "clienthello_flight_udp_bytes": 1200,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 193,
+          "server_handshake_packets": 3,
+          "server_handshake_bytes": 2957,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            53,
+            53,
+            109,
+            46,
+            44
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            557,
+            560,
+            24,
+            24,
+            49
+          ],
+          "rc": 0,
+          "established": true
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 1,
+          "clienthello_flight_initial_packets": 1,
+          "clienthello_flight_initial_bytes": 1200,
+          "clienthello_flight_udp_bytes": 1200,
+          "server_initial_packets": 1,
+          "server_initial_bytes": 147,
+          "server_handshake_packets": 3,
+          "server_handshake_bytes": 2956,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            53,
+            53,
+            109,
+            46,
+            44
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200,
+            1200,
+            556,
+            560,
+            24,
+            24,
+            49
+          ],
+          "rc": 0,
+          "established": true
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 1,
+          "clienthello_flight_initial_packets": 1,
+          "clienthello_flight_initial_bytes": 1200,
+          "clienthello_flight_udp_bytes": 1200,
+          "server_initial_packets": 1,
+          "server_initial_bytes": 147,
+          "server_handshake_packets": 3,
+          "server_handshake_bytes": 2956,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            53,
+            53,
+            109,
+            46,
+            44
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200,
+            1200,
+            556,
+            560,
+            24,
+            24,
+            49
+          ],
+          "rc": 0,
+          "established": true
+        }
+      ],
+      "established_count": 3
+    },
+    "cloudflare.com/X25519MLKEM768": {
+      "reps": [
+        {
+          "client_initial_packets_total": 4,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 3,
+          "server_initial_bytes": 1339,
+          "server_handshake_packets": 3,
+          "server_handshake_bytes": 2955,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            53,
+            53,
+            109,
+            46,
+            44
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            555,
+            560,
+            24,
+            24,
+            49
+          ],
+          "rc": 0,
+          "established": true
+        },
+        {
+          "client_initial_packets_total": 4,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 3,
+          "server_initial_bytes": 1339,
+          "server_handshake_packets": 3,
+          "server_handshake_bytes": 2955,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            53,
+            53,
+            109,
+            46,
+            44
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            555,
+            560,
+            24,
+            24,
+            49
+          ],
+          "rc": 0,
+          "established": true
+        },
+        {
+          "client_initial_packets_total": 4,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 3,
+          "server_initial_bytes": 1339,
+          "server_handshake_packets": 3,
+          "server_handshake_bytes": 2956,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            53,
+            53,
+            109,
+            47,
+            44
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            556,
+            560,
+            24,
+            24,
+            49
+          ],
+          "rc": 0,
+          "established": true
+        }
+      ],
+      "established_count": 3
+    },
+    "cloudflare.com/SecP256r1MLKEM768": {
+      "reps": [
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 104,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200
+          ],
+          "rc": 1,
+          "established": false
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 104,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200
+          ],
+          "rc": 1,
+          "established": false
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 104,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200
+          ],
+          "rc": 1,
+          "established": false
+        }
+      ],
+      "established_count": 0
+    },
+    "cloudflare.com/MLKEM768": {
+      "reps": [
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 104,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200
+          ],
+          "rc": 1,
+          "established": false
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 104,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200
+          ],
+          "rc": 1,
+          "established": false
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 104,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200
+          ],
+          "rc": 1,
+          "established": false
+        }
+      ],
+      "established_count": 0
+    },
+    "www.google.com/x25519": {
+      "reps": [
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 1,
+          "clienthello_flight_initial_packets": 1,
+          "clienthello_flight_initial_bytes": 1200,
+          "clienthello_flight_udp_bytes": 1200,
+          "server_initial_packets": 1,
+          "server_initial_bytes": 1200,
+          "server_handshake_packets": 5,
+          "server_handshake_bytes": 5294,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            41,
+            41,
+            41,
+            41,
+            131,
+            40,
+            37,
+            37
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            561,
+            645,
+            121,
+            1200,
+            120,
+            120,
+            120
+          ],
+          "rc": 0,
+          "established": true
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 1,
+          "clienthello_flight_initial_packets": 1,
+          "clienthello_flight_initial_bytes": 1200,
+          "clienthello_flight_udp_bytes": 1200,
+          "server_initial_packets": 1,
+          "server_initial_bytes": 1200,
+          "server_handshake_packets": 5,
+          "server_handshake_bytes": 5300,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            41,
+            41,
+            41,
+            41,
+            132,
+            40,
+            37,
+            37
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            564,
+            645,
+            121,
+            1200,
+            120,
+            120,
+            120
+          ],
+          "rc": 0,
+          "established": true
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 1,
+          "clienthello_flight_initial_packets": 1,
+          "clienthello_flight_initial_bytes": 1200,
+          "clienthello_flight_udp_bytes": 1200,
+          "server_initial_packets": 1,
+          "server_initial_bytes": 1200,
+          "server_handshake_packets": 4,
+          "server_handshake_bytes": 3960,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            41,
+            41,
+            41,
+            131,
+            40,
+            35,
+            37
+          ],
+          "s2c_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            424,
+            644,
+            121,
+            1200,
+            120,
+            120,
+            120
+          ],
+          "rc": 0,
+          "established": true
+        }
+      ],
+      "established_count": 3
+    },
+    "www.google.com/X25519MLKEM768": {
+      "reps": [
+        {
+          "client_initial_packets_total": 4,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 4,
+          "server_initial_bytes": 3640,
+          "server_handshake_packets": 5,
+          "server_handshake_bytes": 5299,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            41,
+            41,
+            41,
+            41,
+            131,
+            40,
+            37,
+            37
+          ],
+          "s2c_datagrams": [
+            40,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            566,
+            647,
+            121,
+            1200,
+            120,
+            120,
+            120
+          ],
+          "rc": 0,
+          "established": true
+        },
+        {
+          "client_initial_packets_total": 4,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 4,
+          "server_initial_bytes": 3640,
+          "server_handshake_packets": 5,
+          "server_handshake_bytes": 5305,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            41,
+            41,
+            41,
+            41,
+            131,
+            40,
+            37,
+            37
+          ],
+          "s2c_datagrams": [
+            40,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            567,
+            647,
+            121,
+            1200,
+            120,
+            120,
+            120
+          ],
+          "rc": 0,
+          "established": true
+        },
+        {
+          "client_initial_packets_total": 4,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 4,
+          "server_initial_bytes": 3640,
+          "server_handshake_packets": 5,
+          "server_handshake_bytes": 5305,
+          "c2s_datagrams": [
+            1200,
+            1200,
+            1200,
+            1200,
+            41,
+            41,
+            41,
+            41,
+            131,
+            40,
+            75
+          ],
+          "s2c_datagrams": [
+            40,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            573,
+            647,
+            121,
+            1200,
+            24,
+            120,
+            120,
+            120
+          ],
+          "rc": 0,
+          "established": true
+        }
+      ],
+      "established_count": 3
+    },
+    "www.google.com/SecP256r1MLKEM768": {
+      "reps": [
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 246,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            40,
+            206
+          ],
+          "rc": 1,
+          "established": false
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 246,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            40,
+            206
+          ],
+          "rc": 1,
+          "established": false
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 246,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            40,
+            206
+          ],
+          "rc": 1,
+          "established": false
+        }
+      ],
+      "established_count": 0
+    },
+    "www.google.com/MLKEM768": {
+      "reps": [
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 246,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            40,
+            206
+          ],
+          "rc": 1,
+          "established": false
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 246,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            40,
+            206
+          ],
+          "rc": 1,
+          "established": false
+        },
+        {
+          "client_initial_packets_total": 2,
+          "clienthello_flight_datagrams": 2,
+          "clienthello_flight_initial_packets": 2,
+          "clienthello_flight_initial_bytes": 2400,
+          "clienthello_flight_udp_bytes": 2400,
+          "server_initial_packets": 2,
+          "server_initial_bytes": 246,
+          "server_handshake_packets": 0,
+          "server_handshake_bytes": 0,
+          "c2s_datagrams": [
+            1200,
+            1200
+          ],
+          "s2c_datagrams": [
+            40,
+            206
+          ],
+          "rc": 1,
+          "established": false
+        }
+      ],
+      "established_count": 0
+    }
+  },
+  "recommended_INITIAL_CRYPTO_CAPACITY": 1150,
+  "recommended_next_packet_capacity": 1149,
+  "predicted_split_tcp_ch": {
+    "x25519": {
+      "ch_msg_bytes": 237,
+      "initial_packets": 1
+    },
+    "secp256r1": {
+      "ch_msg_bytes": 270,
+      "initial_packets": 1
+    },
+    "MLKEM512": {
+      "ch_msg_bytes": 997,
+      "initial_packets": 1
+    },
+    "MLKEM768": {
+      "ch_msg_bytes": 1381,
+      "initial_packets": 2
+    },
+    "MLKEM1024": {
+      "ch_msg_bytes": 1765,
+      "initial_packets": 2
+    },
+    "X25519MLKEM768": {
+      "ch_msg_bytes": 1413,
+      "initial_packets": 2
+    },
+    "SecP256r1MLKEM768": {
+      "ch_msg_bytes": 1446,
+      "initial_packets": 2
+    }
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "symbol_bytes": 1200,
+  "rate_mbps": 50.0,
+  "platform": "linux",
+  "python": "3.14.4",
+  "grid": {
+    "k16_r4": {
+      "python": {
+        "encode_ms_per_block": 0.09412197666658055,
+        "encode_ms_per_repair_symbol": 0.023530494166645138,
+        "encode_MBps_source": 203.99061600686986
+      },
+      "python_decode": {
+        "decode_ms_per_block": 0.23251910000017992
+      },
+      "python_cpu_fraction": 0.030638664279485854,
+      "c": {
+        "k": 16,
+        "r": 4,
+        "symbol_bytes": 1200,
+        "blocks": 3000,
+        "encode_ms_per_block": 0.021152,
+        "encode_ms_per_repair_symbol": 0.005288,
+        "encode_MBps_source": 907.73,
+        "xor_parity_ms_per_block": 0.00025,
+        "xor_parity_MBps": 76867.64,
+        "checksum": 1151973,
+        "repeats": 3,
+        "encode_ms_per_block_median": 0.021917
+      },
+      "c_cpu_fraction": 0.006885416666666666,
+      "speedup_c_over_python": 4.449790878715041
+    },
+    "k32_r4": {
+      "python": {
+        "encode_ms_per_block": 0.17302844333338877,
+        "encode_ms_per_repair_symbol": 0.04325711083334719,
+        "encode_MBps_source": 221.92883008264377
+      },
+      "python_decode": {
+        "decode_ms_per_block": 0.6557606666660831
+      },
+      "python_cpu_fraction": 0.028162181532127073,
+      "c": {
+        "k": 32,
+        "r": 4,
+        "symbol_bytes": 1200,
+        "blocks": 3000,
+        "encode_ms_per_block": 0.042491,
+        "encode_ms_per_repair_symbol": 0.010623,
+        "encode_MBps_source": 903.71,
+        "xor_parity_ms_per_block": 0.000389,
+        "xor_parity_MBps": 98755.7,
+        "checksum": 1332087,
+        "repeats": 3,
+        "encode_ms_per_block_median": 0.043604
+      },
+      "c_cpu_fraction": 0.006915852864583334,
+      "speedup_c_over_python": 4.072119821453691
+    },
+    "k32_r8": {
+      "python": {
+        "encode_ms_per_block": 0.3376559066667066,
+        "encode_ms_per_repair_symbol": 0.04220698833333832,
+        "encode_MBps_source": 113.72524289321517
+      },
+      "python_decode": {
+        "decode_ms_per_block": 1.1241860166668023
+      },
+      "python_cpu_fraction": 0.05495701605903427,
+      "c": {
+        "k": 32,
+        "r": 8,
+        "symbol_bytes": 1200,
+        "blocks": 3000,
+        "encode_ms_per_block": 0.086258,
+        "encode_ms_per_repair_symbol": 0.010782,
+        "encode_MBps_source": 445.18,
+        "xor_parity_ms_per_block": 0.000424,
+        "xor_parity_MBps": 90497.45,
+        "checksum": 1332087,
+        "repeats": 3,
+        "encode_ms_per_block_median": 0.086572
+      },
+      "c_cpu_fraction": 0.014039388020833333,
+      "speedup_c_over_python": 3.9144880088421545
+    },
+    "k32_r16": {
+      "python": {
+        "encode_ms_per_block": 0.6849221766666839,
+        "encode_ms_per_repair_symbol": 0.04280763604166774,
+        "encode_MBps_source": 56.0647637179476
+      },
+      "python_decode": {
+        "decode_ms_per_block": 2.1037324166665408
+      },
+      "python_cpu_fraction": 0.11147821885850974,
+      "c": {
+        "k": 32,
+        "r": 16,
+        "symbol_bytes": 1200,
+        "blocks": 3000,
+        "encode_ms_per_block": 0.17218,
+        "encode_ms_per_repair_symbol": 0.010761,
+        "encode_MBps_source": 223.02,
+        "xor_parity_ms_per_block": 0.000489,
+        "xor_parity_MBps": 78584.01,
+        "checksum": 1332087,
+        "repeats": 3,
+        "encode_ms_per_block_median": 0.172821
+      },
+      "c_cpu_fraction": 0.028024088541666665,
+      "speedup_c_over_python": 3.9779427149882904
+    },
+    "k64_r8": {
+      "python": {
+        "encode_ms_per_block": 0.6671413266665619,
+        "encode_ms_per_repair_symbol": 0.08339266583332024,
+        "encode_MBps_source": 115.11803710877699
+      },
+      "python_decode": {
+        "decode_ms_per_block": 3.529805833332489
+      },
+      "python_cpu_fraction": 0.05429210015190119,
+      "c": {
+        "k": 64,
+        "r": 8,
+        "symbol_bytes": 1200,
+        "blocks": 3000,
+        "encode_ms_per_block": 0.17096,
+        "encode_ms_per_repair_symbol": 0.02137,
+        "encode_MBps_source": 449.23,
+        "xor_parity_ms_per_block": 0.001419,
+        "xor_parity_MBps": 54108.59,
+        "checksum": 965514,
+        "repeats": 3,
+        "encode_ms_per_block_median": 0.171336
+      },
+      "c_cpu_fraction": 0.013912760416666666,
+      "speedup_c_over_python": 3.9023240914047843
+    },
+    "k64_r16": {
+      "python": {
+        "encode_ms_per_block": 1.353427746666777,
+        "encode_ms_per_repair_symbol": 0.08458923416667356,
+        "encode_MBps_source": 56.744809753710975
+      },
+      "python_decode": {
+        "decode_ms_per_block": 6.747020849999785
+      },
+      "python_cpu_fraction": 0.11014223198785619,
+      "c": {
+        "k": 64,
+        "r": 16,
+        "symbol_bytes": 1200,
+        "blocks": 3000,
+        "encode_ms_per_block": 0.347547,
+        "encode_ms_per_repair_symbol": 0.021722,
+        "encode_MBps_source": 220.98,
+        "xor_parity_ms_per_block": 0.001041,
+        "xor_parity_MBps": 73807.76,
+        "checksum": 965514,
+        "repeats": 3,
+        "encode_ms_per_block_median": 0.348163
+      },
+      "c_cpu_fraction": 0.028283447265624997,
+      "speedup_c_over_python": 3.8942294039850065
+    },
+    "k128_r32": {
+      "python": {
+        "encode_ms_per_block": 5.37059422333338,
+        "encode_ms_per_repair_symbol": 0.16783106947916812,
+        "encode_MBps_source": 28.600187169728994
+      },
+      "python_decode": {
+        "decode_ms_per_block": 45.1944722833332
+      },
+      "python_cpu_fraction": 0.21853003838433346,
+      "c": {
+        "k": 128,
+        "r": 32,
+        "symbol_bytes": 1200,
+        "blocks": 3000,
+        "encode_ms_per_block": 1.388866,
+        "encode_ms_per_repair_symbol": 0.043402,
+        "encode_MBps_source": 110.59,
+        "xor_parity_ms_per_block": 0.001754,
+        "xor_parity_MBps": 87589.83,
+        "checksum": 1484901,
+        "repeats": 3,
+        "encode_ms_per_block_median": 1.397671
+      },
+      "c_cpu_fraction": 0.05651310221354166,
+      "speedup_c_over_python": 3.866891567173061
+    }
+  },
+  "xor_parity_k2": {
+    "k": 2,
+    "r": 1,
+    "symbol_bytes": 1200,
+    "blocks": 200000,
+    "encode_ms_per_block": 0.000683,
+    "encode_ms_per_repair_symbol": 0.000683,
+    "encode_MBps_source": 3513.32,
+    "xor_parity_ms_per_block": 2.2e-05,
+    "xor_parity_MBps": 111229.37,
+    "checksum": 92453529,
+    "repeats": 3,
+    "encode_ms_per_block_median": 0.000683
+  },
+  "mlkem768_encaps_us": 15.453084435653356,
+  "mlkem768_decaps_us": 25.227616166865545
+}

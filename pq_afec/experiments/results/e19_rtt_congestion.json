@@ -1,0 +1,145 @@
+{
+  "rate_mbit": 10.0,
+  "probe_n": 20000,
+  "size": 1200,
+  "rtt_sweep": {
+    "10": {
+      "min": 10.074,
+      "avg": 10.587,
+      "max": 20.821,
+      "mdev": 1.645,
+      "target": 10.0
+    },
+    "20": {
+      "min": 20.19,
+      "avg": 20.493,
+      "max": 21.081,
+      "mdev": 0.214,
+      "target": 20.0
+    },
+    "50": {
+      "min": 50.14,
+      "avg": 50.392,
+      "max": 50.742,
+      "mdev": 0.143,
+      "target": 50.0
+    },
+    "100": {
+      "min": 100.07,
+      "avg": 100.41,
+      "max": 100.894,
+      "mdev": 0.206,
+      "target": 100.0
+    }
+  },
+  "congestion": {
+    "50": {
+      "load_pct": 50.0,
+      "offered_pps": 520.8333333333334,
+      "idle_rtt": {
+        "min": 20.213,
+        "avg": 20.525,
+        "max": 20.938,
+        "mdev": 0.198
+      },
+      "busy_rtt": {
+        "min": 20.059,
+        "avg": 20.119,
+        "max": 20.286,
+        "mdev": 0.05
+      },
+      "loss_rate": 0.0
+    },
+    "80": {
+      "load_pct": 80.0,
+      "offered_pps": 833.3333333333335,
+      "idle_rtt": {
+        "min": 20.092,
+        "avg": 20.148,
+        "max": 20.233,
+        "mdev": 0.037
+      },
+      "busy_rtt": {
+        "min": 20.016,
+        "avg": 20.021,
+        "max": 20.064,
+        "mdev": 0.009
+      },
+      "loss_rate": 0.0
+    },
+    "100": {
+      "load_pct": 100.0,
+      "offered_pps": 1041.6666666666667,
+      "idle_rtt": {
+        "min": 20.081,
+        "avg": 20.307,
+        "max": 20.618,
+        "mdev": 0.138
+      },
+      "busy_rtt": {
+        "min": 44.784,
+        "avg": 66.918,
+        "max": 89.283,
+        "mdev": 13.446
+      },
+      "loss_rate": 0.0
+    },
+    "120": {
+      "load_pct": 120.0,
+      "offered_pps": 1250.0000000000002,
+      "idle_rtt": {
+        "min": 20.194,
+        "avg": 20.417,
+        "max": 20.584,
+        "mdev": 0.116
+      },
+      "busy_rtt": {
+        "min": 340.18,
+        "avg": 498.222,
+        "max": 651.216,
+        "mdev": 92.819
+      },
+      "loss_rate": 0.882
+    }
+  },
+  "detector": {
+    "링크 오류 (손실 5%, 큐 여유)": {
+      "idle_rtt": {
+        "min": 20.291,
+        "avg": 20.429,
+        "max": 20.587,
+        "mdev": 0.07
+      },
+      "busy_rtt": {
+        "min": 20.051,
+        "avg": 20.248,
+        "max": 20.562,
+        "mdev": 0.138
+      },
+      "g": 0.0,
+      "inflation": 3.8665881364250534e-05,
+      "r_under_g": 4,
+      "overhead_under_g": 0.2
+    },
+    "혼잡 (대역 초과, 손실설정 없음)": {
+      "idle_rtt": {
+        "min": 20.207,
+        "avg": 20.436,
+        "max": 20.785,
+        "mdev": 0.126
+      },
+      "busy_rtt": {
+        "min": 269.154,
+        "avg": 425.456,
+        "max": 579.551,
+        "mdev": 93.09
+      },
+      "g": 1.0,
+      "inflation": 19.689740046377366,
+      "r_under_g": 1,
+      "overhead_under_g": 0.05
+    }
+  },
+  "congestion_suppresses_redundancy": true,
+  "detector_discriminates": true
+}

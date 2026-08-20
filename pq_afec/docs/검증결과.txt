@@ -1,0 +1,153 @@
+test_channel_produces_requested_statistics (__main__.TestChannelModel.test_channel_produces_requested_statistics)
+from_burst(p, L)이 정말 손실률 p, 평균 버스트 L을 내는가. ... ok
+test_dp_matches_monte_carlo (__main__.TestChannelModel.test_dp_matches_monte_carlo)
+DP의 P_fail을 독립 시뮬레이션과 대조. ... ok
+test_fail_curve_matches_pointwise_p_fail (__main__.TestChannelModel.test_fail_curve_matches_pointwise_p_fail)
+최적화한 fail_curve가 개별 p_fail과 같은 값을 주는가. ... ok
+test_iid_case_matches_exact_binomial (__main__.TestChannelModel.test_iid_case_matches_exact_binomial)
+버스트 없는 경우 DP는 이항분포와 정확히 일치해야 한다. ... ok
+test_interleaving_helps_on_bursty_channel (__main__.TestChannelModel.test_interleaving_helps_on_bursty_channel) ... ok
+test_p_fail_decreases_with_redundancy (__main__.TestChannelModel.test_p_fail_decreases_with_redundancy) ... ok
+test_pmf_is_a_distribution (__main__.TestChannelModel.test_pmf_is_a_distribution) ... ok
+test_block_size_respects_delay_budget (__main__.TestController.test_block_size_respects_delay_budget) ... ok
+test_congestion_suppresses_redundancy (__main__.TestController.test_congestion_suppresses_redundancy) ... ok
+test_costlier_recovery_means_more_redundancy (__main__.TestController.test_costlier_recovery_means_more_redundancy) ... ok
+test_decision_cost_matches_reported_r (__main__.TestController.test_decision_cost_matches_reported_r)
+히스테리시스로 r이 바뀌면 cost/P_fail도 그 r 기준이어야 한다. ... ok
+test_gf256_limit_never_exceeded (__main__.TestController.test_gf256_limit_never_exceeded) ... ok
+test_hysteresis_never_exceeds_cap (__main__.TestController.test_hysteresis_never_exceeds_cap)
+K가 줄면 히스테리시스가 과거의 큰 r을 물고 상한을 넘길 수 있다. ... ok
+test_more_loss_means_more_redundancy (__main__.TestController.test_more_loss_means_more_redundancy) ... ok
+test_r_floor_cannot_break_gf_limit (__main__.TestController.test_r_floor_cannot_break_gf_limit) ... ok
+test_r_star_really_minimizes_cost (__main__.TestController.test_r_star_really_minimizes_cost)
+제어기가 고른 r이 정말 argmin인지 완전탐색으로 대조. ... ok
+test_respects_overhead_cap (__main__.TestController.test_respects_overhead_cap) ... ok
+test_adaptive_beats_static_in_worst_case (__main__.TestEndToEnd.test_adaptive_beats_static_in_worst_case)
+이 연구의 핵심 주장: 손실률을 모를 때 최악이 낫다. ... ok
+test_no_redundancy_on_clean_link (__main__.TestEndToEnd.test_no_redundancy_on_clean_link)
+손실이 없으면 이중화를 거의 안 써야 한다. ... ok
+test_real_codec_with_controller (__main__.TestEndToEnd.test_real_codec_with_controller)
+진짜 RS 부호기로 인코딩 -> 채널에 흘림 -> 복호. 원본이 나와야 한다. ... ok
+test_burst_runs_stitched_across_blocks (__main__.TestEstimator.test_burst_runs_stitched_across_blocks)
+블록 경계를 걸친 손실 구간을 이어 붙이는가. ... ok
+test_confidence_bound_is_conservative_when_cold (__main__.TestEstimator.test_confidence_bound_is_conservative_when_cold) ... ok
+test_congestion_still_detected_after_window_fix (__main__.TestEstimator.test_congestion_still_detected_after_window_fix)
+창을 도입해도 진짜 큐 팽창은 여전히 잡아야 한다. ... ok
+test_converges_to_true_burst_length (__main__.TestEstimator.test_converges_to_true_burst_length) ... ok
+test_converges_to_true_loss_rate (__main__.TestEstimator.test_converges_to_true_loss_rate) ... ok
+test_rtt_min_forgets_old_path (__main__.TestEstimator.test_rtt_min_forgets_old_path)
+경로가 바뀌어 기저 RTT가 올라가면 rtt_min도 따라 올라가야 한다. ... ok
+test_standard_error_accounts_for_burstiness (__main__.TestEstimator.test_standard_error_accounts_for_burstiness)
+같은 손실률·같은 표본 수라도 버스트가 심하면 불확실성이 커야 한다. ... ok
+test_surprise_detector_catches_real_shift (__main__.TestEstimator.test_surprise_detector_catches_real_shift) ... ok
+test_surprise_detector_ignores_normal_bursts (__main__.TestEstimator.test_surprise_detector_ignores_normal_bursts)
+정상적인 버스트 변동을 국면 전환으로 오인하면 안 된다. ... ok
+test_uncertainty_shrinks_as_evidence_accumulates (__main__.TestEstimator.test_uncertainty_shrinks_as_evidence_accumulates)
+연결 초반엔 se가 크고, 관측이 쌓이면 줄어야 한다. ... ok
+test_boost_skips_the_trigger_block (__main__.TestEstimatorV021.test_boost_skips_the_trigger_block)
+jump_alpha는 급변을 확정시킨 블록이 아니라 다음 블록부터 적용된다. ... ok
+test_downshift_detected_by_accumulated_evidence (__main__.TestEstimatorV021.test_downshift_detected_by_accumulated_evidence)
+손실이 급감한 국면을 누적 증거(SPRT)로 잡아야 한다. ... ok
+test_evidence_reset_only_on_rising_edge (__main__.TestEstimatorV021.test_evidence_reset_only_on_rising_edge)
+jumped가 여러 블록 이어져도 증거 리셋은 확정 순간 한 번만. ... ok
+test_steady_state_bias_is_small (__main__.TestEstimatorV021.test_steady_state_bias_is_small)
+정상 상태에서 추정이 위로 표류하면 안 된다 (결함 13 회귀 방지). ... ok
+test_distributive (__main__.TestGaloisField.test_distributive) ... ok
+test_field_axioms (__main__.TestGaloisField.test_field_axioms) ... ok
+test_analytic_matches_simulation (__main__.TestHandshake.test_analytic_matches_simulation) ... ok
+test_fec_reduces_handshake_time (__main__.TestHandshake.test_fec_reduces_handshake_time) ... ok
+test_key_share_sizes_match_fips203 (__main__.TestHandshake.test_key_share_sizes_match_fips203) ... ok
+test_mlkem_splits_clienthello (__main__.TestHandshake.test_mlkem_splits_clienthello)
+이 연구의 전제: ML-KEM이면 Initial 패킷이 2개 이상이어야 한다. ... ok
+test_shield_adds_redundancy_even_at_low_loss (__main__.TestHandshake.test_shield_adds_redundancy_even_at_low_loss)
+PTO가 1초라 아주 낮은 손실률에서도 이중화가 나와야 한다. ... ok
+test_ack_partial_false_reduces_to_v01_formula (__main__.TestHandshakeRecoveryModel.test_ack_partial_false_reduces_to_v01_formula)
+ack_partial=False면 v0.1 공식(전부 PTO)으로 정확히 환원된다. ... ok
+test_burst_needs_spacing_plus_parity (__main__.TestHandshakeRecoveryModel.test_burst_needs_spacing_plus_parity)
+버스트 전멸이 진짜 적이고, 이기려면 패리티+페이싱 결합이 필요하다. ... ok
+test_partial_loss_costs_rtts_not_seconds (__main__.TestHandshakeRecoveryModel.test_partial_loss_costs_rtts_not_seconds)
+단발 손실 지배 영역(L=1)에서 ACK 경로가 평균을 크게 줄인다. ... ok
+test_retry_correlation_toggle_bounds_the_tail (__main__.TestHandshakeRecoveryModel.test_retry_correlation_toggle_bounds_the_tail)
+재시도 상관 토글: 비관 경계(False)가 낙관 경계(True)보다 무겁다. ... ok
+test_rquic_baseline_behaves (__main__.TestHandshakeRecoveryModel.test_rquic_baseline_behaves)
+선행(rQUIC 2019) 임계값 휴리스틱 기준선의 기본 동작. ... ok
+test_shield_still_protects_split_hello (__main__.TestHandshakeRecoveryModel.test_shield_still_protects_split_hello)
+정밀화 후에도 shield는 분할 ClientHello에 이중화를 붙인다. ... ok
+test_cache_bounds_and_eviction (__main__.TestInvariants.test_cache_bounds_and_eviction)
+캐시: 반출 가중치 경계, 용량 초과 시 축출. ... ok
+test_empty_and_tiny_feedback (__main__.TestInvariants.test_empty_and_tiny_feedback)
+빈 피드백, 심볼 1개짜리 피드백에서도 죽지 않는다. ... ok
+test_library_footprint_is_pure (__main__.TestInvariants.test_library_footprint_is_pure)
+afec/ 라이브러리는 파일·네트워크·프로세스·스레드를 일절 안 만진다. ... ok
+test_rate_collapse_keeps_bounds_every_block (__main__.TestInvariants.test_rate_collapse_keeps_bounds_every_block)
+링크 속도가 급락해 K가 줄어도 매 블록 경계를 지켜야 한다. ... ok
+test_survives_pathological_burst (__main__.TestInvariants.test_survives_pathological_burst)
+한 번에 150연속 손실 같은 병리적 버스트에서도 안전해야 한다. ... ok
+test_survives_total_loss (__main__.TestInvariants.test_survives_total_loss)
+전 블록 손실이 이어져도 추정·결정이 경계 안에 있어야 한다. ... ok
+test_age_decays_then_expires (__main__.TestPathStatsCache.test_age_decays_then_expires)
+오래된 항목은 발언권(weight)이 줄고, 더 오래되면 없는 항목이 된다. ... ok
+test_confidence_bound_never_reduces_protection (__main__.TestPathStatsCache.test_confidence_bound_never_reduces_protection)
+신뢰상한이 '가망 없음' 능선을 넘어도 보호를 끄면 안 된다 (v0.2 결함). ... ok
+test_evidence_does_not_snowball (__main__.TestPathStatsCache.test_evidence_does_not_snowball)
+캐시를 거칠 때마다 증거가 눈덩이처럼 불어나면 안 된다. ... ok
+test_jump_invalidates_prior (__main__.TestPathStatsCache.test_jump_invalidates_prior)
+국면 전환이 확정되면 캐시가 물려준 사전값도 무효화해야 한다. ... ok
+test_lookup_weight_capped_at_default_prior (__main__.TestPathStatsCache.test_lookup_weight_capped_at_default_prior)
+반출 가중치는 기본 사전(100)을 넘지 않는다 - (w,z) 공동 튜닝의 결론. ... ok
+test_merge_is_weighted_mean_and_capped (__main__.TestPathStatsCache.test_merge_is_weighted_mean_and_capped) ... ok
+test_mobility_reads_nothing_from_old_network (__main__.TestPathStatsCache.test_mobility_reads_nothing_from_old_network)
+Wi-Fi -> 셀룰러 이동 무효화는 키 설계가 공짜로 해결한다. ... ok
+test_network_aggregate_fallback (__main__.TestPathStatsCache.test_network_aggregate_fallback)
+같은 망에서 처음 가는 목적지도 망 집계의 덕을 봐야 한다. ... ok
+test_prior_weight_affects_confidence_not_tracking (__main__.TestPathStatsCache.test_prior_weight_affects_confidence_not_tracking)
+w는 확신(se)만 조절하고 추정치의 관성은 건드리면 안 된다. ... ok
+test_recovery_speed_independent_of_prior_weight (__main__.TestPathStatsCache.test_recovery_speed_independent_of_prior_weight)
+틀린 캐시에서 벗어나는 속도는 w와 무관해야 한다 (v0.2 결함 2). ... ok
+test_same_slash24_shares_entry (__main__.TestPathStatsCache.test_same_slash24_shares_entry) ... ok
+test_shield_consumes_cache_prior (__main__.TestPathStatsCache.test_shield_consumes_cache_prior)
+핸드셰이크 shield와 데이터 구간이 같은 캐시를 쓴다 - 배선 확인. ... ok
+test_fails_beyond_r_erasures (__main__.TestReedSolomonIsMDS.test_fails_beyond_r_erasures) ... ok
+test_recovers_any_r_erasures (__main__.TestReedSolomonIsMDS.test_recovers_any_r_erasures) ... ok
+test_worst_case_all_source_lost (__main__.TestReedSolomonIsMDS.test_worst_case_all_source_lost)
+원본 K개가 전부 사라지고 이중화만 남은 극단 - MDS면 이것도 복구된다. ... ok
+
+----------------------------------------------------------------------
+Ran 68 tests in 42.805s
+
+OK
+==========================================================================
+PQ-AFEC 검증 스위트
+==========================================================================
+
+==========================================================================
+검증 중 측정된 값
+==========================================================================
+  DP vs MC 최대 편차                           1.61 sigma
+  최악 후회 (none)                             316.8%
+  최악 후회 (static)                           32.4%
+  최악 후회 (adaptive)                         5.0%
+  무손실 링크 오버헤드                              0.7%
+  실제 부호기 블록 복구                             116/120
+  버스트 추정 (참값 4.0)                          3.78
+  손실률 추정 편향 (p=2%, L=1)                    +0.4%
+  손실률 추정 편향 (p=5%, L=4)                    +3.3%
+  버스트 보정 se 배율 (L=4)                       x2.57
+  정상 구간 급변 오탐률                             1.7%
+  se 감소 (콜드 -> 60블록)                       0.0140 -> 0.0034
+  하향 급변(5%->0.5%) 포착                       18블록
+  정상상태 손실률 편향 (시드 8평균)                     +1.7%
+  핸드셰이크 해석해 vs MC (p=1%)                   41 vs 39 ms (+3%)
+  핸드셰이크 해석해 vs MC (p=5%)                   90 vs 82 ms (+9%)
+  핸드셰이크 버스트 대응 (p=3%,L=4)                  69ms -> 인접FEC 56 -> 페이싱+FEC 35ms
+  핸드셰이크 평균 (v0.1 모델 -> 정밀화)                195ms -> 39ms (p=2%, L=1, FEC 없음)
+
+  RS(40,32) x 1200B  (pure Python)
+    encode :    0.85 ms/block  = 0.106 ms per repair symbol
+    decode :    3.30 ms/block  (worst case: 8 erasures)
+    -> FecConfig.cpu_cost_ms_per_symbol 후보값: 0.106
+       (파이썬 기준. C/SIMD 구현이면 100배 이상 빨라진다)
+
+==========================================================================
+결과: 68개 실행, 실패 0, 에러 0
+==========================================================================

@@ -1,0 +1,326 @@
+{
+  "stages": {
+    "e1": {
+      "status": "done",
+      "fingerprint": "151a19431397af71",
+      "finished": "2026-08-18 01:14:01",
+      "duration": 0.0,
+      "adopted": true
+    },
+    "e2": {
+      "status": "done",
+      "fingerprint": "03ac45e2aaf16176",
+      "finished": "2026-08-18 01:14:01",
+      "duration": 0.0,
+      "adopted": true
+    },
+    "e3": {
+      "status": "done",
+      "fingerprint": "125d6d0ed91f2e54",
+      "finished": "2026-08-18 01:14:01",
+      "duration": 0.0,
+      "adopted": true
+    },
+    "e4": {
+      "status": "done",
+      "fingerprint": "3d0a37f9052e0892",
+      "finished": "2026-08-18 01:14:01",
+      "duration": 0.0,
+      "adopted": true
+    },
+    "e5": {
+      "status": "done",
+      "fingerprint": "bacd3ddbd7021970",
+      "finished": "2026-08-18 01:14:01",
+      "duration": 0.0,
+      "adopted": true
+    },
+    "e6": {
+      "status": "done",
+      "fingerprint": "95e240ed8bb66c86",
+      "finished": "2026-08-18 01:14:01",
+      "duration": 0.0,
+      "adopted": true
+    },
+    "e8": {
+      "status": "done",
+      "fingerprint": "4d95e642307a8443",
+      "finished": "2026-08-18 01:14:01",
+      "duration": 0.0,
+      "adopted": true
+    },
+    "e9": {
+      "status": "done",
+      "fingerprint": "14f1a34c4f230a7a",
+      "finished": "2026-08-18 13:43:31",
+      "duration": 1.0063855648040771,
+      "adopted": true,
+      "started": "2026-08-18 13:43:30",
+      "log": "experiments\\state\\log_e9.txt"
+    },
+    "quicbed": {
+      "status": "done",
+      "fingerprint": "a671b735657be86b",
+      "finished": "2026-08-18 01:14:01",
+      "duration": 0.0,
+      "adopted": true
+    },
+    "e12": {
+      "status": "done",
+      "fingerprint": "f0944a63afe91f2f",
+      "finished": "2026-08-18 10:48:05",
+      "duration": 4.494323492050171,
+      "adopted": true,
+      "started": "2026-08-18 10:48:00",
+      "log": "experiments\\state\\log_e12.txt"
+    },
+    "verify": {
+      "status": "done",
+      "started": "2026-08-18 13:34:24",
+      "fingerprint": "44e85cf67edfed3c",
+      "duration": 51.60850501060486,
+      "log": "experiments\\state\\log_verify.txt",
+      "finished": "2026-08-18 13:35:15"
+    },
+    "e7": {
+      "status": "done",
+      "started": "2026-08-18 13:35:15",
+      "fingerprint": "4fb3e50bcd51a5c6",
+      "duration": 494.28781914711,
+      "log": "experiments\\state\\log_e7.txt",
+      "finished": "2026-08-18 13:43:30"
+    },
+    "e13": {
+      "status": "done",
+      "started": "2026-08-18 13:43:31",
+      "fingerprint": "6e6219f90e32b481",
+      "duration": 612.8485560417175,
+      "log": "experiments\\state\\log_e13.txt",
+      "finished": "2026-08-18 13:53:44"
+    },
+    "e15": {
+      "status": "done",
+      "started": "2026-08-18 13:53:44",
+      "fingerprint": "b2120f88cdca9c11",
+      "duration": 2.6465983390808105,
+      "log": "experiments\\state\\log_e15.txt",
+      "finished": "2026-08-18 13:53:46"
+    },
+    "e10": {
+      "status": "done",
+      "started": "2026-08-18 13:53:46",
+      "fingerprint": "15803cc411c63577",
+      "duration": 4.343958139419556,
+      "log": "experiments\\state\\log_e10.txt",
+      "finished": "2026-08-18 13:53:51"
+    },
+    "report": {
+      "status": "done",
+      "started": "2026-08-18 13:53:51",
+      "fingerprint": "e41e5ade8f260b4a",
+      "duration": 0.15511393547058105,
+      "log": "experiments\\state\\log_report.txt",
+      "finished": "2026-08-18 13:53:51"
+    }
+  },
+  "history": [
+    {
+      "stage": "verify",
+      "ok": true,
+      "at": "2026-08-18 01:14:35",
+      "sec": 18.5
+    },
+    {
+      "stage": "e7",
+      "ok": true,
+      "at": "2026-08-18 01:20:08",
+      "sec": 332.8
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 10:41:02",
+      "sec": 93.0
+    },
+    {
+      "stage": "e15",
+      "ok": true,
+      "at": "2026-08-18 10:41:03",
+      "sec": 1.3
+    },
+    {
+      "stage": "e10",
+      "ok": false,
+      "at": "2026-08-18 10:41:05",
+      "sec": 1.4
+    },
+    {
+      "stage": "report",
+      "ok": true,
+      "at": "2026-08-18 10:41:05",
+      "sec": 0.1
+    },
+    {
+      "stage": "e10",
+      "ok": false,
+      "at": "2026-08-18 10:41:06",
+      "sec": 0.9
+    },
+    {
+      "stage": "e10",
+      "ok": false,
+      "at": "2026-08-18 10:41:07",
+      "sec": 1.0
+    },
+    {
+      "stage": "e7",
+      "ok": true,
+      "at": "2026-08-18 10:47:01",
+      "sec": 8.7
+    },
+    {
+      "stage": "e12",
+      "ok": false,
+      "at": "2026-08-18 10:47:01",
+      "sec": 0.8
+    },
+    {
+      "stage": "e13",
+      "ok": false,
+      "at": "2026-08-18 10:47:02",
+      "sec": 0.6
+    },
+    {
+      "stage": "e15",
+      "ok": true,
+      "at": "2026-08-18 10:47:04",
+      "sec": 2.5
+    },
+    {
+      "stage": "e10",
+      "ok": true,
+      "at": "2026-08-18 10:47:08",
+      "sec": 3.8
+    },
+    {
+      "stage": "report",
+      "ok": true,
+      "at": "2026-08-18 10:47:08",
+      "sec": 0.1
+    },
+    {
+      "stage": "e12",
+      "ok": true,
+      "at": "2026-08-18 10:48:05",
+      "sec": 4.5
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 10:55:41",
+      "sec": 455.7
+    },
+    {
+      "stage": "e15",
+      "ok": true,
+      "at": "2026-08-18 10:55:43",
+      "sec": 2.5
+    },
+    {
+      "stage": "e9",
+      "ok": true,
+      "at": "2026-08-18 10:55:44",
+      "sec": 1.0
+    },
+    {
+      "stage": "e10",
+      "ok": true,
+      "at": "2026-08-18 10:55:48",
+      "sec": 3.7
+    },
+    {
+      "stage": "report",
+      "ok": true,
+      "at": "2026-08-18 10:55:48",
+      "sec": 0.1
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 11:06:10",
+      "sec": 491.3
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 11:17:01",
+      "sec": 587.5
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 11:28:28",
+      "sec": 629.8
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 11:42:50",
+      "sec": 598.5
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 11:45:27",
+      "sec": 123.0
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 11:48:49",
+      "sec": 159.7
+    },
+    {
+      "stage": "verify",
+      "ok": true,
+      "at": "2026-08-18 13:35:15",
+      "sec": 51.6
+    },
+    {
+      "stage": "e7",
+      "ok": true,
+      "at": "2026-08-18 13:43:30",
+      "sec": 494.3
+    },
+    {
+      "stage": "e9",
+      "ok": true,
+      "at": "2026-08-18 13:43:31",
+      "sec": 1.0
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 13:53:44",
+      "sec": 612.8
+    },
+    {
+      "stage": "e15",
+      "ok": true,
+      "at": "2026-08-18 13:53:46",
+      "sec": 2.6
+    },
+    {
+      "stage": "e10",
+      "ok": true,
+      "at": "2026-08-18 13:53:51",
+      "sec": 4.3
+    },
+    {
+      "stage": "report",
+      "ok": true,
+      "at": "2026-08-18 13:53:51",
+      "sec": 0.2
+    }
+  ]
+}

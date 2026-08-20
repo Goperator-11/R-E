@@ -1,0 +1,724 @@
+{
+  "n": 2000,
+  "size": 1100,
+  "pps": 60.0,
+  "rtt_ms": 20.0,
+  "rate_mbps": 50.0,
+  "runs": {
+    "noloss/none": {
+      "condition": "noloss",
+      "netem": "delay 10.0ms",
+      "policy": "none",
+      "summary": {
+        "sent": 2000,
+        "received": 2000,
+        "lost": 0,
+        "loss_rate": 0,
+        "duration_ms": 33316.34385600001,
+        "goodput_mbps": 0.5282692505537453,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 73,
+        "originals": 2072,
+        "repairs": 0,
+        "r_sum": 0,
+        "encode_ms": 0.0,
+        "feedback": 75,
+        "tail_blocks": 2,
+        "mean_r": 0.0
+      },
+      "rx": {
+        "delivered": 2071,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 76,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 75,
+        "feedback_late": 75,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 33334.0,
+        "timed_out": false
+      },
+      "overhead": 0.0,
+      "delivery_rate": 1.0,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.528,
+      "valid": true
+    },
+    "noloss/static": {
+      "condition": "noloss",
+      "netem": "delay 10.0ms",
+      "policy": "static",
+      "summary": {
+        "sent": 2000,
+        "received": 2000,
+        "lost": 0,
+        "loss_rate": 0,
+        "duration_ms": 33316.587288,
+        "goodput_mbps": 0.5282653906854134,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 73,
+        "originals": 2073,
+        "repairs": 511,
+        "r_sum": 511,
+        "encode_ms": 279.1170900001134,
+        "feedback": 75,
+        "tail_blocks": 2,
+        "mean_r": 7.0
+      },
+      "rx": {
+        "delivered": 2072,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 76,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 75,
+        "feedback_late": 75,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 33334.2,
+        "timed_out": false
+      },
+      "overhead": 0.24650265315967199,
+      "delivery_rate": 1.0,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.528,
+      "valid": true
+    },
+    "noloss/adaptive": {
+      "condition": "noloss",
+      "netem": "delay 10.0ms",
+      "policy": "adaptive",
+      "summary": {
+        "sent": 2000,
+        "received": 2000,
+        "lost": 0,
+        "loss_rate": 0,
+        "duration_ms": 33317.230207,
+        "goodput_mbps": 0.5282551968051117,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 73,
+        "originals": 2072,
+        "repairs": 108,
+        "r_sum": 108,
+        "encode_ms": 262.48027300016474,
+        "feedback": 74,
+        "tail_blocks": 2,
+        "mean_r": 1.4794520547945205
+      },
+      "rx": {
+        "delivered": 2071,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 76,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 75,
+        "feedback_late": 75,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 33334.2,
+        "timed_out": false
+      },
+      "overhead": 0.052123552123552123,
+      "delivery_rate": 1.0,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.528,
+      "valid": true
+    },
+    "uniform_p2/none": {
+      "condition": "uniform_p2",
+      "netem": "loss 2% delay 10.0ms",
+      "policy": "none",
+      "summary": {
+        "sent": 2000,
+        "received": 1961,
+        "lost": 39,
+        "loss_rate": 0.0195,
+        "duration_ms": 33317.814634999995,
+        "goodput_mbps": 0.517945135029112,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 73,
+        "originals": 2063,
+        "repairs": 0,
+        "r_sum": 0,
+        "encode_ms": 0.0,
+        "feedback": 72,
+        "tail_blocks": 1,
+        "mean_r": 0.0
+      },
+      "rx": {
+        "delivered": 2023,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 75,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 74,
+        "feedback_late": 74,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 33334.4,
+        "timed_out": false
+      },
+      "overhead": 0.0,
+      "delivery_rate": 0.9805,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.5177039999999999,
+      "valid": true
+    },
+    "uniform_p2/static": {
+      "condition": "uniform_p2",
+      "netem": "loss 2% delay 10.0ms",
+      "policy": "static",
+      "summary": {
+        "sent": 2000,
+        "received": 1987,
+        "lost": 13,
+        "loss_rate": 0.0065,
+        "duration_ms": 33316.535006000006,
+        "goodput_mbps": 0.5248324892384818,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 73,
+        "originals": 2065,
+        "repairs": 511,
+        "r_sum": 511,
+        "encode_ms": 280.291524000404,
+        "feedback": 70,
+        "tail_blocks": 1,
+        "mean_r": 7.0
+      },
+      "rx": {
+        "delivered": 2065,
+        "recovered": 33,
+        "decode_fail": 0,
+        "blocks_seen": 75,
+        "decode_ms": 29.487751000260687,
+        "block_id_wraps": 0,
+        "feedback_sent": 74,
+        "feedback_late": 74,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 33334.4,
+        "timed_out": false
+      },
+      "overhead": 0.24745762711864408,
+      "delivery_rate": 0.9935,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.524568,
+      "valid": true,
+      "recovery_reaches_app": true
+    },
+    "uniform_p2/adaptive": {
+      "condition": "uniform_p2",
+      "netem": "loss 2% delay 10.0ms",
+      "policy": "adaptive",
+      "summary": {
+        "sent": 2000,
+        "received": 1989,
+        "lost": 11,
+        "loss_rate": 0.0055,
+        "duration_ms": 33316.990398999995,
+        "goodput_mbps": 0.525353574569129,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 73,
+        "originals": 2065,
+        "repairs": 288,
+        "r_sum": 288,
+        "encode_ms": 267.27730399966276,
+        "feedback": 69,
+        "tail_blocks": 1,
+        "mean_r": 3.9452054794520546
+      },
+      "rx": {
+        "delivered": 2065,
+        "recovered": 44,
+        "decode_fail": 0,
+        "blocks_seen": 75,
+        "decode_ms": 36.108590999560874,
+        "block_id_wraps": 0,
+        "feedback_sent": 74,
+        "feedback_late": 74,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 33333.4,
+        "timed_out": false
+      },
+      "overhead": 0.13946731234866827,
+      "delivery_rate": 0.9945,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.525096,
+      "valid": true,
+      "recovery_reaches_app": true
+    },
+    "uniform_p5/none": {
+      "condition": "uniform_p5",
+      "netem": "loss 5% delay 10.0ms",
+      "policy": "none",
+      "summary": {
+        "sent": 2000,
+        "received": 1908,
+        "lost": 92,
+        "loss_rate": 0.046,
+        "duration_ms": 33316.471113,
+        "goodput_mbps": 0.503966940047514,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 73,
+        "originals": 2070,
+        "repairs": 0,
+        "r_sum": 0,
+        "encode_ms": 0.0,
+        "feedback": 71,
+        "tail_blocks": 1,
+        "mean_r": 0.0
+      },
+      "rx": {
+        "delivered": 1972,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 75,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 74,
+        "feedback_late": 74,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 33334.1,
+        "timed_out": false
+      },
+      "overhead": 0.0,
+      "delivery_rate": 0.954,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.5037119999999999,
+      "valid": true
+    },
+    "uniform_p5/static": {
+      "condition": "uniform_p5",
+      "netem": "loss 5% delay 10.0ms",
+      "policy": "static",
+      "summary": {
+        "sent": 2000,
+        "received": 1980,
+        "lost": 20,
+        "loss_rate": 0.01,
+        "duration_ms": 33316.918641000004,
+        "goodput_mbps": 0.5229775354602547,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 73,
+        "originals": 2064,
+        "repairs": 511,
+        "r_sum": 511,
+        "encode_ms": 283.1173599988688,
+        "feedback": 71,
+        "tail_blocks": 1,
+        "mean_r": 7.0
+      },
+      "rx": {
+        "delivered": 2062,
+        "recovered": 106,
+        "decode_fail": 0,
+        "blocks_seen": 75,
+        "decode_ms": 69.36643600010939,
+        "block_id_wraps": 0,
+        "feedback_sent": 74,
+        "feedback_late": 74,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 33333.8,
+        "timed_out": false
+      },
+      "overhead": 0.24757751937984496,
+      "delivery_rate": 0.99,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.52272,
+      "valid": true,
+      "recovery_reaches_app": true
+    },
+    "uniform_p5/adaptive": {
+      "condition": "uniform_p5",
+      "netem": "loss 5% delay 10.0ms",
+      "policy": "adaptive",
+      "summary": {
+        "sent": 2000,
+        "received": 1965,
+        "lost": 35,
+        "loss_rate": 0.0175,
+        "duration_ms": 33317.145297,
+        "goodput_mbps": 0.5190120535794234,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 73,
+        "originals": 2065,
+        "repairs": 469,
+        "r_sum": 469,
+        "encode_ms": 266.0588659998666,
+        "feedback": 70,
+        "tail_blocks": 1,
+        "mean_r": 6.424657534246576
+      },
+      "rx": {
+        "delivered": 2061,
+        "recovered": 92,
+        "decode_fail": 0,
+        "blocks_seen": 75,
+        "decode_ms": 60.568104000367384,
+        "block_id_wraps": 0,
+        "feedback_sent": 74,
+        "feedback_late": 74,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 33334.4,
+        "timed_out": false
+      },
+      "overhead": 0.2271186440677966,
+      "delivery_rate": 0.9825,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.5187599999999999,
+      "valid": true,
+      "recovery_reaches_app": true
+    },
+    "burst_p5_L4/none": {
+      "condition": "burst_p5_L4",
+      "netem": "loss gemodel 1.3158% 25.0000% delay 10.0ms",
+      "policy": "none",
+      "summary": {
+        "sent": 2000,
+        "received": 1652,
+        "lost": 348,
+        "loss_rate": 0.174,
+        "duration_ms": 31100.854491,
+        "goodput_mbps": 0.46743410230760407,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 62,
+        "originals": 1752,
+        "repairs": 0,
+        "r_sum": 0,
+        "encode_ms": 0.0,
+        "feedback": 64,
+        "tail_blocks": 7,
+        "mean_r": 0.0
+      },
+      "rx": {
+        "delivered": 1709,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 69,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 69,
+        "feedback_late": 69,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 268,
+        "elapsed_ms": 57906.3,
+        "timed_out": false
+      },
+      "overhead": 0.0,
+      "delivery_rate": 0.826,
+      "skip_fraction": 0.11816578483245149,
+      "goodput_nominal_mbps": 0.43612799999999996,
+      "valid": false
+    },
+    "burst_p5_L4/static": {
+      "condition": "burst_p5_L4",
+      "netem": "loss gemodel 1.3158% 25.0000% delay 10.0ms",
+      "policy": "static",
+      "summary": {
+        "sent": 2000,
+        "received": 290,
+        "lost": 1710,
+        "loss_rate": 0.855,
+        "duration_ms": 5216.663907,
+        "goodput_mbps": 0.48920153674757333,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 12,
+        "originals": 360,
+        "repairs": 84,
+        "r_sum": 84,
+        "encode_ms": 46.60817400019823,
+        "feedback": 12,
+        "tail_blocks": 7,
+        "mean_r": 7.0
+      },
+      "rx": {
+        "delivered": 319,
+        "recovered": 8,
+        "decode_fail": 0,
+        "blocks_seen": 13,
+        "decode_ms": 4.330326000058449,
+        "block_id_wraps": 0,
+        "feedback_sent": 13,
+        "feedback_late": 13,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 1628,
+        "elapsed_ms": 35275.1,
+        "timed_out": false
+      },
+      "overhead": 0.23333333333333334,
+      "delivery_rate": 0.145,
+      "skip_fraction": 0.4487320837927233,
+      "goodput_nominal_mbps": 0.07656,
+      "valid": false
+    },
+    "burst_p5_L4/adaptive": {
+      "condition": "burst_p5_L4",
+      "netem": "loss gemodel 1.3158% 25.0000% delay 10.0ms",
+      "policy": "adaptive",
+      "summary": {
+        "sent": 2000,
+        "received": 1962,
+        "lost": 38,
+        "loss_rate": 0.019,
+        "duration_ms": 34216.468942,
+        "goodput_mbps": 0.5045991165618741,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 71,
+        "originals": 2054,
+        "repairs": 933,
+        "r_sum": 933,
+        "encode_ms": 263.18373399965367,
+        "feedback": 70,
+        "tail_blocks": 7,
+        "mean_r": 13.140845070422536
+      },
+      "rx": {
+        "delivered": 2028,
+        "recovered": 99,
+        "decode_fail": 0,
+        "blocks_seen": 79,
+        "decode_ms": 44.97079499992651,
+        "block_id_wraps": 0,
+        "feedback_sent": 78,
+        "feedback_late": 78,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 34186.1,
+        "timed_out": false
+      },
+      "overhead": 0.4542356377799416,
+      "delivery_rate": 0.981,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.517968,
+      "valid": true
+    },
+    "burst_p5_L8/none": {
+      "condition": "burst_p5_L8",
+      "netem": "loss gemodel 0.6579% 12.5000% delay 10.0ms",
+      "policy": "none",
+      "summary": {
+        "sent": 2000,
+        "received": 1904,
+        "lost": 96,
+        "loss_rate": 0.048,
+        "duration_ms": 33317.060543,
+        "goodput_mbps": 0.5029015083240983,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 72,
+        "originals": 2060,
+        "repairs": 0,
+        "r_sum": 0,
+        "encode_ms": 0.0,
+        "feedback": 70,
+        "tail_blocks": 3,
+        "mean_r": 0.0
+      },
+      "rx": {
+        "delivered": 1961,
+        "recovered": 0,
+        "decode_fail": 0,
+        "blocks_seen": 75,
+        "decode_ms": 0.0,
+        "block_id_wraps": 0,
+        "feedback_sent": 74,
+        "feedback_late": 74,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 0,
+        "elapsed_ms": 33333.7,
+        "timed_out": false
+      },
+      "overhead": 0.0,
+      "delivery_rate": 0.952,
+      "skip_fraction": 0.0,
+      "goodput_nominal_mbps": 0.502656,
+      "valid": true
+    },
+    "burst_p5_L8/static": {
+      "condition": "burst_p5_L8",
+      "netem": "loss gemodel 0.6579% 12.5000% delay 10.0ms",
+      "policy": "static",
+      "summary": {
+        "sent": 2000,
+        "received": 1267,
+        "lost": 733,
+        "loss_rate": 0.3665,
+        "duration_ms": 25033.81995,
+        "goodput_mbps": 0.4453814888126971,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 48,
+        "originals": 1380,
+        "repairs": 336,
+        "r_sum": 336,
+        "encode_ms": 186.72837700023592,
+        "feedback": 50,
+        "tail_blocks": 8,
+        "mean_r": 7.0
+      },
+      "rx": {
+        "delivered": 1325,
+        "recovered": 31,
+        "decode_fail": 0,
+        "blocks_seen": 56,
+        "decode_ms": 16.402670999809743,
+        "block_id_wraps": 0,
+        "feedback_sent": 56,
+        "feedback_late": 56,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 630,
+        "elapsed_ms": 51889.6,
+        "timed_out": false
+      },
+      "overhead": 0.24347826086956523,
+      "delivery_rate": 0.6335,
+      "skip_fraction": 0.23954372623574144,
+      "goodput_nominal_mbps": 0.334488,
+      "valid": false
+    },
+    "burst_p5_L8/adaptive": {
+      "condition": "burst_p5_L8",
+      "netem": "loss gemodel 0.6579% 12.5000% delay 10.0ms",
+      "policy": "adaptive",
+      "summary": {
+        "sent": 2000,
+        "received": 621,
+        "lost": 1379,
+        "loss_rate": 0.6895,
+        "duration_ms": 10709.41499,
+        "goodput_mbps": 0.5102799737523291,
+        "payload_bytes": 1100
+      },
+      "tx": {
+        "blocks": 25,
+        "originals": 732,
+        "repairs": 339,
+        "r_sum": 339,
+        "encode_ms": 94.96469800023988,
+        "feedback": 27,
+        "tail_blocks": 7,
+        "mean_r": 13.56
+      },
+      "rx": {
+        "delivered": 662,
+        "recovered": 37,
+        "decode_fail": 0,
+        "blocks_seen": 27,
+        "decode_ms": 13.634526000032565,
+        "block_id_wraps": 0,
+        "feedback_sent": 27,
+        "feedback_late": 27,
+        "seq_blocks": 0,
+        "recover_malformed": 0
+      },
+      "sender": {
+        "sent": 2000,
+        "skipped": 1270,
+        "elapsed_ms": 41241.4,
+        "timed_out": false
+      },
+      "overhead": 0.46311475409836067,
+      "delivery_rate": 0.3105,
+      "skip_fraction": 0.38837920489296635,
+      "goodput_nominal_mbps": 0.163944,
+      "valid": false
+    }
+  },
+  "invalid_runs": [
+    "burst_p5_L4/none",
+    "burst_p5_L4/static",
+    "burst_p5_L8/static",
+    "burst_p5_L8/adaptive"
+  ]
+}

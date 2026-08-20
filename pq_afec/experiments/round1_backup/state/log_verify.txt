@@ -1,0 +1,188 @@
+==========================================================================
+PQ-AFEC 寃�利� �뒪�쐞�듃
+==========================================================================
+
+==========================================================================
+寃�利� 以� 痢≪젙�맂 媛�
+==========================================================================
+  DP vs MC 理쒕�� �렪李�                           1.61 sigma
+  理쒖븙 �썑�쉶 (none)                             316.8%
+  理쒖븙 �썑�쉶 (static)                           32.4%
+  理쒖븙 �썑�쉶 (adaptive)                         4.9%
+  臾댁넀�떎 留곹겕 �삤踰꾪뿤�뱶                              0.7%
+  �떎�젣 遺��샇湲� 釉붾줉 蹂듦뎄                             116/120
+  踰꾩뒪�듃 異붿젙 (李멸컪 4.0)                          3.78
+  �넀�떎瑜� 異붿젙 �렪�뼢 (p=2%, L=1)                    -4.7%
+  �넀�떎瑜� 異붿젙 �렪�뼢 (p=5%, L=4)                    +2.3%
+  踰꾩뒪�듃 蹂댁젙 se 諛곗쑉 (L=4)                       x2.57
+  �젙�긽 援ш컙 湲됰�� �삤�깘瑜�                             1.3%
+  se 媛먯냼 (肄쒕뱶 -> 60釉붾줉)                       0.0140 -> 0.0034
+  �븯�뼢 湲됰��(5%->0.5%) �룷李�                       18釉붾줉
+  �젙�긽�긽�깭 �넀�떎瑜� �렪�뼢 (�떆�뱶 8�룊洹�)                     +2.6%
+  �젙�긽 梨꾨꼸 �뿀�쐞 湲됰�� (�뿰寃곕떦, �떆�뱶 12)                 3.08�쉶
+  �빖�뱶�뀺�씠�겕 �빐�꽍�빐 vs MC (p=1%)                   41 vs 39 ms (+3%)
+  �빖�뱶�뀺�씠�겕 �빐�꽍�빐 vs MC (p=5%)                   90 vs 82 ms (+9%)
+  ClientHello 紐⑤뜽 vs �떎痢� (4醫�)                �쟾遺� �삤李� 0 byte
+  �빖�뱶�뀺�씠�겕 踰꾩뒪�듃 ����쓳 (p=3%,L=4)                  69ms -> �씤�젒FEC 56 -> �럹�씠�떛+FEC 35ms
+  �빖�뱶�뀺�씠�겕 �룊洹� (v0.1 紐⑤뜽 -> �젙諛��솕)                195ms -> 39ms (p=2%, L=1, FEC �뾾�쓬)
+
+  RS(40,32) x 1200B  (pure Python)
+    encode :    0.84 ms/block  = 0.105 ms per repair symbol
+    decode :    3.13 ms/block  (worst case: 8 erasures)
+    -> FecConfig.cpu_cost_ms_per_symbol �썑蹂닿컪: 0.105
+       �슑截� �젙�젙(2026-08-17 �떎痢�): C 援ы쁽��� 100諛곌�� �븘�땲�씪 **�빟 4諛�** 鍮좊Ⅴ�떎
+       (experiments/e8_cpu_cost.py, gcc -O3 -march=native, i7-14700HX:
+        RS(40,32) �뙆�씠�뜫 0.043 vs C 0.011 ms/�떖蹂� = 3.9x.
+        rs.py媛� bytes.translate + big-int XOR濡� �씠誘� C �젅踰⑥뿉�꽌 �룎湲� �븣臾�)
+
+==========================================================================
+寃곌낵: 83媛� �떎�뻾, �떎�뙣 0, �뿉�윭 0
+==========================================================================
+test_channel_produces_requested_statistics (__main__.TestChannelModel.test_channel_produces_requested_statistics)
+from_burst(p, L)�씠 �젙留� �넀�떎瑜� p, �룊洹� 踰꾩뒪�듃 L�쓣 �궡�뒗媛�. ... ok
+test_dp_matches_monte_carlo (__main__.TestChannelModel.test_dp_matches_monte_carlo)
+DP�쓽 P_fail�쓣 �룆由� �떆裕щ젅�씠�뀡怨� ���議�. ... ok
+test_fail_curve_matches_pointwise_p_fail (__main__.TestChannelModel.test_fail_curve_matches_pointwise_p_fail)
+理쒖쟻�솕�븳 fail_curve媛� 媛쒕퀎 p_fail怨� 媛숈�� 媛믪쓣 二쇰뒗媛�. ... ok
+test_iid_case_matches_exact_binomial (__main__.TestChannelModel.test_iid_case_matches_exact_binomial)
+踰꾩뒪�듃 �뾾�뒗 寃쎌슦 DP�뒗 �씠�빆遺꾪룷��� �젙�솗�엳 �씪移섑빐�빞 �븳�떎. ... ok
+test_interleaving_helps_on_bursty_channel (__main__.TestChannelModel.test_interleaving_helps_on_bursty_channel) ... ok
+test_p_fail_decreases_with_redundancy (__main__.TestChannelModel.test_p_fail_decreases_with_redundancy) ... ok
+test_pmf_is_a_distribution (__main__.TestChannelModel.test_pmf_is_a_distribution) ... ok
+test_block_size_respects_delay_budget (__main__.TestController.test_block_size_respects_delay_budget) ... ok
+test_congestion_suppresses_redundancy (__main__.TestController.test_congestion_suppresses_redundancy) ... ok
+test_costlier_recovery_means_more_redundancy (__main__.TestController.test_costlier_recovery_means_more_redundancy) ... ok
+test_decision_cost_matches_reported_r (__main__.TestController.test_decision_cost_matches_reported_r)
+�엳�뒪�뀒由ъ떆�뒪濡� r�씠 諛붾�뚮㈃ cost/P_fail�룄 洹� r 湲곗���씠�뼱�빞 �븳�떎. ... ok
+test_gf256_limit_never_exceeded (__main__.TestController.test_gf256_limit_never_exceeded) ... ok
+test_hysteresis_never_exceeds_cap (__main__.TestController.test_hysteresis_never_exceeds_cap)
+K媛� 以꾨㈃ �엳�뒪�뀒由ъ떆�뒪媛� 怨쇨굅�쓽 �겙 r�쓣 臾쇨퀬 �긽�븳�쓣 �꽆湲� �닔 �엳�떎. ... ok
+test_more_loss_means_more_redundancy (__main__.TestController.test_more_loss_means_more_redundancy) ... ok
+test_r_floor_cannot_break_gf_limit (__main__.TestController.test_r_floor_cannot_break_gf_limit) ... ok
+test_r_star_really_minimizes_cost (__main__.TestController.test_r_star_really_minimizes_cost)
+�젣�뼱湲곌�� 怨좊Ⅸ r�씠 �젙留� argmin�씤吏� �셿�쟾�깘�깋�쑝濡� ���議�. ... ok
+test_respects_overhead_cap (__main__.TestController.test_respects_overhead_cap) ... ok
+test_adaptive_beats_static_in_worst_case (__main__.TestEndToEnd.test_adaptive_beats_static_in_worst_case)
+�씠 �뿰援ъ쓽 �빑�떖 二쇱옣: �넀�떎瑜좎쓣 紐⑤�� �븣 理쒖븙�씠 �궖�떎. ... ok
+test_no_redundancy_on_clean_link (__main__.TestEndToEnd.test_no_redundancy_on_clean_link)
+�넀�떎�씠 �뾾�쑝硫� �씠以묓솕瑜� 嫄곗쓽 �븞 �뜥�빞 �븳�떎. ... ok
+test_real_codec_with_controller (__main__.TestEndToEnd.test_real_codec_with_controller)
+吏꾩쭨 RS 遺��샇湲곕줈 �씤肄붾뵫 -> 梨꾨꼸�뿉 �쓽由� -> 蹂듯샇. �썝蹂몄씠 �굹����빞 �븳�떎. ... ok
+test_burst_runs_stitched_across_blocks (__main__.TestEstimator.test_burst_runs_stitched_across_blocks)
+釉붾줉 寃쎄퀎瑜� 嫄몄튇 �넀�떎 援ш컙�쓣 �씠�뼱 遺숈씠�뒗媛�. ... ok
+test_confidence_bound_is_conservative_when_cold (__main__.TestEstimator.test_confidence_bound_is_conservative_when_cold) ... ok
+test_congestion_still_detected_after_window_fix (__main__.TestEstimator.test_congestion_still_detected_after_window_fix)
+李쎌쓣 �룄�엯�빐�룄 吏꾩쭨 �걧 �뙺李쎌�� �뿬�쟾�엳 �옟�븘�빞 �븳�떎. ... ok
+test_converges_to_true_burst_length (__main__.TestEstimator.test_converges_to_true_burst_length) ... ok
+test_converges_to_true_loss_rate (__main__.TestEstimator.test_converges_to_true_loss_rate) ... ok
+test_rtt_min_forgets_old_path (__main__.TestEstimator.test_rtt_min_forgets_old_path)
+寃쎈줈媛� 諛붾�뚯뼱 湲곗�� RTT媛� �삱�씪媛�硫� rtt_min�룄 �뵲�씪 �삱�씪媛��빞 �븳�떎. ... ok
+test_standard_error_accounts_for_burstiness (__main__.TestEstimator.test_standard_error_accounts_for_burstiness)
+媛숈�� �넀�떎瑜졖룰컳��� �몴蹂� �닔�씪�룄 踰꾩뒪�듃媛� �떖�븯硫� 遺덊솗�떎�꽦�씠 而ㅼ빞 �븳�떎. ... ok
+test_surprise_detector_catches_real_shift (__main__.TestEstimator.test_surprise_detector_catches_real_shift) ... ok
+test_surprise_detector_ignores_normal_bursts (__main__.TestEstimator.test_surprise_detector_ignores_normal_bursts)
+�젙�긽�쟻�씤 踰꾩뒪�듃 蹂��룞�쓣 援�硫� �쟾�솚�쑝濡� �삤�씤�븯硫� �븞 �맂�떎. ... ok
+test_uncertainty_shrinks_as_evidence_accumulates (__main__.TestEstimator.test_uncertainty_shrinks_as_evidence_accumulates)
+�뿰寃� 珥덈컲�뿏 se媛� �겕怨�, 愿�痢≪씠 �뙎�씠硫� 以꾩뼱�빞 �븳�떎. ... ok
+test_boost_skips_the_trigger_block (__main__.TestEstimatorV021.test_boost_skips_the_trigger_block)
+jump_alpha�뒗 湲됰���쓣 �솗�젙�떆�궓 釉붾줉�씠 �븘�땲�씪 �떎�쓬 釉붾줉遺��꽣 �쟻�슜�맂�떎. ... ok
+test_downshift_detected_by_accumulated_evidence (__main__.TestEstimatorV021.test_downshift_detected_by_accumulated_evidence)
+�넀�떎�씠 湲됯컧�븳 援�硫댁쓣 �늻�쟻 利앷굅(SPRT)濡� �옟�븘�빞 �븳�떎. ... ok
+test_evidence_reset_only_on_rising_edge (__main__.TestEstimatorV021.test_evidence_reset_only_on_rising_edge)
+jumped媛� �뿬�윭 釉붾줉 �씠�뼱�졇�룄 利앷굅 由ъ뀑��� �솗�젙 �닚媛� �븳 踰덈쭔. ... ok
+test_steady_state_bias_is_small (__main__.TestEstimatorV021.test_steady_state_bias_is_small)
+�젙�긽 �긽�깭�뿉�꽌 異붿젙�씠 �쐞濡� �몴瑜섑븯硫� �븞 �맂�떎 (寃고븿 13 �쉶洹� 諛⑹��). ... ok
+test_distributive (__main__.TestGaloisField.test_distributive) ... ok
+test_field_axioms (__main__.TestGaloisField.test_field_axioms) ... ok
+test_C5_export_cap_applies_to_the_default_prior_too (__main__.TestHandshake.test_C5_export_cap_applies_to_the_default_prior_too)
+�윪� C5: 諛섏텧 �긽�븳�씠 _get() �븞�뿉�꽌留� 嫄몃젮 罹먯떆 誘몄뒪(=肄쒕뱶 �뒪����듃)媛� ... ok
+test_E1_unsupported_burst_prior_fades_with_evidence (__main__.TestHandshake.test_E1_unsupported_burst_prior_fades_with_evidence)
+�윪� E1: 罹먯떆�맂 踰꾩뒪�듃�뒗 '�걹�궃 �넀�떎 援ш컙'�씠 �엳�뒗 釉붾줉�뿉�꽌留� 媛깆떊�릺誘�濡� ... ok
+test_E2_prior_weight_does_not_change_tracking_inertia (__main__.TestHandshake.test_E2_prior_weight_does_not_change_tracking_inertia)
+�윪� E2: seed_mass = min(prior_weight, 100)�씠�씪 100 誘몃쭔�뿉�꽌 ... ok
+test_E4_down_cusum_is_not_starved_of_negative_evidence (__main__.TestHandshake.test_E4_down_cusum_is_not_starved_of_negative_evidence)
+�윪� E4: �긽�떒 湲됰�� 寃��젙�씠 癒쇱�� return True 瑜� �빐�꽌 �븯�떒 CUSUM �씠 ... ok
+test_H10_prior_channel_allows_consecutive_losses (__main__.TestHandshake.test_H10_prior_channel_allows_consecutive_losses)
+�윪� H10: from_burst(p, 1.0)��� q_bg=1�씠�씪 �뿰�냽 �넀�떎�씠 遺덇���뒫�븳 ... ok
+test_H1_server_pto_uses_initial_space_only (__main__.TestHandshake.test_H1_server_pto_uses_initial_space_only)
+�윪� H1: �꽌踰� �뵆�씪�씠�듃瑜� �븳 釉붾줉�쑝濡� 蹂대㈃ �쟾硫� �솗瑜좎쓣 3.4~8諛� ... ok
+test_H2_handshake_r_is_decided_by_cost_not_by_a_borrowed_threshold (__main__.TestHandshake.test_H2_handshake_r_is_decided_by_cost_not_by_a_borrowed_threshold)
+�윪� H2: shield()媛� �뜲�씠�꽣 援ш컙�쓽 rho_max(0.5)瑜� �뜥�꽌 K=2 �뵆�씪�씠�듃�쓽 ... ok
+test_H7_partial_loss_is_never_costlier_than_total_loss (__main__.TestHandshake.test_H7_partial_loss_is_never_costlier_than_total_loss)
+�윪� H7: base=pto_ms(srtt)=3*srtt�씤�뜲 t_fast�뒗 蹂꾨룄 湲곕낯媛� ... ok
+test_analytic_matches_simulation (__main__.TestHandshake.test_analytic_matches_simulation) ... ok
+test_clienthello_bytes_match_real_capture (__main__.TestHandshake.test_clienthello_bytes_match_real_capture)
+�떎�젣 QUIC Initial�쓣 蹂듯샇�솕�빐 �옺 ClientHello 諛붿씠�듃��� 紐⑤뜽�씠 �씪移섑븯�뒗媛�. ... ok
+test_controller_survives_extreme_estimates (__main__.TestHandshake.test_controller_survives_extreme_estimates)
+異붿젙湲곌�� 洹밸떒媛믪쓣 �궡�룄 �젣�뼱湲곌�� �젙�긽 踰붿쐞�쓽 r �쓣 �궡�빞 �븳�떎. ... ok
+test_fec_reduces_handshake_time (__main__.TestHandshake.test_fec_reduces_handshake_time) ... ok
+test_from_burst_keeps_loss_rate_and_raises_burst (__main__.TestHandshake.test_from_burst_keeps_loss_rate_and_raises_burst)
+�떎�쁽 遺덇���뒫�븳 (p, L)�쓣 諛쏆쑝硫� **�넀�떎瑜좎쓣 吏��궎怨� 踰꾩뒪�듃瑜� �삱由곕떎.** ... ok
+test_from_burst_never_builds_an_invalid_chain (__main__.TestHandshake.test_from_burst_never_builds_an_invalid_chain)
+�윪� 2026-08-18 �룆由� 媛먯궗�뿉�꽌 諛쒓껄�븳 寃고븿. ... ok
+test_invalid_chain_raises_instead_of_returning_garbage (__main__.TestHandshake.test_invalid_chain_raises_instead_of_returning_garbage)
+�깮�꽦�옄瑜� 吏곸젒 �벖 臾댄슚 �궗�뒳��� 議곗슜�엳 �벐�젅湲곕�� �궡硫� �븞 �맂�떎. ... ok
+test_key_share_sizes_match_fips203 (__main__.TestHandshake.test_key_share_sizes_match_fips203) ... ok
+test_mlkem_splits_clienthello (__main__.TestHandshake.test_mlkem_splits_clienthello)
+�씠 �뿰援ъ쓽 �쟾�젣: �떎�젣 釉뚮씪�슦��� ClientHello 湲곗���씠硫� ML-KEM �쟾 �뙆�씪誘명꽣媛� ... ok
+test_serverhello_also_splits_under_mlkem (__main__.TestHandshake.test_serverhello_also_splits_under_mlkem)
+�꽌踰� 履쎈룄 �떎痢≪쑝濡� 媛덈졇�떎: X25519MLKEM768�쓽 ServerHello�뒗 1210B�씪 ... ok
+test_shield_adds_redundancy_even_at_low_loss (__main__.TestHandshake.test_shield_adds_redundancy_even_at_low_loss)
+PTO媛� 1珥덈씪 �븘二� �궙��� �넀�떎瑜좎뿉�꽌�룄 �씠以묓솕媛� �굹����빞 �븳�떎. ... ok
+test_split_threshold_depends_on_ch_base (__main__.TestHandshake.test_split_threshold_depends_on_ch_base)
+�윪� 2026-08-17 �떎痢≪씠 �뮘吏묒�� 寃�: "ML-KEM�씠硫� 臾댁“嫄� 履쇨컻吏꾨떎"�뒗 嫄곗쭞�씠�떎. ... ok
+test_ack_partial_false_reduces_to_v01_formula (__main__.TestHandshakeRecoveryModel.test_ack_partial_false_reduces_to_v01_formula)
+ack_partial=False硫� v0.1 怨듭떇(�쟾遺� PTO)�쑝濡� �젙�솗�엳 �솚�썝�맂�떎. ... ok
+test_burst_needs_spacing_plus_parity (__main__.TestHandshakeRecoveryModel.test_burst_needs_spacing_plus_parity)
+踰꾩뒪�듃 �쟾硫몄씠 吏꾩쭨 �쟻�씠怨�, �씠湲곕젮硫� �뙣由ы떚+�럹�씠�떛 寃고빀�씠 �븘�슂�븯�떎. ... ok
+test_partial_loss_costs_rtts_not_seconds (__main__.TestHandshakeRecoveryModel.test_partial_loss_costs_rtts_not_seconds)
+�떒諛� �넀�떎 吏�諛� �쁺�뿭(L=1)�뿉�꽌 ACK 寃쎈줈媛� �룊洹좎쓣 �겕寃� 以꾩씤�떎. ... ok
+test_retry_correlation_toggle_bounds_the_tail (__main__.TestHandshakeRecoveryModel.test_retry_correlation_toggle_bounds_the_tail)
+�옱�떆�룄 �긽愿� �넗湲�: 鍮꾧�� 寃쎄퀎(False)媛� �굺愿� 寃쎄퀎(True)蹂대떎 臾닿쾪�떎. ... ok
+test_rquic_baseline_behaves (__main__.TestHandshakeRecoveryModel.test_rquic_baseline_behaves)
+�꽑�뻾(rQUIC 2019) �엫怨꾧컪 �쑕由ъ뒪�떛 湲곗���꽑�쓽 湲곕낯 �룞�옉. ... ok
+test_shield_still_protects_split_hello (__main__.TestHandshakeRecoveryModel.test_shield_still_protects_split_hello)
+�젙諛��솕 �썑�뿉�룄 shield�뒗 遺꾪븷 ClientHello�뿉 �씠以묓솕瑜� 遺숈씤�떎. ... ok
+test_cache_bounds_and_eviction (__main__.TestInvariants.test_cache_bounds_and_eviction)
+罹먯떆: 諛섏텧 媛�以묒튂 寃쎄퀎, �슜�웾 珥덇낵 �떆 異뺤텧. ... ok
+test_empty_and_tiny_feedback (__main__.TestInvariants.test_empty_and_tiny_feedback)
+鍮� �뵾�뱶諛�, �떖蹂� 1媛쒖쭨由� �뵾�뱶諛깆뿉�꽌�룄 二쎌�� �븡�뒗�떎. ... ok
+test_library_footprint_is_pure (__main__.TestInvariants.test_library_footprint_is_pure)
+afec/ �씪�씠釉뚮윭由щ뒗 �뙆�씪쨌�꽕�듃�썙�겕쨌�봽濡쒖꽭�뒪쨌�뒪�젅�뱶瑜� �씪�젅 �븞 留뚯쭊�떎. ... ok
+test_rate_collapse_keeps_bounds_every_block (__main__.TestInvariants.test_rate_collapse_keeps_bounds_every_block)
+留곹겕 �냽�룄媛� 湲됰씫�빐 K媛� 以꾩뼱�룄 留� 釉붾줉 寃쎄퀎瑜� 吏�耳쒖빞 �븳�떎. ... ok
+test_survives_pathological_burst (__main__.TestInvariants.test_survives_pathological_burst)
+�븳 踰덉뿉 150�뿰�냽 �넀�떎 媛숈�� 蹂묐━�쟻 踰꾩뒪�듃�뿉�꽌�룄 �븞�쟾�빐�빞 �븳�떎. ... ok
+test_survives_total_loss (__main__.TestInvariants.test_survives_total_loss)
+�쟾 釉붾줉 �넀�떎�씠 �씠�뼱�졇�룄 異붿젙쨌寃곗젙�씠 寃쎄퀎 �븞�뿉 �엳�뼱�빞 �븳�떎. ... ok
+test_age_decays_then_expires (__main__.TestPathStatsCache.test_age_decays_then_expires)
+�삤�옒�맂 �빆紐⑹�� 諛쒖뼵沅�(weight)�씠 以꾧퀬, �뜑 �삤�옒�릺硫� �뾾�뒗 �빆紐⑹씠 �맂�떎. ... ok
+test_confidence_bound_never_reduces_protection (__main__.TestPathStatsCache.test_confidence_bound_never_reduces_protection)
+�떊猶곗긽�븳�씠 '媛�留� �뾾�쓬' �뒫�꽑�쓣 �꽆�뼱�룄 蹂댄샇瑜� �걚硫� �븞 �맂�떎 (v0.2 寃고븿). ... ok
+test_evidence_does_not_snowball (__main__.TestPathStatsCache.test_evidence_does_not_snowball)
+罹먯떆瑜� 嫄곗튌 �븣留덈떎 利앷굅媛� �늿�뜦�씠泥섎읆 遺덉뼱�굹硫� �븞 �맂�떎. ... ok
+test_jump_invalidates_prior (__main__.TestPathStatsCache.test_jump_invalidates_prior)
+援�硫� �쟾�솚�씠 �솗�젙�릺硫� 罹먯떆媛� 臾쇰젮以� �궗�쟾媛믩룄 臾댄슚�솕�빐�빞 �븳�떎. ... ok
+test_lookup_weight_capped_at_default_prior (__main__.TestPathStatsCache.test_lookup_weight_capped_at_default_prior)
+諛섏텧 媛�以묒튂�뒗 湲곕낯 �궗�쟾(100)�쓣 �꽆吏� �븡�뒗�떎 - (w,z) 怨듬룞 �뒠�떇�쓽 寃곕줎. ... ok
+test_merge_is_weighted_mean_and_capped (__main__.TestPathStatsCache.test_merge_is_weighted_mean_and_capped) ... ok
+test_mobility_reads_nothing_from_old_network (__main__.TestPathStatsCache.test_mobility_reads_nothing_from_old_network)
+Wi-Fi -> ���猷곕윭 �씠�룞 臾댄슚�솕�뒗 �궎 �꽕怨꾧�� 怨듭쭨濡� �빐寃고븳�떎. ... ok
+test_network_aggregate_fallback (__main__.TestPathStatsCache.test_network_aggregate_fallback)
+媛숈�� 留앹뿉�꽌 泥섏쓬 媛��뒗 紐⑹쟻吏��룄 留� 吏묎퀎�쓽 �뜒�쓣 遊먯빞 �븳�떎. ... ok
+test_prior_weight_affects_confidence_not_tracking (__main__.TestPathStatsCache.test_prior_weight_affects_confidence_not_tracking)
+w�뒗 �솗�떊(se)留� 議곗젅�븯怨� 異붿젙移섏쓽 愿��꽦��� 嫄대뱶由щ㈃ �븞 �맂�떎. ... ok
+test_recovery_speed_independent_of_prior_weight (__main__.TestPathStatsCache.test_recovery_speed_independent_of_prior_weight)
+���由� 罹먯떆�뿉�꽌 踰쀬뼱�굹�뒗 �냽�룄�뒗 w��� 臾닿���빐�빞 �븳�떎 (v0.2 寃고븿 2). ... ok
+test_same_slash24_shares_entry (__main__.TestPathStatsCache.test_same_slash24_shares_entry) ... ok
+test_shield_consumes_cache_prior (__main__.TestPathStatsCache.test_shield_consumes_cache_prior)
+�빖�뱶�뀺�씠�겕 shield��� �뜲�씠�꽣 援ш컙�씠 媛숈�� 罹먯떆瑜� �벖�떎 - 諛곗꽑 �솗�씤. ... ok
+test_fails_beyond_r_erasures (__main__.TestReedSolomonIsMDS.test_fails_beyond_r_erasures) ... ok
+test_recovers_any_r_erasures (__main__.TestReedSolomonIsMDS.test_recovers_any_r_erasures) ... ok
+test_worst_case_all_source_lost (__main__.TestReedSolomonIsMDS.test_worst_case_all_source_lost)
+�썝蹂� K媛쒓�� �쟾遺� �궗�씪吏�怨� �씠以묓솕留� �궓��� 洹밸떒 - MDS硫� �씠寃껊룄 蹂듦뎄�맂�떎. ... ok
+
+----------------------------------------------------------------------
+Ran 83 tests in 51.216s
+
+OK

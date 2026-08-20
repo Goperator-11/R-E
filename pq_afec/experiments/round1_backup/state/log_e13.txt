@@ -1,0 +1,74 @@
+====================================================================================================
+E13 - live data phase: real controller + real RS on real QUIC datagrams
+      n=2000 x 1100B at 60 pps, MTU=1500, RTT=20ms
+====================================================================================================
+
+condition     policy      deliv%    skip% recovered   goodput  overhead   mean r  enc/blk
+----------------------------------------------------------------------------------------------------
+noloss        none       100.00%    0.00%         0    0.53Mb      0.0%      0.0    0.000
+noloss        static     100.00%    0.00%         0    0.53Mb     24.7%      7.0    3.824
+noloss        adaptive   100.00%    0.00%         0    0.53Mb      5.2%      1.5    3.596
+uniform_p2    none        98.05%    0.00%         0    0.52Mb      0.0%      0.0    0.000
+uniform_p2    static      99.35%    0.00%        33    0.52Mb     24.7%      7.0    3.840
+uniform_p2    adaptive    99.45%    0.00%        44    0.53Mb     13.9%      3.9    3.661
+uniform_p5    none        95.40%    0.00%         0    0.50Mb      0.0%      0.0    0.000
+uniform_p5    static      99.00%    0.00%       106    0.52Mb     24.8%      7.0    3.878
+uniform_p5    adaptive    98.25%    0.00%        92    0.52Mb     22.7%      6.4    3.645
+        (臾댄슚 -> ����꼸�뿉 �꽔吏� �븡�쓬. �떎�쓬 �떎�뻾�뿉�꽌 �옱�떆�룄)
+burst_p5_L4   none        82.60%   11.82%         0    0.44Mb      0.0%      0.0    0.000  <-- SENDER LIMITED, invalid
+        (臾댄슚 -> ����꼸�뿉 �꽔吏� �븡�쓬. �떎�쓬 �떎�뻾�뿉�꽌 �옱�떆�룄)
+burst_p5_L4   static      14.50%   44.87%         8    0.08Mb     23.3%      7.0    3.884  <-- SENDER LIMITED, invalid
+burst_p5_L4   adaptive    98.10%    0.00%        99    0.52Mb     45.4%     13.1    3.707
+burst_p5_L8   none        95.20%    0.00%         0    0.50Mb      0.0%      0.0    0.000
+        (臾댄슚 -> ����꼸�뿉 �꽔吏� �븡�쓬. �떎�쓬 �떎�뻾�뿉�꽌 �옱�떆�룄)
+burst_p5_L8   static      63.35%   23.95%        31    0.33Mb     24.3%      7.0    3.890  <-- SENDER LIMITED, invalid
+        (臾댄슚 -> ����꼸�뿉 �꽔吏� �븡�쓬. �떎�쓬 �떎�뻾�뿉�꽌 �옱�떆�룄)
+burst_p5_L8   adaptive    31.05%   38.84%        37    0.16Mb     46.3%     13.6    3.799  <-- SENDER LIMITED, invalid
+
+saved: /mnt/c/dev/pq_afec/experiments/results/e13_data_live.json
+
+SELF-CHECK 1 - no-loss control must deliver ~100% with every policy
+   none      delivery 1.0000  ok
+   static    delivery 1.0000  ok
+   adaptive  delivery 1.0000  ok
+
+SELF-CHECK 2 - the sender must not be the bottleneck
+   (QUIC datagrams are congestion controlled; if the offered rate
+    exceeds what the controller allows, 'delivery' measures quic-go
+    back-pressure and redundancy makes FEC look worse than no FEC)
+   burst_p5_L4/none         skipped 11.82%  timed_out=False  *** invalid ***
+   burst_p5_L4/static       skipped 44.87%  timed_out=False  *** invalid ***
+   burst_p5_L8/adaptive     skipped 38.84%  timed_out=False  *** invalid ***
+   burst_p5_L8/static       skipped 23.95%  timed_out=False  *** invalid ***
+
+SELF-CHECK 3 - FEC must not reduce delivery below 'none'
+   noloss        static    1.0000 vs none 1.0000  ok
+   noloss        adaptive  1.0000 vs none 1.0000  ok
+   uniform_p2    static    0.9935 vs none 0.9805  ok
+   uniform_p2    adaptive  0.9945 vs none 0.9805  ok
+   uniform_p5    static    0.9900 vs none 0.9540  ok
+   uniform_p5    adaptive  0.9825 vs none 0.9540  ok
+   burst_p5_L4   static    0.1450 vs none 0.8260  *** FEC HURT - check sender limiting ***
+   burst_p5_L4   adaptive  0.9810 vs none 0.8260  ok
+   burst_p5_L8   static    0.6335 vs none 0.9520  *** FEC HURT - check sender limiting ***
+   burst_p5_L8   adaptive  0.3105 vs none 0.9520  *** FEC HURT - check sender limiting ***
+
+SELF-CHECK 4 - 蹂듦뎄�븳 �떖蹂쇱씠 �젙留� �쓳�슜�뿉 �떯�뒗媛� (�윴 �궡遺� 鍮꾧탳)
+   �떖�씠 �꽌踰꾨줈 �꽆湲� �닔 ���鍮� �꽌踰꾧�� �떎�젣濡� �꽱 �닔�쓽 鍮꾩쑉�쓣 蹂몃떎.
+   蹂듦뎄媛� 源⑥졇 �엳�쑝硫�(�삁: �떖蹂� 湲몄씠瑜� �옒紐� 蹂듭썝�빐 QUIC AEAD �떎�뙣)
+   �씠以묓솕瑜� �벐�뒗 �젙梨낅쭔 �씠 鍮꾩쑉�씠 �뼥�뼱吏꾨떎. �꽌濡� �떎瑜� �윴�쓽 �쟾�떖瑜좎쓣
+   鍮꾧탳�븯硫� �궃�닔 異붿꺼 李⑥씠�뿉 臾삵엳吏�留�, �씠 鍮꾩쑉��� �윴 �븞�뿉�꽌 �떕�엺�떎.
+   uniform_p2    static    �꽌踰꾩닔�떊/�떖�쟾�떖 0.962 (臾퀳EC 0.969)  蹂듦뎄 33  ok
+   uniform_p2    adaptive  �꽌踰꾩닔�떊/�떖�쟾�떖 0.963 (臾퀳EC 0.969)  蹂듦뎄 44  ok
+   uniform_p5    static    �꽌踰꾩닔�떊/�떖�쟾�떖 0.960 (臾퀳EC 0.968)  蹂듦뎄 106  ok
+   uniform_p5    adaptive  �꽌踰꾩닔�떊/�떖�쟾�떖 0.953 (臾퀳EC 0.968)  蹂듦뎄 92  ok
+   蹂듦뎄�뻽�쑝�굹 �삎�떇�씠 源⑥쭊 �떖蹂�: 0媛�
+
+SELF-CHECK 5 - �쟻�쓳�삎��� �넀�떎�씠 �삤瑜대㈃ �씠以묓솕瑜� �삱�젮�빞 �븳�떎
+   (�씠寃� �룊�룊�븯硫� �젣�뼱湲곌�� 諛섏쓳�쓣 紐� �븯�뒗 寃껋씠�떎. �떎�젣濡� �닔�떊 �떖�씠
+    �븘吏� �룄李⑸룄 �븞 �븳 �떖蹂쇱쓣 '�넀�떎'濡� 議곌린 蹂닿퀬�빐 異붿젙 �넀�떎瑜좎씠 47%濡�
+    �쎇怨�, argmin �씠 '媛�留� �뾾�쓬' �뒫�꽑�쓣 �꽆�뼱 r=0 �쑝濡� 臾대꼫吏� �쟻�씠 �엳�떎)
+   noloss        �떎痢≪넀�떎  0.00%  ->  �룊洹� r = 1.48
+   uniform_p2    �떎痢≪넀�떎  0.55%  ->  �룊洹� r = 3.95
+   uniform_p5    �떎痢≪넀�떎  1.75%  ->  �룊洹� r = 6.42
+   burst_p5_L4   �떎痢≪넀�떎  1.90%  ->  �룊洹� r = 13.14

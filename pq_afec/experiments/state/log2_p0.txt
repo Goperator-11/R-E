@@ -1,0 +1,17 @@
+[�넻怨�] Go �댋泥댁씤 (臾몄꽌: go1.26.5)                                go version go1.26.6 linux/amd64
+[�넻怨�] OpenSSL (臾몄꽌 �솚寃�: 3.5)                                 OpenSSL 3.5.5 27 Jan 2026 (Library: OpenSSL 3.5.5 27 Jan 2026)
+[�넻怨�] 臾몄꽌 5�젅���濡� /tmp/qamp 濡� 蹂듭궗�릺�뼱 �엳�떎                          /tmp/qamp
+[�넻怨�] �꽕�엫�뒪�럹�씠�뒪 peer �깮�꽦                                       peer (id: 0)
+[�넻怨�] veth v0 媛� 猷⑦듃�뿉 MTU 1500 �쑝濡� �삱�씪�샂                        3: v0@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue st
+[�넻怨�] veth v1 �씠 peer �븞�뿉 MTU 1500 �쑝濡� �삱�씪�샂                    2: v1@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue st
+[�넻怨�] v1 �씠 猷⑦듃 �꽕�엫�뒪�럹�씠�뒪�뿉 �궓�븘 �엳吏� �븡�떎 (媛숈쑝硫� 而ㅻ꼸�씠 loopback �쑝濡� �슦�쉶)    
+[�넻怨�] netem �씠 v0 �뿉 delay 25ms 濡� 嫄몃┝                         qdisc netem 8001: root refcnt 29 limit 1000 delay 25ms seed 1207454627
+[�넻怨�] netem �씠 v1 �뿉�룄 嫄몃┝ (�뼇履� �젅諛섏씠�씪�빞 ���移� 吏��뿰)                    qdisc netem 8002: root refcnt 29 limit 1000 delay 25ms seed 2435835896
+[�넻怨�] 臾몄꽌 �떒怨� 0: �꽌踰� 湲곕룞 + �겢�씪�씠�뼵�듃 5�쉶 �꽦怨�                         �꽦怨� 5/5, group_id [29]
+[�넻怨�] ClientHello key_share: X25519MLKEM768 = 1216 B (= 32 + ML-KEM-768 罹≪뒓�솕�궎 1184, FIPS 203) �떎痢� {4588: 1216}
+[�넻怨�] QUIC �빖�뱶�뀺�씠�겕�뿉�꽌 �떎�젣濡� X25519MLKEM768(4588) �빀�쓽             [4588]
+[�넻怨�] �긽�샇�슫�슜: Go crypto/tls <-> OpenSSL 3.5 媛� X25519MLKEM768 濡� �빖�뱶�뀺�씠�겕 �셿猷� �몢 �룆由� 援ы쁽�씠 媛숈�� 怨듭쑀鍮꾨���뿉 �룄�떖�뻽�떎�뒗 �쑜
+[�넻怨�] OpenSSL ML-KEM-768 罹≪뒓�솕�궎 1184 B (FIPS 203)            
+
+14 / 14 �넻怨�
+saved: /mnt/c/dev/pq_afec/experiments/results/p0_env.json

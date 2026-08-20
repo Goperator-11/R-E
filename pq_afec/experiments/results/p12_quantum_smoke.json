@@ -1,0 +1,127 @@
+{
+ "smoke": true,
+ "rtt_ms": 50.0,
+ "n": 6,
+ "runs": [
+  {
+   "group": "x25519",
+   "ips": 1280,
+   "cert": 2000,
+   "n": 6,
+   "ok": 6,
+   "p50": 51.714,
+   "two_rtt_rate": 0.0,
+   "first_flight_bytes": 1280,
+   "first_flight_datagrams": 1
+  },
+  {
+   "group": "x25519",
+   "ips": 1280,
+   "cert": 8000,
+   "n": 6,
+   "ok": 6,
+   "p50": 102.544,
+   "two_rtt_rate": 1.0,
+   "first_flight_bytes": 1280,
+   "first_flight_datagrams": 1
+  },
+  {
+   "group": "x25519",
+   "ips": 1281,
+   "cert": 2000,
+   "n": 6,
+   "ok": 6,
+   "p50": 51.831,
+   "two_rtt_rate": 0.0,
+   "first_flight_bytes": 1281,
+   "first_flight_datagrams": 1
+  },
+  {
+   "group": "x25519",
+   "ips": 1281,
+   "cert": 8000,
+   "n": 6,
+   "ok": 6,
+   "p50": 102.565,
+   "two_rtt_rate": 1.0,
+   "first_flight_bytes": 1281,
+   "first_flight_datagrams": 1
+  }
+ ],
+ "checks": [
+  {
+   "check": "건식: 핸드셰이크 성공 [ips 1280/cert 2000]",
+   "ok": true,
+   "detail": "6/6 성공",
+   "gating": true
+  },
+  {
+   "check": "건식: 핸드셰이크 성공 [ips 1280/cert 8000]",
+   "ok": true,
+   "detail": "6/6 성공",
+   "gating": true
+  },
+  {
+   "check": "건식: 핸드셰이크 성공 [ips 1281/cert 2000]",
+   "ok": true,
+   "detail": "6/6 성공",
+   "gating": true
+  },
+  {
+   "check": "건식: 핸드셰이크 성공 [ips 1281/cert 8000]",
+   "ok": true,
+   "detail": "6/6 성공",
+   "gating": true
+  },
+  {
+   "check": "건식: B=k·ips [ips 1280/cert 2000]",
+   "ok": true,
+   "detail": "B 1280 (예측 1280), k 1",
+   "gating": true
+  },
+  {
+   "check": "건식: B=k·ips [ips 1280/cert 8000]",
+   "ok": true,
+   "detail": "B 1280 (예측 1280), k 1",
+   "gating": true
+  },
+  {
+   "check": "건식: B=k·ips [ips 1281/cert 2000]",
+   "ok": true,
+   "detail": "B 1281 (예측 1281), k 1",
+   "gating": true
+  },
+  {
+   "check": "건식: B=k·ips [ips 1281/cert 8000]",
+   "ok": true,
+   "detail": "B 1281 (예측 1281), k 1",
+   "gating": true
+  },
+  {
+   "check": "건식: cert 2000 는 1-RTT [ips 1280]",
+   "ok": true,
+   "detail": "2RTT 비율 0%",
+   "gating": true
+  },
+  {
+   "check": "건식: cert 8000 는 2-RTT [ips 1280]",
+   "ok": true,
+   "detail": "2RTT 비율 100%",
+   "gating": true
+  },
+  {
+   "check": "건식: cert 2000 는 1-RTT [ips 1281]",
+   "ok": true,
+   "detail": "2RTT 비율 0%",
+   "gating": true
+  },
+  {
+   "check": "건식: cert 8000 는 2-RTT [ips 1281]",
+   "ok": true,
+   "detail": "2RTT 비율 100%",
+   "gating": true
+  }
+ ],
+ "passed": 12,
+ "total": 12
+}

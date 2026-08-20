@@ -1,0 +1,3 @@
+{"fp": "2eda897b8322", "key": "x25519|ips1707|c2000|n6", "val": {"group": "x25519", "ips": 1707, "cert": 2000, "n": 6, "ok": 6, "p50": 52.517, "two_rtt_rate": 0.0, "first_flight_bytes": 1452, "first_flight_datagrams": 1}}
+{"fp": "2eda897b8322", "key": "x25519|ips2134|c2000|n6", "val": {"group": "x25519", "ips": 2134, "cert": 2000, "n": 6, "ok": 6, "p50": 52.58, "two_rtt_rate": 0.0, "first_flight_bytes": 1452, "first_flight_datagrams": 1}}
+{"fp": "2eda897b8322", "key": "x25519|ips1281|c2000|n6", "val": {"group": "x25519", "ips": 1281, "cert": 2000, "n": 6, "ok": 6, "p50": 52.087, "two_rtt_rate": 0.0, "first_flight_bytes": 1281, "first_flight_datagrams": 1}}

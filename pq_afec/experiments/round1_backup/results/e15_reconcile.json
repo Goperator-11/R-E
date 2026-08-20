@@ -1,0 +1,342 @@
+{
+  "rtt_ms": 20.0,
+  "trials": 60000,
+  "packets": {
+    "x25519": [
+      1,
+      4
+    ],
+    "mlkem": [
+      2,
+      5
+    ]
+  },
+  "conditions": {
+    "uniform_p2": {
+      "x25519": {
+        "n": 60000,
+        "mean": 43.86488333333333,
+        "p50": 20.0,
+        "p90": 20.0,
+        "p95": 60.0,
+        "p99": 1019.0,
+        "max": 3057.0,
+        "untouched_frac": 0.9030833333333333
+      },
+      "mlkem": {
+        "n": 60000,
+        "mean": 26.062,
+        "p50": 20.0,
+        "p90": 60.0,
+        "p95": 60.0,
+        "p99": 100.0,
+        "max": 260.0,
+        "untouched_frac": 0.8648166666666667
+      },
+      "mlkem_fec": {
+        "n": 60000,
+        "mean": 20.165333333333333,
+        "p50": 20.0,
+        "p90": 20.0,
+        "p95": 20.0,
+        "p99": 20.0,
+        "max": 100.0,
+        "untouched_frac": 0.9958833333333333
+      },
+      "direction": {
+        "p50_mlkem_worse": false,
+        "mean_mlkem_worse": false,
+        "p95_mlkem_worse": false
+      }
+    },
+    "uniform_p5": {
+      "x25519": {
+        "n": 60000,
+        "mean": 85.91753333333334,
+        "p50": 20.0,
+        "p90": 60.0,
+        "p95": 1019.0,
+        "p99": 1059.0,
+        "max": 7013.0,
+        "untouched_frac": 0.7661666666666667
+      },
+      "mlkem": {
+        "n": 60000,
+        "mean": 36.696,
+        "p50": 20.0,
+        "p90": 60.0,
+        "p95": 100.0,
+        "p99": 140.0,
+        "max": 300.0,
+        "untouched_frac": 0.6898666666666666
+      },
+      "mlkem_fec": {
+        "n": 60000,
+        "mean": 21.063333333333333,
+        "p50": 20.0,
+        "p90": 20.0,
+        "p95": 20.0,
+        "p99": 60.0,
+        "max": 140.0,
+        "untouched_frac": 0.9740333333333333
+      },
+      "direction": {
+        "p50_mlkem_worse": false,
+        "mean_mlkem_worse": false,
+        "p95_mlkem_worse": false
+      }
+    },
+    "uniform_p10": {
+      "x25519": {
+        "n": 60000,
+        "mean": 169.29051666666666,
+        "p50": 20.0,
+        "p90": 1019.0,
+        "p95": 1019.0,
+        "p99": 3017.0,
+        "max": 31029.0,
+        "untouched_frac": 0.5619
+      },
+      "mlkem": {
+        "n": 60000,
+        "mean": 61.64066666666667,
+        "p50": 60.0,
+        "p90": 140.0,
+        "p95": 180.0,
+        "p99": 260.0,
+        "max": 460.0,
+        "untouched_frac": 0.44195
+      },
+      "mlkem_fec": {
+        "n": 60000,
+        "mean": 24.688,
+        "p50": 20.0,
+        "p90": 60.0,
+        "p95": 60.0,
+        "p99": 100.0,
+        "max": 220.0,
+        "untouched_frac": 0.8941833333333333
+      },
+      "direction": {
+        "p50_mlkem_worse": true,
+        "mean_mlkem_worse": false,
+        "p95_mlkem_worse": false
+      }
+    },
+    "burst_p5_L4": {
+      "x25519": {
+        "n": 60000,
+        "mean": 87.22605,
+        "p50": 20.0,
+        "p90": 60.0,
+        "p95": 1019.0,
+        "p99": 1019.0,
+        "max": 8132.0,
+        "untouched_frac": 0.8999
+      },
+      "mlkem": {
+        "n": 60000,
+        "mean": 72.5878,
+        "p50": 20.0,
+        "p90": 60.0,
+        "p95": 60.0,
+        "p99": 1019.0,
+        "max": 14086.0,
+        "untouched_frac": 0.8753333333333333
+      },
+      "mlkem_fec": {
+        "n": 60000,
+        "mean": 60.36183333333334,
+        "p50": 20.0,
+        "p90": 20.0,
+        "p95": 60.0,
+        "p99": 1019.0,
+        "max": 13047.0,
+        "untouched_frac": 0.9014833333333333
+      },
+      "direction": {
+        "p50_mlkem_worse": false,
+        "mean_mlkem_worse": false,
+        "p95_mlkem_worse": false
+      }
+    },
+    "burst_p5_L8": {
+      "x25519": {
+        "n": 60000,
+        "mean": 82.51166666666667,
+        "p50": 20.0,
+        "p90": 20.0,
+        "p95": 1019.0,
+        "p99": 1019.0,
+        "max": 15005.0,
+        "untouched_frac": 0.9253166666666667
+      },
+      "mlkem": {
+        "n": 60000,
+        "mean": 74.70965,
+        "p50": 20.0,
+        "p90": 20.0,
+        "p95": 60.0,
+        "p99": 1019.0,
+        "max": 15005.0,
+        "untouched_frac": 0.9142
+      },
+      "mlkem_fec": {
+        "n": 60000,
+        "mean": 74.206,
+        "p50": 20.0,
+        "p90": 20.0,
+        "p95": 60.0,
+        "p99": 1019.0,
+        "max": 13047.0,
+        "untouched_frac": 0.9183666666666667
+      },
+      "direction": {
+        "p50_mlkem_worse": false,
+        "mean_mlkem_worse": false,
+        "p95_mlkem_worse": false
+      }
+    }
+  },
+  "e12_comparison": {
+    "checks": [
+      {
+        "condition": "uniform_p2",
+        "stat": "p50",
+        "model_ratio": 1.0,
+        "measured_ratio": 1.0065104689948963,
+        "model_class": "차이 없음",
+        "measured_class": "차이 없음",
+        "agree": true
+      },
+      {
+        "condition": "uniform_p2",
+        "stat": "mean",
+        "model_ratio": 0.5941426950107774,
+        "measured_ratio": 0.80457940789512,
+        "model_class": "ML-KEM 좋음",
+        "measured_class": "ML-KEM 좋음",
+        "agree": true
+      },
+      {
+        "condition": "uniform_p2",
+        "stat": "p95",
+        "model_ratio": 1.0,
+        "measured_ratio": 0.6287606068398046,
+        "model_class": "차이 없음",
+        "measured_class": "ML-KEM 좋음",
+        "agree": false
+      },
+      {
+        "condition": "uniform_p5",
+        "stat": "p50",
+        "model_ratio": 1.0,
+        "measured_ratio": 1.0123214785774293,
+        "model_class": "차이 없음",
+        "measured_class": "차이 없음",
+        "agree": true
+      },
+      {
+        "condition": "uniform_p5",
+        "stat": "mean",
+        "model_ratio": 0.4271072338358565,
+        "measured_ratio": 0.9683072578464633,
+        "model_class": "ML-KEM 좋음",
+        "measured_class": "차이 없음",
+        "agree": false
+      },
+      {
+        "condition": "uniform_p5",
+        "stat": "p95",
+        "model_ratio": 0.09813542688910697,
+        "measured_ratio": 0.9144600450402842,
+        "model_class": "ML-KEM 좋음",
+        "measured_class": "ML-KEM 좋음",
+        "agree": true
+      },
+      {
+        "condition": "uniform_p10",
+        "stat": "p50",
+        "model_ratio": 3.0,
+        "measured_ratio": 1.9283928075259,
+        "model_class": "ML-KEM 나쁨",
+        "measured_class": "ML-KEM 나쁨",
+        "agree": true
+      },
+      {
+        "condition": "uniform_p10",
+        "stat": "mean",
+        "model_ratio": 0.3641117522727942,
+        "measured_ratio": 1.0238639211869747,
+        "model_class": "ML-KEM 좋음",
+        "measured_class": "차이 없음",
+        "agree": false
+      },
+      {
+        "condition": "uniform_p10",
+        "stat": "p95",
+        "model_ratio": 0.17664376840039253,
+        "measured_ratio": 0.9266171537192939,
+        "model_class": "ML-KEM 좋음",
+        "measured_class": "ML-KEM 좋음",
+        "agree": true
+      },
+      {
+        "condition": "burst_p5_L4",
+        "stat": "p50",
+        "model_ratio": 1.0,
+        "measured_ratio": 1.0076663723207835,
+        "model_class": "차이 없음",
+        "measured_class": "차이 없음",
+        "agree": true
+      },
+      {
+        "condition": "burst_p5_L4",
+        "stat": "mean",
+        "model_ratio": 0.8321802947628604,
+        "measured_ratio": 0.6028170004404928,
+        "model_class": "ML-KEM 좋음",
+        "measured_class": "ML-KEM 좋음",
+        "agree": true
+      },
+      {
+        "condition": "burst_p5_L4",
+        "stat": "p95",
+        "model_ratio": 0.058881256133464184,
+        "measured_ratio": 0.7358873911139229,
+        "model_class": "ML-KEM 좋음",
+        "measured_class": "ML-KEM 좋음",
+        "agree": true
+      },
+      {
+        "condition": "burst_p5_L8",
+        "stat": "p50",
+        "model_ratio": 1.0,
+        "measured_ratio": 1.0090224352519432,
+        "model_class": "차이 없음",
+        "measured_class": "차이 없음",
+        "agree": true
+      },
+      {
+        "condition": "burst_p5_L8",
+        "stat": "mean",
+        "model_ratio": 0.9054434726402326,
+        "measured_ratio": 0.7797999163192803,
+        "model_class": "ML-KEM 좋음",
+        "measured_class": "ML-KEM 좋음",
+        "agree": true
+      },
+      {
+        "condition": "burst_p5_L8",
+        "stat": "p95",
+        "model_ratio": 0.058881256133464184,
+        "measured_ratio": 1.0136436284255252,
+        "model_class": "ML-KEM 좋음",
+        "measured_class": "차이 없음",
+        "agree": false
+      }
+    ],
+    "agree": 11,
+    "disagree": 4
+  }
+}

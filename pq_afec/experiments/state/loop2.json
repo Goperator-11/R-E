@@ -1,0 +1,836 @@
+{
+ "stages": {
+  "gate": {
+   "status": "done",
+   "fingerprint": "ed6a032f9788a6db",
+   "finished": "2026-08-19 15:07",
+   "seconds": 0.2,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_gate.txt"
+  },
+  "build": {
+   "status": "done",
+   "fingerprint": "44b503e5089752f2",
+   "finished": "2026-08-19 15:07",
+   "seconds": 9.8,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_build.txt"
+  },
+  "p0": {
+   "status": "done",
+   "fingerprint": "2cdf2df1beb22eec",
+   "finished": "2026-08-19 15:08",
+   "seconds": 4.8,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p0.txt"
+  },
+  "p1": {
+   "status": "done",
+   "fingerprint": "0b597762a9209aa8",
+   "finished": "2026-08-20 09:27",
+   "seconds": 11.0,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p1.txt"
+  },
+  "p2": {
+   "status": "done",
+   "fingerprint": "32ff10b3417163f9",
+   "finished": "2026-08-20 09:31",
+   "seconds": 255.5,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p2.txt"
+  },
+  "p3": {
+   "status": "done",
+   "fingerprint": "cd6585f5ce72bed4",
+   "finished": "2026-08-20 09:17",
+   "seconds": 1033.0,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p3.txt"
+  },
+  "p7": {
+   "status": "done",
+   "fingerprint": "583e589e161bf356",
+   "finished": "2026-08-20 09:18",
+   "seconds": 65.4,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p7.txt"
+  },
+  "p8": {
+   "status": "done",
+   "fingerprint": "9c5b606644481f75",
+   "finished": "2026-08-20 09:22",
+   "seconds": 224.3,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p8.txt"
+  },
+  "p4": {
+   "status": "done",
+   "fingerprint": "58da76976f67e561",
+   "finished": "2026-08-20 09:26",
+   "seconds": 0.2,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p4.txt"
+  },
+  "p5": {
+   "status": "done",
+   "fingerprint": "2f78369dd5615841",
+   "finished": "2026-08-20 09:26",
+   "seconds": 15.2,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p5.txt"
+  },
+  "p6": {
+   "status": "done",
+   "fingerprint": "d289eb268f125f09",
+   "finished": "2026-08-20 09:26",
+   "seconds": 4.6,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p6.txt"
+  },
+  "p9": {
+   "status": "done",
+   "fingerprint": "dbd69135f6f3669b",
+   "finished": "2026-08-20 09:24",
+   "seconds": 105.5,
+   "error": "",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p9.txt"
+  },
+  "p10": {
+   "status": "failed",
+   "fingerprint": "36e504d47ce843fe",
+   "finished": "2026-08-20 09:26",
+   "seconds": 146.0,
+   "error": "exit 1",
+   "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p10.txt"
+  }
+ },
+ "history": [
+  {
+   "stage": "gate",
+   "ok": false,
+   "at": "2026-08-19 14:35",
+   "seconds": 4.1
+  },
+  {
+   "stage": "build",
+   "ok": true,
+   "at": "2026-08-19 14:36",
+   "seconds": 10.0
+  },
+  {
+   "stage": "gate",
+   "ok": true,
+   "at": "2026-08-19 14:36",
+   "seconds": 0.3
+  },
+  {
+   "stage": "p0",
+   "ok": true,
+   "at": "2026-08-19 14:36",
+   "seconds": 4.9
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 14:36",
+   "seconds": 10.9
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 14:41",
+   "seconds": 255.9
+  },
+  {
+   "stage": "build",
+   "ok": true,
+   "at": "2026-08-19 15:07",
+   "seconds": 9.8
+  },
+  {
+   "stage": "gate",
+   "ok": true,
+   "at": "2026-08-19 15:07",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p0",
+   "ok": true,
+   "at": "2026-08-19 15:08",
+   "seconds": 4.8
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 15:08",
+   "seconds": 10.7
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 15:12",
+   "seconds": 252.1
+  },
+  {
+   "stage": "p3",
+   "ok": false,
+   "at": "2026-08-19 15:29",
+   "seconds": 1015.7
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 15:33",
+   "seconds": 12.5
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 15:37",
+   "seconds": 245.8
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-19 15:54",
+   "seconds": 989.2
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "at": "2026-08-19 15:55",
+   "seconds": 62.9
+  },
+  {
+   "stage": "p8",
+   "ok": false,
+   "at": "2026-08-19 15:58",
+   "seconds": 211.8
+  },
+  {
+   "stage": "p4",
+   "ok": true,
+   "at": "2026-08-19 15:58",
+   "seconds": 0.1
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "at": "2026-08-19 15:58",
+   "seconds": 7.2
+  },
+  {
+   "stage": "p6",
+   "ok": true,
+   "at": "2026-08-19 15:58",
+   "seconds": 1.9
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 15:58",
+   "seconds": 10.1
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 16:02",
+   "seconds": 236.8
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 16:12",
+   "seconds": 13.0
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 16:16",
+   "seconds": 241.3
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 16:25",
+   "seconds": 16.7
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 16:29",
+   "seconds": 252.7
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-19 16:47",
+   "seconds": 1065.8
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "at": "2026-08-19 16:48",
+   "seconds": 65.5
+  },
+  {
+   "stage": "p8",
+   "ok": false,
+   "at": "2026-08-19 16:52",
+   "seconds": 221.7
+  },
+  {
+   "stage": "p9",
+   "ok": true,
+   "at": "2026-08-19 16:54",
+   "seconds": 111.2
+  },
+  {
+   "stage": "p10",
+   "ok": true,
+   "at": "2026-08-19 16:56",
+   "seconds": 144.8
+  },
+  {
+   "stage": "p4",
+   "ok": true,
+   "at": "2026-08-19 16:56",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "at": "2026-08-19 16:56",
+   "seconds": 15.1
+  },
+  {
+   "stage": "p6",
+   "ok": true,
+   "at": "2026-08-19 16:56",
+   "seconds": 3.4
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 16:57",
+   "seconds": 10.7
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 17:01",
+   "seconds": 260.0
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-19 17:18",
+   "seconds": 1031.0
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "at": "2026-08-19 17:19",
+   "seconds": 65.3
+  },
+  {
+   "stage": "p8",
+   "ok": false,
+   "at": "2026-08-19 17:23",
+   "seconds": 225.1
+  },
+  {
+   "stage": "p9",
+   "ok": true,
+   "at": "2026-08-19 17:25",
+   "seconds": 104.7
+  },
+  {
+   "stage": "p10",
+   "ok": true,
+   "at": "2026-08-19 17:27",
+   "seconds": 146.8
+  },
+  {
+   "stage": "p4",
+   "ok": true,
+   "at": "2026-08-19 17:27",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "at": "2026-08-19 17:27",
+   "seconds": 14.7
+  },
+  {
+   "stage": "p6",
+   "ok": true,
+   "at": "2026-08-19 17:27",
+   "seconds": 4.0
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 17:28",
+   "seconds": 10.9
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 17:32",
+   "seconds": 257.1
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-19 17:49",
+   "seconds": 1034.4
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "at": "2026-08-19 17:50",
+   "seconds": 65.2
+  },
+  {
+   "stage": "p8",
+   "ok": false,
+   "at": "2026-08-19 17:54",
+   "seconds": 226.5
+  },
+  {
+   "stage": "p9",
+   "ok": true,
+   "at": "2026-08-19 17:56",
+   "seconds": 104.5
+  },
+  {
+   "stage": "p10",
+   "ok": true,
+   "at": "2026-08-19 17:58",
+   "seconds": 146.1
+  },
+  {
+   "stage": "p4",
+   "ok": true,
+   "at": "2026-08-19 17:58",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "at": "2026-08-19 17:58",
+   "seconds": 14.2
+  },
+  {
+   "stage": "p6",
+   "ok": true,
+   "at": "2026-08-19 17:58",
+   "seconds": 3.7
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 17:59",
+   "seconds": 10.8
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 18:03",
+   "seconds": 252.9
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-19 18:20",
+   "seconds": 1029.5
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "at": "2026-08-19 18:21",
+   "seconds": 65.4
+  },
+  {
+   "stage": "p8",
+   "ok": false,
+   "at": "2026-08-19 18:25",
+   "seconds": 224.8
+  },
+  {
+   "stage": "p9",
+   "ok": true,
+   "at": "2026-08-19 18:27",
+   "seconds": 104.6
+  },
+  {
+   "stage": "p10",
+   "ok": true,
+   "at": "2026-08-19 18:29",
+   "seconds": 144.4
+  },
+  {
+   "stage": "p4",
+   "ok": true,
+   "at": "2026-08-19 18:29",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "at": "2026-08-19 18:29",
+   "seconds": 14.6
+  },
+  {
+   "stage": "p6",
+   "ok": true,
+   "at": "2026-08-19 18:29",
+   "seconds": 3.9
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 18:29",
+   "seconds": 10.8
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 18:34",
+   "seconds": 257.6
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-19 18:51",
+   "seconds": 1013.9
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "at": "2026-08-19 18:52",
+   "seconds": 65.2
+  },
+  {
+   "stage": "p8",
+   "ok": false,
+   "at": "2026-08-19 18:55",
+   "seconds": 223.2
+  },
+  {
+   "stage": "p9",
+   "ok": true,
+   "at": "2026-08-19 18:57",
+   "seconds": 103.9
+  },
+  {
+   "stage": "p10",
+   "ok": true,
+   "at": "2026-08-19 19:00",
+   "seconds": 144.3
+  },
+  {
+   "stage": "p4",
+   "ok": true,
+   "at": "2026-08-19 19:00",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "at": "2026-08-19 19:00",
+   "seconds": 11.2
+  },
+  {
+   "stage": "p6",
+   "ok": true,
+   "at": "2026-08-19 19:00",
+   "seconds": 2.8
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 19:00",
+   "seconds": 10.5
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 19:04",
+   "seconds": 249.5
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-19 19:21",
+   "seconds": 1034.4
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "at": "2026-08-19 19:23",
+   "seconds": 65.0
+  },
+  {
+   "stage": "p8",
+   "ok": true,
+   "at": "2026-08-19 19:26",
+   "seconds": 223.6
+  },
+  {
+   "stage": "p9",
+   "ok": true,
+   "at": "2026-08-19 19:28",
+   "seconds": 104.2
+  },
+  {
+   "stage": "p10",
+   "ok": true,
+   "at": "2026-08-19 19:30",
+   "seconds": 147.7
+  },
+  {
+   "stage": "p4",
+   "ok": true,
+   "at": "2026-08-19 19:30",
+   "seconds": 0.1
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "at": "2026-08-19 19:31",
+   "seconds": 11.3
+  },
+  {
+   "stage": "p6",
+   "ok": true,
+   "at": "2026-08-19 19:31",
+   "seconds": 2.7
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 19:33",
+   "seconds": 16.8
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 19:37",
+   "seconds": 252.2
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-19 19:54",
+   "seconds": 1030.7
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "at": "2026-08-19 19:55",
+   "seconds": 65.3
+  },
+  {
+   "stage": "p8",
+   "ok": false,
+   "at": "2026-08-19 19:59",
+   "seconds": 217.7
+  },
+  {
+   "stage": "p9",
+   "ok": true,
+   "at": "2026-08-19 20:00",
+   "seconds": 100.9
+  },
+  {
+   "stage": "p10",
+   "ok": true,
+   "at": "2026-08-19 20:03",
+   "seconds": 142.8
+  },
+  {
+   "stage": "p4",
+   "ok": true,
+   "at": "2026-08-19 20:03",
+   "seconds": 0.1
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "at": "2026-08-19 20:03",
+   "seconds": 7.5
+  },
+  {
+   "stage": "p6",
+   "ok": true,
+   "at": "2026-08-19 20:03",
+   "seconds": 2.3
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-19 20:03",
+   "seconds": 10.2
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-19 20:07",
+   "seconds": 247.4
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-19 20:24",
+   "seconds": 1001.4
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "at": "2026-08-19 20:25",
+   "seconds": 63.2
+  },
+  {
+   "stage": "p8",
+   "ok": false,
+   "at": "2026-08-19 20:28",
+   "seconds": 214.8
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-20 08:25",
+   "seconds": 17.7
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-20 08:29",
+   "seconds": 255.7
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-20 08:46",
+   "seconds": 1031.3
+  },
+  {
+   "stage": "p7",
+   "ok": false,
+   "at": "2026-08-20 08:47",
+   "seconds": 65.2
+  },
+  {
+   "stage": "p8",
+   "ok": true,
+   "at": "2026-08-20 08:51",
+   "seconds": 224.4
+  },
+  {
+   "stage": "p9",
+   "ok": true,
+   "at": "2026-08-20 08:53",
+   "seconds": 104.7
+  },
+  {
+   "stage": "p10",
+   "ok": true,
+   "at": "2026-08-20 08:55",
+   "seconds": 146.1
+  },
+  {
+   "stage": "p4",
+   "ok": true,
+   "at": "2026-08-20 08:55",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "at": "2026-08-20 08:55",
+   "seconds": 15.1
+  },
+  {
+   "stage": "p6",
+   "ok": true,
+   "at": "2026-08-20 08:56",
+   "seconds": 3.6
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-20 08:56",
+   "seconds": 10.7
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-20 09:00",
+   "seconds": 253.5
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "at": "2026-08-20 09:17",
+   "seconds": 1033.0
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "at": "2026-08-20 09:18",
+   "seconds": 65.4
+  },
+  {
+   "stage": "p8",
+   "ok": true,
+   "at": "2026-08-20 09:22",
+   "seconds": 224.3
+  },
+  {
+   "stage": "p9",
+   "ok": true,
+   "at": "2026-08-20 09:24",
+   "seconds": 105.5
+  },
+  {
+   "stage": "p10",
+   "ok": false,
+   "at": "2026-08-20 09:26",
+   "seconds": 146.0
+  },
+  {
+   "stage": "p4",
+   "ok": true,
+   "at": "2026-08-20 09:26",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "at": "2026-08-20 09:26",
+   "seconds": 15.2
+  },
+  {
+   "stage": "p6",
+   "ok": true,
+   "at": "2026-08-20 09:26",
+   "seconds": 4.6
+  },
+  {
+   "stage": "p1",
+   "ok": true,
+   "at": "2026-08-20 09:27",
+   "seconds": 11.0
+  },
+  {
+   "stage": "p2",
+   "ok": true,
+   "at": "2026-08-20 09:31",
+   "seconds": 255.5
+  }
+ ]
+}

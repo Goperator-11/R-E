@@ -1,0 +1,670 @@
+{
+ "rtt_ms": 50.0,
+ "group": "X25519MLKEM768",
+ "runs": [
+  {
+   "arm": "nofec",
+   "cert": 6000,
+   "hct_ms": [
+    160.864
+   ],
+   "kem": 4588,
+   "shim_stats": {
+    "recovered": 0,
+    "delivered": 2,
+    "parity_rx": 0,
+    "unrecoverable_seen": 0,
+    "flights": 1,
+    "flight_id_wraps": 0,
+    "srv_rx_bytes": 4010,
+    "srv_tx_bytes": 8132,
+    "srv_rx_dgrams": 5,
+    "srv_tx_dgrams": 8
+   },
+   "analysis": {
+    "n_events": 13,
+    "rx_total": 4010,
+    "tx_total": 8132,
+    "stall_t": 536.4056860000002,
+    "stall_rx_cum": 2560,
+    "stall_tx_cum": 7680,
+    "stall_ratio": 3.0,
+    "steps": [
+     {
+      "t": 533.9966430000001,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 1280,
+      "tx_cum": 0,
+      "budget": 3840,
+      "headroom": 3840
+     },
+     {
+      "t": 534.0377289999996,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 0,
+      "budget": 7680,
+      "headroom": 7680
+     },
+     {
+      "t": 536.2619309999985,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 1280,
+      "budget": 7680,
+      "headroom": 6400
+     },
+     {
+      "t": 536.362024999999,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 2560,
+      "budget": 7680,
+      "headroom": 5120
+     },
+     {
+      "t": 536.377438999999,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 3840,
+      "budget": 7680,
+      "headroom": 3840
+     },
+     {
+      "t": 536.388122,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 5120,
+      "budget": 7680,
+      "headroom": 2560
+     },
+     {
+      "t": 536.398642,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 6400,
+      "budget": 7680,
+      "headroom": 1280
+     },
+     {
+      "t": 536.4056860000002,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 7680,
+      "budget": 7680,
+      "headroom": 0
+     },
+     {
+      "t": 588.2008079999998,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 3840,
+      "tx_cum": 7680,
+      "budget": 11520,
+      "headroom": 3840
+     },
+     {
+      "t": 588.6368779999991,
+      "kind": "from_srv",
+      "n": 159,
+      "rx_cum": 3840,
+      "tx_cum": 7839,
+      "budget": 11520,
+      "headroom": 3681
+     },
+     {
+      "t": 639.8217119999998,
+      "kind": "to_srv",
+      "n": 105,
+      "rx_cum": 3945,
+      "tx_cum": 7839,
+      "budget": 11835,
+      "headroom": 3996
+     },
+     {
+      "t": 640.4064049999985,
+      "kind": "to_srv",
+      "n": 65,
+      "rx_cum": 4010,
+      "tx_cum": 7839,
+      "budget": 12030,
+      "headroom": 4191
+     },
+     {
+      "t": 640.450551999999,
+      "kind": "from_srv",
+      "n": 293,
+      "rx_cum": 4010,
+      "tx_cum": 8132,
+      "budget": 12030,
+      "headroom": 3898
+     }
+    ]
+   }
+  },
+  {
+   "arm": "dup1",
+   "cert": 6000,
+   "hct_ms": [
+    103.235
+   ],
+   "kem": 4588,
+   "shim_stats": {
+    "recovered": 0,
+    "delivered": 2,
+    "parity_rx": 0,
+    "unrecoverable_seen": 0,
+    "flights": 1,
+    "flight_id_wraps": 0,
+    "srv_rx_bytes": 6570,
+    "srv_tx_bytes": 7842,
+    "srv_rx_dgrams": 7,
+    "srv_tx_dgrams": 7
+   },
+   "analysis": {
+    "n_events": 14,
+    "rx_total": 6570,
+    "tx_total": 7842,
+    "stall_t": 500.4386909999994,
+    "stall_rx_cum": 2560,
+    "stall_tx_cum": 7680,
+    "stall_ratio": 3.0,
+    "steps": [
+     {
+      "t": 499.31971800000065,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 1280,
+      "tx_cum": 0,
+      "budget": 3840,
+      "headroom": 3840
+     },
+     {
+      "t": 499.33838299999957,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 0,
+      "budget": 7680,
+      "headroom": 7680
+     },
+     {
+      "t": 500.3474929999996,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 1280,
+      "budget": 7680,
+      "headroom": 6400
+     },
+     {
+      "t": 500.37451599999906,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 2560,
+      "budget": 7680,
+      "headroom": 5120
+     },
+     {
+      "t": 500.38148299999995,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 3840,
+      "budget": 7680,
+      "headroom": 3840
+     },
+     {
+      "t": 500.40339199999903,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 5120,
+      "budget": 7680,
+      "headroom": 2560
+     },
+     {
+      "t": 500.4226309999993,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 6400,
+      "budget": 7680,
+      "headroom": 1280
+     },
+     {
+      "t": 500.4386909999994,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 7680,
+      "budget": 7680,
+      "headroom": 0
+     },
+     {
+      "t": 502.72005799999954,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 3840,
+      "tx_cum": 7680,
+      "budget": 11520,
+      "headroom": 3840
+     },
+     {
+      "t": 502.7350980000005,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 5120,
+      "tx_cum": 7680,
+      "budget": 15360,
+      "headroom": 7680
+     },
+     {
+      "t": 551.2002479999989,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 6400,
+      "tx_cum": 7680,
+      "budget": 19200,
+      "headroom": 11520
+     },
+     {
+      "t": 551.3509590000006,
+      "kind": "from_srv",
+      "n": 162,
+      "rx_cum": 6400,
+      "tx_cum": 7842,
+      "budget": 19200,
+      "headroom": 11358
+     },
+     {
+      "t": 601.7878099999994,
+      "kind": "to_srv",
+      "n": 105,
+      "rx_cum": 6505,
+      "tx_cum": 7842,
+      "budget": 19515,
+      "headroom": 11673
+     },
+     {
+      "t": 601.7955599999993,
+      "kind": "to_srv",
+      "n": 65,
+      "rx_cum": 6570,
+      "tx_cum": 7842,
+      "budget": 19710,
+      "headroom": 11868
+     }
+    ]
+   }
+  },
+  {
+   "arm": "dup2",
+   "cert": 6000,
+   "hct_ms": [
+    55.861
+   ],
+   "kem": 4588,
+   "shim_stats": {
+    "recovered": 0,
+    "delivered": 2,
+    "parity_rx": 0,
+    "unrecoverable_seen": 0,
+    "flights": 1,
+    "flight_id_wraps": 0,
+    "srv_rx_bytes": 9025,
+    "srv_tx_bytes": 7850,
+    "srv_rx_dgrams": 8,
+    "srv_tx_dgrams": 7
+   },
+   "analysis": {
+    "n_events": 15,
+    "rx_total": 9025,
+    "tx_total": 7850,
+    "stall_t": 537.5472139999999,
+    "stall_rx_cum": 5120,
+    "stall_tx_cum": 7850,
+    "stall_ratio": 1.533203125,
+    "steps": [
+     {
+      "t": 535.9480639999994,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 1280,
+      "tx_cum": 0,
+      "budget": 3840,
+      "headroom": 3840
+     },
+     {
+      "t": 535.981571999999,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 0,
+      "budget": 7680,
+      "headroom": 7680
+     },
+     {
+      "t": 535.9968609999992,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 3840,
+      "tx_cum": 0,
+      "budget": 11520,
+      "headroom": 11520
+     },
+     {
+      "t": 536.0079679999999,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 5120,
+      "tx_cum": 0,
+      "budget": 15360,
+      "headroom": 15360
+     },
+     {
+      "t": 537.4508200000001,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 5120,
+      "tx_cum": 1280,
+      "budget": 15360,
+      "headroom": 14080
+     },
+     {
+      "t": 537.5031929999991,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 5120,
+      "tx_cum": 2560,
+      "budget": 15360,
+      "headroom": 12800
+     },
+     {
+      "t": 537.5155940000003,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 5120,
+      "tx_cum": 3840,
+      "budget": 15360,
+      "headroom": 11520
+     },
+     {
+      "t": 537.5255389999988,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 5120,
+      "tx_cum": 5120,
+      "budget": 15360,
+      "headroom": 10240
+     },
+     {
+      "t": 537.5340389999988,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 5120,
+      "tx_cum": 6400,
+      "budget": 15360,
+      "headroom": 8960
+     },
+     {
+      "t": 537.5407130000003,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 5120,
+      "tx_cum": 7680,
+      "budget": 15360,
+      "headroom": 7680
+     },
+     {
+      "t": 537.5472139999999,
+      "kind": "from_srv",
+      "n": 170,
+      "rx_cum": 5120,
+      "tx_cum": 7850,
+      "budget": 15360,
+      "headroom": 7510
+     },
+     {
+      "t": 539.3516480000003,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 6400,
+      "tx_cum": 7850,
+      "budget": 19200,
+      "headroom": 11350
+     },
+     {
+      "t": 539.3845079999995,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 7680,
+      "tx_cum": 7850,
+      "budget": 23040,
+      "headroom": 15190
+     },
+     {
+      "t": 590.3404739999995,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 8960,
+      "tx_cum": 7850,
+      "budget": 26880,
+      "headroom": 19030
+     },
+     {
+      "t": 590.3670549999997,
+      "kind": "to_srv",
+      "n": 65,
+      "rx_cum": 9025,
+      "tx_cum": 7850,
+      "budget": 27075,
+      "headroom": 19225
+     }
+    ]
+   }
+  },
+  {
+   "arm": "dup3",
+   "cert": 6000,
+   "hct_ms": [
+    56.335
+   ],
+   "kem": 4588,
+   "shim_stats": {
+    "recovered": 0,
+    "delivered": 2,
+    "parity_rx": 0,
+    "unrecoverable_seen": 0,
+    "flights": 1,
+    "flight_id_wraps": 0,
+    "srv_rx_bytes": 11585,
+    "srv_tx_bytes": 8131,
+    "srv_rx_dgrams": 10,
+    "srv_tx_dgrams": 8
+   },
+   "analysis": {
+    "n_events": 18,
+    "rx_total": 11585,
+    "tx_total": 8131,
+    "stall_t": 502.18807899999973,
+    "stall_rx_cum": 7680,
+    "stall_tx_cum": 7838,
+    "stall_ratio": 1.0205729166666666,
+    "steps": [
+     {
+      "t": 500.1588469999998,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 1280,
+      "tx_cum": 0,
+      "budget": 3840,
+      "headroom": 3840
+     },
+     {
+      "t": 500.1955490000007,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 2560,
+      "tx_cum": 0,
+      "budget": 7680,
+      "headroom": 7680
+     },
+     {
+      "t": 500.2634229999998,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 3840,
+      "tx_cum": 0,
+      "budget": 11520,
+      "headroom": 11520
+     },
+     {
+      "t": 500.28255500000006,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 5120,
+      "tx_cum": 0,
+      "budget": 15360,
+      "headroom": 15360
+     },
+     {
+      "t": 500.29446899999994,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 6400,
+      "tx_cum": 0,
+      "budget": 19200,
+      "headroom": 19200
+     },
+     {
+      "t": 500.30799900000034,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 7680,
+      "tx_cum": 0,
+      "budget": 23040,
+      "headroom": 23040
+     },
+     {
+      "t": 502.0711080000009,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 7680,
+      "tx_cum": 1280,
+      "budget": 23040,
+      "headroom": 21760
+     },
+     {
+      "t": 502.1295339999998,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 7680,
+      "tx_cum": 2560,
+      "budget": 23040,
+      "headroom": 20480
+     },
+     {
+      "t": 502.14652200000035,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 7680,
+      "tx_cum": 3840,
+      "budget": 23040,
+      "headroom": 19200
+     },
+     {
+      "t": 502.16042699999974,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 7680,
+      "tx_cum": 5120,
+      "budget": 23040,
+      "headroom": 17920
+     },
+     {
+      "t": 502.1711799999995,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 7680,
+      "tx_cum": 6400,
+      "budget": 23040,
+      "headroom": 16640
+     },
+     {
+      "t": 502.1794479999997,
+      "kind": "from_srv",
+      "n": 1280,
+      "rx_cum": 7680,
+      "tx_cum": 7680,
+      "budget": 23040,
+      "headroom": 15360
+     },
+     {
+      "t": 502.18807899999973,
+      "kind": "from_srv",
+      "n": 158,
+      "rx_cum": 7680,
+      "tx_cum": 7838,
+      "budget": 23040,
+      "headroom": 15202
+     },
+     {
+      "t": 503.9606919999997,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 8960,
+      "tx_cum": 7838,
+      "budget": 26880,
+      "headroom": 19042
+     },
+     {
+      "t": 503.9971350000005,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 10240,
+      "tx_cum": 7838,
+      "budget": 30720,
+      "headroom": 22882
+     },
+     {
+      "t": 555.2734570000002,
+      "kind": "to_srv",
+      "n": 1280,
+      "rx_cum": 11520,
+      "tx_cum": 7838,
+      "budget": 34560,
+      "headroom": 26722
+     },
+     {
+      "t": 556.0442309999995,
+      "kind": "from_srv",
+      "n": 293,
+      "rx_cum": 11520,
+      "tx_cum": 8131,
+      "budget": 34560,
+      "headroom": 26429
+     },
+     {
+      "t": 556.3862959999994,
+      "kind": "to_srv",
+      "n": 65,
+      "rx_cum": 11585,
+      "tx_cum": 8131,
+      "budget": 34755,
+      "headroom": 26624
+     }
+    ]
+   }
+  }
+ ]
+}

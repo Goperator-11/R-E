@@ -1,0 +1,292 @@
+{
+  "openssl_version": "OpenSSL 3.5.5 27 Jan 2026 (Library: OpenSSL 3.5.5 27 Jan 2026)\r\nbuilt on: Tue Jan 27 19:42:37 2026 UTC\r\nplatform: mingw64\r\noptions:  bn(64,64)\r\ncompiler: gcc -m64 -Wall -O3 -DL_ENDIAN -DOPENSSL_PIC -DUNICODE -D_UNICODE -DWIN32_LEAN_AND_MEAN -D_MT -DOPENSSL_BUILDING_OPENSSL -DZLIB -DZLIB_SHARED -DNDEBUG -DOPENSSLBIN=\"\\\\\"/mingw64/bin\\\\\"\"\r\nOPENSSLDIR: \"/mingw64/etc/ssl\"\r\nENGINESDIR: \"/mingw64/lib/engines-3\"\r\nMODULESDIR: \"/mingw64/lib/ossl-modules\"\r\nSeeding source: os-specific\r\nCPUINFO: OPENSSL_ia32cap=0xfffaf38bffcbffff:0x184007a4239c27a9:0x00400810bc18c410:0x0000000000000000:0x0000000000000000",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "win32",
+  "seconds_per_rep": 3,
+  "repeats": 5,
+  "sizes": {
+    "ML-KEM-512": {
+      "alg": "ML-KEM-512",
+      "ct_bytes": 768,
+      "ss_bytes": 32,
+      "ss_agree": true,
+      "ek_bytes_raw": 800,
+      "ek_bytes_spki_der": 822,
+      "ek_bytes_pem": 1186,
+      "sk_der_total": 1730,
+      "sk_stored_octets": 1706
+    },
+    "ML-KEM-768": {
+      "alg": "ML-KEM-768",
+      "ct_bytes": 1088,
+      "ss_bytes": 32,
+      "ss_agree": true,
+      "ek_bytes_raw": 1184,
+      "ek_bytes_spki_der": 1206,
+      "ek_bytes_pem": 1714,
+      "sk_der_total": 2498,
+      "sk_stored_octets": 2474
+    },
+    "ML-KEM-1024": {
+      "alg": "ML-KEM-1024",
+      "ct_bytes": 1568,
+      "ss_bytes": 32,
+      "ss_agree": true,
+      "ek_bytes_raw": 1568,
+      "ek_bytes_spki_der": 1590,
+      "ek_bytes_pem": 2242,
+      "sk_der_total": 3266,
+      "sk_stored_octets": 3242
+    }
+  },
+  "timing": {
+    "ML-KEM-512": {
+      "alg": "ML-KEM-512",
+      "repeats": 5,
+      "seconds_per_rep": 3,
+      "runs": [
+        {
+          "keygen_s": 1.4e-05,
+          "encaps_s": 9e-06,
+          "decaps_s": 1.4e-05,
+          "keygen_ops": 70288.8,
+          "encaps_ops": 110097.6,
+          "decaps_ops": 71107.4
+        },
+        {
+          "keygen_s": 1.4e-05,
+          "encaps_s": 9e-06,
+          "decaps_s": 1.4e-05,
+          "keygen_ops": 69265.6,
+          "encaps_ops": 113450.0,
+          "decaps_ops": 70940.3
+        },
+        {
+          "keygen_s": 1.5e-05,
+          "encaps_s": 9e-06,
+          "decaps_s": 1.4e-05,
+          "keygen_ops": 68577.2,
+          "encaps_ops": 109932.1,
+          "decaps_ops": 70710.2
+        },
+        {
+          "keygen_s": 1.4e-05,
+          "encaps_s": 9e-06,
+          "decaps_s": 1.4e-05,
+          "keygen_ops": 70265.5,
+          "encaps_ops": 113130.8,
+          "decaps_ops": 69783.0
+        },
+        {
+          "keygen_s": 1.4e-05,
+          "encaps_s": 9e-06,
+          "decaps_s": 1.4e-05,
+          "keygen_ops": 71558.6,
+          "encaps_ops": 115521.4,
+          "decaps_ops": 71851.7
+        }
+      ],
+      "keygen_us_median": 14.0,
+      "keygen_us_min": 14.0,
+      "keygen_us_max": 15.0,
+      "keygen_ops_median": 70265.5,
+      "keygen_ops_stdev": 1134.2883619256634,
+      "encaps_us_median": 9.0,
+      "encaps_us_min": 9.0,
+      "encaps_us_max": 9.0,
+      "encaps_ops_median": 113130.8,
+      "encaps_ops_stdev": 2385.7809647995723,
+      "decaps_us_median": 14.0,
+      "decaps_us_min": 14.0,
+      "decaps_us_max": 14.0,
+      "decaps_ops_median": 70940.3,
+      "decaps_ops_stdev": 746.9567972781279
+    },
+    "ML-KEM-768": {
+      "alg": "ML-KEM-768",
+      "repeats": 5,
+      "seconds_per_rep": 3,
+      "runs": [
+        {
+          "keygen_s": 2.1e-05,
+          "encaps_s": 1.2e-05,
+          "decaps_s": 1.9e-05,
+          "keygen_ops": 47237.2,
+          "encaps_ops": 83636.4,
+          "decaps_ops": 53624.8
+        },
+        {
+          "keygen_s": 2.1e-05,
+          "encaps_s": 1.2e-05,
+          "decaps_s": 1.9e-05,
+          "keygen_ops": 46811.9,
+          "encaps_ops": 85401.0,
+          "decaps_ops": 53157.1
+        },
+        {
+          "keygen_s": 2.2e-05,
+          "encaps_s": 1.2e-05,
+          "decaps_s": 1.9e-05,
+          "keygen_ops": 46112.7,
+          "encaps_ops": 84017.4,
+          "decaps_ops": 52172.8
+        },
+        {
+          "keygen_s": 2.2e-05,
+          "encaps_s": 1.2e-05,
+          "decaps_s": 1.9e-05,
+          "keygen_ops": 45915.1,
+          "encaps_ops": 81509.9,
+          "decaps_ops": 53354.9
+        },
+        {
+          "keygen_s": 2.2e-05,
+          "encaps_s": 1.2e-05,
+          "decaps_s": 1.9e-05,
+          "keygen_ops": 45276.6,
+          "encaps_ops": 82833.4,
+          "decaps_ops": 52760.7
+        }
+      ],
+      "keygen_us_median": 22.0,
+      "keygen_us_min": 21.0,
+      "keygen_us_max": 22.0,
+      "keygen_ops_median": 46112.7,
+      "keygen_ops_stdev": 769.1992362190697,
+      "encaps_us_median": 12.0,
+      "encaps_us_min": 12.0,
+      "encaps_us_max": 12.0,
+      "encaps_ops_median": 83636.4,
+      "encaps_ops_stdev": 1440.7364061479136,
+      "decaps_us_median": 19.0,
+      "decaps_us_min": 19.0,
+      "decaps_us_max": 19.0,
+      "decaps_ops_median": 53157.1,
+      "decaps_ops_stdev": 566.0268041356347
+    },
+    "ML-KEM-1024": {
+      "alg": "ML-KEM-1024",
+      "repeats": 5,
+      "seconds_per_rep": 3,
+      "runs": [
+        {
+          "keygen_s": 3.3e-05,
+          "encaps_s": 1.6e-05,
+          "decaps_s": 2.5e-05,
+          "keygen_ops": 30639.3,
+          "encaps_ops": 61550.0,
+          "decaps_ops": 39970.3
+        },
+        {
+          "keygen_s": 3.3e-05,
+          "encaps_s": 1.6e-05,
+          "decaps_s": 2.5e-05,
+          "keygen_ops": 30240.3,
+          "encaps_ops": 62646.6,
+          "decaps_ops": 40196.7
+        },
+        {
+          "keygen_s": 3.3e-05,
+          "encaps_s": 1.5e-05,
+          "decaps_s": 2.5e-05,
+          "keygen_ops": 30451.5,
+          "encaps_ops": 64784.3,
+          "decaps_ops": 40674.2
+        },
+        {
+          "keygen_s": 3.3e-05,
+          "encaps_s": 1.6e-05,
+          "decaps_s": 2.4e-05,
+          "keygen_ops": 30729.9,
+          "encaps_ops": 63581.8,
+          "decaps_ops": 41116.1
+        },
+        {
+          "keygen_s": 3.3e-05,
+          "encaps_s": 1.6e-05,
+          "decaps_s": 2.4e-05,
+          "keygen_ops": 30615.4,
+          "encaps_ops": 62930.6,
+          "decaps_ops": 41185.7
+        }
+      ],
+      "keygen_us_median": 33.0,
+      "keygen_us_min": 33.0,
+      "keygen_us_max": 33.0,
+      "keygen_ops_median": 30615.4,
+      "keygen_ops_stdev": 193.09881408232488,
+      "encaps_us_median": 16.0,
+      "encaps_us_min": 15.0,
+      "encaps_us_max": 16.0,
+      "encaps_ops_median": 62930.6,
+      "encaps_ops_stdev": 1194.3362876510132,
+      "decaps_us_median": 25.0,
+      "decaps_us_min": 24.0,
+      "decaps_us_max": 25.0,
+      "decaps_ops_median": 40674.2,
+      "decaps_ops_stdev": 540.8309625012222
+    },
+    "X25519": {
+      "alg": "X25519",
+      "repeats": 5,
+      "seconds_per_rep": 3,
+      "runs": [
+        {
+          "keygen_s": 1.7e-05,
+          "encaps_s": 4e-05,
+          "decaps_s": 2e-05,
+          "keygen_ops": 57369.2,
+          "encaps_ops": 24697.6,
+          "decaps_ops": 48898.0
+        },
+        {
+          "keygen_s": 2.1e-05,
+          "encaps_s": 4.4e-05,
+          "decaps_s": 2.1e-05,
+          "keygen_ops": 47539.9,
+          "encaps_ops": 22675.2,
+          "decaps_ops": 48422.2
+        },
+        {
+          "keygen_s": 1.8e-05,
+          "encaps_s": 4e-05,
+          "decaps_s": 2.1e-05,
+          "keygen_ops": 55244.1,
+          "encaps_ops": 24868.4,
+          "decaps_ops": 48416.3
+        },
+        {
+          "keygen_s": 1.8e-05,
+          "encaps_s": 4e-05,
+          "decaps_s": 2e-05,
+          "keygen_ops": 55476.5,
+          "encaps_ops": 25022.0,
+          "decaps_ops": 49190.3
+        },
+        {
+          "keygen_s": 1.8e-05,
+          "encaps_s": 4e-05,
+          "decaps_s": 2e-05,
+          "keygen_ops": 55434.4,
+          "encaps_ops": 25312.2,
+          "decaps_ops": 49150.6
+        }
+      ],
+      "keygen_us_median": 18.0,
+      "keygen_us_min": 17.0,
+      "keygen_us_max": 21.0,
+      "keygen_ops_median": 55434.4,
+      "keygen_ops_stdev": 3828.945001824914,
+      "encaps_us_median": 40.0,
+      "encaps_us_min": 40.0,
+      "encaps_us_max": 44.0,
+      "encaps_ops_median": 24868.4,
+      "encaps_ops_stdev": 1053.0521316630054,
+      "decaps_us_median": 20.0,
+      "decaps_us_min": 20.0,
+      "decaps_us_max": 21.0,
+      "decaps_ops_median": 48898.0,
+      "decaps_ops_stdev": 378.6881395026788
+    }
+  }
+}

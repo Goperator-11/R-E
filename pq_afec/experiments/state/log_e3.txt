@@ -1,0 +1,40 @@
+==============================================================================
+E3 - QUIC Initial framing: analytic budget + real capture
+==============================================================================
+
+[A] analytic CRYPTO capacity of one Initial packet (RFC 9000/9001)
+------------------------------------------------------------------------------
+configuration                                header   budget CRYPTO cap
+1200B dgram, DCID8/SCID8, PN4, offset0           30     1154       1150
+1200B dgram, DCID8/SCID8, PN1, offset0           27     1157       1153
+1200B dgram, DCID20/SCID20, PN4                  54     1130       1126
+1200B dgram, DCID8/SCID0, PN4                    22     1162       1158
+1252B dgram (IPv4 min PMTU), DCID8/SCID8, PN4       30     1206       1202
+1200B, 2nd packet (offset>=1024 -> 2B varint)       30     1154       1149
+
+  -> INITIAL_CRYPTO_CAPACITY (first packet)  = 1150
+     capacity of each following Initial      = 1149
+
+  predicted Initial-packet split for the measured ClientHellos
+  group                    CH msg B  packets
+  x25519                        237        1
+  secp256r1                     270        1
+  MLKEM512                      997        1
+  MLKEM768                     1381        2
+  MLKEM1024                    1765        2
+  X25519MLKEM768               1413        2
+  SecP256r1MLKEM768            1446        2
+
+[B] real QUIC handshakes through a recording UDP relay
+------------------------------------------------------------------------------
+host               group                   rc  CHdgrm  CHpkts   CHbytes   srvInit
+cloudflare.com     x25519                  -1       5       5      6000         0
+cloudflare.com     X25519MLKEM768          -1       6       6      7200         0
+cloudflare.com     SecP256r1MLKEM768       -1       6       6      7200         0
+cloudflare.com     MLKEM768                -1       6       6      7200         0
+www.google.com     x25519                  -1       5       5      6000         0
+www.google.com     X25519MLKEM768          -1       6       6      7200         0
+www.google.com     SecP256r1MLKEM768       -1       6       6      7200         0
+www.google.com     MLKEM768                -1       6       6      7200         0
+
+saved: C:\dev\pq_afec\experiments\results\e3_quic.json

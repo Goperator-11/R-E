@@ -1,0 +1,2596 @@
+{
+  "chains": {
+    "ecdsa256": {
+      "der_total": 1047,
+      "der_each": [
+        541,
+        506
+      ]
+    },
+    "rsa2048": {
+      "der_total": 1838,
+      "der_each": [
+        936,
+        902
+      ]
+    }
+  },
+  "handshakes": {
+    "ecdsa256/x25519": {
+      "group": "x25519",
+      "chain": "ecdsa256",
+      "clienthello_wire": 242,
+      "clienthello_msg_wire": 237,
+      "server_flight1_wire": 1970,
+      "client_flight2_wire": 80,
+      "negotiated": null,
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 242,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 1970,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4663,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 2.480400027707219,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 237,
+          "wire_len": 242,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 233,
+              "wire_len": 237
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 3.7025000201538205,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 122,
+          "wire_len": 127,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 118,
+              "wire_len": 122
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 3.7102000205777586,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 3.7110000266693532,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 3.7115000304766,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 1628,
+          "wire_len": 1633
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 3.712100035045296,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 97,
+          "wire_len": 102
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 3.7125000380910933,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 4.422100028023124,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 4.423900041729212,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 4.801800008863211,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 4.817600012756884,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1014.1208000131883,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1014.4128000247292,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4634,
+          "wire_len": 4639
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1014.4524000352249,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1014.5560000091791,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "ecdsa256/secp256r1": {
+      "group": "secp256r1",
+      "chain": "ecdsa256",
+      "clienthello_wire": 275,
+      "clienthello_msg_wire": 270,
+      "server_flight1_wire": 2002,
+      "client_flight2_wire": 80,
+      "negotiated": null,
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 275,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 2002,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4672,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.2864000271074474,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 270,
+          "wire_len": 275,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 266,
+              "wire_len": 270
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.4228999973274767,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 155,
+          "wire_len": 160,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 151,
+              "wire_len": 155
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.4305999977514148,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.431200002320111,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.4340000236406922,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 1628,
+          "wire_len": 1633
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.4346000282093883,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 96,
+          "wire_len": 101
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.4349000304937363,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 3.130100027192384,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 3.132499987259507,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 3.259000019170344,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 3.3177000004798174,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1011.6361000109464,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1012.1384999947622,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4643,
+          "wire_len": 4648
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1012.2874000226147,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1012.4000000068918,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "ecdsa256/MLKEM512": {
+      "group": "MLKEM512",
+      "chain": "ecdsa256",
+      "clienthello_wire": 1002,
+      "clienthello_msg_wire": 997,
+      "server_flight1_wire": 2704,
+      "client_flight2_wire": 80,
+      "negotiated": "Negotiated TLS1.3 group: MLKEM512",
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 1002,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 2704,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4669,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.1894999877549708,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 997,
+          "wire_len": 1002,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 993,
+              "wire_len": 997
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.7592000183649361,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 858,
+          "wire_len": 863,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 854,
+              "wire_len": 858
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.7661000126972795,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.7668000180274248,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.7673000218346715,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 1628,
+          "wire_len": 1633
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.7808000082150102,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 95,
+          "wire_len": 100
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.7812000112608075,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.5246000257320702,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.5264999819919467,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.6694000223651528,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.6860999749042094,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1005.149699980393,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1005.4813000024296,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4640,
+          "wire_len": 4645
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1005.5171999847516,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1005.6334999972023,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "ecdsa256/MLKEM768": {
+      "group": "MLKEM768",
+      "chain": "ecdsa256",
+      "clienthello_wire": 1386,
+      "clienthello_msg_wire": 1381,
+      "server_flight1_wire": 3024,
+      "client_flight2_wire": 80,
+      "negotiated": "Negotiated TLS1.3 group: MLKEM768",
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 1386,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 3024,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4669,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.18049997743219137,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1381,
+          "wire_len": 1386,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 1377,
+              "wire_len": 1381
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8107000030577183,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1178,
+          "wire_len": 1183,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 1174,
+              "wire_len": 1178
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8177999989129603,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.818600005004555,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8191000088118017,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 1628,
+          "wire_len": 1633
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8196000126190484,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 95,
+          "wire_len": 100
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8200000156648457,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.6036999877542257,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.6079000197350979,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.763799984473735,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.806700020097196,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1012.3266000300646,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1012.8098999848589,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4640,
+          "wire_len": 4645
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1012.9086999804713,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1013.2972000283189,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "ecdsa256/MLKEM1024": {
+      "group": "MLKEM1024",
+      "chain": "ecdsa256",
+      "clienthello_wire": 1770,
+      "clienthello_msg_wire": 1765,
+      "server_flight1_wire": 3505,
+      "client_flight2_wire": 80,
+      "negotiated": "Negotiated TLS1.3 group: MLKEM1024",
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 1770,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 3505,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4672,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.18550001550465822,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1765,
+          "wire_len": 1770,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 1761,
+              "wire_len": 1765
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8446000283583999,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1658,
+          "wire_len": 1663,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 1654,
+              "wire_len": 1658
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8521000272594392,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8529000333510339,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8534000371582806,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 1628,
+          "wire_len": 1633
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8539000409655273,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 96,
+          "wire_len": 101
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8542999858036637,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.63870002143085,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.6406000358983874,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.8004000303335488,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.8452000222168863,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1017.120500036981,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1017.4868000322022,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4643,
+          "wire_len": 4648
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1017.6196999964304,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1017.7517000120133,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "ecdsa256/X25519MLKEM768": {
+      "group": "X25519MLKEM768",
+      "chain": "ecdsa256",
+      "clienthello_wire": 1418,
+      "clienthello_msg_wire": 1413,
+      "server_flight1_wire": 3058,
+      "client_flight2_wire": 80,
+      "negotiated": "Negotiated TLS1.3 group: X25519MLKEM768",
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 1418,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 3058,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4687,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.4363999469205737,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1413,
+          "wire_len": 1418,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 1409,
+              "wire_len": 1413
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.093599945306778,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1210,
+          "wire_len": 1215,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 1206,
+              "wire_len": 1210
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.1069999891333282,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.1076999944634736,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.108099997509271,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 1628,
+          "wire_len": 1633
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.1085999431088567,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 97,
+          "wire_len": 102
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.1088999453932047,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.8141999607905746,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.8150999676436186,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.9533999729901552,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.9679999677464366,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1009.6096999477595,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1010.004999989178,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4658,
+          "wire_len": 4663
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1010.0947999744676,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1010.4751999606378,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "ecdsa256/SecP256r1MLKEM768": {
+      "group": "SecP256r1MLKEM768",
+      "chain": "ecdsa256",
+      "clienthello_wire": 1451,
+      "clienthello_msg_wire": 1446,
+      "server_flight1_wire": 3090,
+      "client_flight2_wire": 80,
+      "negotiated": "Negotiated TLS1.3 group: SecP256r1MLKEM768",
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 1451,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 3090,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4696,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.1574999769218266,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1446,
+          "wire_len": 1451,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 1442,
+              "wire_len": 1446
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8352999575436115,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1243,
+          "wire_len": 1248,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 1239,
+              "wire_len": 1243
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.839899992570281,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8405999979004264,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8411000017076731,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 1628,
+          "wire_len": 1633
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8415000047534704,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 96,
+          "wire_len": 101
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8418000070378184,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.5986000071279705,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.601099967956543,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.7846999689936638,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.8309999722987413,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1001.7145999590866,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1002.0106000010855,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4667,
+          "wire_len": 4672
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1002.0699999877252,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1002.1477999980561,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "rsa2048/x25519": {
+      "group": "x25519",
+      "chain": "rsa2048",
+      "clienthello_wire": 242,
+      "clienthello_msg_wire": 237,
+      "server_flight1_wire": 3340,
+      "client_flight2_wire": 80,
+      "negotiated": null,
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 242,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 3340,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4660,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.21359999664127827,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 237,
+          "wire_len": 242,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 233,
+              "wire_len": 237
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 5.33529999665916,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 122,
+          "wire_len": 127,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 118,
+              "wire_len": 122
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 5.341399984899908,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 5.341899988707155,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 5.342299991752952,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 2814,
+          "wire_len": 2819
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 5.342799995560199,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 281,
+          "wire_len": 286
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 5.343099997844547,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 5.947400000877678,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 5.948399950284511,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 6.043099972885102,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 6.07010000385344,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1010.9282999765128,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1011.0988999949768,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4631,
+          "wire_len": 4636
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1011.1317999544553,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1011.1681999987923,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "rsa2048/secp256r1": {
+      "group": "secp256r1",
+      "chain": "rsa2048",
+      "clienthello_wire": 275,
+      "clienthello_msg_wire": 270,
+      "server_flight1_wire": 3373,
+      "client_flight2_wire": 80,
+      "negotiated": null,
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 275,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 3373,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4669,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.26870000874623656,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 270,
+          "wire_len": 275,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 266,
+              "wire_len": 270
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.5044999890960753,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 155,
+          "wire_len": 160,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 151,
+              "wire_len": 155
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.5112999826669693,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.5119999879971147,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.512399991042912,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 2814,
+          "wire_len": 2819
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.5154000138863921,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 281,
+          "wire_len": 286
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.5158000169321895,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 2.1597000304609537,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 2.16159998672083,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.403500024229288,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.44020001264289,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1005.2662999951281,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1005.551700014621,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4640,
+          "wire_len": 4645
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1005.6008999818005,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1005.7093999930657,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "rsa2048/MLKEM512": {
+      "group": "MLKEM512",
+      "chain": "rsa2048",
+      "clienthello_wire": 1002,
+      "clienthello_msg_wire": 997,
+      "server_flight1_wire": 4076,
+      "client_flight2_wire": 80,
+      "negotiated": "Negotiated TLS1.3 group: MLKEM512",
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 1002,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4076,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4666,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.17090002074837685,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 997,
+          "wire_len": 1002,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 993,
+              "wire_len": 997
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.285300008021295,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 858,
+          "wire_len": 863,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 854,
+              "wire_len": 858
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.2925000046379864,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.2933000107295811,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.2939000152982771,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 2814,
+          "wire_len": 2819
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.2942000175826252,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 281,
+          "wire_len": 286
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.2946000206284225,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.8746000132523477,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.8767000292427838,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.0690999808721244,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.1099000005051494,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1013.552799995523,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1013.9728999929503,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4637,
+          "wire_len": 4642
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1014.0148000209592,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1014.1278000082821,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "rsa2048/MLKEM768": {
+      "group": "MLKEM768",
+      "chain": "rsa2048",
+      "clienthello_wire": 1386,
+      "clienthello_msg_wire": 1381,
+      "server_flight1_wire": 4396,
+      "client_flight2_wire": 80,
+      "negotiated": "Negotiated TLS1.3 group: MLKEM768",
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 1386,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4396,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4666,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.15900004655122757,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1381,
+          "wire_len": 1386,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 1377,
+              "wire_len": 1381
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.311900035943836,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1178,
+          "wire_len": 1183,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 1174,
+              "wire_len": 1178
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.319000031799078,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.3198000378906727,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.32020004093647,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 2814,
+          "wire_len": 2819
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.344399992376566,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 281,
+          "wire_len": 286
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.344999996945262,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.945700030773878,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.9478000467643142,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.109499997459352,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.1243999944999814,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1007.1885000215843,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1007.5843000086024,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4637,
+          "wire_len": 4642
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1007.6266000396572,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1007.7503000502475,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "rsa2048/MLKEM1024": {
+      "group": "MLKEM1024",
+      "chain": "rsa2048",
+      "clienthello_wire": 1770,
+      "clienthello_msg_wire": 1765,
+      "server_flight1_wire": 4876,
+      "client_flight2_wire": 80,
+      "negotiated": "Negotiated TLS1.3 group: MLKEM1024",
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 1770,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4876,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4669,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.29520003590732813,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1765,
+          "wire_len": 1770,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 1761,
+              "wire_len": 1765
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.819500011857599,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1658,
+          "wire_len": 1663,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 1654,
+              "wire_len": 1658
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8309000404551625,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8318000473082066,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.416900020558387,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 2814,
+          "wire_len": 2819
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.4189000357873738,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 281,
+          "wire_len": 286
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.4195000403560698,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.843900012318045,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.8461000290699303,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.0729000098071992,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.1096999989822507,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1011.4110000431538,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1011.7064000223763,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4640,
+          "wire_len": 4645
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1011.7779000429437,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1011.9247999973595,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "rsa2048/X25519MLKEM768": {
+      "group": "X25519MLKEM768",
+      "chain": "rsa2048",
+      "clienthello_wire": 1418,
+      "clienthello_msg_wire": 1413,
+      "server_flight1_wire": 4428,
+      "client_flight2_wire": 80,
+      "negotiated": "Negotiated TLS1.3 group: X25519MLKEM768",
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 1418,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4428,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4684,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.16380002489313483,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1413,
+          "wire_len": 1418,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 1409,
+              "wire_len": 1413
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.4668999938294291,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1210,
+          "wire_len": 1215,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 1206,
+              "wire_len": 1210
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.4733999851159751,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.4740999904461205,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.4745999942533672,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 2814,
+          "wire_len": 2819
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.5423999866470695,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 281,
+          "wire_len": 286
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.5430999919772148,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 2.1812000195495784,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 2.1832999773323536,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.329199982341379,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 2.3563000140711665,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1012.7752000116743,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1013.1361000239849,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4655,
+          "wire_len": 4660
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1013.1759999785572,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1013.345199986361,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    },
+    "rsa2048/SecP256r1MLKEM768": {
+      "group": "SecP256r1MLKEM768",
+      "chain": "rsa2048",
+      "clienthello_wire": 1451,
+      "clienthello_msg_wire": 1446,
+      "server_flight1_wire": 4461,
+      "client_flight2_wire": 80,
+      "negotiated": "Negotiated TLS1.3 group: SecP256r1MLKEM768",
+      "flights": [
+        {
+          "dir": "C2S",
+          "wire_bytes": 1451,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4461,
+          "n_records": 6
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 80,
+          "n_records": 2
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 510,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 40,
+          "n_records": 1
+        },
+        {
+          "dir": "S2C",
+          "wire_bytes": 4693,
+          "n_records": 2
+        },
+        {
+          "dir": "C2S",
+          "wire_bytes": 24,
+          "n_records": 1
+        }
+      ],
+      "records": [
+        {
+          "dir": "C2S",
+          "t_ms": 0.18130004173144698,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1446,
+          "wire_len": 1451,
+          "messages": [
+            {
+              "type": 1,
+              "name": "ClientHello",
+              "len": 1442,
+              "wire_len": 1446
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8727000094950199,
+          "type": 22,
+          "type_name": "Handshake",
+          "record_len": 1243,
+          "wire_len": 1248,
+          "messages": [
+            {
+              "type": 2,
+              "name": "ServerHello",
+              "len": 1239,
+              "wire_len": 1243
+            }
+          ]
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8794000023044646,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 0.8823000243864954,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 23,
+          "wire_len": 28
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.4043000410310924,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 2814,
+          "wire_len": 2819
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.4062999980524182,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 281,
+          "wire_len": 286
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.4069000026211143,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.7796000465750694,
+          "type": 20,
+          "type_name": "CCS",
+          "record_len": 1,
+          "wire_len": 6
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1.781500002834946,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 69,
+          "wire_len": 74
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.9071000278927386,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1.929700025357306,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 250,
+          "wire_len": 255
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1006.8930000416003,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 35,
+          "wire_len": 40
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1007.3656000313349,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 4664,
+          "wire_len": 4669
+        },
+        {
+          "dir": "S2C",
+          "t_ms": 1007.4787000194192,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        },
+        {
+          "dir": "C2S",
+          "t_ms": 1007.7308000181802,
+          "type": 23,
+          "type_name": "AppData",
+          "record_len": 19,
+          "wire_len": 24
+        }
+      ]
+    }
+  }
+}

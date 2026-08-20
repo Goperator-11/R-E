@@ -1,0 +1,20 @@
+==============================================================================
+E4 - decrypt real QUIC Initial packets, measure the ClientHello
+==============================================================================
+
+host             group                pkts  CH wire keyshare  CH-share quic_tp
+------------------------------------------------------------------------------------------
+cloudflare.com   x25519                  5      272       32       240 53B
+cloudflare.com   secp256r1               5      305       65       240 53B
+cloudflare.com   X25519MLKEM768          6     1448     1216       232 53B
+cloudflare.com   MLKEM512                5     1032      800       232 53B
+cloudflare.com   MLKEM768                6     1416     1184       232 53B
+cloudflare.com   MLKEM1024               6     1800     1568       232 53B
+www.google.com   x25519                  5      272       32       240 53B
+www.google.com   secp256r1               5      305       65       240 53B
+www.google.com   X25519MLKEM768          6     1448     1216       232 53B
+www.google.com   MLKEM512                5     1032      800       232 53B
+www.google.com   MLKEM768                6     1416     1184       232 53B
+www.google.com   MLKEM1024               6     1800     1568       232 53B
+
+saved: C:\dev\pq_afec\experiments\results\e4_quic_clienthello.json

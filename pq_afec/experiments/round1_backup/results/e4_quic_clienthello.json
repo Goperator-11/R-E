@@ -1,0 +1,2071 @@
+{
+  "cloudflare.com/x25519": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 272
+          }
+        ],
+        "crypto_total": 272,
+        "padding": 886,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 0,
+        "packet_bytes": 147,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 90
+          }
+        ],
+        "crypto_total": 90,
+        "padding": 0,
+        "frame_types": [
+          "ACK",
+          "CRYPTO"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 1145,
+        "frame_types": [
+          "ACK",
+          "PADDING"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 272,
+    "serverhello_stream_bytes": 90,
+    "clienthello": {
+      "msg_wire_len": 272,
+      "body_len": 268,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 223,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 11,
+          "name": "ext-11",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 38,
+          "wire_len": 42,
+          "shares": [
+            {
+              "group": 29,
+              "key_bytes": 32,
+              "entry_wire": 36
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "serverhello": {
+      "msg_wire_len": 90,
+      "extensions": [
+        {
+          "type": 51,
+          "name": "key_share",
+          "wire_len": 40,
+          "group": 29,
+          "key_bytes": 32
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "wire_len": 6
+        }
+      ]
+    },
+    "established": true
+  },
+  "cloudflare.com/secp256r1": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 305
+          }
+        ],
+        "crypto_total": 305,
+        "padding": 853,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 0,
+        "packet_bytes": 180,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 123
+          }
+        ],
+        "crypto_total": 123,
+        "padding": 0,
+        "frame_types": [
+          "ACK",
+          "CRYPTO"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 1145,
+        "frame_types": [
+          "ACK",
+          "PADDING"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 305,
+    "serverhello_stream_bytes": 123,
+    "clienthello": {
+      "msg_wire_len": 305,
+      "body_len": 301,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 256,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 11,
+          "name": "ext-11",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 71,
+          "wire_len": 75,
+          "shares": [
+            {
+              "group": 23,
+              "key_bytes": 65,
+              "entry_wire": 69
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "serverhello": {
+      "msg_wire_len": 123,
+      "extensions": [
+        {
+          "type": 51,
+          "name": "key_share",
+          "wire_len": 73,
+          "group": 23,
+          "key_bytes": 65
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "wire_len": 6
+        }
+      ]
+    },
+    "established": true
+  },
+  "cloudflare.com/X25519MLKEM768": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 1158
+          }
+        ],
+        "crypto_total": 1158,
+        "padding": 0,
+        "frame_types": [
+          "CRYPTO"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 1158,
+            "length": 290
+          }
+        ],
+        "crypto_total": 290,
+        "padding": 867,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 0,
+        "packet_bytes": 52,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "ACK"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 1143
+          }
+        ],
+        "crypto_total": 1143,
+        "padding": 0,
+        "frame_types": [
+          "ACK",
+          "CRYPTO"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 2,
+        "packet_bytes": 87,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 1143,
+            "length": 35
+          }
+        ],
+        "crypto_total": 35,
+        "padding": 0,
+        "frame_types": [
+          "CRYPTO"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 2,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 1145,
+        "frame_types": [
+          "ACK",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 3,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 1145,
+        "frame_types": [
+          "ACK",
+          "PADDING"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 1448,
+    "serverhello_stream_bytes": 1178,
+    "clienthello": {
+      "msg_wire_len": 1448,
+      "body_len": 1444,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 1399,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 1222,
+          "wire_len": 1226,
+          "shares": [
+            {
+              "group": 4588,
+              "key_bytes": 1216,
+              "entry_wire": 1220
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "serverhello": {
+      "msg_wire_len": 1178,
+      "extensions": [
+        {
+          "type": 51,
+          "name": "key_share",
+          "wire_len": 1128,
+          "group": 4588,
+          "key_bytes": 1120
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "wire_len": 6
+        }
+      ]
+    },
+    "established": true
+  },
+  "cloudflare.com/MLKEM512": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 1032
+          }
+        ],
+        "crypto_total": 1032,
+        "padding": 126,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 0,
+        "packet_bytes": 52,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "ACK"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 1,
+        "packet_bytes": 52,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "CONNECTION_CLOSE"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 1032,
+    "serverhello_stream_bytes": 0,
+    "clienthello": {
+      "msg_wire_len": 1032,
+      "body_len": 1028,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 983,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 806,
+          "wire_len": 810,
+          "shares": [
+            {
+              "group": 512,
+              "key_bytes": 800,
+              "entry_wire": 804
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "established": false
+  },
+  "cloudflare.com/MLKEM768": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 1158
+          }
+        ],
+        "crypto_total": 1158,
+        "padding": 0,
+        "frame_types": [
+          "CRYPTO"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 1158,
+            "length": 258
+          }
+        ],
+        "crypto_total": 258,
+        "padding": 899,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 0,
+        "packet_bytes": 52,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "ACK"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 1,
+        "packet_bytes": 52,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "CONNECTION_CLOSE"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 1416,
+    "serverhello_stream_bytes": 0,
+    "clienthello": {
+      "msg_wire_len": 1416,
+      "body_len": 1412,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 1367,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 1190,
+          "wire_len": 1194,
+          "shares": [
+            {
+              "group": 513,
+              "key_bytes": 1184,
+              "entry_wire": 1188
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "established": false
+  },
+  "cloudflare.com/MLKEM1024": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 1158
+          }
+        ],
+        "crypto_total": 1158,
+        "padding": 0,
+        "frame_types": [
+          "CRYPTO"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 1158,
+            "length": 642
+          }
+        ],
+        "crypto_total": 642,
+        "padding": 515,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 2,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 1161,
+        "frame_types": [
+          "PING",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 0,
+        "packet_bytes": 52,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "ACK"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 0,
+        "packet_bytes": 52,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "ACK"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 1,
+        "packet_bytes": 54,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "ACK"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 3,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 1158,
+            "length": 642
+          }
+        ],
+        "crypto_total": 642,
+        "padding": 503,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 2,
+        "packet_bytes": 52,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "CONNECTION_CLOSE"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 1800,
+    "serverhello_stream_bytes": 0,
+    "clienthello": {
+      "msg_wire_len": 1800,
+      "body_len": 1796,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 1751,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 1574,
+          "wire_len": 1578,
+          "shares": [
+            {
+              "group": 514,
+              "key_bytes": 1568,
+              "entry_wire": 1572
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "established": false
+  },
+  "www.google.com/x25519": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 272
+          }
+        ],
+        "crypto_total": 272,
+        "padding": 886,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 90
+          }
+        ],
+        "crypto_total": 90,
+        "padding": 1066,
+        "frame_types": [
+          "ACK",
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 1157,
+        "frame_types": [
+          "ACK",
+          "PADDING"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 272,
+    "serverhello_stream_bytes": 90,
+    "clienthello": {
+      "msg_wire_len": 272,
+      "body_len": 268,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 223,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 11,
+          "name": "ext-11",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 38,
+          "wire_len": 42,
+          "shares": [
+            {
+              "group": 29,
+              "key_bytes": 32,
+              "entry_wire": 36
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "serverhello": {
+      "msg_wire_len": 90,
+      "extensions": [
+        {
+          "type": 51,
+          "name": "key_share",
+          "wire_len": 40,
+          "group": 29,
+          "key_bytes": 32
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "wire_len": 6
+        }
+      ]
+    },
+    "established": true
+  },
+  "www.google.com/secp256r1": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 305
+          }
+        ],
+        "crypto_total": 305,
+        "padding": 853,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 123
+          }
+        ],
+        "crypto_total": 123,
+        "padding": 1033,
+        "frame_types": [
+          "ACK",
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 1157,
+        "frame_types": [
+          "ACK",
+          "PADDING"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 305,
+    "serverhello_stream_bytes": 123,
+    "clienthello": {
+      "msg_wire_len": 305,
+      "body_len": 301,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 256,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 11,
+          "name": "ext-11",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 71,
+          "wire_len": 75,
+          "shares": [
+            {
+              "group": 23,
+              "key_bytes": 65,
+              "entry_wire": 69
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "serverhello": {
+      "msg_wire_len": 123,
+      "extensions": [
+        {
+          "type": 51,
+          "name": "key_share",
+          "wire_len": 73,
+          "group": 23,
+          "key_bytes": 65
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "wire_len": 6
+        }
+      ]
+    },
+    "established": true
+  },
+  "www.google.com/X25519MLKEM768": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 1158
+          }
+        ],
+        "crypto_total": 1158,
+        "padding": 0,
+        "frame_types": [
+          "CRYPTO"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 1158,
+            "length": 290
+          }
+        ],
+        "crypto_total": 290,
+        "padding": 867,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 1,
+        "packet_bytes": 40,
+        "udp_bytes": 40,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "ACK"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 2,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 1160,
+        "frame_types": [
+          "ACK",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 3,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 1121
+          }
+        ],
+        "crypto_total": 1121,
+        "padding": 40,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 4,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 1121,
+            "length": 57
+          }
+        ],
+        "crypto_total": 57,
+        "padding": 1103,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 2,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 1157,
+        "frame_types": [
+          "ACK",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 3,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 1157,
+        "frame_types": [
+          "ACK",
+          "PADDING"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 1448,
+    "serverhello_stream_bytes": 1178,
+    "clienthello": {
+      "msg_wire_len": 1448,
+      "body_len": 1444,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 1399,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 1222,
+          "wire_len": 1226,
+          "shares": [
+            {
+              "group": 4588,
+              "key_bytes": 1216,
+              "entry_wire": 1220
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "serverhello": {
+      "msg_wire_len": 1178,
+      "extensions": [
+        {
+          "type": 51,
+          "name": "key_share",
+          "wire_len": 1128,
+          "group": 4588,
+          "key_bytes": 1120
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "wire_len": 6
+        }
+      ]
+    },
+    "established": true
+  },
+  "www.google.com/MLKEM512": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 1032
+          }
+        ],
+        "crypto_total": 1032,
+        "padding": 126,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 1,
+        "packet_bytes": 206,
+        "udp_bytes": 206,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "CONNECTION_CLOSE"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 1032,
+    "serverhello_stream_bytes": 0,
+    "clienthello": {
+      "msg_wire_len": 1032,
+      "body_len": 1028,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 983,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 806,
+          "wire_len": 810,
+          "shares": [
+            {
+              "group": 512,
+              "key_bytes": 800,
+              "entry_wire": 804
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "established": false
+  },
+  "www.google.com/MLKEM768": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 1158
+          }
+        ],
+        "crypto_total": 1158,
+        "padding": 0,
+        "frame_types": [
+          "CRYPTO"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 1158,
+            "length": 258
+          }
+        ],
+        "crypto_total": 258,
+        "padding": 899,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 1,
+        "packet_bytes": 40,
+        "udp_bytes": 40,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "ACK"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 2,
+        "packet_bytes": 206,
+        "udp_bytes": 206,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "CONNECTION_CLOSE"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 1416,
+    "serverhello_stream_bytes": 0,
+    "clienthello": {
+      "msg_wire_len": 1416,
+      "body_len": 1412,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 1367,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 1190,
+          "wire_len": 1194,
+          "shares": [
+            {
+              "group": 513,
+              "key_bytes": 1184,
+              "entry_wire": 1188
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "established": false
+  },
+  "www.google.com/MLKEM1024": {
+    "odcid_len": 8,
+    "retry": false,
+    "packets": [
+      {
+        "dir": "C2S",
+        "pn": 0,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 0,
+            "length": 1158
+          }
+        ],
+        "crypto_total": 1158,
+        "padding": 0,
+        "frame_types": [
+          "CRYPTO"
+        ]
+      },
+      {
+        "dir": "C2S",
+        "pn": 1,
+        "packet_bytes": 1200,
+        "udp_bytes": 1200,
+        "crypto_frames": [
+          {
+            "offset": 1158,
+            "length": 642
+          }
+        ],
+        "crypto_total": 642,
+        "padding": 515,
+        "frame_types": [
+          "CRYPTO",
+          "PADDING"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 1,
+        "packet_bytes": 40,
+        "udp_bytes": 40,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "ACK"
+        ]
+      },
+      {
+        "dir": "S2C",
+        "pn": 2,
+        "packet_bytes": 206,
+        "udp_bytes": 206,
+        "crypto_frames": [],
+        "crypto_total": 0,
+        "padding": 0,
+        "frame_types": [
+          "CONNECTION_CLOSE"
+        ]
+      }
+    ],
+    "clienthello_stream_bytes": 1800,
+    "serverhello_stream_bytes": 0,
+    "clienthello": {
+      "msg_wire_len": 1800,
+      "body_len": 1796,
+      "cipher_suites_bytes": 6,
+      "extensions_total_wire": 1751,
+      "extensions": [
+        {
+          "type": 57,
+          "name": "quic_transport_parameters",
+          "len": 49,
+          "wire_len": 53
+        },
+        {
+          "type": 0,
+          "name": "server_name",
+          "len": 19,
+          "wire_len": 23
+        },
+        {
+          "type": 10,
+          "name": "supported_groups",
+          "len": 4,
+          "wire_len": 8
+        },
+        {
+          "type": 35,
+          "name": "session_ticket",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 16,
+          "name": "ALPN",
+          "len": 5,
+          "wire_len": 9
+        },
+        {
+          "type": 22,
+          "name": "encrypt_then_mac",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 23,
+          "name": "extended_master_secret",
+          "len": 0,
+          "wire_len": 4
+        },
+        {
+          "type": 13,
+          "name": "signature_algorithms",
+          "len": 42,
+          "wire_len": 46
+        },
+        {
+          "type": 43,
+          "name": "supported_versions",
+          "len": 3,
+          "wire_len": 7
+        },
+        {
+          "type": 45,
+          "name": "psk_key_exchange_modes",
+          "len": 2,
+          "wire_len": 6
+        },
+        {
+          "type": 51,
+          "name": "key_share",
+          "len": 1574,
+          "wire_len": 1578,
+          "shares": [
+            {
+              "group": 514,
+              "key_bytes": 1568,
+              "entry_wire": 1572
+            }
+          ]
+        },
+        {
+          "type": 27,
+          "name": "compress_certificate",
+          "len": 3,
+          "wire_len": 7
+        }
+      ]
+    },
+    "established": false
+  }
+}

@@ -1,0 +1,88 @@
+{
+ "rtt_ms": 50.0,
+ "team": {
+  "x25519": [
+   3300,
+   3400
+  ],
+  "X25519MLKEM768": [
+   5900,
+   6000
+  ]
+ },
+ "A": {
+  "x25519": {
+   "threshold": [
+    3312,
+    3368
+   ],
+   "note": "",
+   "first_flight_bytes": 1280
+  },
+  "X25519MLKEM768": {
+   "threshold": [
+    5917,
+    5974
+   ],
+   "note": "",
+   "first_flight_bytes": 2560
+  }
+ },
+ "B": {
+  "x25519": {
+   "threshold": [
+    3312,
+    3368
+   ],
+   "note": ""
+  },
+  "X25519MLKEM768": {
+   "threshold": [
+    5917,
+    5974
+   ],
+   "note": ""
+  }
+ },
+ "compare": [
+  {
+   "group": "x25519",
+   "A": [
+    3312,
+    3368
+   ],
+   "B": [
+    3312,
+    3368
+   ],
+   "team": [
+    3300,
+    3400
+   ],
+   "A_vs_B": true,
+   "A_vs_team": true,
+   "B_vs_team": true,
+   "ok": true
+  },
+  {
+   "group": "X25519MLKEM768",
+   "A": [
+    5917,
+    5974
+   ],
+   "B": [
+    5917,
+    5974
+   ],
+   "team": [
+    5900,
+    6000
+   ],
+   "A_vs_B": true,
+   "A_vs_team": true,
+   "B_vs_team": true,
+   "ok": true
+  }
+ ],
+ "all_agree": true
+}

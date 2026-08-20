@@ -1,0 +1,26 @@
+============================================================================================
+E8 - FEC coding CPU cost  (symbol=1200B, line rate=50 Mbps)
+============================================================================================
+C encoder: /mnt/c/dev/pq_afec/experiments/_build/rs_bench
+
+(k, r)     | python encode                | C encode                     |    C/py
+           |     ms/blk   us/sym     CPU% |     ms/blk   us/sym     CPU% | speedup
+--------------------------------------------------------------------------------------------
+(16, 4)    |     0.0810    20.25    2.64% |     0.0197     4.91    0.64% |    4.1x
+(32, 4)    |     0.1614    40.36    2.63% |     0.0400    10.01    0.65% |    4.0x
+(32, 8)    |     0.3127    39.08    5.09% |     0.0801    10.01    1.30% |    3.9x
+(32, 16)   |     0.6347    39.67   10.33% |     0.1677    10.48    2.73% |    3.8x
+(64, 8)    |     0.6386    79.83    5.20% |     0.1623    20.29    1.32% |    3.9x
+(64, 16)   |     1.2979    81.12   10.56% |     0.3302    20.64    2.69% |    3.9x
+(128, 32)  |     5.2600   164.38   21.40% |     1.2959    40.50    5.27% |    4.1x
+--------------------------------------------------------------------------------------------
+
+handshake shield (K=2, one XOR parity packet of 1200B):
+  measured 0.0000 ms/packet (L1-resident best case, at timer floor)
+  conservative bound at a pessimistic 10 GB/s: 0.24 us
+
+context - ML-KEM-768 per handshake (E1, ops/s derived):
+  encaps 11.96 us, decaps 18.81 us
+  the shield's XOR parity costs at most 0.24 us = 2.0% of one ML-KEM-768 encapsulation (conservative bound)
+
+saved: /mnt/c/dev/pq_afec/experiments/results/e8_cpu.json

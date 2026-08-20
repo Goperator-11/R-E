@@ -1,0 +1,594 @@
+{
+ "rtt_ms": 50.0,
+ "n": 10,
+ "runs": [
+  {
+   "group": "x25519",
+   "ips": 0,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 52.384,
+   "kem_ids": [
+    29
+   ],
+   "first_flight_datagrams": 1,
+   "first_flight_bytes": 1280,
+   "decoded": {
+    "k": 1,
+    "datagrams": [
+     {
+      "udp_bytes": 1280,
+      "crypto": 259,
+      "padding": 970,
+      "other": 0,
+      "packets": 1,
+      "overhead": 51
+     }
+    ],
+    "crypto_total": 259,
+    "padding_total": 970,
+    "wire_total": 1280,
+    "overhead_total": 51,
+    "h_measured": 51.0
+   },
+   "valid": true
+  },
+  {
+   "group": "x25519",
+   "ips": 1200,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 52.228,
+   "kem_ids": [
+    29
+   ],
+   "first_flight_datagrams": 1,
+   "first_flight_bytes": 1200,
+   "decoded": {
+    "k": 1,
+    "datagrams": [
+     {
+      "udp_bytes": 1200,
+      "crypto": 260,
+      "padding": 886,
+      "other": 0,
+      "packets": 1,
+      "overhead": 54
+     }
+    ],
+    "crypto_total": 260,
+    "padding_total": 886,
+    "wire_total": 1200,
+    "overhead_total": 54,
+    "h_measured": 54.0
+   },
+   "valid": true
+  },
+  {
+   "group": "x25519",
+   "ips": 1350,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 52.792,
+   "kem_ids": [
+    29
+   ],
+   "first_flight_datagrams": 1,
+   "first_flight_bytes": 1350,
+   "decoded": {
+    "k": 1,
+    "datagrams": [
+     {
+      "udp_bytes": 1350,
+      "crypto": 273,
+      "padding": 1022,
+      "other": 0,
+      "packets": 1,
+      "overhead": 55
+     }
+    ],
+    "crypto_total": 273,
+    "padding_total": 1022,
+    "wire_total": 1350,
+    "overhead_total": 55,
+    "h_measured": 55.0
+   },
+   "valid": true
+  },
+  {
+   "group": "x25519",
+   "ips": 1450,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 53.24,
+   "kem_ids": [
+    29
+   ],
+   "first_flight_datagrams": 1,
+   "first_flight_bytes": 1450,
+   "decoded": {
+    "k": 1,
+    "datagrams": [
+     {
+      "udp_bytes": 1450,
+      "crypto": 265,
+      "padding": 1138,
+      "other": 0,
+      "packets": 1,
+      "overhead": 47
+     }
+    ],
+    "crypto_total": 265,
+    "padding_total": 1138,
+    "wire_total": 1450,
+    "overhead_total": 47,
+    "h_measured": 47.0
+   },
+   "valid": true
+  },
+  {
+   "group": "secp256r1",
+   "ips": 0,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 52.758,
+   "kem_ids": [
+    23
+   ],
+   "first_flight_datagrams": 1,
+   "first_flight_bytes": 1280,
+   "decoded": {
+    "k": 1,
+    "datagrams": [
+     {
+      "udp_bytes": 1280,
+      "crypto": 305,
+      "padding": 924,
+      "other": 0,
+      "packets": 1,
+      "overhead": 51
+     }
+    ],
+    "crypto_total": 305,
+    "padding_total": 924,
+    "wire_total": 1280,
+    "overhead_total": 51,
+    "h_measured": 51.0
+   },
+   "valid": true
+  },
+  {
+   "group": "secp256r1",
+   "ips": 1200,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 53.376,
+   "kem_ids": [
+    23
+   ],
+   "first_flight_datagrams": 1,
+   "first_flight_bytes": 1200,
+   "decoded": {
+    "k": 1,
+    "datagrams": [
+     {
+      "udp_bytes": 1200,
+      "crypto": 291,
+      "padding": 859,
+      "other": 0,
+      "packets": 1,
+      "overhead": 50
+     }
+    ],
+    "crypto_total": 291,
+    "padding_total": 859,
+    "wire_total": 1200,
+    "overhead_total": 50,
+    "h_measured": 50.0
+   },
+   "valid": true
+  },
+  {
+   "group": "secp256r1",
+   "ips": 1350,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 53.387,
+   "kem_ids": [
+    23
+   ],
+   "first_flight_datagrams": 1,
+   "first_flight_bytes": 1350,
+   "decoded": {
+    "k": 1,
+    "datagrams": [
+     {
+      "udp_bytes": 1350,
+      "crypto": 306,
+      "padding": 989,
+      "other": 0,
+      "packets": 1,
+      "overhead": 55
+     }
+    ],
+    "crypto_total": 306,
+    "padding_total": 989,
+    "wire_total": 1350,
+    "overhead_total": 55,
+    "h_measured": 55.0
+   },
+   "valid": true
+  },
+  {
+   "group": "secp256r1",
+   "ips": 1450,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 53.133,
+   "kem_ids": [
+    23
+   ],
+   "first_flight_datagrams": 1,
+   "first_flight_bytes": 1450,
+   "decoded": {
+    "k": 1,
+    "datagrams": [
+     {
+      "udp_bytes": 1450,
+      "crypto": 306,
+      "padding": 1100,
+      "other": 0,
+      "packets": 1,
+      "overhead": 44
+     }
+    ],
+    "crypto_total": 306,
+    "padding_total": 1100,
+    "wire_total": 1450,
+    "overhead_total": 44,
+    "h_measured": 44.0
+   },
+   "valid": true
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 0,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 52.758,
+   "kem_ids": [
+    4588
+   ],
+   "first_flight_datagrams": 2,
+   "first_flight_bytes": 2560,
+   "decoded": {
+    "k": 2,
+    "datagrams": [
+     {
+      "udp_bytes": 1280,
+      "crypto": 1233,
+      "padding": 0,
+      "other": 0,
+      "packets": 1,
+      "overhead": 47
+     },
+     {
+      "udp_bytes": 1280,
+      "crypto": 217,
+      "padding": 1015,
+      "other": 0,
+      "packets": 1,
+      "overhead": 48
+     }
+    ],
+    "crypto_total": 1450,
+    "padding_total": 1015,
+    "wire_total": 2560,
+    "overhead_total": 95,
+    "h_measured": 47.5
+   },
+   "valid": true
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1200,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 53.827,
+   "kem_ids": [
+    4588
+   ],
+   "first_flight_datagrams": 2,
+   "first_flight_bytes": 2400,
+   "decoded": {
+    "k": 2,
+    "datagrams": [
+     {
+      "udp_bytes": 1200,
+      "crypto": 1156,
+      "padding": 0,
+      "other": 0,
+      "packets": 1,
+      "overhead": 44
+     },
+     {
+      "udp_bytes": 1200,
+      "crypto": 295,
+      "padding": 860,
+      "other": 0,
+      "packets": 1,
+      "overhead": 45
+     }
+    ],
+    "crypto_total": 1451,
+    "padding_total": 860,
+    "wire_total": 2400,
+    "overhead_total": 89,
+    "h_measured": 44.5
+   },
+   "valid": true
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1350,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 53.919,
+   "kem_ids": [
+    4588
+   ],
+   "first_flight_datagrams": 2,
+   "first_flight_bytes": 2700,
+   "decoded": {
+    "k": 2,
+    "datagrams": [
+     {
+      "udp_bytes": 1350,
+      "crypto": 1298,
+      "padding": 0,
+      "other": 0,
+      "packets": 1,
+      "overhead": 52
+     },
+     {
+      "udp_bytes": 1350,
+      "crypto": 159,
+      "padding": 1138,
+      "other": 0,
+      "packets": 1,
+      "overhead": 53
+     }
+    ],
+    "crypto_total": 1457,
+    "padding_total": 1138,
+    "wire_total": 2700,
+    "overhead_total": 105,
+    "h_measured": 52.5
+   },
+   "valid": true
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1450,
+   "n": 10,
+   "ok": 10,
+   "p50_ms": 53.903,
+   "kem_ids": [
+    4588
+   ],
+   "first_flight_datagrams": 2,
+   "first_flight_bytes": 2900,
+   "decoded": {
+    "k": 2,
+    "datagrams": [
+     {
+      "udp_bytes": 1450,
+      "crypto": 1397,
+      "padding": 0,
+      "other": 0,
+      "packets": 1,
+      "overhead": 53
+     },
+     {
+      "udp_bytes": 1450,
+      "crypto": 60,
+      "padding": 1337,
+      "other": 0,
+      "packets": 1,
+      "overhead": 53
+     }
+    ],
+    "crypto_total": 1457,
+    "padding_total": 1337,
+    "wire_total": 2900,
+    "overhead_total": 106,
+    "h_measured": 53.0
+   },
+   "valid": true
+  }
+ ],
+ "capacity_checks": [
+  {
+   "group": "x25519",
+   "ips": 0,
+   "k": 1,
+   "k_model": 1,
+   "C": 259,
+   "W": 1280,
+   "h": 51.0,
+   "capacity": 0,
+   "feasible": false,
+   "k_needed": 2,
+   "extra_bytes": 1280,
+   "fill": 0.21074043938161108,
+   "padding": 970
+  },
+  {
+   "group": "x25519",
+   "ips": 1200,
+   "k": 1,
+   "k_model": 1,
+   "C": 260,
+   "W": 1200,
+   "h": 54.0,
+   "capacity": 0,
+   "feasible": false,
+   "k_needed": 2,
+   "extra_bytes": 1200,
+   "fill": 0.2268760907504363,
+   "padding": 886
+  },
+  {
+   "group": "x25519",
+   "ips": 1350,
+   "k": 1,
+   "k_model": 1,
+   "C": 273,
+   "W": 1350,
+   "h": 55.0,
+   "capacity": 0,
+   "feasible": false,
+   "k_needed": 2,
+   "extra_bytes": 1350,
+   "fill": 0.21081081081081082,
+   "padding": 1022
+  },
+  {
+   "group": "x25519",
+   "ips": 1450,
+   "k": 1,
+   "k_model": 1,
+   "C": 265,
+   "W": 1450,
+   "h": 47.0,
+   "capacity": 0,
+   "feasible": false,
+   "k_needed": 2,
+   "extra_bytes": 1450,
+   "fill": 0.18888096935138987,
+   "padding": 1138
+  },
+  {
+   "group": "secp256r1",
+   "ips": 0,
+   "k": 1,
+   "k_model": 1,
+   "C": 305,
+   "W": 1280,
+   "h": 51.0,
+   "capacity": 0,
+   "feasible": false,
+   "k_needed": 2,
+   "extra_bytes": 1280,
+   "fill": 0.2481692432872254,
+   "padding": 924
+  },
+  {
+   "group": "secp256r1",
+   "ips": 1200,
+   "k": 1,
+   "k_model": 1,
+   "C": 291,
+   "W": 1200,
+   "h": 50.0,
+   "capacity": 0,
+   "feasible": false,
+   "k_needed": 2,
+   "extra_bytes": 1200,
+   "fill": 0.2530434782608696,
+   "padding": 859
+  },
+  {
+   "group": "secp256r1",
+   "ips": 1350,
+   "k": 1,
+   "k_model": 1,
+   "C": 306,
+   "W": 1350,
+   "h": 55.0,
+   "capacity": 0,
+   "feasible": false,
+   "k_needed": 2,
+   "extra_bytes": 1350,
+   "fill": 0.2362934362934363,
+   "padding": 989
+  },
+  {
+   "group": "secp256r1",
+   "ips": 1450,
+   "k": 1,
+   "k_model": 1,
+   "C": 306,
+   "W": 1450,
+   "h": 44.0,
+   "capacity": 0,
+   "feasible": false,
+   "k_needed": 2,
+   "extra_bytes": 1450,
+   "fill": 0.21763869132290184,
+   "padding": 1100
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 0,
+   "k": 2,
+   "k_model": 2,
+   "C": 1450,
+   "W": 1280,
+   "h": 47.5,
+   "capacity": 1216.5,
+   "feasible": false,
+   "k_needed": 3,
+   "extra_bytes": 1280,
+   "fill": 0.5882352941176471,
+   "padding": 1015
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1200,
+   "k": 2,
+   "k_model": 2,
+   "C": 1451,
+   "W": 1200,
+   "h": 44.5,
+   "capacity": 1139.5,
+   "feasible": false,
+   "k_needed": 3,
+   "extra_bytes": 1200,
+   "fill": 0.6278667243617482,
+   "padding": 860
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1350,
+   "k": 2,
+   "k_model": 2,
+   "C": 1457,
+   "W": 1350,
+   "h": 52.5,
+   "capacity": 1281.5,
+   "feasible": false,
+   "k_needed": 3,
+   "extra_bytes": 1350,
+   "fill": 0.5614643545279383,
+   "padding": 1138
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1450,
+   "k": 2,
+   "k_model": 2,
+   "C": 1457,
+   "W": 1450,
+   "h": 53.0,
+   "capacity": 1381.0,
+   "feasible": false,
+   "k_needed": 3,
+   "extra_bytes": 1450,
+   "fill": 0.5214745884037223,
+   "padding": 1337
+  }
+ ],
+ "k_model_matches": true,
+ "any_inplace_feasible": false
+}

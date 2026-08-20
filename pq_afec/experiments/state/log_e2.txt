@@ -1,0 +1,35 @@
+==============================================================================
+E2 - real TLS 1.3 handshake flight sizes
+==============================================================================
+chain ecdsa256  : 1047 DER bytes  [541, 506]
+chain rsa2048   : 1838 DER bytes  [936, 902]
+
+------------------------------------------------------------------------------
+cert chain: ecdsa256
+------------------------------------------------------------------------------
+group                   CH wire   S flight  C flight2   note
+x25519                      242       1970         80   
+secp256r1                   275       2002         80   
+MLKEM512                   1002       2704         80   Negotiated TLS1.3 group: MLKEM512
+MLKEM768                   1386       3024         80   Negotiated TLS1.3 group: MLKEM768
+MLKEM1024                  1770       3505         80   Negotiated TLS1.3 group: MLKEM1024
+X25519MLKEM768             1418       3058         80   Negotiated TLS1.3 group: X25519MLKEM768
+SecP256r1MLKEM768          1451       3090         80   Negotiated TLS1.3 group: SecP256r1MLKEM768
+X448MLKEM1024         SKIP  s_server died for group X448MLKEM1024:
+Call to SSL_CONF_cmd(
+
+------------------------------------------------------------------------------
+cert chain: rsa2048
+------------------------------------------------------------------------------
+group                   CH wire   S flight  C flight2   note
+x25519                      242       3340         80   
+secp256r1                   275       3373         80   
+MLKEM512                   1002       4076         80   Negotiated TLS1.3 group: MLKEM512
+MLKEM768                   1386       4396         80   Negotiated TLS1.3 group: MLKEM768
+MLKEM1024                  1770       4876         80   Negotiated TLS1.3 group: MLKEM1024
+X25519MLKEM768             1418       4428         80   Negotiated TLS1.3 group: X25519MLKEM768
+SecP256r1MLKEM768          1451       4461         80   Negotiated TLS1.3 group: SecP256r1MLKEM768
+X448MLKEM1024         SKIP  s_server died for group X448MLKEM1024:
+Call to SSL_CONF_cmd(
+
+saved: C:\dev\pq_afec\experiments\results\e2_tls_flights.json

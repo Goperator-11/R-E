@@ -1,0 +1,30 @@
+==============================================================================
+E5 - real browser ClientHello
+==============================================================================
+browser: C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[A] browser ClientHello over TLS/TCP (local listener)
+  CH wire       = 1798 bytes
+  key share     = 1249 bytes  groups=[56026, 4588, 29]
+  ch_base (TCP) = 549 bytes  (17 extensions)
+      key_share                       1267
+      ext-65037                        286
+      signature_algorithms              28
+      ALPN                              18
+      supported_groups                  16
+      supported_versions                11
+
+[B] browser ClientHello over QUIC (relay on udp/443 -> cloudflare.com)
+  captured 12 datagrams (12 C2S)
+  CH wire        = 1758 bytes
+  key share      = 1248 bytes  groups=[4588, 29]
+  ch_base (QUIC) = 510 bytes  (11 extensions, quic_tp=92)
+  Initial packets carrying the ClientHello = 12
+      key_share                       1262
+      ext-65037                        254
+      quic_transport_parameters         92
+      signature_algorithms              24
+      server_name                       23
+      supported_groups                  14
+
+saved: C:\dev\pq_afec\experiments\results\e5_browser_ch.json

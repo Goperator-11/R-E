@@ -1,0 +1,274 @@
+{
+  "stages": {
+    "verify": {
+      "status": "done",
+      "started": "2026-08-18 15:29:20",
+      "fingerprint": "44e85cf67edfed3c",
+      "duration": 23.649049282073975,
+      "log": "experiments\\state\\log_verify.txt",
+      "finished": "2026-08-18 15:29:44"
+    },
+    "e1": {
+      "status": "done",
+      "started": "2026-08-18 15:29:44",
+      "fingerprint": "151a19431397af71",
+      "duration": 181.6678431034088,
+      "log": "experiments\\state\\log_e1.txt",
+      "finished": "2026-08-18 15:32:45"
+    },
+    "e2": {
+      "status": "done",
+      "started": "2026-08-18 15:32:45",
+      "fingerprint": "03ac45e2aaf16176",
+      "duration": 48.20060729980469,
+      "log": "experiments\\state\\log_e2.txt",
+      "finished": "2026-08-18 15:33:34"
+    },
+    "e3": {
+      "status": "done",
+      "started": "2026-08-18 15:33:34",
+      "fingerprint": "125d6d0ed91f2e54",
+      "duration": 634.5481176376343,
+      "log": "experiments\\state\\log_e3.txt",
+      "finished": "2026-08-18 15:44:08"
+    },
+    "e4": {
+      "status": "done",
+      "started": "2026-08-18 15:44:08",
+      "fingerprint": "3d0a37f9052e0892",
+      "duration": 318.8218672275543,
+      "log": "experiments\\state\\log_e4.txt",
+      "finished": "2026-08-18 15:49:27"
+    },
+    "e5": {
+      "status": "done",
+      "started": "2026-08-18 15:49:27",
+      "fingerprint": "bacd3ddbd7021970",
+      "duration": 17.2401921749115,
+      "log": "experiments\\state\\log_e5.txt",
+      "finished": "2026-08-18 15:49:44"
+    },
+    "e6": {
+      "status": "done",
+      "started": "2026-08-18 15:49:44",
+      "fingerprint": "bba30fffdd8e6ecb",
+      "duration": 867.4167547225952,
+      "log": "experiments\\state\\log_e6.txt",
+      "finished": "2026-08-18 16:04:12"
+    },
+    "e19": {
+      "status": "done",
+      "started": "2026-08-18 16:04:12",
+      "fingerprint": "76b8294dfba981fd",
+      "duration": 81.67835712432861,
+      "log": "experiments\\state\\log_e19.txt",
+      "finished": "2026-08-18 16:05:33"
+    },
+    "e7": {
+      "status": "done",
+      "started": "2026-08-18 16:05:33",
+      "fingerprint": "f235ca5d8b8817f0",
+      "duration": 727.2777106761932,
+      "log": "experiments\\state\\log_e7.txt",
+      "finished": "2026-08-18 16:17:41"
+    },
+    "e8": {
+      "status": "done",
+      "started": "2026-08-18 16:17:41",
+      "fingerprint": "4d95e642307a8443",
+      "duration": 26.072723627090454,
+      "log": "experiments\\state\\log_e8.txt",
+      "finished": "2026-08-18 16:18:07"
+    },
+    "e9": {
+      "status": "done",
+      "started": "2026-08-18 16:18:07",
+      "fingerprint": "14f1a34c4f230a7a",
+      "duration": 0.644291877746582,
+      "log": "experiments\\state\\log_e9.txt",
+      "finished": "2026-08-18 16:18:07"
+    },
+    "quicbed": {
+      "status": "done",
+      "started": "2026-08-18 17:11:32",
+      "fingerprint": "518e3674c6c71ef7",
+      "duration": 0.5715155601501465,
+      "log": "experiments\\state\\log_quicbed.txt",
+      "finished": "2026-08-18 17:11:32"
+    },
+    "e12": {
+      "status": "done",
+      "started": "2026-08-18 17:11:32",
+      "fingerprint": "0fbf1a8fb8e760bc",
+      "duration": 0.28522443771362305,
+      "log": "experiments\\state\\log_e12.txt",
+      "finished": "2026-08-18 17:11:32"
+    },
+    "e13": {
+      "status": "done",
+      "started": "2026-08-18 17:11:32",
+      "fingerprint": "467e1b14745b310c",
+      "duration": 1568.0732154846191,
+      "log": "experiments\\state\\log_e13.txt",
+      "finished": "2026-08-18 17:37:41"
+    },
+    "e15": {
+      "status": "done",
+      "started": "2026-08-18 17:37:41",
+      "fingerprint": "b2120f88cdca9c11",
+      "duration": 1.1040709018707275,
+      "log": "experiments\\state\\log_e15.txt",
+      "finished": "2026-08-18 17:37:42"
+    },
+    "e10": {
+      "status": "done",
+      "started": "2026-08-18 16:58:00",
+      "fingerprint": "15803cc411c63577",
+      "duration": 1.712355375289917,
+      "log": "experiments\\state\\log_e10.txt",
+      "finished": "2026-08-18 16:58:01"
+    },
+    "report": {
+      "status": "done",
+      "started": "2026-08-18 17:37:42",
+      "fingerprint": "e41e5ade8f260b4a",
+      "duration": 0.0651545524597168,
+      "log": "experiments\\state\\log_report.txt",
+      "finished": "2026-08-18 17:37:42"
+    }
+  },
+  "history": [
+    {
+      "stage": "verify",
+      "ok": true,
+      "at": "2026-08-18 15:29:44",
+      "sec": 23.6
+    },
+    {
+      "stage": "e1",
+      "ok": true,
+      "at": "2026-08-18 15:32:45",
+      "sec": 181.7
+    },
+    {
+      "stage": "e2",
+      "ok": true,
+      "at": "2026-08-18 15:33:34",
+      "sec": 48.2
+    },
+    {
+      "stage": "e3",
+      "ok": true,
+      "at": "2026-08-18 15:44:08",
+      "sec": 634.5
+    },
+    {
+      "stage": "e4",
+      "ok": true,
+      "at": "2026-08-18 15:49:27",
+      "sec": 318.8
+    },
+    {
+      "stage": "e5",
+      "ok": true,
+      "at": "2026-08-18 15:49:44",
+      "sec": 17.2
+    },
+    {
+      "stage": "e6",
+      "ok": true,
+      "at": "2026-08-18 16:04:12",
+      "sec": 867.4
+    },
+    {
+      "stage": "e19",
+      "ok": true,
+      "at": "2026-08-18 16:05:33",
+      "sec": 81.7
+    },
+    {
+      "stage": "e7",
+      "ok": true,
+      "at": "2026-08-18 16:17:41",
+      "sec": 727.3
+    },
+    {
+      "stage": "e8",
+      "ok": true,
+      "at": "2026-08-18 16:18:07",
+      "sec": 26.1
+    },
+    {
+      "stage": "e9",
+      "ok": true,
+      "at": "2026-08-18 16:18:07",
+      "sec": 0.6
+    },
+    {
+      "stage": "quicbed",
+      "ok": true,
+      "at": "2026-08-18 16:18:08",
+      "sec": 0.7
+    },
+    {
+      "stage": "e12",
+      "ok": true,
+      "at": "2026-08-18 16:31:58",
+      "sec": 830.3
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 16:57:59",
+      "sec": 1560.2
+    },
+    {
+      "stage": "e15",
+      "ok": true,
+      "at": "2026-08-18 16:58:00",
+      "sec": 1.1
+    },
+    {
+      "stage": "e10",
+      "ok": true,
+      "at": "2026-08-18 16:58:01",
+      "sec": 1.7
+    },
+    {
+      "stage": "report",
+      "ok": true,
+      "at": "2026-08-18 16:58:01",
+      "sec": 0.1
+    },
+    {
+      "stage": "quicbed",
+      "ok": true,
+      "at": "2026-08-18 17:11:32",
+      "sec": 0.6
+    },
+    {
+      "stage": "e12",
+      "ok": true,
+      "at": "2026-08-18 17:11:32",
+      "sec": 0.3
+    },
+    {
+      "stage": "e13",
+      "ok": true,
+      "at": "2026-08-18 17:37:41",
+      "sec": 1568.1
+    },
+    {
+      "stage": "e15",
+      "ok": true,
+      "at": "2026-08-18 17:37:42",
+      "sec": 1.1
+    },
+    {
+      "stage": "report",
+      "ok": true,
+      "at": "2026-08-18 17:37:42",
+      "sec": 0.1
+    }
+  ]
+}

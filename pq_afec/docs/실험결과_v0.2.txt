@@ -1,0 +1,201 @@
+
+------------------------------------------------------------------------------
+[1] ML-KEM key share -> QUIC Initial packet count  (FIPS 203 / RFC 9000)
+------------------------------------------------------------------------------
+kex                 c.share  CH bytes  c.pkts  s.share  SF bytes  s.pkts  amp budget
+x25519                   32       382       1       32      3582       4        3600
+x25519+mlkem512         832      1182       2      800      4350       4        7200
+x25519+mlkem768        1216      1566       2     1120      4670       5        7200
+x25519+mlkem1024       1600      1950       2     1600      5150       5        7200
+
+  -> x25519 alone fits in ONE Initial packet; every ML-KEM hybrid needs 2+.
+     Splitting is what makes a single packet loss cost a full PTO.
+
+------------------------------------------------------------------------------
+[2] Handshake shield: r* chosen by the cost function (T_recover = PTO)
+------------------------------------------------------------------------------
+    first PTO with no RTT sample = 999 ms  (RFC 9002 6.2.1)
+
+  p_prior  burst   K  r*  overhead  P_fail(r*)   P_fail(0)
+    0.001    1.0   2   0       0%    2.00e-03    2.00e-03
+    0.001    3.0   2   0       0%    1.33e-03    1.33e-03
+    0.005    1.0   2   1      50%    2.51e-05    1.00e-02
+    0.005    3.0   2   1      50%    4.45e-03    6.67e-03
+    0.010    1.0   2   1      50%    1.01e-04    2.00e-02
+    0.010    3.0   2   1      50%    8.90e-03    1.33e-02
+    0.020    1.0   2   1      50%    4.08e-04    4.00e-02
+    0.020    3.0   2   1      50%    1.78e-02    2.67e-02
+    0.050    1.0   2   1      50%    2.63e-03    1.00e-01
+    0.050    3.0   2   1      50%    4.47e-02    6.67e-02
+    0.100    1.0   2   1      50%    1.11e-02    2.00e-01
+    0.100    3.0   2   1      50%    9.01e-02    1.33e-01
+
+  -> r*=1 already appears at p=0.1%: one 1.2KB packet vs a ~1 s stall.
+
+------------------------------------------------------------------------------
+[3] Handshake completion time  (RTT = 30 ms, burst = 3) -- analytic
+------------------------------------------------------------------------------
+   loss |    x25519 |  MLKEM r=0 |  MLKEM r=1 |  PQC cost |  FEC gain |   stall r0->r1
+   0.5% |      37ms |       35ms |       33ms |     -5.0% |      5.0% |  1.8% -> 1.2%
+   1.0% |      44ms |       41ms |       37ms |     -8.3% |      8.9% |  3.6% -> 2.4%
+   2.0% |      59ms |       52ms |       44ms |    -12.6% |     14.6% |  7.2% -> 4.8%
+   5.0% |     110ms |       90ms |       68ms |    -17.4% |     24.6% | 17.4% -> 12.0%
+  10.0% |     216ms |      177ms |      117ms |    -18.0% |     34.1% | 32.9% -> 23.4%
+
+  -> 'PQC cost' = slowdown caused by switching to ML-KEM.
+     'FEC gain'  = how much of it one repair packet per flight buys back.
+
+    cross-check against Monte Carlo (p95 is robust, mean is not):
+      loss  analytic mean   MC mean    MC p95
+      1.0%            41m       39m       30m
+      5.0%            90m       82m       90m
+
+------------------------------------------------------------------------------
+[4] Data phase: same payload, which policy finishes first?
+------------------------------------------------------------------------------
+    K = 64 symbols/block, RTT = 40 ms, burst = 4, link = 50 Mbps
+
+  loss = 0.0%
+    policy      total ms    goodput  overhead  blk fail  mean r
+    none            4915     50.00M     0.0%     0.00%    0.00
+    static          6144     40.00M    25.0%     0.00%   16.00
+    adaptive        4951     49.64M     0.7%     0.00%    0.47
+    oracle          4915     50.00M     0.0%     0.00%    0.00
+
+  loss = 0.5%
+    policy      total ms    goodput  overhead  blk fail  mean r
+    none            8115     30.28M     0.0%    10.00%    0.00
+    static          6144     40.00M    25.0%     0.00%   16.00
+    adaptive        5809     42.30M    16.6%     0.25%   10.60
+    oracle          5690     43.19M    12.5%     0.50%    8.00
+
+  loss = 2.0%
+    policy      total ms    goodput  overhead  blk fail  mean r
+    none           16275     15.10M     0.0%    35.50%    0.00
+    static          6464     38.02M    25.0%     1.00%   16.00
+    adaptive        6791     36.19M    31.7%     1.00%   20.26
+    oracle          6470     37.98M    21.9%     1.50%   14.00
+
+  loss = 5.0%
+    policy      total ms    goodput  overhead  blk fail  mean r
+    none           24515     10.02M     0.0%    61.25%    0.00
+    static          7184     34.21M    25.0%     3.25%   16.00
+    adaptive        7449     32.99M    41.8%     1.50%   26.74
+    oracle          7171     34.27M    31.2%     2.25%   20.00
+
+  loss = 10.0%
+    policy      total ms    goodput  overhead  blk fail  mean r
+    none           32435      7.58M     0.0%    86.00%    0.00
+    static         10304     23.85M    25.0%    13.00%   16.00
+    adaptive        7860     31.27M    48.5%     1.75%   31.05
+    oracle          7782     31.58M    45.3%     2.00%   29.00
+
+  regret vs oracle (total time, %):
+    policy         0.0%     0.5%     2.0%     5.0%    10.0%    WORST
+    none           0.0%    42.6%   151.5%   241.9%   316.8%   316.8%
+    static        25.0%     8.0%    -0.1%     0.2%    32.4%    32.4%
+    adaptive       0.7%     2.1%     5.0%     3.9%     1.0%     5.0%
+
+  -> the point is the WORST column: 'static' is only good near the loss
+     rate it was tuned for. 'adaptive' stays close to oracle everywhere.
+
+  same thing on SHORT connections (30 blocks, averaged over 8 seeds):
+    policy         0.0%     0.5%     2.0%     5.0%    10.0%    WORST
+    none           0.0%    43.6%   112.8%   234.5%   338.4%   338.4%
+    static        25.0%     3.6%    -1.8%    -0.6%    27.1%    27.1%
+    adaptive       5.1%    10.7%    11.0%    23.2%    37.6%    37.6%
+    warm           0.0%     3.7%     6.1%     6.1%     4.7%     6.1%
+
+  -> with 30 blocks and 1-RTT feedback lag the controller barely has
+     time to learn, so plain 'adaptive' loses its edge over 'static'.
+     'warm' = same controller started from a cached per-destination
+     prior. That gap is the value of carrying state across connections.
+
+------------------------------------------------------------------------------
+[5] Why burstiness matters: same loss rate, different burst length
+------------------------------------------------------------------------------
+    K = 64, p = 2.0%, T_recover = 80 ms
+
+  burst L   r*  overhead   P_fail(r*)   P_fail with r* from L=1
+        1    5       8%     1.97e-03                  1.97e-03
+        2   10      16%     3.79e-03                  4.80e-02
+        4   14      22%     9.99e-03                  8.84e-02
+        8   18      28%     1.85e-02                  9.03e-02
+       16   15      23%     3.81e-02                  7.04e-02
+
+  -> assuming independent losses fixes r at 5; the last column shows
+     the real failure probability that choice leaves you with.
+
+    interleaving (D) breaks the burst apart instead of paying for it:
+      burst L   D   r*  overhead      P_fail
+            8   1   18      28%    1.85e-02
+            8   4   11      17%    5.41e-03
+            8   8    8      12%    3.24e-03
+           16   1   15      23%    3.81e-02
+           16   4   15      23%    1.01e-02
+           16   8   11      17%    5.98e-03
+
+    -> D>1 costs latency (you must span D blocks), not bandwidth.
+       Trading latency for redundancy is the cheaper deal on bursty links.
+
+------------------------------------------------------------------------------
+[6] Congestion guard: identical loss, different cause
+------------------------------------------------------------------------------
+    K = 64, p = 5.0%, burst = 3
+
+  RTT inflation      g   r*  overhead      P_fail
+            0%   0.00   18      28%    8.23e-03   link error
+           25%   0.25   15      23%    1.88e-02   
+           50%   0.50   14      22%    2.46e-02   
+           75%   0.75   13      20%    3.21e-02   
+          100%   1.00   12      19%    4.18e-02   congestion
+
+  -> same 5% loss, but redundancy is pulled back as the evidence
+     points to a full queue rather than a lossy link.
+
+------------------------------------------------------------------------------
+[7] Adaptation trace: loss jumps 0.5% -> 8% at block 100, back at 250
+------------------------------------------------------------------------------
+  block   true p    p_hat  burst_hat   r  overhead
+      0    0.005    0.009       1.00   6        9%
+     25    0.005    0.010       1.81  17       27%
+     50    0.005    0.001       1.76   9       14%
+     75    0.005    0.007       2.48  11       17%
+    100    0.080    0.003       2.21   8       12%
+    101    0.080    0.004       2.03   7       11%
+    105    0.080    0.050       5.43  23       36%
+    110    0.080    0.144       4.29  32       50%
+    125    0.080    0.106       4.82  32       50%
+    150    0.080    0.070       3.79  32       50%
+    175    0.080    0.083       3.33  28       44%
+    200    0.080    0.074       4.43  26       41%
+    225    0.080    0.092       3.96  32       50%
+    250    0.005    0.066       3.83  30       47%
+    255    0.005    0.029       3.67  32       50%
+    270    0.005    0.008       3.15  20       31%
+    275    0.005    0.015       3.71  17       27%
+    300    0.005    0.003       2.88  11       17%
+    325    0.005    0.001       2.92  11       17%
+    350    0.005    0.007       3.76  14       22%
+    375    0.005    0.001       3.18   8       12%
+
+  -> reacts within a few blocks of the jump (feedback is 1 RTT stale),
+     then decays geometrically once the surprise test stops firing.
+
+------------------------------------------------------------------------------
+[8] Per-destination stats cache: repeated short connections (30 blocks)
+------------------------------------------------------------------------------
+    channel: loss 5%, burst 4, RTT 40 ms
+    conn                     prior src  prior p      w   regret  overhead
+    1st visit (cold)           default    0.010    100    50.6%     32.6%
+    2nd visit                    exact    0.053    100    11.0%     45.7%
+    3rd visit                    exact    0.043    100    -4.8%     45.6%
+    move to cellular           default    0.010    100    57.2%     41.2%
+    back on home wifi            exact    0.052    100     9.1%     45.2%
+
+  -> the mobility line starts cold BY DESIGN: the access network is
+     half of the cache key, so moving networks never reads stale stats.
+     returning to wifi picks the old entry right back up.
+     (single-seed demo - negative regret is per-seed noise;
+      the statistics are in tune_cache.py, 32 seeds)
+

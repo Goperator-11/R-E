@@ -1,0 +1,342 @@
+# -*- coding: utf-8 -*-
+"""PAD-FEC 실측 하네스 - 네임스페이스, veth, netem, 서버/클라이언트 구동.
+
+**인수인계 문서 5절의 검증된 구성을 글자 그대로 옮긴 것이다.**
+
+    unshare -Urnm bash -c '
+    mount -t tmpfs none /run 2>/dev/null; mkdir -p /run/netns
+    ip netns add peer
+    ip link add v0 type veth peer name v1
+    ip link set v1 netns peer
+    ip addr add 10.9.0.1/24 dev v0; ip link set v0 mtu 1500; ip link set v0 up
+    ip netns exec peer sh -c "ip addr add 10.9.0.2/24 dev v1; ..."
+    tc qdisc add dev v0 root netem delay 25ms loss 5%
+    ip netns exec peer tc qdisc add dev v1 root netem delay 25ms loss 5%
+    ip netns exec peer /tmp/qamp -mode server -addr 10.9.0.2:44433 ...
+    timeout 300 /tmp/qamp -mode client -addr 10.9.0.2:44433 ...'
+
+이름(peer, v0, v1), 주소(10.9.0.1/2), 포트(44433), 실행 경로(/tmp/qamp),
+MTU(1500), netem 형태를 전부 문서와 같게 맞췄다. 심(shim) 프로세스는 없다 -
+문서 3-3/3-4 가 지정한 대로 FEC 가 countConn 안에 들어갔기 때문이다.
+
+문서 5절/6절의 함정을 그대로 반영했다.
+  - loopback 은 MTU 변경을 조용히 무시한다 -> 반드시 veth 를 쓴다
+  - veth 양끝을 서로 다른 네임스페이스에 둔다 (같으면 커널이 우회한다)
+  - netem 을 양쪽에 절반씩 걸어야 대칭 지연이 된다
+  - 모든 실행에 timeout 을 건다
+  - 조건마다 서버를 새로 띄우고 반드시 죽인다 (잔존 프로세스가 결과를 오염)
+
+방향별 손실
+  veth-tx(루트 ns)의 netem  -> 클라이언트 -> 서버 방향
+  veth-rx(rx ns)의 netem    -> 서버 -> 클라이언트 방향
+우리 FEC 는 c2s 만 보호하므로, 두 방향을 따로 걸 수 있어야 메커니즘이
+분리 관측된다.
+"""
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import subprocess
+import sys
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+RESULTS = os.path.join(HERE, "results")
+STATE = os.path.join(HERE, "state")
+QBED = os.path.join(HERE, "quicbed")
+HOME = os.path.expanduser("~")
+BIN = os.path.join(HOME, "quicbed", "bin")
+
+# 문서와 같은 이름·주소·포트·경로
+NS = "peer"
+DEV_LOCAL, DEV_PEER = "v0", "v1"
+TX_IP, RX_IP = "10.9.0.1", "10.9.0.2"
+SERVER_PORT = 44433
+QAMP = "/tmp/qamp"          # 문서 5절: 경로 공백 회피를 위해 /tmp 로 복사
+WORK = "/tmp/padfec"
+
+os.makedirs(RESULTS, exist_ok=True)
+os.makedirs(STATE, exist_ok=True)
+
+
+def harden():
+    for s in (sys.stdout, sys.stderr):
+        try:
+            s.reconfigure(errors="replace")
+        except Exception:
+            pass
+
+
+def run(cmd, check=True):
+    r = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if check and r.returncode != 0:
+        raise RuntimeError("FAILED: %s | %s | %s" % (cmd, r.stdout, r.stderr))
+    return r
+
+
+def require_root():
+    if os.geteuid() != 0:
+        sys.stderr.write("네임스페이스가 필요하다: "
+                         "unshare -r -m -n python3 ...\n")
+        sys.exit(2)
+
+
+def require_bin():
+    """문서 5절대로 /tmp/qamp 를 쓰되, 없으면 빌드본에서 복사한다.
+
+    WSL 은 세션이 내려가면 /tmp 를 비운다. 문서의 환경(상시 켜진 서버)
+    에서는 한 번 복사해 두면 끝이지만 우리는 매번 확인해야 한다.
+    이걸 안 챙겨서 timeout: failed to execute process 로 한 번 헛돌았다.
+    """
+    if not os.path.exists(QAMP):
+        src = os.path.join(BIN, "qamp")
+        if os.path.exists(src):
+            shutil.copy2(src, QAMP)
+            os.chmod(QAMP, 0o755)
+    if not os.path.exists(QAMP):
+        sys.stderr.write("%s 가 없다: quicbed/build.sh 를 먼저 실행" % QAMP)
+        sys.stderr.write(chr(10))
+        sys.exit(2)
+    return QAMP
+
+
+
+def setup(mtu=1500):
+    """문서 5절 스크립트 그대로."""
+    run("mount -t tmpfs none /run", check=False)
+    os.makedirs("/run/netns", exist_ok=True)
+    os.makedirs(WORK, exist_ok=True)
+    run("ip netns del %s" % NS, check=False)
+    run("ip netns add %s" % NS)
+    run("ip link add %s type veth peer name %s" % (DEV_LOCAL, DEV_PEER))
+    run("ip link set %s netns %s" % (DEV_PEER, NS))
+    run("ip addr add %s/24 dev %s" % (TX_IP, DEV_LOCAL))
+    run("ip link set %s mtu %d" % (DEV_LOCAL, mtu))
+    run("ip link set %s up" % DEV_LOCAL)
+    run("ip link set lo up")
+    run("ip netns exec %s ip addr add %s/24 dev %s" % (NS, RX_IP, DEV_PEER))
+    run("ip netns exec %s ip link set %s mtu %d" % (NS, DEV_PEER, mtu))
+    run("ip netns exec %s ip link set %s up" % (NS, DEV_PEER))
+    run("ip netns exec %s ip link set lo up" % NS)
+    static_arp()
+    verify_link(mtu)
+
+
+def _mac(dev, ns=None):
+    cmd = "ip link show %s" % dev
+    if ns:
+        cmd = "ip netns exec %s %s" % (ns, cmd)
+    out = run(cmd).stdout
+    for tok in out.split():
+        if len(tok) == 17 and tok.count(":") == 5:
+            return tok
+    raise RuntimeError("MAC 을 못 읽었다: %s" % out)
+
+
+def static_arp():
+    """🩸 ARP 를 미리 박아 둔다.
+
+    안 그러면 **각 링크 설정 후 첫 데이터그램이 주소 해석을 유발해 왕복
+    하나를 더 쓴다.** 손실을 하나도 안 걸었는데 40 회 중 1 회가 2-RTT 로
+    나오던 것이 이것이었다. 측정 잡음이 아니라 계통 오차이므로 없앤다.
+    """
+    ml = _mac(DEV_LOCAL)
+    mp = _mac(DEV_PEER, NS)
+    run("ip neigh replace %s lladdr %s dev %s nud permanent"
+        % (RX_IP, mp, DEV_LOCAL))
+    run("ip netns exec %s ip neigh replace %s lladdr %s dev %s nud permanent"
+        % (NS, TX_IP, ml, DEV_PEER))
+
+
+def verify_link(mtu):
+    """MTU 가 실제로 걸렸는지 확인한다.
+
+    문서 5절: "loopback(lo)은 MTU 변경이 커널에서 무시됩니다. exit 코드는
+    0인데 실제로 적용되지 않아, 초기 실험이 통째로 무효가 되었던 적이
+    있습니다." 그래서 exit 코드를 믿지 않고 ip link show 로 눈으로 본다.
+    """
+    r = run("ip link show %s" % DEV_LOCAL)
+    if ("mtu %d" % mtu) not in r.stdout:
+        raise RuntimeError("%s MTU 가 %d 로 안 걸렸다: %s"
+                           % (DEV_LOCAL, mtu, r.stdout))
+    r = run("ip netns exec %s ip link show %s" % (NS, DEV_PEER))
+    if ("mtu %d" % mtu) not in r.stdout:
+        raise RuntimeError("%s MTU 가 %d 로 안 걸렸다" % (DEV_PEER, mtu))
+    # veth 양끝이 서로 다른 네임스페이스에 있는지도 확인한다.
+    # 같은 곳에 두면 커널이 loopback 으로 우회한다(문서 5절).
+    if DEV_PEER in run("ip link show").stdout:
+        raise RuntimeError("%s 가 루트 네임스페이스에 남아 있다" % DEV_PEER)
+
+
+def _netem_spec(one_way_ms, loss_pct, burst_len):
+    # 문서 5절과 같은 형태: `netem delay 25ms loss 5%`
+    spec = "netem delay %.3fms" % one_way_ms
+    if loss_pct and loss_pct > 0:
+        if burst_len and burst_len > 1:
+            # gemodel p r : 좋은->나쁜 p, 나쁜->좋은 r.  평균 버스트 = 1/r,
+            # 정상상태 손실률 = p/(p+r).
+            r_ = 1.0 / float(burst_len)
+            p_ = r_ * loss_pct / (100.0 - loss_pct)
+            spec += " loss gemodel %.4f%% %.4f%%" % (p_ * 100.0, r_ * 100.0)
+        else:
+            # ⚠️ `loss p%% corr%%` 형태는 1차에서 실효 손실률을 무너뜨렸다.
+            # 상관 인자를 빼고 순수 베르누이로만 쓴다.
+            spec += " loss %.4f%%" % loss_pct
+    return spec
+
+
+def set_netem(one_way_ms, loss_c2s=0.0, loss_s2c=0.0, burst_len=1.0):
+    """문서 5절대로 netem 을 양쪽에 절반씩 건다(그래야 대칭 지연이 된다)."""
+    run("tc qdisc del dev %s root" % DEV_LOCAL, check=False)
+    run("ip netns exec %s tc qdisc del dev %s root" % (NS, DEV_PEER),
+        check=False)
+    run("tc qdisc add dev %s root %s"
+        % (DEV_LOCAL, _netem_spec(one_way_ms, loss_c2s, burst_len)))
+    run("ip netns exec %s tc qdisc add dev %s root %s"
+        % (NS, DEV_PEER, _netem_spec(one_way_ms, loss_s2c, burst_len)))
+
+
+def start_server(certsize, fec="off", stats_path=None, extra=()):
+    qamp = require_bin()
+    if stats_path is None:
+        stats_path = os.path.join(WORK, "srv_stats.json")
+    try:
+        os.unlink(stats_path)
+    except OSError:
+        pass
+    cmd = ["ip", "netns", "exec", NS, qamp,
+           "-mode", "server", "-addr", "%s:%d" % (RX_IP, SERVER_PORT),
+           "-certsize", str(certsize), "-fec", fec, "-stats", stats_path]
+    cmd += list(extra)
+    p = subprocess.Popen(cmd, stdout=subprocess.DEVNULL,
+                         stderr=subprocess.PIPE)
+    # READY 를 기다린다. 고정 sleep 은 느리거나 모자라거나 둘 중 하나다.
+    deadline = time.time() + 15
+    while time.time() < deadline:
+        line = p.stderr.readline()
+        if not line:
+            break
+        if b"READY" in line:
+            break
+    return p, stats_path
+
+
+def stop_server(p):
+    if p is None:
+        return
+    try:
+        p.terminate()
+    except Exception:
+        pass
+    try:
+        p.wait(timeout=3)
+    except Exception:
+        try:
+            p.kill()
+        except Exception:
+            pass
+
+
+def run_client(group, n, fec="off", m=1, ips=0, gap_ms=25, timeout_s=12,
+               stats_path=None, quiet=True, expect_k=0, dump=None,
+               extra=()):
+    qamp = require_bin()
+    if stats_path is None:
+        stats_path = os.path.join(WORK, "cli_stats.json")
+    try:
+        os.unlink(stats_path)
+    except OSError:
+        pass
+    # 문서 6절: 모든 실행에 timeout 을 붙인다.
+    cmd = ["timeout", str(int(timeout_s * n + 120)), qamp, "-mode", "client",
+           "-addr", "%s:%d" % (RX_IP, SERVER_PORT),
+           "-group", group, "-n", str(n),
+           "-fec", fec, "-m", str(m),
+           "-gap", "%dms" % int(gap_ms),
+           "-timeout", "%ds" % int(timeout_s),
+           "-stats", stats_path]
+    if ips:
+        cmd += ["-ips", str(ips)]
+    if expect_k:
+        cmd += ["-expect-k", str(expect_k)]
+    if dump:
+        cmd += ["-dump-flight", dump]
+    cmd += list(extra)
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True,
+                           timeout=timeout_s * n + 180)
+    except subprocess.TimeoutExpired:
+        return [], {}, "timeout"
+    rows = []
+    for line in r.stdout.splitlines():
+        line = line.strip()
+        if line.startswith("{"):
+            try:
+                rows.append(json.loads(line))
+            except Exception:
+                pass
+    stats = {}
+    if os.path.exists(stats_path):
+        try:
+            stats = json.load(open(stats_path))
+        except Exception:
+            stats = {}
+    return rows, stats, ""
+
+
+def read_server_stats(path):
+    for _ in range(20):
+        if os.path.exists(path):
+            try:
+                return json.load(open(path))
+            except Exception:
+                pass
+        time.sleep(0.1)
+    return {}
+
+
+def pctl(vals, q):
+    if not vals:
+        return None
+    s = sorted(vals)
+    i = int(q * (len(s) - 1))
+    return s[i]
+
+
+def summarize(rows, rtt_ms=None):
+    ok = [r["ms"] for r in rows if r.get("ok")]
+    out = {
+        "n": len(rows),
+        "ok": len(ok),
+        "fail": len(rows) - len(ok),
+        "p50": pctl(ok, 0.50), "p90": pctl(ok, 0.90),
+        "p95": pctl(ok, 0.95), "p99": pctl(ok, 0.99),
+        "min": min(ok) if ok else None, "max": max(ok) if ok else None,
+        "mean": (sum(ok) / len(ok)) if ok else None,
+    }
+    if rtt_ms:
+        # PTO 를 맞은 시행 비율. RFC 9002 의 초기 PTO 는 약 999 ms 이므로
+        # RTT 의 몇 배가 아니라 절대 기준으로 세는 편이 덜 모호하다.
+        out["pto_rate"] = (sum(1 for t in ok if t > rtt_ms + 500.0)
+                           / float(len(ok))) if ok else None
+        out["two_rtt_rate"] = (sum(1 for t in ok if t > 1.5 * rtt_ms)
+                               / float(len(ok))) if ok else None
+        out["rtt_multiple"] = (out["p50"] / rtt_ms) if out["p50"] else None
+    if rows:
+        kems = set(r.get("kem_id") for r in rows if r.get("ok"))
+        out["kem_ids"] = sorted(x for x in kems if x is not None)
+        dg = [r.get("initial_datagrams") for r in rows
+              if r.get("initial_datagrams")]
+        out["initial_datagrams_median"] = pctl(dg, 0.5)
+    return out
+
+
+def save(name, obj):
+    path = os.path.join(RESULTS, name)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False, indent=1)
+    os.replace(tmp, path)
+    return path

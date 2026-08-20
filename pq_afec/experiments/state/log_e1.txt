@@ -1,0 +1,48 @@
+==============================================================================
+E1 - ML-KEM performance measurement
+==============================================================================
+OpenSSL 3.5.5 27 Jan 2026 (Library: OpenSSL 3.5.5 27 Jan 2026)
+
+[a] sizes (real keygen + encap + decap)
+  ML-KEM-512   ek=  800 (FIPS  800 OK)  ct=  768 (FIPS  768 OK)  ss=32 agree=True
+               openssl stores sk as 1706 octets (FIPS expanded dk = 1632)
+  ML-KEM-768   ek= 1184 (FIPS 1184 OK)  ct= 1088 (FIPS 1088 OK)  ss=32 agree=True
+               openssl stores sk as 2474 octets (FIPS expanded dk = 2400)
+  ML-KEM-1024  ek= 1568 (FIPS 1568 OK)  ct= 1568 (FIPS 1568 OK)  ss=32 agree=True
+               openssl stores sk as 3242 octets (FIPS expanded dk = 3168)
+
+[b] timing: openssl speed -kem-algorithms, 3s x 5 reps
+    ML-KEM-512
+      rep 1/5 ok
+      rep 2/5 ok
+      rep 3/5 ok
+      rep 4/5 ok
+      rep 5/5 ok
+    ML-KEM-768
+      rep 1/5 ok
+      rep 2/5 ok
+      rep 3/5 ok
+      rep 4/5 ok
+      rep 5/5 ok
+    ML-KEM-1024
+      rep 1/5 ok
+      rep 2/5 ok
+      rep 3/5 ok
+      rep 4/5 ok
+      rep 5/5 ok
+    X25519
+      rep 1/5 ok
+      rep 2/5 ok
+      rep 3/5 ok
+      rep 4/5 ok
+      rep 5/5 ok
+
+------------------------------------------------------------------------------
+alg            keygen us  encaps us  decaps us   encaps ops/s
+------------------------------------------------------------------------------
+ML-KEM-512         14.00       9.00      14.00         113131
+ML-KEM-768         22.00      12.00      19.00          83636
+ML-KEM-1024        33.00      16.00      25.00          62931
+X25519             18.00      40.00      20.00          24868
+------------------------------------------------------------------------------
+saved: C:\dev\pq_afec\experiments\results\e1_mlkem.json

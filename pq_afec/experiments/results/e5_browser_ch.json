@@ -1,0 +1,146 @@
+{
+  "browser_path": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "tcp": {
+    "label": "browser-tcp",
+    "ch_wire": 1798,
+    "keyshare_bytes": 1249,
+    "keyshare_groups": [
+      56026,
+      4588,
+      29
+    ],
+    "ch_base": 549,
+    "quic_transport_parameters": null,
+    "n_extensions": 17,
+    "extensions": [
+      {
+        "name": "ext-10794",
+        "wire_len": 4
+      },
+      {
+        "name": "psk_key_exchange_modes",
+        "wire_len": 6
+      },
+      {
+        "name": "SCT",
+        "wire_len": 4
+      },
+      {
+        "name": "supported_versions",
+        "wire_len": 11
+      },
+      {
+        "name": "status_request",
+        "wire_len": 9
+      },
+      {
+        "name": "renegotiation_info",
+        "wire_len": 5
+      },
+      {
+        "name": "compress_certificate",
+        "wire_len": 7
+      },
+      {
+        "name": "ALPN",
+        "wire_len": 18
+      },
+      {
+        "name": "signature_algorithms",
+        "wire_len": 28
+      },
+      {
+        "name": "extended_master_secret",
+        "wire_len": 4
+      },
+      {
+        "name": "ext-65037",
+        "wire_len": 286
+      },
+      {
+        "name": "supported_groups",
+        "wire_len": 16
+      },
+      {
+        "name": "ext-11",
+        "wire_len": 6
+      },
+      {
+        "name": "ext-17613",
+        "wire_len": 9
+      },
+      {
+        "name": "session_ticket",
+        "wire_len": 4
+      },
+      {
+        "name": "key_share",
+        "wire_len": 1267
+      },
+      {
+        "name": "ext-31354",
+        "wire_len": 5
+      }
+    ]
+  },
+  "quic": {
+    "label": "browser-quic",
+    "ch_wire": 1758,
+    "keyshare_bytes": 1248,
+    "keyshare_groups": [
+      4588,
+      29
+    ],
+    "ch_base": 510,
+    "quic_transport_parameters": 92,
+    "n_extensions": 11,
+    "extensions": [
+      {
+        "name": "compress_certificate",
+        "wire_len": 7
+      },
+      {
+        "name": "quic_transport_parameters",
+        "wire_len": 92
+      },
+      {
+        "name": "ext-17613",
+        "wire_len": 9
+      },
+      {
+        "name": "server_name",
+        "wire_len": 23
+      },
+      {
+        "name": "signature_algorithms",
+        "wire_len": 24
+      },
+      {
+        "name": "ext-65037",
+        "wire_len": 254
+      },
+      {
+        "name": "supported_versions",
+        "wire_len": 7
+      },
+      {
+        "name": "supported_groups",
+        "wire_len": 14
+      },
+      {
+        "name": "ALPN",
+        "wire_len": 9
+      },
+      {
+        "name": "key_share",
+        "wire_len": 1262
+      },
+      {
+        "name": "psk_key_exchange_modes",
+        "wire_len": 6
+      }
+    ],
+    "initial_packets": 12,
+    "client_initial_datagrams": 12
+  }
+}
