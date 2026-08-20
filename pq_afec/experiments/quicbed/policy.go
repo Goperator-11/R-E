@@ -53,33 +53,10 @@ func parityDatagramBytes(w, k int) int {
 	return w + 32 + 6*k
 }
 
-// pfailLookup 은 표에서 복구 실패 확률을 읽는다. p 만 선형 보간한다.
-// 표는 padfec/table.py 가 검증된 Python 모형에서 생성한다 - Go 로 다시
-// 구현하지 않는 이유는 그 파일 머리말에 적었다.
-func pfailLookup(k, m int, p, l float64) float64 {
-	ki := idxNearest(pfailK, k)
-	mi := idxNearest(pfailM, m)
-	li := idxNearestF(pfailL, l)
-	row := pfailTable[ki][mi]
-	if p <= pfailP[0] {
-		return row[0][li]
-	}
-	last := len(pfailP) - 1
-	if p >= pfailP[last] {
-		return row[last][li]
-	}
-	for i := 0; i < last; i++ {
-		if p >= pfailP[i] && p <= pfailP[i+1] {
-			lo, hi := pfailP[i], pfailP[i+1]
-			t := 0.0
-			if hi > lo {
-				t = (p - lo) / (hi - lo)
-			}
-			return row[i][li]*(1-t) + row[i+1][li]*t
-		}
-	}
-	return row[last][li]
-}
+// 🩸 pfailLookup 을 지웠다(2026-08-20 감사). P_fail 을 별도 표에서 읽으면
+// 기대 왕복 수와 **다른 분포**에서 나오게 된다 - 그것이 결함 1 의 정체였다.
+// 지금은 flightOutcome 이 결합분포 하나에서 둘 다 뽑는다. 두 번째 출처를
+// 남겨 두면 누군가 다시 그걸 부른다.
 
 func idxNearest(xs []int, v int) int {
 	best, bd := 0, 1<<30
@@ -107,52 +84,91 @@ func idxNearestF(xs []float64, v float64) int {
 }
 
 // binomPMF 는 시행 n 회 중 성공 k 회 확률이다.
-func binomPMF(n, k int, q float64) float64 {
-	if k < 0 || k > n {
-		return 0
+// jointLookup 은 결합 도착분포를 표에서 읽는다. p 만 선형 보간한다.
+//
+// 돌려주는 것: 평탄화된 (k+1)x(m+1) 행렬. [a*(m+1)+b] = 원본 a 개·패리티
+// b 개가 도착할 확률. 표는 padfec/table.py 가 검증된 Python 모형에서
+// 생성한다 - Go 로 다시 구현하지 않는 이유는 그 파일 머리말에 적었다.
+func jointLookup(k, m int, p, l float64) []float64 {
+	ki := idxNearest(pfailK, k)
+	mi := idxNearest(pfailM, m)
+	li := idxNearestF(pfailL, l)
+	row := jointTable[ki][mi]
+
+	// p 선형 보간. 두 끝점이 각각 합 1 이므로 볼록결합도 합이 1 이다.
+	lo := 0
+	for lo < len(pfailP)-2 && pfailP[lo+1] < p {
+		lo++
 	}
-	c := 1.0
-	for i := 0; i < k; i++ {
-		c = c * float64(n-i) / float64(i+1)
+	hi := lo + 1
+	a, b := row[lo][li], row[hi][li]
+	span := pfailP[hi] - pfailP[lo]
+	t := 0.0
+	if span > 0 {
+		t = (p - pfailP[lo]) / span
 	}
-	return c * math.Pow(q, float64(k)) * math.Pow(1-q, float64(n-k))
+	if t < 0 {
+		t = 0
+	}
+	if t > 1 {
+		t = 1
+	}
+	out := make([]float64, len(a))
+	for i := range a {
+		out[i] = a[i]*(1-t) + b[i]*t
+	}
+	return out
 }
 
-// expectedNRtt 는 기대 왕복 수다.
+// flightOutcome 은 기대 왕복 수와 복구 실패 확률을 **하나의 분포에서** 낸다.
+// padfec/policy.py 의 flight_outcome 과 같은 식이다.
 //
 // 🩸 처음에는 **의도한** 클라이언트 바이트로 1 아니면 2 를 결정론적으로
 // 정했다. 틀렸다. 증폭 신용은 보장된 것이 아니라 **패리티가 실제로 도착해야**
 // 생긴다. 패리티가 유실되면 그 바이트가 예산에 안 잡혀 왕복 하나를 도로 잃는다.
+// (실측: 임계위/손실 5% 꼬리가 m=1 8.0%, m=2 1.0% 로 갈렸다.)
 //
-// 그래서 m=1 은 이 위험이 그대로(패리티 하나뿐)이고 m=2 는 하나를 잃어도
-// 남는다. 실측에서 임계위/손실5% 의 꼬리가 m=1 8.0%, m=2 1.0% 로 갈린 것이
-// 정확히 이 항이었고, 이 항이 없어서 정책이 m=1 을 골라 후회 +6.5 ms 를 냈다.
+// 🩸 2026-08-20 감사가 그 수리에서 결함 둘을 더 찾았다.
 //
-// 도착한 원본 i 개와 패리티 j 개의 모든 경우에 대해 기댓값을 낸다.
-// 복구된 원본의 바이트는 **세지 않는다** - 우리 회계 규칙상 복구본을 넣을
-// 때 패리티를 버리므로, 서버가 실제로 센 바이트만 예산이 된다.
-func expectedNRtt(k, m, w int, p float64, serverFlight float64) float64 {
+//	(1) 이 함수가 원본/패리티를 **각각 독립 이항**으로 굴렸는데 pfail 은
+//	    Gilbert-Elliott 표에서 읽었다. 한 비용식에 손실 모형이 둘이었다.
+//	    이제 둘 다 jointTable 에서 나온다.
+//	(2) 모든 상태에 대해 E[n_rtt] 를 낸 뒤 거기에 P(실패)x비용을 **더했다.**
+//	    전멸하면 서버가 아무것도 못 받아 allowed(0)=0 이라 n=2 로 세어지고,
+//	    동시에 pfail 로 복구비용도 물었다 - 같은 사건을 두 번 청구한 것이다.
+//	    그래서 n_rtt 는 **복구 성공 상태에만** 매기고, 실패는 호출부가
+//	    (RTT + 복구비용) 한 번으로 값을 매긴다.
+//
+// 복구된 원본의 바이트는 **세지 않는다** - 회계 규칙상 복구본을 넣을 때
+// 패리티를 버리므로, 서버가 실제로 센 바이트만 예산이 된다.
+func flightOutcome(k, m, w int, p, l float64,
+	serverFlight float64) (nExp, pFail float64) {
 	parity := parityDatagramBytes(w, k)
-	q := 1 - p
-	tot := 0.0
-	for i := 0; i <= k; i++ {
-		pi := binomPMF(k, i, q)
-		if pi <= 0 {
-			continue
-		}
-		for j := 0; j <= m; j++ {
-			pj := binomPMF(m, j, q)
-			if pj <= 0 {
+	pm := jointLookup(k, m, p, l)
+	cols := m + 1
+	for a := 0; a <= k; a++ {
+		for b := 0; b < cols; b++ {
+			idx := a*cols + b
+			if idx >= len(pm) {
 				continue
 			}
-			n := 1.0
-			if serverFlight > float64(allowedBytes(i*w+j*parity)) {
-				n = 2.0
+			pr := pm[idx]
+			if pr <= 0 {
+				continue
 			}
-			tot += pi * pj * n
+			// MDS: 받은 심볼이 k 개 이상이면 복구된다.
+			if k-a > b {
+				pFail += pr
+				continue
+			}
+			if serverFlight > float64(allowedBytes(a*w+b*parity)) {
+				nExp += pr * 2.0
+			} else {
+				nExp += pr
+			}
 		}
 	}
-	return tot
+	return nExp, pFail
 }
 
 // ------------------------------------------------------------ 목적지 캐시
@@ -266,8 +282,13 @@ func (c *destCache) observe(addr string, k int, flightBytes, hctMs float64,
 // 관측할 길이 없다(위 observe 주석 참고). 탐색 비용은 작다 - 손실률 5%,
 // 실패비용 150 ms 라면 20 연결에 한 번 무방비로 가는 값이
 // 0.05 x 0.1 x 150 = 0.75 ms 다.
+// burst - 평균 버스트 길이. Go 는 이걸 관측할 수단이 없으므로 호출부가
+// defaultAssumedBurst(생성 표에 심긴 값, 정의는 padfec/policy.py 한 곳)를
+// 준다. 🩸 예전에는 pfailLookup(..., 1.0) 으로 **호출부에 리터럴을 박아** 뒀고
+// Python 은 실제 버스트를 썼다. 같은 입력에 두 구현이 다른 m 을 골랐다
+// (90 조건 중 17 건). 못 재는 것은 사실이지만 숨기지는 않는다.
 func (c *destCache) decide(addr string, w, mMax, coldM,
-	probeEvery int) (int, string, bool) {
+	probeEvery int, burst float64) (int, string, bool) {
 	c.mu.Lock()
 	st := c.M[addr]
 	var snap destStat
@@ -302,12 +323,12 @@ func (c *destCache) decide(addr string, w, mMax, coldM,
 
 	best, bestCost, why := 0, math.Inf(1), ""
 	for m := 0; m <= mMax; m++ {
-		n := expectedNRtt(k, m, w, p, snap.ServerFlight)
-		pf := pfailLookup(k, m, p, 1.0)
+		n, pf := flightOutcome(k, m, w, p, burst, snap.ServerFlight)
 		// 추가 바이트를 밀어내는 시간. 작지만 0 은 아니다 - 이 항이 없으면
 		// 이득이 같을 때도 무조건 큰 m 을 고른다.
 		tx := float64(m*parityDatagramBytes(w, k)) * 8.0 / 10e6 * 1000.0
-		cost := n*rtt + pf*extra + tx
+		// 복구 실패 가지는 (재전송 + 그 뒤 핸드셰이크 왕복) 으로 한 번만 문다.
+		cost := n*rtt + pf*(rtt+extra) + tx
 		if cost < bestCost {
 			bestCost, best = cost, m
 			why = fmt.Sprintf("S=%.0f p=%.4f 실패비용=%.0fms E[n_rtt]=%.3f "+
@@ -325,8 +346,8 @@ func (c *destCache) decide(addr string, w, mMax, coldM,
 	//
 	// 그래서 **탐색 비용이 RTT 의 1% 를 넘지 않도록** 주기를 늘린다.
 	// 탐색이 싼 곳(임계 아래)에서는 자주 재고, 비싼 곳에서는 드물게 잰다.
-	cost0 := expectedNRtt(k, 0, w, p, snap.ServerFlight)*rtt +
-		pfailLookup(k, 0, p, 1.0)*extra
+	n0, pf0 := flightOutcome(k, 0, w, p, burst, snap.ServerFlight)
+	cost0 := n0*rtt + pf0*(rtt+extra)
 	probeCost := cost0 - bestCost
 	every := probeEvery
 	if probeCost > 0 && rtt > 0 {

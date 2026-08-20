@@ -298,7 +298,7 @@ def threshold(client_bytes, s0_base, c_pkt, pkt=P_SERVER):
 
 def _candidate(mode, m, delta, C, W, h, f, cert_bytes, s0,
                base_bytes, base_bin, pkt, k_floor=1,
-               s0_base=None, c_pkt=0.0):
+               s0_base=None, c_pkt=0.0, parity_bytes=None):
     """후보 하나를 계산한다. 모든 후보가 같은 경로로 만들어진다.
 
     k_floor — 이 후보가 **유지해야 하는 최소 데이터그램 수**. levers() 는 여기에
@@ -317,7 +317,14 @@ def _candidate(mode, m, delta, C, W, h, f, cert_bytes, s0,
     """
     w_eff = W + delta
     k = max(k_floor, capacity.natural_k(C, w_eff, h))
-    client_bytes = (k + m) * w_eff
+    # 🩸 2026-08-20 감사 결함 4: 패리티 데이터그램은 원본보다 크다(롱헤더 +
+    #    FEC 머리 + crc/len 목록 = W+32+6k). 예전에는 여기서 W 로 세고
+    #    policy.cost_of_v2 가 뒤에서 다시 셌다. 그래서 이 dict 의
+    #    client_bytes·allowed·n_rtt·added_bytes 가 **전부 과소평가**였고,
+    #    그 값들이 동점 처리와 설명문에 그대로 쓰였다(무손실 스윕에서
+    #    n_rtt 가 실제와 13 건 어긋났다). 이제 호출자가 진짜 크기를 준다.
+    pbytes = (w_eff if parity_bytes is None else int(parity_bytes(w_eff, k)))
+    client_bytes = k * w_eff + m * pbytes
     a = allowed(client_bytes, pkt)
     # s0 는 상수가 아니다 — 명세 §2.5. s0_base 를 주면 칸마다 서버 패킷 수가
     # 달라지는 것을 반영하고, 안 주면 호출자가 준 상수 s0 를 그대로 쓴다(하위호환).
@@ -334,6 +341,9 @@ def _candidate(mode, m, delta, C, W, h, f, cert_bytes, s0,
         "steps": bin_index(client_bytes, pkt) - base_bin,
         "m": m,
         "delta_per_dgram": delta,
+        # 이 후보가 실제로 쓴 패리티 데이터그램 크기. parity_bytes 를 안 주면
+        # w_eff 와 같다(하위호환) — 그 경우 client_bytes 는 근사다.
+        "parity_bytes": pbytes,
         "W_eff": w_eff,
         "k": k,
         "client_bytes": client_bytes,
@@ -369,13 +379,14 @@ def _candidate(mode, m, delta, C, W, h, f, cert_bytes, s0,
 
 
 def levers(C, cert_bytes, s0, W=P_SERVER, h=51, f=16, max_steps=2, m_max=2,
-           s0_base=None, c_pkt=0.0):
+           s0_base=None, c_pkt=0.0, parity_bytes=None):
     """명세 §3 의 후보 집합. 연속 스윕이 아니라 **경계점만** 본다.
 
         후보 = {(0,0)}
              ∪ {(ceil(Δ_j/k0), 0) : j = 1..max_steps}     # δ 로 j 칸
              ∪ {(0, m)            : m = 1..m_max}         # 패리티만
-             ∪ {(0, ceil(Δ_j/W))  : j, Δ_j >= W}          # 패리티로 j 칸
+             ∪ {(0, ceil(Δ_j/파))  : j, Δ_j >= W}         # 패리티로 j 칸
+                                                          (파 = 패리티 실크기)
 
     Δ_j 가 W 보다 작으면 패리티 데이터그램을 만들 수 없다(Initial 데이터그램은
     >= 1200 B 여야 하고 그건 곧 데이터그램 하나다). 그때는 δ 가 **유일한** 수단이고
@@ -434,7 +445,8 @@ def levers(C, cert_bytes, s0, W=P_SERVER, h=51, f=16, max_steps=2, m_max=2,
     def mk(mode, m, delta, k_floor=k0):
         return _candidate(mode, m, delta, C, W, h, f, cert_bytes, s0,
                           base_bytes, base_bin, pkt, k_floor=k_floor,
-                          s0_base=s0_base, c_pkt=c_pkt)
+                          s0_base=s0_base, c_pkt=c_pkt,
+                          parity_bytes=parity_bytes)
 
     out = [mk("none", 0, 0)]
 
@@ -453,7 +465,10 @@ def levers(C, cert_bytes, s0, W=P_SERVER, h=51, f=16, max_steps=2, m_max=2,
     for j in range(1, max_steps + 1):                      # m 지렛대(칸 올리기 목적)
         d_j = delta_min(base_bytes, j, pkt)
         if d_j >= W:
-            out.append(mk("parity", _ceil_div(d_j, W), 0))
+            # 패리티 하나가 실제로 싣는 바이트로 나눈다. W 로 나누면 필요한
+            # 개수를 과대평가한다(패리티가 원본보다 크므로).
+            per = W if parity_bytes is None else int(parity_bytes(W, k0))
+            out.append(mk("parity", _ceil_div(d_j, per), 0))
 
     seen = set()
     uniq = []

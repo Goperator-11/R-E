@@ -1126,7 +1126,7 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 		fmode := mode
 		if mode == "auto" {
 			trialM, why, unbiased = cache.decide(addr, wSize, mMax, coldM,
-				probeEvery)
+				probeEvery, defaultAssumedBurst)
 			if trialM <= 0 {
 				fmode = "off" // 정책이 0 을 골랐으면 패리티를 안 보낸다
 				trialM = 0
