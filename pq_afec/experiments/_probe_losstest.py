@@ -85,8 +85,13 @@ def j_old(k, m, w, p, burst, server_flight, rtt):
 
 def j_new(k, m, w, p, burst, server_flight, rtt):
     """수리 후 식."""
+    # 🩸 2026-08-21 - p4 와 같은 고장. 이 탐침은 S 를 직접 받으므로
+    #    c 항 없는 근사(n_need_for_flight)를 쓴다 - 옛 식과 새 식을
+    #    **같은 S 에서** 비교하는 것이 이 탐침의 목적이기 때문이다.
     e = policy.cost_of_v2({"k": k, "m": m, "W_eff": w,
-                           "server_flight": server_flight},
+                           "server_flight": server_flight,
+                           "n_need":
+                               policy.n_need_for_flight(server_flight)},
                           w, rtt, p, burst, k0=k)
     return e["j_ms"]
 
@@ -170,7 +175,7 @@ def main():
     out["summary"] = {"conditions": len(checks), "old_correct": n_old,
                       "new_correct": n_new}
 
-    dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "probe_losstest.json"
+    dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "probe_losstest.json")
     with open(dst, "w") as f:
         json.dump(out, f, indent=2, ensure_ascii=False)
     print("wrote", dst)

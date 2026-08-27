@@ -78,7 +78,7 @@ for k, label in ((1, "k=1 (전멸 -> ACK 없음 -> PTO)"),
     print("    -> %s" % verdict)
     out.setdefault("verdict", {})[str(k)] = verdict
 
-dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "probe_trecover_rtt.json"
+dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "probe_trecover_rtt.json")
 with open(dst, "w") as f:
     json.dump(out, f, indent=2, ensure_ascii=False)
 print("wrote", dst)

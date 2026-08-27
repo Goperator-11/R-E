@@ -24,7 +24,7 @@ IPS = 1280
 K = 1
 S0B, CP = 396.5, 34.5
 
-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "probe_losstest.json") as f:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "probe_losstest.json")) as f:
     D = json.load(f)
 
 

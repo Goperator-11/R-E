@@ -743,7 +743,12 @@ class TestInvariants(unittest.TestCase):
         est.observe_mask([False])
         self.assertTrue(0.0 <= est.p <= 1.0)
         self.assertGreaterEqual(est.n_eff, 1.0)
-        self.assertGreater(est.se, 0.0)
+        # 🩸 2026-08-20: 이 판정은 assertGreater(se, 0.0) 이라 사실상 못
+        # 실패했다. 이 상태(관측 2심볼 + 사전 100)의 se 는 닫힌식으로
+        # sqrt(p(1-p)/n_eff) ≈ 0.0103 이다. 축퇴(0 근처)도 폭주(사전을
+        # 무시한 과대 불확실성)도 잡히는 양쪽 밴드로 바꾼다.
+        self.assertTrue(0.005 < est.se < 0.05,
+                        f"tiny-feedback se={est.se:.5f} - 기대 ~0.0103")
 
     def test_rate_collapse_keeps_bounds_every_block(self):
         """링크 속도가 급락해 K가 줄어도 매 블록 경계를 지켜야 한다."""
@@ -1054,8 +1059,11 @@ class TestHandshake(unittest.TestCase):
         과소평가한다. ServerHello(Initial 공간)가 전멸하면 클라이언트는
         Handshake 키를 못 만들어 그 공간 패킷을 복호도 ACK도 못 한다."""
         prof = profile(768)
-        self.assertGreaterEqual(prof.k_server_initial, 2)
-        self.assertGreater(prof.k_server_handshake, 0)
+        # 🩸 2026-08-20: k_server_handshake 판정이 `> 0` 이라 사실상 못
+        # 실패했다. profile(768) 은 결정적이다 - Initial 1,210 B -> 2 패킷,
+        # Handshake 2,955 B -> 3 패킷. 정확한 값으로 못박는다.
+        self.assertEqual(prof.k_server_initial, 2)
+        self.assertEqual(prof.k_server_handshake, 3)
         for p, L in ((0.02, 2.0), (0.05, 3.0)):
             a = expected_handshake_ms(prof.k_client, prof.k_server, 0, 0,
                                       p, L, 30.0)
@@ -1093,12 +1101,36 @@ class TestHandshake(unittest.TestCase):
         for srtt in (10.0, 20.0, 30.0, 50.0, 66.0, 100.0, 200.0):
             d = shield(prof, 0.05, 3.0, srtt_ms=srtt)
             base = _pto(srtt)
-            # 비용식 안에서 쓰인 t_fast를 되짚는다: r=0의 비용이 f로 나뉜 값
-            self.assertLessEqual(2.0 * srtt if srtt is not None else 0.0,
-                                 base + 1e-9)
+            # 🩸 2026-08-21: 여기 있던 첫 단언은
+            #     assertLessEqual(2.0*srtt if srtt is not None else 0.0, base)
+            #   였다. base = pto_ms(srtt) = srtt + max(2*srtt, 1.0) = 3*srtt 이므로
+            #   **2s <= 3s 라는 수학적 항등**이고, srtt 는 리터럴 튜플에서 오므로
+            #   `if srtt is not None` 은 죽은 분기다. 구현이 어떻게 망가져도 참이라
+            #   H7 을 하나도 안 지키고 있었다.
+            #
+            #   H7 이 실제로 말하는 것: **부분 손실의 대가 t_recover 가 전멸의
+            #   대가 PTO 를 넘으면 안 되고, 동시에 0 으로 붕괴해서도 안 된다.**
+            #   옛 결함은 t_fast 가 srtt 와 무관한 상수 200 ms 여서 srtt < 66.7 ms
+            #   에서 t_recover > PTO 가 된 것이었다. 그 두 방향을 다 못박는다.
+            self.assertGreater(
+                base, 0.0, f"srtt={srtt}에서 PTO 기준선이 0 이면 시험이 공허하다")
             self.assertGreaterEqual(d.t_recover_ms, 0.0)
             self.assertLessEqual(d.t_recover_ms, base + 1e-9,
                                  f"srtt={srtt}에서 회복 대가가 PTO를 넘는다")
+            # 🩸 하한. 부분 손실 회복이 **srtt 에 비례해서** 움직여야 한다 -
+            #   상수로 굳으면(옛 결함의 정체) 여기서 잡힌다. 최소 한 왕복.
+            self.assertGreaterEqual(
+                d.t_recover_ms, srtt - 1e-9,
+                f"srtt={srtt}에서 회복 대가가 왕복 하나보다 작다 - "
+                f"상수로 굳었는지 확인하라")
+        # 🩸 [부정] 위 루프가 공허하지 않은지 - t_recover 가 srtt 를 따라
+        #   실제로 움직여야 한다. 상수면 폭이 0 이 되어 여기서 붉어진다.
+        _tr = [shield(prof, 0.05, 3.0, srtt_ms=s).t_recover_ms
+               for s in (10.0, 200.0)]
+        self.assertGreater(
+            _tr[1] - _tr[0], 10.0,
+            f"t_recover 가 srtt 10->200 ms 에서 {_tr[1]-_tr[0]:.1f} ms 밖에 "
+            f"안 움직인다 - 상수로 굳었다(H7 결함의 정체)")
 
     def test_E2_prior_weight_does_not_change_tracking_inertia(self):
         """🩸 E2: seed_mass = min(prior_weight, 100)이라 100 미만에서
@@ -1202,14 +1234,36 @@ class TestHandshake(unittest.TestCase):
         self.assertGreaterEqual(d.r, 1)
 
     def test_analytic_matches_simulation(self):
+        """🩸 2026-08-21: 허용 오차가 30% 였다. 실측 오차는 p=1% 에서 3.3%,
+        p=5% 에서 9.5% 로 문턱의 1/9~1/3 밖에 안 쓴다. 즉 해석해에 20~25%
+        짜리 **계통 오차가 생겨도 그대로 통과**했다. 이 해석해에는 shield 의
+        T_recover·PTO 항과 README 의 핸드셰이크 이득 수치가 전부 얹혀 있다.
+
+        문턱을 실측에 맞춰 조인다. 그리고 주석이 주장하던 **방향**
+        ("해석해는 플라이트 간 독립을 가정하므로 약간 비관적이다")도
+        실제로 확인한다 - 양측 절대값 검정은 방향을 안 본다.
+
+        문턱 근거: p=1% 실측 3.3% -> 10%, p=5% 실측 9.5% -> 15%.
+        각각 실측의 약 1.5~3 배로, 잡음(MC 40,000 시행의 표준오차는 1% 미만)
+        보다는 크고 계통 오차를 놓칠 만큼 크지는 않다.
+        """
+        TOL = {0.01: 0.10, 0.05: 0.15}
         for p in (0.01, 0.05):
             an = expected_handshake_ms(2, 5, 0, 0, p, 3.0, 30.0)
             mc = simulate_handshake(2, 5, 0, 0, p, 3.0, 30.0, trials=40000)
             rel = abs(mc.mean_ms - an.mean_ms) / an.mean_ms
             MEASURED[f"핸드셰이크 해석해 vs MC (p={p:.0%})"] = (
                 f"{an.mean_ms:.0f} vs {mc.mean_ms:.0f} ms ({rel:+.0%})")
-            # 해석해는 플라이트 간 독립을 가정하므로 약간 비관적이다
-            self.assertLess(rel, 0.30)
+            self.assertLess(
+                rel, TOL[p],
+                f"p={p:.0%}: 상대오차 {rel:.1%} > 허용 {TOL[p]:.0%} "
+                f"(해석 {an.mean_ms:.1f} vs MC {mc.mean_ms:.1f} ms)")
+            # 방향 확인: 해석해가 MC 보다 크거나 같아야 한다(비관적).
+            self.assertGreaterEqual(
+                an.mean_ms, mc.mean_ms - 0.02 * an.mean_ms,
+                f"p={p:.0%}: 해석해가 MC 보다 낙관적이다 "
+                f"({an.mean_ms:.1f} < {mc.mean_ms:.1f}) - "
+                f"'독립 가정이라 비관적' 이라는 주석과 어긋난다")
 
     def test_fec_reduces_handshake_time(self):
         for p in (0.01, 0.05, 0.10):
@@ -1232,13 +1286,19 @@ class TestEndToEnd(unittest.TestCase):
         ctrl = AdaptiveFecController(cfg)
         ctrl.cong.observe_rtt(40.0)
         rng = random.Random(77)
-        sampler = ChannelSampler(GilbertElliott.from_burst(0.06, 3.0), rng)
+        chan = GilbertElliott.from_burst(0.06, 3.0)
+        sampler = ChannelSampler(chan, rng)
 
         sym_size = 48
         decoded_ok = decode_failed = 0
+        mu_ok = var_ok = 0.0        # 채널 모형이 예측하는 복구 성공 기대·분산
 
         for _ in range(120):
             d = ctrl.next_block()
+            pmf = chan.erasure_pmf(d.k + d.r)
+            p_ok = sum(pmf[:d.r + 1])
+            mu_ok += p_ok
+            var_ok += p_ok * (1.0 - p_ok)
             code = RSErasureCode(d.k, d.r)
             source = [bytes(rng.randrange(256) for _ in range(sym_size))
                       for _ in range(d.k)]
@@ -1262,7 +1322,21 @@ class TestEndToEnd(unittest.TestCase):
             ctrl.on_feedback(mask, rtt_ms=40.0)
 
         MEASURED["실제 부호기 블록 복구"] = f"{decoded_ok}/{decoded_ok + decode_failed}"
-        self.assertGreater(decoded_ok, 0)
+        # 🩸 2026-08-20: 이 판정은 assertGreater(decoded_ok, 0) 이었다 -
+        # 1/120 이어도 통과해, 헤드라인으로 인용되는 "실제 부호기 블록 복구
+        # 116/120" 을 지키는 자가 사실상 없었다. 기대 복구율을 채널 모형에서
+        # 블록마다 계산해(위 mu_ok/var_ok) 두 가지를 요구한다.
+        #   (a) 관측이 기대의 5σ 아래로 떨어지지 않는다  - 부호기/복호기 회귀
+        #   (b) 기대 자체가 90% 이상이다                - 제어기가 이 채널에
+        #       충분한 r 을 고른다 (r 이 무너지면 기대가 같이 무너져 잡힌다)
+        total = decoded_ok + decode_failed
+        sigma = var_ok ** 0.5
+        self.assertGreaterEqual(
+            decoded_ok, mu_ok - 5.0 * sigma,
+            f"복구 {decoded_ok}/{total} < 기대 {mu_ok:.1f} - 5σ({sigma:.1f})")
+        self.assertGreaterEqual(
+            mu_ok / total, 0.90,
+            f"제어기가 고른 r 의 기대 복구율 {mu_ok / total:.3f} < 0.90")
 
     def test_adaptive_beats_static_in_worst_case(self):
         """이 연구의 핵심 주장: 손실률을 모를 때 최악이 낫다."""

@@ -145,7 +145,7 @@ def main(argv):
     # 처방이 정반대다 - 전자는 더 돌리면 되고, 후자는 추정기나 탐색 주기를
     # 고쳐야 한다. 그래서 문턱(모형)과 하한(추정기)을 같이 찍는다.
     k = capacity.natural_k(C_HELLO, IPS, H)
-    s0b = 396.5   # x25519. 관측 S 와 무관하게 문턱이 같은 것은 확인했다.
+    s0b = policy.S0_BASE_X25519   # p13 갱신: 380.0 (c=40 앵커 유도)
     thr = flip_threshold(s0b)
     floor = estimator_floor(k)
     out["flip_threshold_p"] = thr

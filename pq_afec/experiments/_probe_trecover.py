@@ -99,7 +99,7 @@ def main():
     print("코드 기본값은 T_recover = RTT = %.1f ms 다 (padfec/policy.py cost_of_v2)."
           % RTT_MS)
 
-    dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "probe_trecover.json"
+    dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "probe_trecover.json")
     with open(dst, "w") as f:
         json.dump(out, f, indent=2, ensure_ascii=False)
     print("wrote", dst)
