@@ -1,14 +1,3 @@
-wrote C:\dev\pq_afec\docs\PADFEC �떎痢� 蹂닿퀬�꽌.md (285 以�)
-wrote C:\Users\scien\OneDrive\Desktop\ML-KEM QUIC �빖�뱶�뀺�씠�겕 FEC �슂�빟.pdf (228 KB)
-Exception in thread Thread-2 (_readerthread):
-Traceback (most recent call last):
-  File "C:\Users\scien\AppData\Local\Programs\Python\Python314\Lib\threading.py", line 1082, in _bootstrap_inner
-    self._context.run(self.run)
-    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
-  File "C:\Users\scien\AppData\Local\Programs\Python\Python314\Lib\threading.py", line 1024, in run
-    self._target(*self._args, **self._kwargs)
-    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\scien\AppData\Local\Programs\Python\Python314\Lib\subprocess.py", line 1613, in _readerthread
-    buffer.append(fh.read())
-                  ~~~~~~~^^
-UnicodeDecodeError: 'cp949' codec can't decode byte 0xed in position 73: illegal multibyte sequence
+경계 절벽 자료 2판: probe_cliff_x25519.json, probe_cliff_X25519MLKEM768.json
+wrote C:\dev\pq_afec\docs\PADFEC 실측 보고서.md (534 줄)
+wrote C:\Users\scien\OneDrive\Desktop\ML-KEM QUIC 핸드셰이크 FEC 요약.pdf (250 KB)

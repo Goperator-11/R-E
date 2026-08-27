@@ -1,0 +1,42 @@
+{"fp": "57340a72cc9b", "key": "A|x25519|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.025, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|x25519|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.903, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|x25519|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.335, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|x25519|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.438, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|x25519|c3312|n15", "val": {"cert": 3312, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.305, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|x25519|c4218|n15", "val": {"cert": 4218, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.224, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|x25519|c3765|n15", "val": {"cert": 3765, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.08, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|x25519|c3538|n15", "val": {"cert": 3538, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.599, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|x25519|c3425|n15", "val": {"cert": 3425, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.453, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|x25519|c3368|n15", "val": {"cert": 3368, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.296, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|x25519|c3000|n15", "val": {"cert": 3000, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.711, "first_flight_bytes": 1280}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.352, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.445, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.727, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.721, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c6937|n15", "val": {"cert": 6937, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.044, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c6031|n15", "val": {"cert": 6031, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.003, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c5578|n15", "val": {"cert": 5578, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.518, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.807, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.61, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.812, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "A|X25519MLKEM768|c3000|n15", "val": {"cert": 3000, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.406, "first_flight_bytes": 2560}}
+{"fp": "57340a72cc9b", "key": "B|x25519|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.06666666666666667, "p50": 56.948}}
+{"fp": "57340a72cc9b", "key": "B|x25519|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.57}}
+{"fp": "57340a72cc9b", "key": "B|x25519|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 107.872}}
+{"fp": "57340a72cc9b", "key": "B|x25519|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.89}}
+{"fp": "57340a72cc9b", "key": "B|x25519|c3312|n15", "val": {"cert": 3312, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.395}}
+{"fp": "57340a72cc9b", "key": "B|x25519|c4218|n15", "val": {"cert": 4218, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.421}}
+{"fp": "57340a72cc9b", "key": "B|x25519|c3765|n15", "val": {"cert": 3765, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.667}}
+{"fp": "57340a72cc9b", "key": "B|x25519|c3538|n15", "val": {"cert": 3538, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.229}}
+{"fp": "57340a72cc9b", "key": "B|x25519|c3425|n15", "val": {"cert": 3425, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.246}}
+{"fp": "57340a72cc9b", "key": "B|x25519|c3368|n15", "val": {"cert": 3368, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.754}}
+{"fp": "57340a72cc9b", "key": "B|X25519MLKEM768|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.535}}
+{"fp": "57340a72cc9b", "key": "B|X25519MLKEM768|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.241}}
+{"fp": "57340a72cc9b", "key": "B|X25519MLKEM768|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.931}}
+{"fp": "57340a72cc9b", "key": "B|X25519MLKEM768|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.587}}
+{"fp": "57340a72cc9b", "key": "B|X25519MLKEM768|c6937|n15", "val": {"cert": 6937, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.204}}
+{"fp": "57340a72cc9b", "key": "B|X25519MLKEM768|c6031|n15", "val": {"cert": 6031, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.899}}
+{"fp": "57340a72cc9b", "key": "B|X25519MLKEM768|c5578|n15", "val": {"cert": 5578, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.995}}
+{"fp": "57340a72cc9b", "key": "B|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.983}}
+{"fp": "57340a72cc9b", "key": "B|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.135}}
+{"fp": "57340a72cc9b", "key": "B|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 0.9333333333333333, "p50": 105.857}}

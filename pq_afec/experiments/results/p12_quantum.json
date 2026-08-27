@@ -1,0 +1,759 @@
+{
+ "smoke": false,
+ "rtt_ms": 50.0,
+ "resolution": 100,
+ "n_probe": 15,
+ "n_confirm": 40,
+ "server_packet_size": 1280,
+ "jump_model": 1245.5,
+ "jump_window": [
+  1100.0,
+  1400.0
+ ],
+ "predictions": [
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1280,
+   "pred_lo": 5917,
+   "pred_hi": 5974,
+   "gating": false,
+   "in_sample": true
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1281,
+   "pred_lo": 7163,
+   "pred_hi": 7219,
+   "gating": false,
+   "in_sample": true
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1350,
+   "pred_lo": 7163,
+   "pred_hi": 7219,
+   "gating": false,
+   "in_sample": true
+  },
+  {
+   "group": "x25519",
+   "ips": 1279,
+   "pred_lo": 3312,
+   "pred_hi": 3368,
+   "gating": false,
+   "in_sample": true
+  },
+  {
+   "group": "x25519",
+   "ips": 1280,
+   "pred_lo": 3312,
+   "pred_hi": 3368,
+   "gating": false,
+   "in_sample": true
+  },
+  {
+   "group": "x25519",
+   "ips": 1281,
+   "pred_lo": 4557,
+   "pred_hi": 4614,
+   "gating": false,
+   "in_sample": true
+  },
+  {
+   "group": "x25519",
+   "ips": 1282,
+   "pred_lo": 4557,
+   "pred_hi": 4614,
+   "gating": false,
+   "in_sample": true
+  },
+  {
+   "group": "x25519",
+   "ips": 1300,
+   "pred_lo": 4557,
+   "pred_hi": 4614,
+   "gating": false,
+   "in_sample": true
+  },
+  {
+   "group": "x25519",
+   "ips": 1350,
+   "pred_lo": 4557,
+   "pred_hi": 4614,
+   "gating": false,
+   "in_sample": true
+  },
+  {
+   "group": "x25519",
+   "ips": 1450,
+   "pred_lo": 4557,
+   "pred_hi": 4614,
+   "gating": false,
+   "in_sample": true
+  }
+ ],
+ "predictions_out_of_sample": [
+  {
+   "group": "x25519",
+   "ips": 1707,
+   "bin": 5,
+   "pred_threshold_packet_term": 5831.0,
+   "pred_threshold_const_s0": 5865.5,
+   "gating": false,
+   "in_sample": false
+  },
+  {
+   "group": "x25519",
+   "ips": 2134,
+   "bin": 6,
+   "pred_threshold_packet_term": 7076.5,
+   "pred_threshold_const_s0": 7145.5,
+   "gating": false,
+   "in_sample": false
+  }
+ ],
+ "configs": [
+  {
+   "group": "x25519",
+   "ips": 1279,
+   "k": 1,
+   "k_expected": 1,
+   "k_use": 1,
+   "first_flight_bytes": 1279,
+   "first_flight_bytes_pred": 1279,
+   "premise_B_eq_k_ips": true,
+   "allowed_pred": 3840,
+   "bin": 3,
+   "amp_ratio": 3.0023455824863174,
+   "delta_min": 2,
+   "boundary_ips": 1281,
+   "threshold_lo": 3312,
+   "threshold_hi": 3368,
+   "note": "",
+   "usable": true,
+   "jump_from_prev": null,
+   "jump_from_ips": null,
+   "threshold_mid": 3340.0,
+   "s0_est": {
+    "allowed": 3840,
+    "budget": 3837,
+    "s0_lo": 472,
+    "s0_hi": 528,
+    "s0_mid": 500.0
+   },
+   "s0_mid": 500.0,
+   "pred_lo": 3312,
+   "pred_hi": 3368,
+   "pred_hit": true,
+   "in_sample": true,
+   "pred_gating": false
+  },
+  {
+   "group": "x25519",
+   "ips": 1280,
+   "k": 1,
+   "k_expected": 1,
+   "k_use": 1,
+   "first_flight_bytes": 1280,
+   "first_flight_bytes_pred": 1280,
+   "premise_B_eq_k_ips": true,
+   "allowed_pred": 3840,
+   "bin": 3,
+   "amp_ratio": 3.0,
+   "delta_min": 1,
+   "boundary_ips": 1281,
+   "threshold_lo": 3312,
+   "threshold_hi": 3368,
+   "note": "",
+   "usable": true,
+   "jump_from_prev": 0.0,
+   "jump_from_ips": 1279,
+   "threshold_mid": 3340.0,
+   "s0_est": {
+    "allowed": 3840,
+    "budget": 3840,
+    "s0_lo": 472,
+    "s0_hi": 528,
+    "s0_mid": 500.0
+   },
+   "s0_mid": 500.0,
+   "pred_lo": 3312,
+   "pred_hi": 3368,
+   "pred_hit": true,
+   "in_sample": true,
+   "pred_gating": false
+  },
+  {
+   "group": "x25519",
+   "ips": 1281,
+   "k": 1,
+   "k_expected": 1,
+   "k_use": 1,
+   "first_flight_bytes": 1281,
+   "first_flight_bytes_pred": 1281,
+   "premise_B_eq_k_ips": true,
+   "allowed_pred": 5120,
+   "bin": 4,
+   "amp_ratio": 3.9968774395003903,
+   "delta_min": 426,
+   "boundary_ips": 1707,
+   "threshold_lo": 4557,
+   "threshold_hi": 4614,
+   "note": "",
+   "usable": true,
+   "jump_from_prev": 1245.5,
+   "jump_from_ips": 1280,
+   "threshold_mid": 4585.5,
+   "s0_est": {
+    "allowed": 5120,
+    "budget": 3843,
+    "s0_lo": 506,
+    "s0_hi": 563,
+    "s0_mid": 534.5
+   },
+   "s0_mid": 534.5,
+   "pred_lo": 4557,
+   "pred_hi": 4614,
+   "pred_hit": true,
+   "in_sample": true,
+   "pred_gating": false
+  },
+  {
+   "group": "x25519",
+   "ips": 1282,
+   "k": 1,
+   "k_expected": 1,
+   "k_use": 1,
+   "first_flight_bytes": 1282,
+   "first_flight_bytes_pred": 1282,
+   "premise_B_eq_k_ips": true,
+   "allowed_pred": 5120,
+   "bin": 4,
+   "amp_ratio": 3.9937597503900157,
+   "delta_min": 425,
+   "boundary_ips": 1707,
+   "threshold_lo": 4557,
+   "threshold_hi": 4614,
+   "note": "",
+   "usable": true,
+   "jump_from_prev": 0.0,
+   "jump_from_ips": 1281,
+   "threshold_mid": 4585.5,
+   "s0_est": {
+    "allowed": 5120,
+    "budget": 3846,
+    "s0_lo": 506,
+    "s0_hi": 563,
+    "s0_mid": 534.5
+   },
+   "s0_mid": 534.5,
+   "pred_lo": 4557,
+   "pred_hi": 4614,
+   "pred_hit": true,
+   "in_sample": true,
+   "pred_gating": false
+  },
+  {
+   "group": "x25519",
+   "ips": 1300,
+   "k": 1,
+   "k_expected": 1,
+   "k_use": 1,
+   "first_flight_bytes": 1300,
+   "first_flight_bytes_pred": 1300,
+   "premise_B_eq_k_ips": true,
+   "allowed_pred": 5120,
+   "bin": 4,
+   "amp_ratio": 3.9384615384615387,
+   "delta_min": 407,
+   "boundary_ips": 1707,
+   "threshold_lo": 4557,
+   "threshold_hi": 4614,
+   "note": "",
+   "usable": true,
+   "jump_from_prev": 0.0,
+   "jump_from_ips": 1282,
+   "threshold_mid": 4585.5,
+   "s0_est": {
+    "allowed": 5120,
+    "budget": 3900,
+    "s0_lo": 506,
+    "s0_hi": 563,
+    "s0_mid": 534.5
+   },
+   "s0_mid": 534.5,
+   "pred_lo": 4557,
+   "pred_hi": 4614,
+   "pred_hit": true,
+   "in_sample": true,
+   "pred_gating": false
+  },
+  {
+   "group": "x25519",
+   "ips": 1350,
+   "k": 1,
+   "k_expected": 1,
+   "k_use": 1,
+   "first_flight_bytes": 1350,
+   "first_flight_bytes_pred": 1350,
+   "premise_B_eq_k_ips": true,
+   "allowed_pred": 5120,
+   "bin": 4,
+   "amp_ratio": 3.7925925925925927,
+   "delta_min": 357,
+   "boundary_ips": 1707,
+   "threshold_lo": 4557,
+   "threshold_hi": 4614,
+   "note": "",
+   "usable": true,
+   "jump_from_prev": 0.0,
+   "jump_from_ips": 1300,
+   "threshold_mid": 4585.5,
+   "s0_est": {
+    "allowed": 5120,
+    "budget": 4050,
+    "s0_lo": 506,
+    "s0_hi": 563,
+    "s0_mid": 534.5
+   },
+   "s0_mid": 534.5,
+   "pred_lo": 4557,
+   "pred_hi": 4614,
+   "pred_hit": true,
+   "in_sample": true,
+   "pred_gating": false
+  },
+  {
+   "group": "x25519",
+   "ips": 1450,
+   "k": 1,
+   "k_expected": 1,
+   "k_use": 1,
+   "first_flight_bytes": 1450,
+   "first_flight_bytes_pred": 1450,
+   "premise_B_eq_k_ips": true,
+   "allowed_pred": 5120,
+   "bin": 4,
+   "amp_ratio": 3.5310344827586206,
+   "delta_min": 257,
+   "boundary_ips": 1707,
+   "threshold_lo": 4557,
+   "threshold_hi": 4614,
+   "note": "",
+   "usable": true,
+   "jump_from_prev": 0.0,
+   "jump_from_ips": 1350,
+   "threshold_mid": 4585.5,
+   "s0_est": {
+    "allowed": 5120,
+    "budget": 4350,
+    "s0_lo": 506,
+    "s0_hi": 563,
+    "s0_mid": 534.5
+   },
+   "s0_mid": 534.5,
+   "pred_lo": 4557,
+   "pred_hi": 4614,
+   "pred_hit": true,
+   "in_sample": true,
+   "pred_gating": false
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1280,
+   "k": 2,
+   "k_expected": 2,
+   "k_use": 2,
+   "first_flight_bytes": 2560,
+   "first_flight_bytes_pred": 2560,
+   "premise_B_eq_k_ips": true,
+   "allowed_pred": 7680,
+   "bin": 6,
+   "amp_ratio": 3.0,
+   "delta_min": 1,
+   "boundary_ips": 1281,
+   "threshold_lo": 5917,
+   "threshold_hi": 5974,
+   "note": "",
+   "usable": true,
+   "jump_from_prev": null,
+   "jump_from_ips": null,
+   "threshold_mid": 5945.5,
+   "s0_est": {
+    "allowed": 7680,
+    "budget": 7680,
+    "s0_lo": 1706,
+    "s0_hi": 1763,
+    "s0_mid": 1734.5
+   },
+   "s0_mid": 1734.5,
+   "pred_lo": 5917,
+   "pred_hi": 5974,
+   "pred_hit": true,
+   "in_sample": true,
+   "pred_gating": false
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1281,
+   "k": 2,
+   "k_expected": 2,
+   "k_use": 2,
+   "first_flight_bytes": 2562,
+   "first_flight_bytes_pred": 2562,
+   "premise_B_eq_k_ips": true,
+   "allowed_pred": 8960,
+   "bin": 7,
+   "amp_ratio": 3.4972677595628414,
+   "delta_min": 425,
+   "boundary_ips": 1494,
+   "threshold_lo": 7163,
+   "threshold_hi": 7219,
+   "note": "",
+   "usable": true,
+   "jump_from_prev": 1245.5,
+   "jump_from_ips": 1280,
+   "threshold_mid": 7191.0,
+   "s0_est": {
+    "allowed": 8960,
+    "budget": 7686,
+    "s0_lo": 1741,
+    "s0_hi": 1797,
+    "s0_mid": 1769.0
+   },
+   "s0_mid": 1769.0,
+   "pred_lo": 7163,
+   "pred_hi": 7219,
+   "pred_hit": true,
+   "in_sample": true,
+   "pred_gating": false
+  },
+  {
+   "group": "X25519MLKEM768",
+   "ips": 1350,
+   "k": 2,
+   "k_expected": 2,
+   "k_use": 2,
+   "first_flight_bytes": 2700,
+   "first_flight_bytes_pred": 2700,
+   "premise_B_eq_k_ips": true,
+   "allowed_pred": 8960,
+   "bin": 7,
+   "amp_ratio": 3.3185185185185184,
+   "delta_min": 287,
+   "boundary_ips": 1494,
+   "threshold_lo": 7163,
+   "threshold_hi": 7219,
+   "note": "",
+   "usable": true,
+   "jump_from_prev": 0.0,
+   "jump_from_ips": 1281,
+   "threshold_mid": 7191.0,
+   "s0_est": {
+    "allowed": 8960,
+    "budget": 8100,
+    "s0_lo": 1741,
+    "s0_hi": 1797,
+    "s0_mid": 1769.0
+   },
+   "s0_mid": 1769.0,
+   "pred_lo": 7163,
+   "pred_hi": 7219,
+   "pred_hit": true,
+   "in_sample": true,
+   "pred_gating": false
+  }
+ ],
+ "p12c": [
+  {
+   "group": "x25519",
+   "ips": 1707,
+   "k_expected": 1,
+   "bin_expected": 5,
+   "in_sample": false,
+   "gating": false,
+   "pred_threshold_packet_term": 5831.0,
+   "pred_threshold_const_s0": 5865.5,
+   "models_diverge_by": 34.5,
+   "mtu": 1500,
+   "udp_payload_max": 1472,
+   "quicgo_max_packet_buffer": 1452,
+   "exceeds_mtu": true,
+   "threshold_lo": null,
+   "threshold_hi": null,
+   "threshold_mid": null,
+   "model_supported": null,
+   "feasibility": {
+    "cert": 2000,
+    "n": 6,
+    "ok": 6,
+    "first_flight_bytes": 1452,
+    "first_flight_datagrams": 1,
+    "expected_first_flight_bytes": 1707
+   },
+   "status": "skipped",
+   "skip_reason": "실측 B=1452 (데이터그램 1) != k·ips=1707 - 스택이 ips 를 깎았다(quic-go MaxPacketBufferSize=1452, UDP 페이로드 상한 1472)"
+  },
+  {
+   "group": "x25519",
+   "ips": 2134,
+   "k_expected": 1,
+   "bin_expected": 6,
+   "in_sample": false,
+   "gating": false,
+   "pred_threshold_packet_term": 7076.5,
+   "pred_threshold_const_s0": 7145.5,
+   "models_diverge_by": 69.0,
+   "mtu": 1500,
+   "udp_payload_max": 1472,
+   "quicgo_max_packet_buffer": 1452,
+   "exceeds_mtu": true,
+   "threshold_lo": null,
+   "threshold_hi": null,
+   "threshold_mid": null,
+   "model_supported": null,
+   "feasibility": {
+    "cert": 2000,
+    "n": 6,
+    "ok": 6,
+    "first_flight_bytes": 1452,
+    "first_flight_datagrams": 1,
+    "expected_first_flight_bytes": 2134
+   },
+   "status": "skipped",
+   "skip_reason": "실측 B=1452 (데이터그램 1) != k·ips=2134 - 스택이 ips 를 깎았다(quic-go MaxPacketBufferSize=1452, UDP 페이로드 상한 1472)"
+  }
+ ],
+ "p12c_checks": [
+  {
+   "check": "p12c: ips 1707 를 그 크기로 보낼 수 있는가",
+   "ok": false,
+   "detail": "실측 B=1452 (데이터그램 1) != k·ips=1707 - 스택이 ips 를 깎았다(quic-go MaxPacketBufferSize=1452, UDP 페이로드 상한 1472)",
+   "gating": false,
+   "group": "x25519",
+   "ips": 1707,
+   "in_sample": false
+  },
+  {
+   "check": "p12c: ips 2134 를 그 크기로 보낼 수 있는가",
+   "ok": false,
+   "detail": "실측 B=1452 (데이터그램 1) != k·ips=2134 - 스택이 ips 를 깎았다(quic-go MaxPacketBufferSize=1452, UDP 페이로드 상한 1472)",
+   "gating": false,
+   "group": "x25519",
+   "ips": 2134,
+   "in_sample": false
+  }
+ ],
+ "checks": [
+  {
+   "check": "전제 B=k·ips [x25519/1279]",
+   "ok": true,
+   "detail": "실측 B=1279 k=1, 예측 B=1279 k=1",
+   "gating": true
+  },
+  {
+   "check": "전제 B=k·ips [x25519/1280]",
+   "ok": true,
+   "detail": "실측 B=1280 k=1, 예측 B=1280 k=1",
+   "gating": true
+  },
+  {
+   "check": "전제 B=k·ips [x25519/1281]",
+   "ok": true,
+   "detail": "실측 B=1281 k=1, 예측 B=1281 k=1",
+   "gating": true
+  },
+  {
+   "check": "전제 B=k·ips [x25519/1282]",
+   "ok": true,
+   "detail": "실측 B=1282 k=1, 예측 B=1282 k=1",
+   "gating": true
+  },
+  {
+   "check": "전제 B=k·ips [x25519/1300]",
+   "ok": true,
+   "detail": "실측 B=1300 k=1, 예측 B=1300 k=1",
+   "gating": true
+  },
+  {
+   "check": "전제 B=k·ips [x25519/1350]",
+   "ok": true,
+   "detail": "실측 B=1350 k=1, 예측 B=1350 k=1",
+   "gating": true
+  },
+  {
+   "check": "전제 B=k·ips [x25519/1450]",
+   "ok": true,
+   "detail": "실측 B=1450 k=1, 예측 B=1450 k=1",
+   "gating": true
+  },
+  {
+   "check": "전제 B=k·ips [X25519MLKEM768/1280]",
+   "ok": true,
+   "detail": "실측 B=2560 k=2, 예측 B=2560 k=2",
+   "gating": true
+  },
+  {
+   "check": "전제 B=k·ips [X25519MLKEM768/1281]",
+   "ok": true,
+   "detail": "실측 B=2562 k=2, 예측 B=2562 k=2",
+   "gating": true
+  },
+  {
+   "check": "전제 B=k·ips [X25519MLKEM768/1350]",
+   "ok": true,
+   "detail": "실측 B=2700 k=2, 예측 B=2700 k=2",
+   "gating": true
+  },
+  {
+   "check": "부정시험: ips 1279 와 1280 은 같은 칸",
+   "ok": true,
+   "detail": "1279 임계 3312~3368 (허용 3840) / 1280 임계 3312~3368 (허용 3840)",
+   "gating": true
+  },
+  {
+   "check": "절벽: ips 1280 -> 1281 에서 임계가 한 칸 도약",
+   "ok": true,
+   "detail": "도약 1245.5 B (실제 비교 대상 ips 1280, 모형 1245.5, 허용창 1100~1400)",
+   "gating": true
+  },
+  {
+   "check": "고원: ips 1281·1282·1300·1350·1450 은 같은 칸",
+   "ok": true,
+   "detail": "1281:4557~4614 / 1282:4557~4614 / 1300:4557~4614 / 1350:4557~4614 / 1450:4557~4614",
+   "gating": true
+  },
+  {
+   "check": "따름정리: W=1280 에서 Δ_min=1, 경계 ips=1281",
+   "ok": true,
+   "detail": "Δ_min 1, 경계 ips 1281, 1280 과 1281 이 다른 칸: 예",
+   "gating": true
+  },
+  {
+   "check": "보조정리2: ips 1279 의 Δ_min=2 도 경계 1281 을 가리킨다",
+   "ok": true,
+   "detail": "Δ_min 2 -> 경계 ips 1281",
+   "gating": true
+  },
+  {
+   "check": "단조성: x25519 임계가 ips 에 대해 비감소",
+   "ok": true,
+   "detail": "3340.0 -> 3340.0 -> 4585.5 -> 4585.5 -> 4585.5 -> 4585.5 -> 4585.5",
+   "gating": true
+  },
+  {
+   "check": "단조성: X25519MLKEM768 임계가 ips 에 대해 비감소",
+   "ok": true,
+   "detail": "5945.5 -> 7191.0 -> 7191.0",
+   "gating": true
+  },
+  {
+   "check": "교차: ML-KEM(k=2) 1280 -> 1281 도 한 칸 도약",
+   "ok": true,
+   "detail": "도약 1245.5 B (실제 비교 대상 ips 1280, k=2 이므로 B 는 +2 B 늘었다)",
+   "gating": true
+  },
+  {
+   "check": "교차 고원: ML-KEM ips 1281·1350 은 같은 칸",
+   "ok": true,
+   "detail": "1281:7163~7219 / 1350:7163~7219",
+   "gating": true
+  }
+ ],
+ "prediction_checks": [
+  {
+   "check": "예측 대조 [x25519/1279]",
+   "ok": true,
+   "detail": "예측 [3312,3368] vs 실측 [3312,3368] (p2 관측 칸을 옮겨 적은 값 - out-of-sample 아님)",
+   "gating": false,
+   "group": "x25519",
+   "ips": 1279,
+   "in_sample": true
+  },
+  {
+   "check": "예측 대조 [x25519/1280]",
+   "ok": true,
+   "detail": "예측 [3312,3368] vs 실측 [3312,3368] (p2 관측 칸을 옮겨 적은 값 - out-of-sample 아님)",
+   "gating": false,
+   "group": "x25519",
+   "ips": 1280,
+   "in_sample": true
+  },
+  {
+   "check": "예측 대조 [x25519/1281]",
+   "ok": true,
+   "detail": "예측 [4557,4614] vs 실측 [4557,4614] (p2 관측 칸을 옮겨 적은 값 - out-of-sample 아님)",
+   "gating": false,
+   "group": "x25519",
+   "ips": 1281,
+   "in_sample": true
+  },
+  {
+   "check": "예측 대조 [x25519/1282]",
+   "ok": true,
+   "detail": "예측 [4557,4614] vs 실측 [4557,4614] (p2 관측 칸을 옮겨 적은 값 - out-of-sample 아님)",
+   "gating": false,
+   "group": "x25519",
+   "ips": 1282,
+   "in_sample": true
+  },
+  {
+   "check": "예측 대조 [x25519/1300]",
+   "ok": true,
+   "detail": "예측 [4557,4614] vs 실측 [4557,4614] (p2 관측 칸을 옮겨 적은 값 - out-of-sample 아님)",
+   "gating": false,
+   "group": "x25519",
+   "ips": 1300,
+   "in_sample": true
+  },
+  {
+   "check": "예측 대조 [x25519/1350]",
+   "ok": true,
+   "detail": "예측 [4557,4614] vs 실측 [4557,4614] (p2 관측 칸을 옮겨 적은 값 - out-of-sample 아님)",
+   "gating": false,
+   "group": "x25519",
+   "ips": 1350,
+   "in_sample": true
+  },
+  {
+   "check": "예측 대조 [x25519/1450]",
+   "ok": true,
+   "detail": "예측 [4557,4614] vs 실측 [4557,4614] (p2 관측 칸을 옮겨 적은 값 - out-of-sample 아님)",
+   "gating": false,
+   "group": "x25519",
+   "ips": 1450,
+   "in_sample": true
+  },
+  {
+   "check": "예측 대조 [X25519MLKEM768/1280]",
+   "ok": true,
+   "detail": "예측 [5917,5974] vs 실측 [5917,5974] (p2 관측 칸을 옮겨 적은 값 - out-of-sample 아님)",
+   "gating": false,
+   "group": "X25519MLKEM768",
+   "ips": 1280,
+   "in_sample": true
+  },
+  {
+   "check": "예측 대조 [X25519MLKEM768/1281]",
+   "ok": true,
+   "detail": "예측 [7163,7219] vs 실측 [7163,7219] (p2 관측 칸을 옮겨 적은 값 - out-of-sample 아님)",
+   "gating": false,
+   "group": "X25519MLKEM768",
+   "ips": 1281,
+   "in_sample": true
+  },
+  {
+   "check": "예측 대조 [X25519MLKEM768/1350]",
+   "ok": true,
+   "detail": "예측 [7163,7219] vs 실측 [7163,7219] (p2 관측 칸을 옮겨 적은 값 - out-of-sample 아님)",
+   "gating": false,
+   "group": "X25519MLKEM768",
+   "ips": 1350,
+   "in_sample": true
+  }
+ ],
+ "passed": 19,
+ "total": 19,
+ "gating_changed_at": "2026-08-20",
+ "gating_note": "passed/total 은 게이팅 검사만 센다. prediction_checks 와 p12c_checks 는 gating=false 정보이며 종료코드에 들어가지 않는다. 2026-08-20 게이팅 집합 교체: 예측 대조 8건을 정보로 내리고(p2 관측 칸을 옮겨 적은 값이라 out-of-sample 이 아님), 레코드가 없으면 조용히 사라지던 따름정리·보조정리2 2건을 항상 기록하도록 바꿔 게이팅 19건이 됐다. 보조정리2 는 전제 B=k·ips 가 실측으로 확인된 레코드에서만 판정한다."
+}

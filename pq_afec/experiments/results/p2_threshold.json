@@ -10,8 +10,10 @@
    "threshold_hi": 3368,
    "note": "",
    "first_flight_bytes": 1280,
+   "ff_parity_bytes": 0,
    "parity_bytes": 0.0,
    "client_bytes_total": 1280,
+   "client_bytes_total_legacy": 1280,
    "s0_est": {
     "allowed": 3840,
     "budget": 3840,
@@ -29,8 +31,10 @@
    "threshold_hi": 3368,
    "note": "",
    "first_flight_bytes": 1280,
+   "ff_parity_bytes": 0,
    "parity_bytes": 0.0,
    "client_bytes_total": 1280,
+   "client_bytes_total_legacy": 1280,
    "s0_est": {
     "allowed": 3840,
     "budget": 3840,
@@ -47,14 +51,16 @@
    "threshold_hi": 8296,
    "note": "",
    "first_flight_bytes": 1280,
-   "parity_bytes": 2642.4,
-   "client_bytes_total": 3922.4,
+   "ff_parity_bytes": 1326,
+   "parity_bytes": 2642.3,
+   "client_bytes_total": 2606,
+   "client_bytes_total_legacy": 3922.3,
    "s0_est": {
-    "allowed": 12800.0,
-    "budget": 11767.2,
-    "s0_lo": 4504.0,
-    "s0_hi": 4561.0,
-    "s0_mid": 4532.5
+    "allowed": 8960,
+    "budget": 7818,
+    "s0_lo": 664,
+    "s0_hi": 721,
+    "s0_mid": 692.5
    }
   },
   {
@@ -65,14 +71,16 @@
    "threshold_hi": 12034,
    "note": "",
    "first_flight_bytes": 1280,
-   "parity_bytes": 5282.9,
-   "client_bytes_total": 6562.9,
+   "ff_parity_bytes": 2656,
+   "parity_bytes": 5286.3,
+   "client_bytes_total": 3936,
+   "client_bytes_total_legacy": 6566.3,
    "s0_est": {
-    "allowed": 20480.0,
-    "budget": 19688.699999999997,
-    "s0_lo": 8446.0,
-    "s0_hi": 8503.0,
-    "s0_mid": 8474.5
+    "allowed": 12800,
+    "budget": 11808,
+    "s0_lo": 766,
+    "s0_hi": 823,
+    "s0_mid": 794.5
    }
   },
   {
@@ -83,8 +91,10 @@
    "threshold_hi": 5974,
    "note": "",
    "first_flight_bytes": 2560,
+   "ff_parity_bytes": 0,
    "parity_bytes": 0.0,
    "client_bytes_total": 2560,
+   "client_bytes_total_legacy": 2560,
    "s0_est": {
     "allowed": 7680,
     "budget": 7680,
@@ -102,8 +112,10 @@
    "threshold_hi": 5974,
    "note": "",
    "first_flight_bytes": 2560,
+   "ff_parity_bytes": 0,
    "parity_bytes": 0.0,
    "client_bytes_total": 2560,
+   "client_bytes_total_legacy": 2560,
    "s0_est": {
     "allowed": 7680,
     "budget": 7680,
@@ -120,13 +132,15 @@
    "threshold_hi": 10958,
    "note": "",
    "first_flight_bytes": 2560,
-   "parity_bytes": 1594.9,
-   "client_bytes_total": 4154.9,
+   "ff_parity_bytes": 1331,
+   "parity_bytes": 1331.1,
+   "client_bytes_total": 3891,
+   "client_bytes_total_legacy": 3891.1,
    "s0_est": {
-    "allowed": 12800.0,
-    "budget": 12464.699999999999,
-    "s0_lo": 1842.0,
-    "s0_hi": 1899.0,
+    "allowed": 12800,
+    "budget": 11673,
+    "s0_lo": 1842,
+    "s0_hi": 1899,
     "s0_mid": 1870.5
    }
   },
@@ -138,13 +152,15 @@
    "threshold_hi": 14640,
    "note": "",
    "first_flight_bytes": 2560,
-   "parity_bytes": 2836.9,
-   "client_bytes_total": 5396.9,
+   "ff_parity_bytes": 2672,
+   "parity_bytes": 2667.3,
+   "client_bytes_total": 5232,
+   "client_bytes_total_legacy": 5227.3,
    "s0_est": {
-    "allowed": 16640.0,
-    "budget": 16190.699999999999,
-    "s0_lo": 2000.0,
-    "s0_hi": 2057.0,
+    "allowed": 16640,
+    "budget": 15696,
+    "s0_lo": 2000,
+    "s0_hi": 2057,
     "s0_mid": 2028.5
    }
   }
@@ -248,33 +264,33 @@
    {
     "group": "x25519",
     "arm": "on1",
-    "d_client_bytes": 2642.4,
+    "d_client_bytes": 1326,
     "d_threshold": 4927.5,
-    "ratio": 1.8647820163487738
+    "ratio": 3.7160633484162897
    },
    {
     "group": "x25519",
     "arm": "on2",
-    "d_client_bytes": 5282.9,
+    "d_client_bytes": 2656,
     "d_threshold": 8665.5,
-    "ratio": 1.6402922637187909
+    "ratio": 3.262612951807229
    },
    {
     "group": "X25519MLKEM768",
     "arm": "on1",
-    "d_client_bytes": 1594.8999999999996,
+    "d_client_bytes": 1331,
     "d_threshold": 4984.0,
-    "ratio": 3.124960812590132
+    "ratio": 3.7445529676934637
    },
    {
     "group": "X25519MLKEM768",
     "arm": "on2",
-    "d_client_bytes": 2836.8999999999996,
+    "d_client_bytes": 2672,
     "d_threshold": 8666.0,
-    "ratio": 3.0547428531143153
+    "ratio": 3.2432634730538923
    }
   ],
-  "mean_ratio": 3.6374063660057727,
+  "mean_ratio": 4.0655778455256595,
   "slope_x25519": 5.89585798816568,
   "slope_X25519MLKEM768": 2.94792899408284
  },
@@ -321,5 +337,34 @@
    "group": "X25519MLKEM768",
    "s0": 1769.0
   }
- ]
+ ],
+ "checks": [
+  {
+   "check": "전 팔에서 임계가 확정됐다",
+   "ok": true,
+   "detail": "8 팔 중 미확정 0"
+  },
+  {
+   "check": "밴드 폭이 이분탐색 해상도 이내 (<= 64 B)",
+   "ok": true,
+   "detail": "최대 57 B (팔 8 개)"
+  },
+  {
+   "check": "팀 자료와 일치 (이미 계산해 놓고 안 쓰던 값)",
+   "ok": true,
+   "detail": "대조 2 건 중 불일치 0"
+  },
+  {
+   "check": "[부정] off 와 buf 의 임계가 같다 (버퍼링만으로는 임계가 안 움직인다)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "check": "패리티가 늘수록 임계가 오른다 (off < on1 < on2, 밴드가 안 겹친다)",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "passed": 5,
+ "total": 5
 }

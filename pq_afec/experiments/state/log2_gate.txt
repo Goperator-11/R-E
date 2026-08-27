@@ -1,33 +1,52 @@
-ok   XOR �뙣由ы떚媛� 臾몄꽌 �넀怨꾩궛(10111111)怨� �씪移�
-ok   A �쑀�떎 蹂듭썝
-ok   蹂듭썝 m=1 k=2 miss=0 �뙣由ы떚0
-ok   蹂듭썝 m=1 k=2 miss=1 �뙣由ы떚0
-ok   蹂듭썝 m=1 k=3 miss=0 �뙣由ы떚0
-ok   蹂듭썝 m=1 k=3 miss=1 �뙣由ы떚0
-ok   蹂듭썝 m=1 k=3 miss=2 �뙣由ы떚0
-ok   蹂듭썝 m=1 k=4 miss=0 �뙣由ы떚0
-ok   蹂듭썝 m=1 k=4 miss=1 �뙣由ы떚0
-ok   蹂듭썝 m=1 k=4 miss=2 �뙣由ы떚0
-ok   蹂듭썝 m=1 k=4 miss=3 �뙣由ы떚0
-ok   蹂듭썝 m=2 k=2 miss=0 �뙣由ы떚0
-ok   蹂듭썝 m=2 k=2 miss=0 �뙣由ы떚1
-ok   蹂듭썝 m=2 k=2 miss=1 �뙣由ы떚0
-ok   蹂듭썝 m=2 k=2 miss=1 �뙣由ы떚1
-ok   蹂듭썝 m=2 k=3 miss=0 �뙣由ы떚0
-ok   蹂듭썝 m=2 k=3 miss=0 �뙣由ы떚1
-ok   蹂듭썝 m=2 k=3 miss=1 �뙣由ы떚0
-ok   蹂듭썝 m=2 k=3 miss=1 �뙣由ы떚1
-ok   蹂듭썝 m=2 k=3 miss=2 �뙣由ы떚0
-ok   蹂듭썝 m=2 k=3 miss=2 �뙣由ы떚1
-ok   蹂듭썝 m=2 k=4 miss=0 �뙣由ы떚0
-ok   蹂듭썝 m=2 k=4 miss=0 �뙣由ы떚1
-ok   蹂듭썝 m=2 k=4 miss=1 �뙣由ы떚0
-ok   蹂듭썝 m=2 k=4 miss=1 �뙣由ы떚1
-ok   蹂듭썝 m=2 k=4 miss=2 �뙣由ы떚0
-ok   蹂듭썝 m=2 k=4 miss=2 �뙣由ы떚1
-ok   蹂듭썝 m=2 k=4 miss=3 �뙣由ы떚0
-ok   蹂듭썝 m=2 k=4 miss=3 �뙣由ы떚1
-ok   �뙣由ы떚 �뜲�씠�꽣洹몃옩 �솗蹂�
-ok   �뙣由ы떚媛� 濡깊뿤�뜑 Initial 濡� �뙆�떛�맂�떎(�꽌踰꾧�� �뿰寃곗뿉 洹��냽�떆�궗 �닔 �엳�쓬)
-ok   �뙣由ы떚 �뜲�씠�꽣洹몃옩�씠 1200 B �씠�긽(RFC 9000 14.1)
-ok   �젙�긽 Initial �쓣 �뙣由ы떚濡� �삤�씤�븯吏� �븡�뒗�떎
+Go 격자점 85536 개  (/tmp/qamp)
+
+=== Python decide_v2 vs Go decide - (mode, delta, m, ips) 전부 ===
+  OK   85536 격자점 중 진짜 불일치 0 건
+       표 보간 근소차 96 건 - Python J 기준 최대 대가 0.009663 ms (한도 0.100 ms)
+       결정이 같은 점의 J 어긋남 - 최대 0.079466 ms (한도 0.100), 한도 초과 0 건 / 85536 점
+         p=0.007 rtt=100 up=0 | Go ['parity', 0, 3, 1200] | Py ['parity', 0, 2, 1200] | 대가 -0.009663 ms
+         p=0.007 rtt=100 up=100 | Go ['parity', 0, 3, 1200] | Py ['parity', 0, 2, 1200] | 대가 -0.008956 ms
+         p=0.007 rtt=100 up=0 | Go ['parity', 0, 3, 1200] | Py ['parity', 0, 2, 1200] | 대가 -0.009663 ms
+
+=== 지렛대가 실제로 선택되는가 (v2 이식의 목적) ===
+   parity   63254 건 (74.0%)
+   combo    14272 건 (16.7%)
+   none      6834 건 (8.0%)
+   pad       1176 건 (1.4%)
+   pad 을 고른 판의 delta: [(1, 432), (73, 108), (81, 432), (143, 108), (223, 96)]
+   그중 delta=1 (1 바이트로 칸 올리기): 432 건
+
+wrote /mnt/c/dev/pq_afec/experiments/results/gate_go_parity.json
+ok   XOR 패리티가 문서 손계산(10111111)과 일치
+ok   A 유실 복원
+ok   복원 m=1 k=2 miss=0 패리티0
+ok   복원 m=1 k=2 miss=1 패리티0
+ok   복원 m=1 k=3 miss=0 패리티0
+ok   복원 m=1 k=3 miss=1 패리티0
+ok   복원 m=1 k=3 miss=2 패리티0
+ok   복원 m=1 k=4 miss=0 패리티0
+ok   복원 m=1 k=4 miss=1 패리티0
+ok   복원 m=1 k=4 miss=2 패리티0
+ok   복원 m=1 k=4 miss=3 패리티0
+ok   복원 m=2 k=2 miss=0 패리티0
+ok   복원 m=2 k=2 miss=0 패리티1
+ok   복원 m=2 k=2 miss=1 패리티0
+ok   복원 m=2 k=2 miss=1 패리티1
+ok   복원 m=2 k=3 miss=0 패리티0
+ok   복원 m=2 k=3 miss=0 패리티1
+ok   복원 m=2 k=3 miss=1 패리티0
+ok   복원 m=2 k=3 miss=1 패리티1
+ok   복원 m=2 k=3 miss=2 패리티0
+ok   복원 m=2 k=3 miss=2 패리티1
+ok   복원 m=2 k=4 miss=0 패리티0
+ok   복원 m=2 k=4 miss=0 패리티1
+ok   복원 m=2 k=4 miss=1 패리티0
+ok   복원 m=2 k=4 miss=1 패리티1
+ok   복원 m=2 k=4 miss=2 패리티0
+ok   복원 m=2 k=4 miss=2 패리티1
+ok   복원 m=2 k=4 miss=3 패리티0
+ok   복원 m=2 k=4 miss=3 패리티1
+ok   패리티 데이터그램 왕복
+ok   패리티가 롱헤더 Initial 로 파싱된다(서버가 연결에 귀속시킬 수 있음)
+ok   패리티 데이터그램이 1200 B 이상(RFC 9000 14.1)
+ok   정상 Initial 을 패리티로 오인하지 않는다

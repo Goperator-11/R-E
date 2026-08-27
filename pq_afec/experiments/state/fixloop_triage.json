@@ -1,0 +1,301 @@
+{
+ "at": "2026-08-27 22:22:20",
+ "round": 1,
+ "counts": {
+  "진짜결함": 2,
+  "로그깨짐": 0,
+  "시간초과": 0,
+  "표본부족": 2,
+  "도중에죽음": 0,
+  "환경사고": 0,
+  "안돌았음": 1,
+  "통과": 20
+ },
+ "source_moved": [],
+ "rows": [
+  {
+   "stage": "lint",
+   "title": "모든 .py 가 파싱되는가 (루프 밖 파일까지)",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 21:30",
+   "seconds": 0.3
+  },
+  {
+   "stage": "table",
+   "title": "확률표를 Go 로 심는다 (pfail_table.go 생성)",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:29",
+   "seconds": 0.2
+  },
+  {
+   "stage": "build",
+   "title": "Go 테스트베드 빌드 (CGO_ENABLED=0, /tmp/qamp 로 복사)",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:33",
+   "seconds": 0.9
+  },
+  {
+   "stage": "gate",
+   "title": "관문 - 부호 자체시험 (Go) + 기준 구현 시험 (Python) + 정책 격자 대조",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:36",
+   "seconds": 28.0
+  },
+  {
+   "stage": "p5",
+   "title": "독립 감사 - Go/Python 교차검증, 용량정리 완전탐색, 불변식",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:36",
+   "seconds": 10.3
+  },
+  {
+   "stage": "p0",
+   "title": "환경 확인 (문서 단계 0) + ML-KEM 동일성 (OpenSSL 3.5 상호운용)",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:36",
+   "seconds": 4.4
+  },
+  {
+   "stage": "p1",
+   "title": "첫 비행 구조 실측 - 자연 k, 비행 바이트, 용량 정리 대조",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:36",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p2",
+   "title": "증폭 임계 - off/buf/on 세 팔, 교환비, 바이트 회계",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:36",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p3",
+   "title": "복구 동작 + 손실 조건 효과 (문서 단계 3-4)",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:36",
+   "seconds": 0.2
+  },
+  {
+   "stage": "p4",
+   "title": "모형 대 실측 대조 - 정책 예측이 맞았는가",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:37",
+   "seconds": 2.5
+  },
+  {
+   "stage": "p7",
+   "title": "결정적 검증 - 소거를 우리가 만들고 반드시 그래야 할 결과와 대조",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:38",
+   "seconds": 62.6
+  },
+  {
+   "stage": "p8",
+   "title": "반복 재현성 + 음성 대조 + 통계적 유의성",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:38",
+   "seconds": 18.8
+  },
+  {
+   "stage": "p9",
+   "title": "환경 교차검증 - 문서 환경과 1차 환경에서 같은 값이 나오는가",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:38",
+   "seconds": 0.5
+  },
+  {
+   "stage": "p10",
+   "title": "완성도 - 미구현 재고조사 + 한 번도 안 해 본 영역",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 18:44",
+   "seconds": 365.3
+  },
+  {
+   "stage": "p11",
+   "title": "폐루프 후회 - auto 가 최선 고정 m 만큼 하는가",
+   "kind": "진짜결함",
+   "why": "실패 2 건 중 진짜 1 건 (7/9)",
+   "fails": [
+    "후회 추정의 95% 신뢰반폭이 1 ms 미만 (기준 2 ms 를 판정할 정밀도)         최대 반폭 1.58 ms | 조건별 ['0.14', '0.40', '0.94', '0.50', '0.49', '1.58']",
+    "수렴 후 auto 가 최선과 잡음 안에서 같은 m 을 골랐다                    4/5 | 임계아래/무손실: 전 팔이 최선과 1 ms 안 -> 판정 제외; 임계아래/손실2%: auto m=1 / 최선 m=1 / 허용"
+   ],
+   "prescription": "고쳐야 한다. 자를 늘리지 말고 무엇이 틀렸는지부터 찾아라.",
+   "loop2": "pending",
+   "finished": "2026-08-27 21:51",
+   "seconds": 1283.4
+  },
+  {
+   "stage": "p12",
+   "title": "양자 경계 절벽: ips 1279/1280/1281/1282/1300/1350/1450 임계 이분탐색",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 19:04",
+   "seconds": 0.3
+  },
+  {
+   "stage": "p13",
+   "title": "B_eff 직접 측정 - 서버 첫 송신까지 도착한 클라 바이트 (명세 2.6)",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 19:06",
+   "seconds": 84.4
+  },
+  {
+   "stage": "p14",
+   "title": "지배 보조정리 - 같은 Δ 에서 δ-패딩 팔 vs 패리티 팔",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 19:10",
+   "seconds": 245.7
+  },
+  {
+   "stage": "p16",
+   "title": "업링크 대역 실측 - J 의 t_tx 항에 출처를 만든다 (명세 3절)",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 19:13",
+   "seconds": 196.6
+  },
+  {
+   "stage": "p17",
+   "title": "적응의 값어치 - 손실률이 변할 때 정책이 따라가는가",
+   "kind": "진짜결함",
+   "why": "실패 1 건 중 진짜 1 건 (9/10)",
+   "fails": [
+    "6. [부정] 이 운용점에 적응이 벌 것이 있다 (오라클 이득 > 탐색세 0.42 ms)                오라클 이득 0.000 ms | 손실2%: 최선 m3 허용 ['m2', 'm3'] | 손실15%: 최선 m3 허용 ['m3']"
+   ],
+   "prescription": "고쳐야 한다. 자를 늘리지 말고 무엇이 틀렸는지부터 찾아라.",
+   "loop2": "pending",
+   "finished": "2026-08-27 22:22",
+   "seconds": 1825.5
+  },
+  {
+   "stage": "p15",
+   "title": "v2 정책 후회 - δ·m 결합 정책 vs 최선 고정 조합",
+   "kind": "표본부족",
+   "why": "실패 1 건이 전부 정밀도 (10/11)",
+   "fails": [
+    "후회 추정의 95% 신뢰반폭이 1 ms 미만 (기준 2 ms 를 판정할 정밀도)               최대 반폭 2.23 ms | 조건별 ['0.06', '0.99', '0.99', '0.07', '0.99', '2.23']"
+   ],
+   "prescription": "결함이 아니라 못 잰 것이다. --precise 로 N 을 늘려라. 기준(자)을 완화하지 마라.",
+   "loop2": "pending",
+   "finished": "2026-08-27 22:22",
+   "seconds": 0.8
+  },
+  {
+   "stage": "p18",
+   "title": "m_max 상한 - 고정팔 m=1..4 를 직접 재서 모형을 검증",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-27 21:26",
+   "seconds": 2728.9
+  },
+  {
+   "stage": "p20",
+   "title": "잔차 해부 - 모형이 어느 무리에서 틀리는가 + 필요 표본",
+   "kind": "표본부족",
+   "why": "실패 1 건이 전부 정밀도 (4/5)",
+   "fails": [
+    "5. 표본이 모형의 주장 크기를 잡기에 충분하다                                 모자란 쌍 29 개 (분해능아래 4 개는 뺌) | 최악 p17|2Mbps|loss15 m2-m3 750<488682, p18|임계위·2Mbps·손실15|loss1"
+   ],
+   "prescription": "결함이 아니라 못 잰 것이다. --precise 로 N 을 늘려라. 기준(자)을 완화하지 마라.",
+   "loop2": "pending",
+   "finished": "2026-08-27 22:22",
+   "seconds": 0.4
+  },
+  {
+   "stage": "p6",
+   "title": "보고서 + 바탕화면 한 장 요약",
+   "kind": "안돌았음",
+   "why": "코드가 바뀜 - 옛 결과라 못 믿는다",
+   "fails": [],
+   "prescription": "다시 돌려라. 통과로 세면 안 된다.",
+   "loop2": "stale",
+   "finished": "2026-08-21 06:43",
+   "seconds": 3.7
+  },
+  {
+   "stage": "p19",
+   "title": "수치 출처 감사 - 보고된 수가 원자료에서 재계산되는가",
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-26 11:06",
+   "seconds": 0.3
+  }
+ ]
+}
