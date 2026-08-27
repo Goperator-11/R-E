@@ -32,6 +32,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import glob
+import hashlib
 import json
 import os
 import subprocess
@@ -52,8 +53,22 @@ import loop2                                       # noqa: E402
 # 🩸 p11(폐루프 후회) 과 p12(양자 경계 절벽) 는 2026-08-20 감사 전까지 여기에도
 #    loop2.build_stages() 에도 없었다. 즉 루프 밖이었고, 그래서 손으로 한 번
 #    돌린 결과가 그대로 인용되고 있었다.
+# 🩸 2026-08-24 - p13~p19 가 이 목록에 없어서 **지속 루프가 새 단계를 한 번도
+#    반복 검증하지 않았다.** 라운드 간 안정성 감시는 여기 적힌 단계에만
+#    적용되므로, 목록에서 빠지면 그 단계는 "한 번 잘 나온 수"로 남는다.
+#    🩸 2026-08-25 정정 - 아래 문장은 **더 이상 사실이 아니다.** p18 은
+#    이제 MEASURE 에 들어 있다(m_max 를 2 -> 3 으로 올렸으므로 그 근거를
+#    매 라운드 다시 재야 한다). 옛 문장을 남겨 둔다 - 왜 생각이 바뀌었는지
+#    가 사라지면 다음 사람이 같은 판단을 되풀이한다:
+#    (옛) p18(m_max 검증)은 상시 반복 대상이 아니라 뺀다 - 그것은 한 번 판정하면
+#    되는 실험이고 25 분이 든다. 필요하면 손으로 돌린다.
+# 2026-08-27 - **p20 을 더했다.** loop2 에는 등록했는데 여기 없어서,
+#    상시 반복 루프(forever)는 잔차 해부를 **한 번도 안 돌렸다.**
+#    등록처가 둘인데 한쪽만 고치는 사고 - 이 저장소가 반복해 온 형태다.
+#    p20 은 새 측정을 안 하고 몇 초에 끝나므로 상시 대상으로 알맞다.
 MEASURE = ["p1", "p2", "p3", "p7", "p8", "p9", "p10", "p11", "p12",
-           "p4", "p5", "p6"]
+           "p4", "p5", "p13", "p14", "p16", "p17", "p15", "p18",
+           "p20", "p6", "p19"]
 
 
 def harden():
@@ -230,11 +245,24 @@ def snapshot(rnd):
         # 🩸 두 수를 **둘 다** 적는다. 예전에 통과한 쪽(worst_regret_ms=3.605,
         #    기준 <5 ms)만 인용해서 실패한 쪽(수렴 후 worst_regret_late_ms=4.919,
         #    기준 <2 ms)을 가린 적이 있다. 하나만 적으면 또 그렇게 된다.
+        #    (그 4.919 자체는 2026-08-26 에 판정불능의 자국으로 밝혀져
+        #     1.014 로 내려갔다. 그래도 둘 다 적는 규칙은 그대로 옳다.)
         "p11_pass": passcount(p11),
         "p11_checks": checknames(p11),
         "p11_failed_checks": failednames(p11),
         "p11_worst_regret_ms": (p11 or {}).get("worst_regret_ms"),
         "p11_worst_regret_late_ms": (p11 or {}).get("worst_regret_late_ms"),
+        # 🩸 2026-08-25 - 감시 띠를 자료가 정하게 하려면 그 수의 **정밀도**를
+        #    같이 남겨야 한다. 옛 띠는 내가 손으로 고른 1.0 ms 였는데 p11 이
+        #    스스로 신고한 95% 반폭은 2.6 ms 였다. 즉 측정 정밀도보다 좁은
+        #    자로 흔들림을 판정하고 있었다(3 라운드 연속 흔들림 4 건).
+        "p11_worst_regret_ci95_half_ms":
+            (p11 or {}).get("worst_regret_ci95_half_ms"),
+        "p11_worst_regret_late_ci95_half_ms":
+            (p11 or {}).get("worst_regret_late_ci95_half_ms"),
+        # 상한(조건들의 최대)도 같이 남긴다 - 위 둘이 없는 옛 라운드나
+        # 조건이 사라진 경우의 대체용이고, 상한임을 이름으로 드러낸다.
+        "p11_worst_ci95_half_ms": (p11 or {}).get("worst_ci95_half_ms"),
         # 6. 양자 경계 절벽 (p12) - 1280 -> 1281 에서 임계가 뛰는 폭.
         #    주 그룹은 x25519(k=1), 교차 확인은 ML-KEM(k=2) - 명세 8절 p12/p12b.
         #    따름정리대로면 k 와 무관하게 같은 자리에서 같은 크기로 뛰어야 한다.
@@ -268,7 +296,29 @@ def read_history():
     return out
 
 
+def algo_fingerprint():
+    """알고리즘 소스(padfec/*.py + quicbed/*.go)의 해시.
+
+    🩸 2026-08-24 - 라운드 기록에 이것이 없어서 **다른 알고리즘으로 돈 라운드가
+       한 표본에 섞였다.** history 의 앞선 10 라운드는 2026-08-20 것인데 그
+       뒤로 패리티-ACK 결함 수정 등으로 격자 24.5% 의 선택이 바뀌었다.
+       코드가 다르면 "라운드 간 안정"이라는 말 자체가 성립하지 않는다.
+       loop2 의 단계 지문과 같은 원리이고, 여기서는 라운드 단위로 쓴다.
+    """
+    import glob as _g
+    h = hashlib.sha256()
+    files = []
+    for pat in ("padfec/*.py", "experiments/quicbed/*.go"):
+        files += _g.glob(os.path.join(ROOT, *pat.split("/")))
+    for f in sorted(files):
+        h.update(os.path.relpath(f, ROOT).replace("\\", "/").encode())
+        with open(f, "rb") as fh:
+            h.update(hashlib.sha256(fh.read()).digest())
+    return h.hexdigest()[:12]
+
+
 def append_history(rec):
+    rec.setdefault("algo_fp", algo_fingerprint())
     with open(HISTORY, "a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
         f.flush()
@@ -329,10 +379,37 @@ def invalid_reasons(h):
     따로 세어** '검증된 라운드'와 섞이지 않게 한다.
     """
     bad = []
+
+    # 🩸 2026-08-24 - **다른 알고리즘으로 돈 라운드는 같은 표본이 아니다.**
+    #    history 의 앞선 라운드들은 2026-08-20 것인데 그 뒤로 패리티-ACK 결함
+    #    수정 등으로 격자 24.5% 의 선택이 바뀌었다. 코드가 다르면 "라운드 간
+    #    안정"이라는 말 자체가 성립하지 않으므로 표본에서 뺀다.
+    #    지문이 아예 없는 옛 라운드도 뺀다 - 어느 코드로 돌았는지 모르기 때문.
+    _fp = h.get("algo_fp")
+    if not _fp:
+        bad.append("알고리즘 지문 없음(어느 코드로 돌았는지 알 수 없다)")
+    elif _fp != algo_fingerprint():
+        bad.append("알고리즘이 다르다(지문 %s != 현재 %s)"
+                   % (_fp, algo_fingerprint()))
     if h.get("measured") is False:
         bad.append("아무것도 안 쟀다(상류 복구 실패)")
     if h.get("loop_skipped"):
-        bad.append("loop2 가 상류 무효로 단계를 건너뜀(exit 3)")
+        # 🩸 2026-08-25 - exit 3 을 **무조건** 무효로 보면 표본이 영원히 0 이
+        #    된다. p11·p15 는 상시 N 에서 정밀도 검사가 구조적으로 실패하도록
+        #    내가 만들었고("이 표본으로는 2 ms 를 판정할 수 없다"는 사실을
+        #    드러내려고), 그러면 그 하류인 p6·p19 가 매번 건너뛰어져 exit 3 이
+        #    난다. 라운드 10 이 실제로 그랬다 - **측정 단계는 전부 돌았는데**
+        #    후처리 둘이 빠졌다는 이유로 라운드가 통째로 버려졌다.
+        #    구분한다: 건너뛴 것이 **측정 단계**면 무효(잰 게 없다), 후처리
+        #    (p6 보고서·p19 감사)뿐이면 표본으로 인정한다.
+        _POST = {"p6", "p19"}
+        _raw = h.get("stage_raw") or {}
+        _skipped = [sid for sid in MEASURE
+                    if _raw.get(sid) not in ("done", "failed")]
+        _meas_skipped = [sid for sid in _skipped if sid not in _POST]
+        if _meas_skipped:
+            bad.append("loop2 가 **측정** 단계를 건너뜀(exit 3): %s"
+                       % ", ".join(_meas_skipped))
 
     # 중대 1. rc 3 은 바로 위에서 잡으므로 여기서 두 번 세지 않는다.
     rc = h.get("loop_exit")
@@ -543,9 +620,12 @@ def analyse(hist_all):
         if f:
             findings.append(f)
 
-    # 🩸 p11 은 지금 4개 중 1개가 실패한다(수렴 후 최악 후회 +4.919 ms > 2 ms).
-    #    기준을 완화하는 대신 **어떤 검사가 실패 중인지**를 라운드마다 남긴다.
+    # 🩸 기준을 완화하는 대신 **어떤 검사가 실패 중인지**를 라운드마다 남긴다.
     #    실패 검사의 이름 집합이 흔들리면 그것도 발견이다.
+    #    ⚠️ 정정 (2026-08-26). 여기 "+4.919 ms > 2 ms 로 실패 중" 이라고
+    #    적혀 있었다. 그 수는 비교팔에 m3 가 없어서 생긴 **판정불능**의
+    #    자국이었고, 팔을 고친 뒤 1.014 ms 로 통과한다. 지금 p11 이 실패하는
+    #    것은 신뢰반폭(표본 부족) 하나뿐이다.
     const("p11_failed_checks", "폐루프에서 실패 중인 검사 이름")
     const("p9_agree", "두 환경 + 팀 자료가 같은 칸")
     const("p9_A_mlkem", "환경 A(문서) ML-KEM 임계")
@@ -562,30 +642,71 @@ def analyse(hist_all):
                          "values": cs[-6:],
                          "note": "최대-최소 %d B" % (max(cs) - min(cs))})
 
-    def band(field, label, tol, unit):
+    def band(field, label, tol, unit, tol_field=None, tol_mult=2.0):
         """측정값이라 정확히 같을 수 없는 수 - 폭으로 본다.
 
         tol 은 **합격 기준이 아니라 흔들림 감시용 띠**다. 합격/불합격은 각
         실험 스크립트가 자기 기준으로 판정하고, 여기서는 라운드 사이에서
         그 수가 움직였는지만 본다. (이 프로젝트는 기준을 갈아 통과 수를
         바꾼 전례가 있어서, 판정과 감시를 섞지 않는다.)
+
+        🩸 2026-08-25 - 띠를 **자료가 정하게** 바꿨다. 옛 tol 은 내가 손으로
+           고른 상수(1.0 ms)였는데, p11 이 스스로 신고한 95% 반폭은 2.6 ms
+           였다. **측정 정밀도보다 좁은 자로 흔들림을 판정**하고 있었고,
+           3 라운드 연속으로 후회 관련 4 항목이 흔들림으로 찍혔다
+           (폭 1.073 vs 띠 1.0). 그건 수가 움직인 게 아니라 자가 틀린 것이다.
+
+           tol_field 가 있으면 그 라운드들이 신고한 반폭에서 띠를 뽑는다:
+           두 라운드의 신뢰구간이 겹치면(|a-b| <= h_a + h_b) 두 값은 구별할
+           수 없다 -> 띠 = tol_mult(=2) x max(반폭).
+
+           **띠를 손으로 넓히는 것과 다르다.** 넓히는 건 통과할 때까지 자를
+           바꾸는 것이고(이 저장소가 p8 통과 수에서 이미 겪었다), 이건 자의
+           눈금을 측정이 신고한 정밀도에 맞추는 것이다. 그래서 판정 이름도
+           나눈다 - 정밀도 띠 안은 "안정"이 아니라 **"정밀도 안"**(구별
+           불가)이다:
+             · 띠를 넘으면 -> 흔들린 게 **맞다**    (강한 주장)
+             · 띠 안이면   -> 흔들렸는지 **모른다** (약한 주장)
+           둘을 한 통에 넣으면 요약의 '안정' 수가 부풀려진다.
         """
         vals = [h.get(field) for h in hist
                 if isinstance(h.get(field), (int, float))
                 and not isinstance(h.get(field), bool)]
         if not vals:
             return
-        inband = (max(vals) - min(vals)) <= tol
+        basis, hw, tol_fixed = "고정", None, tol
+        if tol_field:
+            hs = [h.get(tol_field) for h in hist
+                  if isinstance(h.get(tol_field), (int, float))
+                  and not isinstance(h.get(tol_field), bool)
+                  and h.get(tol_field) > 0]
+            if hs:
+                hw = max(hs)
+                tol, basis = tol_mult * hw, "정밀도"
+        spread = max(vals) - min(vals)
+        inband = spread <= tol
         vd = verdict(len(vals), inband)
+        if vd == "안정" and basis == "정밀도":
+            vd = "정밀도 안"
         findings.append({"field": field, "label": label,
                          "verdict": vd, "n": len(vals),
                          "stable": None if vd == "판정 보류" else inband,
                          "values": [round(v, 3) for v in vals[-6:]],
-                         "note": "최대-최소 %.3f %s (감시 띠 %.1f %s, 판정 아님)"
-                                 % (max(vals) - min(vals), unit, tol, unit)})
+                         "band_basis": basis, "band_tol": tol,
+                         "band_halfwidth": hw, "band_fixed": tol_fixed,
+                         "spread": spread,
+                         "note": ("최대-최소 %.3f %s (감시 띠 %.3f %s = %s, "
+                                  "판정 아님)"
+                                  % (spread, unit, tol, unit,
+                                     ("신고 반폭 %.3f x%g" % (hw, tol_mult))
+                                     if basis == "정밀도"
+                                     else "손으로 고른 고정값 - 이 수의 "
+                                          "정밀도가 기록에 없다"))})
 
-    band("p11_worst_regret_ms", "폐루프 최악 후회 (전 구간)", 1.0, "ms")
-    band("p11_worst_regret_late_ms", "폐루프 최악 후회 (수렴 후)", 1.0, "ms")
+    band("p11_worst_regret_ms", "폐루프 최악 후회 (전 구간)", 1.0, "ms",
+         tol_field="p11_worst_regret_ci95_half_ms")
+    band("p11_worst_regret_late_ms", "폐루프 최악 후회 (수렴 후)", 1.0, "ms",
+         tol_field="p11_worst_regret_late_ci95_half_ms")
     # 명세 2절 따름정리: 한 칸 = P = 1280 B (실측 모형 1245.5). 라운드마다
     # 이분탐색 해상도만큼 흔들리므로 폭으로 본다.
     band("p12_jump_bytes", "양자 경계 도약폭 x25519 (1280->1281)", 128, "B")
@@ -795,27 +916,37 @@ def main():
         unstable = [f for f in findings if f.get("verdict") == "흔들림"]
         held = [f for f in findings if f.get("verdict") == "판정 보류"]
         stable = [f for f in findings if f.get("verdict") == "안정"]
+        # 🩸 2026-08-25 - '정밀도 안'(구별 불가)은 안정과 **다른 통**이다.
+        #    band() 주석 참고: 띠가 측정 정밀도에서 나왔으므로 띠 안에
+        #    들어온 것은 '안 움직였다'가 아니라 '움직였는지 모른다'다.
+        within = [f for f in findings if f.get("verdict") == "정밀도 안"]
         # 🩸 3차 감사. verdict=='정보' 행(valid_rounds, p95 방향)이 어느 통에도
         #    안 들어가 **네 수의 합이 findings 총수와 안 맞았다.** 요약이 항목을
         #    조용히 흘리면 "몇 개를 보고 있는지"부터 틀린다. 정보 통을 만들고,
         #    그래도 안 맞으면 남는 수를 그대로 드러낸다.
         info = [f for f in findings if f.get("verdict") == "정보"]
         rest = (len(findings) - len(stable) - len(unstable)
-                - len(held) - len(info))
+                - len(held) - len(info) - len(within))
         valid = next((f for f in findings
                       if f["field"] == "valid_rounds"), None)
         if findings:
-            print("  라운드 간 안정성: 안정 %d / 흔들림 %d / 판정 보류 %d / "
+            print("  라운드 간 안정성: 안정 %d / 정밀도 안(구별불가) %d / "
+                  "흔들림 %d / 판정 보류 %d / "
                   "정보 %d%s = 총 %d 항목  (표본 %s 라운드 = 검증 %s + "
                   "판정근거없음 %s, 전체 %d 중)"
-                  % (len(stable), len(unstable), len(held), len(info),
+                  % (len(stable), len(within), len(unstable),
+                     len(held), len(info),
                      (" / 분류 안 됨 %d" % rest) if rest else "",
                      len(findings),
                      (valid or {}).get("n", "?"),
                      (valid or {}).get("n_verified", "?"),
                      (valid or {}).get("n_unjudged", "?"), len(hist)))
             for f in unstable:
-                print("  ⚠ 흔들림: %s -> %s" % (f["label"], f["values"]))
+                print("  ⚠ 흔들림: %s -> %s  (%s)"
+                      % (f["label"], f["values"], f.get("note", "")))
+            for f in within:
+                print("  · 정밀도 안(구별 불가): %s -> %s  (%s)"
+                      % (f["label"], f["values"], f.get("note", "")))
             for d in (valid or {}).get("dropped", [])[-4:]:
                 print("  ⚠ 표본에서 뺀 라운드 %s: %s"
                       % (d["round"], "; ".join(d["why"])))

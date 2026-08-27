@@ -233,7 +233,7 @@ def harden():
 
 class Stage(object):
     def __init__(self, sid, title, runner, cmd, outputs, scripts, deps=(),
-                 timeout=7200, note=""):
+                 timeout=7200, note="", soft_deps=()):
         self.id = sid
         self.title = title
         self.runner = runner      # win | wsl | wsl-unshare
@@ -243,7 +243,24 @@ class Stage(object):
         # 지문을 바꾸지는 않아야 하므로(같은 내용인데 해시가 달라지면 "코드가
         # 바뀜"이 거짓으로 뜬다) 여기서 한 번만 남긴다.
         self.scripts = sorted(set(scripts))
-        self.deps = list(deps)
+        # 🩸 2026-08-27 - `soft_deps` 는 **순서와 무효화에는 쓰되 막지는
+        #    않는** 의존이다. deps 에 그대로 합치므로 지문·위상·무효 전이는
+        #    한 글자도 안 바뀌고, 오직 `stale_upstream`(= 건너뛸지)만
+        #    이것들을 빼고 본다.
+        #
+        #    왜 필요한가: **진단 단계는 상류가 붉을 때 가장 값이 크다.**
+        #    p20(잔차 해부)이 p15~p18 의 원자료를 읽는데, 그 넷 중 하나라도
+        #    실패하면 p20 이 건너뛰어진다 - 정확히 「왜 실패했는지 알고 싶은
+        #    순간에 진단기가 안 도는」 구조다. 이 저장소가 2026-08-25 에 p19,
+        #    08-26 에 p17 에서 겪은 「영원히 안 도는 단계」와 같은 형태다.
+        #
+        #    ⚠️ 이것은 「할 일 목록」 4-2(판정 로직 근본 수리)가 **아니다.**
+        #    실패를 어떻게 판정하는지는 손대지 않았다. 단계가 스스로
+        #    "나는 진단기다" 라고 밝혔을 때만 막지 않는 **옵트인**이라,
+        #    이 표를 안 쓴 단계의 거동은 그대로다. 근본 수리(산출물 기준으로
+        #    하류를 깨우기)는 여전히 남아 있다.
+        self.soft_deps = list(soft_deps)
+        self.deps = sorted(set(list(deps) + list(soft_deps)))
         self.timeout = timeout
         self.note = note
 
@@ -272,15 +289,87 @@ class Stage(object):
         return all(os.path.exists(os.path.join(ROOT, o)) for o in self.outputs)
 
 
+def _cheap_first(stages, cheap=("p4", "p5")):
+    """의존 순서를 지키면서 **측정을 안 하는 싼 단계**를 앞으로 당긴다.
+
+    🩸 2026-08-21 - 2 차 실행에서 p4 가 `KeyError` 로 **0.2 초 만에**
+    죽었다. 그런데 그 사실은 p10·p11·p12 를 다 돌린 **약 25 분 뒤**에야
+    보였다. p4·p5 는 새로 측정하지 않고 앞 단계 결과만 읽으므로 상류가
+    준비되는 즉시 돌 수 있다. 알고리즘을 고쳤을 때 그것이 실제로
+    **돌아가기는 하는지**를 먼저 알아야 나머지 측정이 의미가 있다.
+
+    의존은 그대로 지킨다 - 상류가 안 끝난 단계는 안 당겨진다.
+    당길 자리가 없으면 원래 순서 그대로 뒤에 남는다.
+    """
+    by_id = {s.id: s for s in stages}
+    pend = [by_id[c] for c in cheap if c in by_id]
+    rest = [s for s in stages if s.id not in cheap]
+    out, placed = [], set()
+
+    def _drain():
+        moved = True
+        while moved:
+            moved = False
+            for s in list(pend):
+                if all(d in placed for d in s.deps):
+                    out.append(s)
+                    placed.add(s.id)
+                    pend.remove(s)
+                    moved = True
+
+    _drain()
+    for s in rest:
+        out.append(s)
+        placed.add(s.id)
+        _drain()
+    out.extend(pend)
+    return out
+
+
 def build_stages():
     S = []
 
     # 🩸 순서 주의: 빌드가 먼저다. WSL 세션이 내려가면 /tmp 가 비므로
     # gate 가 /tmp/qamp 를 먼저 찾으면 "No such file" 로 죽는다.
+    # 🩸 2026-08-21 - build.sh 는 Go 만 빌드한다. `pfail_table.go` 는
+    #    `padfec/table.py` 의 **생성물**이라, policy.py 의 상수나
+    #    table.py 를 고치고 사람이 `python -m padfec.table` 을 잊으면
+    #    Go 가 옛 확률표로 돈다. 지금은 관문 격자 대조가 그걸 잡지만
+    #    그건 **결과로 잡는 것**이지 원인을 막는 것이 아니다.
+    #    표 생성을 단계로 만들어 순서를 루프가 보장하게 한다.
+    #    (ALGO 가 안 바뀌면 생성물이 바이트 동일이라 build 는 재실행
+    #     되지 않는다 - 헛돌지 않는다.)
+    # 🩸 2026-08-21 - **파싱조차 안 되는 파일이 4 개 있었다.**
+    #    넷 다 `os.path.join(...)` 의 닫는 괄호가 잘려 나간 것이고,
+    #    그중 하나(_probe_trecover.py)는 비용식이 쓰는 상수
+    #    T_recover = 200.86 ms 를 만든 탐침이다. 루프에 없는 파일이라
+    #    **아무도 안 봤다** - 값은 명세에 남았는데 근거를 다시 밟을
+    #    길이 끊겨 있었다.
+    #    1 초짜리 검사로 이 부류를 통째로 막는다. 맨 앞에 둔다 -
+    #    코드가 파싱도 안 되는데 측정을 40 분 돌릴 이유가 없다.
+    #    지문이 **전 소스**라, 어떤 파일이 깨져도 다음 실행에서 드러난다.
+    S.append(Stage(
+        "lint", "모든 .py 가 파싱되는가 (루프 밖 파일까지)",
+        "win", [PY, "-m", "compileall", "-q", "-x", "_build",
+                "experiments", "padfec"],
+        outputs=[], scripts=sorted(set(_sources("padfec", ".py", [])
+                                      + _sources("experiments", ".py",
+                                                 []))),
+        timeout=300,
+        note="파싱 안 되는 파일이 있으면 여기서 멈춘다"))
+
+    S.append(Stage(
+        "table", "확률표를 Go 로 심는다 (pfail_table.go 생성)",
+        "win", [PY, "-m", "padfec.table",
+                "experiments/quicbed/pfail_table.go"],
+        outputs=["experiments/quicbed/pfail_table.go"],
+        scripts=ALGO, timeout=600,
+        note="이 단계가 빠지면 Go 가 옛 확률표로 돈다"))
+
     S.append(Stage(
         "build", "Go 테스트베드 빌드 (CGO_ENABLED=0, /tmp/qamp 로 복사)",
         "wsl", "bash /mnt/c/dev/pq_afec/experiments/quicbed/build.sh",
-        outputs=[], scripts=BED, timeout=900))
+        outputs=[], scripts=BED, deps=["table"], timeout=900))
 
     # 🩸 2026-08-20 v2 이식 마무리. 관문이 부호(rsEncode/recoverOne)만 봤다.
     #    그런데 `-fec auto` 의 **결정**은 Go 안에서 나고 검증·보고·모형 탐색은
@@ -370,19 +459,34 @@ def build_stages():
 
     # 🩸 p11 은 2026-08-20 감사 전까지 **루프 밖**에 있었다 - build_stages() 에도
     #    forever.py 의 MEASURE 에도 없어서, 폐루프 후회는 손으로 한 번 돌린
-    #    결과가 그대로 인용되고 있었다. 지금 4개 중 1개가 실패한다
-    #    (수렴 후 최악 후회 +4.919 ms > 2 ms 기준). 기준은 **고치지 않는다** -
+    #    결과가 그대로 인용되고 있었다. 기준은 **고치지 않는다** -
     #    이 프로젝트는 p8 에서 이미 기준을 갈아 통과 수를 바꾼 전례가 있고,
     #    그건 결과가 좋아진 게 아니라 자를 바꾼 것이었다. 실패한 채로 루프에
     #    넣고 --keep-going 으로 계속 돌린다. 실패 사실은 history 에 남는다.
+    #
+    #    ⚠️ 정정 (2026-08-26). 위에 "+4.919 ms > 2 ms 로 실패 중" 이라고
+    #    적혀 있었다. **그 수는 결함이 아니라 판정불능의 자국이었다.**
+    #    고정 비교팔이 m0..m2 뿐이라 정책이 실제로 고르는 m3 가 비교 집합에
+    #    없었고, 그래서 없는 후회를 재고 있었다. 팔을 M_MAX_DEFAULT 에서
+    #    파생하도록 고친 뒤 최악 후회는 **1.014 ms** 로 떨어졌고 이 검사는
+    #    통과한다. 남은 실패는 신뢰반폭(표본 부족)뿐이다.
+    #    옛 문장을 지우지 않고 남기는 이유: 이 수가 아래 p15 의 판단 근거로
+    #    까지 번져 있었다. 틀린 수는 지워도 그 수를 인용한 곳에 살아남는다.
     S.append(Stage(
         "p11", "폐루프 후회 - auto 가 최선 고정 m 만큼 하는가",
         "wsl-unshare", UNSHARE + "experiments/p11_adaptive.py",
         outputs=["experiments/results/p11_adaptive.json"],
         scripts=ALGO + deps_py("p11_adaptive.py") + BED,
         deps=["p1"], timeout=21600,
-        note="현재 4개 중 1개 실패(수렴 후 최악 후회 +4.919 ms > 2 ms). "
-             "기준을 완화하지 말고 실패한 채로 돌린다"))
+        # 🩸 2026-08-26 - note 에서 **실측값을 뺐다.** "수렴 후 최악
+        #    +1.014 ms" 를 박아 뒀는데 그 뒤 판이 +3.238 을 냈다. 즉 이
+        #    줄은 단계 배너에 **현재처럼 찍히면서 실제 결과와 반대**를
+        #    말하고 있었다("검사는 통과"). note 는 지문 밖이라 아무도
+        #    무효화하지 않으므로 낡은 채 영원히 남는다. p18 의 관례대로
+        #    **기준만** 적고 수는 결과에서 읽게 한다.
+        note="후회는 두 값을 함께 본다(전 구간 / 수렴 후). 기준: 수렴 후 "
+             "최악 후회 < 2 ms, 신뢰반폭 < 1 ms. 반폭이 안 내려가면 결함이 "
+             "아니라 표본 부족이다(--precise 또는 PADFEC_P11_N)"))
 
     # p12 는 명세 8절의 헤드라인 검증(양자 경계 절벽, 1280 -> 1281 에서
     # 임계가 한 칸 ≈1,246 B 뛰는가)이다. 스크립트는 다른 사람이 만드는 중이라
@@ -424,14 +528,6 @@ def build_stages():
             "experiments/quicbed/qamp.go"],
         deps=["gate"], timeout=3600))
 
-    S.append(Stage(
-        "p6", "보고서 + 바탕화면 한 장 요약",
-        "win", [PY, "experiments/p6_report.py"],
-        outputs=["docs/PADFEC 실측 보고서.md"],
-        scripts=ALGO + deps_py("p6_report.py"),
-        deps=["p1", "p2", "p3", "p4", "p5", "p7", "p8", "p9", "p10"],
-        timeout=1800))
-
     # 🩸 명세 8절의 p13·p14·p15 는 2026-08-20 2차 감사 전까지 **루프에 아예
     #    없었다**. 스크립트가 없다고 단계도 안 만들면, 안 한 검증이 목록에서
     #    통째로 사라져 "아직 안 했다"는 사실 자체가 안 보인다. 위 p12
@@ -453,7 +549,9 @@ def build_stages():
         outputs=["experiments/results/p13_beff.json"],
         scripts=ALGO + deps_py("p13_beff.py") + BED,
         deps=["p1"], timeout=14400,
-        note="스크립트 미작성 - 지문 MISSING + 실패로 드러난다. 명세 2.6 이 "
+        # 🩸 2026-08-26 - "스크립트 미작성" 은 옛말이다(p13_beff.py 가 있고
+        #    돌았다). 기준만 남긴다.
+        note="명세 2.6 이 "
              "'반드시 직접 측정으로 확인해야 한다'고 한 항목. 통과 기준: "
              "x25519 on1 의 B_eff 가 (2560, 2986.7] 안"))
 
@@ -463,9 +561,60 @@ def build_stages():
         outputs=["experiments/results/p14_dominance.json"],
         scripts=ALGO + deps_py("p14_dominance.py") + BED,
         deps=["p1"], timeout=21600,
-        note="스크립트 미작성 - 실패로 드러난다. 통과 기준: 신용은 같고"
-             "(임계 동일) 손실에서 패리티만 꼬리를 없앤다. 부정 시험으로 "
-             "δ 팔의 복구는 0 이어야 한다"))
+        # 🩸 2026-08-26 - "스크립트 미작성" 은 옛말이다(p14_dominance.py 가
+        #    있고 돌았다). p13·p15 와 **같은 형태**로 세 번째다 - note 는
+        #    지문 밖이라 아무도 무효화하지 않으니, 사실이 바뀌면 사람이
+        #    지워야 한다. 기준만 남긴다.
+        note="통과 기준: 신용은 같고(임계 동일) 손실에서 패리티만 꼬리를 "
+             "없앤다. 부정 시험으로 δ 팔의 복구는 0 이어야 한다"))
+
+    # 🆕 2026-08-21. J 의 t_tx 항이 쓰는 업링크 대역에 **출처를 만든다.**
+    #    그전까지 10 Mbps 가 Python 기본 인자와 Go 리터럴에 각각 박혀 있었고
+    #    어디서도 측정된 적이 없었다. 정작 이 테스트베드는 netem 이 대역을 안
+    #    걸어 그 비용이 존재하지 않았는데, 그 항이 "이득이 같으면 큰 m 을
+    #    고르는 편향"을 막는 유일한 힘이라 결정의 43% 를 좌우했다.
+    #    p16 은 (a) 기본 환경에 대역 비용이 없음을 재고 (b) 대역을 실제로
+    #    걸었을 때 모형의 t_tx 식이 맞는지 대조한다.
+    S.append(Stage(
+        "p16", "업링크 대역 실측 - J 의 t_tx 항에 출처를 만든다 (명세 3절)",
+        "wsl-unshare", UNSHARE + "experiments/p16_uplink.py",
+        outputs=["experiments/results/p16_uplink.json"],
+        scripts=ALGO + deps_py("p16_uplink.py") + BED,
+        deps=["p1"], timeout=3600,
+        note="통과 기준: 무제한 조건은 팔별 Δ < 0.2 ms(대역 비용 없음), "
+             "10 Mbps 조건은 임계경로 식이 팔별 0.25 ms 안. 부정 시험으로 "
+             "옛 식(추가 바이트 전부)이 0.5 ms 넘게 어긋나야 한다"))
+
+    # 🩸 2026-08-23 신설. p11·p15 는 손실률을 **고정**해 두고 auto 와 최선
+    #    고정팔을 비교한다 - 그러면 최선 고정팔이 늘 존재하므로 적응은
+    #    따라잡을 수 있을 뿐 **이길 수 없다.** 6 회 실행 동안 "적응이
+    #    필요한가"에 답할 수 없는 구조였는데 아무도 묻지 않았다(후회가 늘
+    #    >= 0 이라는 사실 자체가 단서였다).
+    #    p17 은 손실률이 **변하는** 시나리오 + 대역 제한(패리티가 공짜가
+    #    아닌 조건)에서 적응의 값어치를 잰다. 판정은 시간이 아니라
+    #    **선택**으로 한다 - 시간으로 재려면 팔당 46,398 연결이 필요하다.
+    S.append(Stage(
+        "p17", "적응의 값어치 - 손실률이 변할 때 정책이 따라가는가",
+        "wsl-unshare", UNSHARE + "experiments/p17_adaptive_value.py",
+        outputs=["experiments/results/p17_adaptive_value.json"],
+        scripts=ALGO + deps_py("p17_adaptive_value.py") + BED,
+        # 🩸 2026-08-26 - deps 를 ["p16"] -> ["p1"] 로 고쳤다. **p17 은 p16 의
+        #    결과 파일을 읽지 않는다**(`grep p16_uplink p17_adaptive_value.py`
+        #    → 0 건). 머리말이 "p16 이 잰 그 사실이 여기서 실험 설계로 돌아온다"
+        #    라고 적은 것을 의존으로 옮겨 적은 것인데, 그건 **사람이 읽는 근거**
+        #    이지 자료 흐름이 아니다.
+        #
+        #    대가가 실제로 났다: p16 은 0.25 ms 짜리 자로 판정하는데 자기 블록
+        #    표류가 0.694 ms 라 **판정 불능으로 늘 붉어진다.** 그 붉은색이
+        #    "상류 무효"로 번져 **30 분짜리 p17 실측이 통째로 건너뛰어졌다**
+        #    (2026-08-26 22:34). p19 가 2026-08-25 에 겪은 「영원히 안 도는
+        #    단계」와 같은 형태다 - 거기서 배운 처방("읽지 않는 것을 의존에
+        #    넣지 마라")을 여기에도 적용한다.
+        #
+        #    형제 단계(p13·p14·p15·p18)가 전부 ["p1"] 이다. 같은 꼴로 맞춘다.
+        deps=["p1"], timeout=7200,
+        note="선택 기반 판정(적응률·적응 지연). 시간 이득은 정보로만 - "
+             "이 표본으로는 시간으로 판정 불가(필요 N 약 4.6만/팔)"))
 
     S.append(Stage(
         "p15", "v2 정책 후회 - δ·m 결합 정책 vs 최선 고정 조합",
@@ -473,11 +622,104 @@ def build_stages():
         outputs=["experiments/results/p15_v2policy.json"],
         scripts=ALGO + deps_py("p15_v2policy.py") + BED,
         deps=["p1"], timeout=21600,
-        note="스크립트 미작성 - 실패로 드러난다. 통과 기준: 수렴 후 최악 후회 "
-             "< 2 ms. p11 이 지금 그 기준에서 4.919 ms 로 실패 중이므로 "
-             "기준을 여기서 완화하지 않는다"))
+        # ⚠️ 정정 (2026-08-26). 옛 note 는 "스크립트 미작성"이라고 적고 있었고
+        # p11 의 4.919 ms 를 기준 유지의 근거로 인용했다. 둘 다 사실이 아니다 -
+        # 스크립트는 있고(11 검사 중 10 통과), 4.919 는 판정불능의 자국이었다.
+        # 기준을 완화하지 않는 이유는 그대로다: 자를 바꾸는 것은 결과를 바꾸는
+        # 것이 아니라 결과를 못 보게 만드는 것이다.
+        # 🩸 2026-08-26 - p11 과 같은 이유로 실측값을 뺐다.
+        note="δ·m 결합 정책의 후회. 기준: 수렴 후 최악 후회 < 2 ms, "
+             "신뢰반폭 < 1 ms. 반폭이 안 내려가면 표본 부족이다"
+             "(--precise 또는 PADFEC_P15_N)"))
 
-    return S
+    # 🩸 2026-08-25 - p18 은 지금까지 **손으로만 돌아서** 지속 검증에 한 번도
+    #    안 들어갔다. 등록 안 된 단계는 다시 재지 않는 단계다. 지금은
+    #    검사 4·5·6 이 판정 불능으로 실패하는데, 그게 사실이므로 실패한
+    #    채로 등록한다 - 통과시키려고 기준을 낮추지 않는다.
+    S.append(Stage(
+        "p18", "m_max 상한 - 고정팔 m=1..4 를 직접 재서 모형을 검증",
+        "wsl-unshare", UNSHARE + "experiments/p18_mmax.py",
+        outputs=["experiments/results/p18_mmax.json"],
+        scripts=ALGO + deps_py("p18_mmax.py") + BED,
+        deps=["p1"], timeout=21600,
+        note="결정적 자리(cert 16,000·무손실 - m_max=2 정책이 포기하는 "
+             "자리)는 작은 표본으로 판정되고, 손실 자리는 필요 표본이 "
+             "커서 판정 불능으로 남을 수 있다"))
+
+    # 🩸 2026-08-27 신설 - **잔차 해부.** 이 루프의 눈이 「검사가 붉다/푸르다」
+    #    하나뿐이라, 붉어졌을 때 (a) 모형의 값이 틀렸다 (b) 모형의 선택이
+    #    틀렸다 (c) 못 쟀다 가 구분되지 않았다. p20 은 새 실측을 하지 않고
+    #    **이미 있는 원자료를 다시 읽어** 모형과 측정을 무리(1-RTT / 한 판 더 /
+    #    시간초과)별로 갈라 대조하고, 팔쌍마다 필요 표본을 낸다.
+    #    Windows 에서 몇 초에 돌고 root 도 WSL 도 필요 없다.
+    #    deps 는 **읽는 것만** 적는다(p17 의 사고 이후 규칙).
+    S.append(Stage(
+        "p20", "잔차 해부 - 모형이 어느 무리에서 틀리는가 + 필요 표본",
+        "win", [PY, "experiments/p20_residual.py"],
+        outputs=["experiments/results/p20_residual.json"],
+        scripts=ALGO + deps_py("p20_residual.py"),
+        # p1 만 진짜 의존이다(실측 C 를 읽는다). 나머지 넷은 **원자료를
+        # 읽지만 막지는 않는다** - 그것들이 붉을 때가 이 진단기가 가장
+        # 필요한 순간이기 때문이다. soft_deps 는 순서와 무효화에는 그대로
+        # 쓰이므로 p15~p18 이 다시 돌면 p20 도 다시 돈다.
+        deps=["p1"], soft_deps=["p15", "p16", "p17", "p18"],
+        timeout=900,
+        note="새 실측을 하지 않는다. 어긋난 자리를 이름 붙여 세는 것이 일이고, "
+             "고칠지 더 잴지는 사람이 정한다"))
+
+    # 🩸 2026-08-26 - **p6 를 여기로 옮겼다** (그전 자리: p5 바로 뒤, p13 앞).
+    #    `_cheap_first` 는 위상 정렬이 아니라 "싼 단계를 앞으로 당기는" 재배치라
+    #    p6 처럼 cheap 이 아닌 단계는 **선언 순서대로** 돈다. 즉 deps 에 p17 을
+    #    적어도 실행 순서는 안 바뀐다 - p6 가 p17 보다 먼저 돌아 **옛 p17 을
+    #    읽고 done 이 되고**, 다음 바퀴엔 둘 다 done 이라 아무도 안 돈다.
+    #    그러면 보고서가 옛 수치를 인용한 채 영원히 초록이다(2026-08-21 이
+    #    p11·p12 에서 겪은 사고와 같은 형태, 이번엔 순서 쪽).
+    #    deps 를 고치는 것만으로는 부족하고 **선언 위치도 같이** 옮겨야 한다.
+    #    보고서는 모든 측정 뒤에 나오는 것이 맞으므로 p18 뒤가 제자리다.
+    #    (p19 보다는 앞이어야 한다 - p19 가 보고된 수치를 원자료와 대조한다.)
+    S.append(Stage(
+        "p6", "보고서 + 바탕화면 한 장 요약",
+        "win", [PY, "experiments/p6_report.py"],
+        outputs=["docs/PADFEC 실측 보고서.md"],
+        scripts=ALGO + deps_py("p6_report.py"),
+        # 🩸 2026-08-21 - p6_report.py 는 p11_adaptive.json 과
+        #    p12_quantum.json 을 **읽는데** deps 에 없었다. 그래서 그
+        #    둘이 갱신돼도 보고서가 무효화되지 않고 옛 수치를 인용한
+        #    채 남는다. 읽는 것을 전부 적는다.
+        # 🩸 2026-08-26 - **p17 을 더했다.** 보고서가 p17 을 두 군데서 읽기
+        #    시작했다: 9 장(오라클 이득 = 적응이 벌 수 있는 것)과 한계 절의
+        #    자리 효과.
+        #    (p13·p14·p15·p16·p18 은 아직 보고서가 읽지 않는다 - 읽지 않는
+        #     것을 deps 에 넣으면 순서만 묶이고 사실과 어긋난다. 보고서에
+        #     넣는 것은 별개 작업으로 남긴다.)
+        deps=["p1", "p2", "p3", "p4", "p5", "p7", "p8", "p9", "p10",
+              "p11", "p12", "p17"],
+        timeout=1800))
+
+    # 🩸 2026-08-24 신설. 이 저장소는 "측정이 잘 돌았는가"는 여러 자로 보는데
+    #    **보고된 요약 수치가 그 측정의 원자료와 맞는지**를 보는 자가 없었다.
+    #    그 틈에서 생길 수 있는 일: 요약만 갱신되고 원자료는 옛것, 상수가
+    #    "측정값" 필드에 들어감, 결과가 소스 수정보다 먼저 만들어졌는데 최신으로
+    #    인용됨, 판정 수치에 원자료가 없어 아무도 다시 셀 수 없음.
+    #    p19 는 요약을 원자료에서 **다시 계산해 대조**한다(852 항목).
+    #    음성 대조 확인: 수치 하나를 10% 조작하면 정확히 1 건을 잡는다.
+    #    측정을 안 하므로 맨 뒤에 두고 win 러너로 돌린다(빠르다).
+    S.append(Stage(
+        "p19", "수치 출처 감사 - 보고된 수가 원자료에서 재계산되는가",
+        "win", [PY, "experiments/p19_provenance.py"],
+        outputs=["experiments/results/p19_provenance.json"],
+        scripts=deps_py("p19_provenance.py"),
+        # 🩸 2026-08-25 - deps 를 **비운다.** 처음엔 [p3,p11,p14,p15,p16] 로
+        #    뒀는데, p11·p15 는 상시 N 에서 정밀도 검사 때문에 늘 실패하므로
+        #    p19 가 매번 "상류 무효"로 건너뛰어졌다 — 즉 **영원히 안 도는
+        #    단계**가 될 참이었다(라운드 10 에서 실제로 그랬다).
+        #    p19 는 결과 파일의 수치가 원자료와 맞는지만 본다. 상류가
+        #    실패했어도, 오히려 실패했을수록 검사할 가치가 있다. 실행 순서는
+        #    목록에서 맨 뒤라는 것으로 이미 보장된다.
+        deps=[], timeout=600,
+        note="요약 수치를 원자료에서 재계산해 대조한다. 불일치 0 이어야 한다"))
+
+    return _cheap_first(S)
 
 
 # ---------------------------------------------------------------------- state
@@ -532,7 +774,7 @@ def resolve(stages, st, force):
     return [s.id for s in stages if s.id in need]
 
 
-def dep_closure(stages, ids):
+def dep_closure(stages, ids, hard_only=False):
     """ids 가 (전이적으로) 의존하는 단계 전부. 자기 자신은 뺀다.
 
     직접 의존만 보면 안 되는 이유: 코드를 고쳐 p1 이 무효가 돼도 p2 의 지문은
@@ -545,7 +787,11 @@ def dep_closure(stages, ids):
         s = by_id.get(stack.pop())
         if not s:
             continue
+        # hard_only - soft_deps 는 막는 판정에서 뺀다 (Stage.soft_deps 주석).
+        soft = set(getattr(s, "soft_deps", ()))
         for d in s.deps:
+            if hard_only and d in soft:
+                continue
             if d not in seen:
                 seen.add(d)
                 stack.append(d)
@@ -556,7 +802,7 @@ def stale_upstream(stages, st, sid):
     """sid 의 상류 중 done 이 아닌 것 -> ["p1(stale)", ...]"""
     by_id = {s.id: s for s in stages}
     bad = []
-    for d in dep_closure(stages, [sid]):
+    for d in dep_closure(stages, [sid], hard_only=True):
         stt = stage_status(by_id[d], st)[0]
         if stt != "done":
             bad.append("%s(%s)" % (d, stt))
@@ -575,9 +821,16 @@ def run_stage(stage):
     env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONUNBUFFERED"] = "1"
     try:
+        # 🩸 2026-08-26 - `encoding` 을 안 주면 text=True 가 **부모의 로캘**
+        #    (이 기계는 cp949)로 자식 출력을 푼다. 자식은 PYTHONIOENCODING=utf-8
+        #    로 UTF-8 을 뱉으므로 전부 U+FFFD 로 뭉개져 로그에 박히고, 원래
+        #    바이트는 되돌릴 수 없다(errors="replace" 라 조용히 지나간다).
+        #    그래서 log2_*.txt 가 통째로 읽을 수 없는 글자였다 - 실패한 검사가
+        #    무엇인지 **사람도 자동 분류기도 못 읽는다.** 진단 기록이 없으면
+        #    루프는 "실패했다"까지만 알고 "왜"를 못 말한다.
         p = subprocess.run(cmd, capture_output=True, text=True,
-                           errors="replace", timeout=stage.timeout, env=env,
-                           **kw)
+                           encoding="utf-8", errors="replace",
+                           timeout=stage.timeout, env=env, **kw)
         out = (p.stdout or "") + (p.stderr or "")
         ok = p.returncode == 0
         err = "" if ok else "exit %d" % p.returncode
@@ -693,7 +946,11 @@ def main():
         #    하나(수십 분~시간)보다 압도적으로 싸기 때문이다. 즉 거부해서 얻는
         #    안전을 훨씬 싼 값에 살 수 있다.
         want = list(a.only)
-        pre = [sid for sid in dep_closure(stages, want)
+        # 2026-08-27 - `hard_only=True` 로 본다. 안 그러면 `--only p20` 이
+        #    soft_deps(p15~p18)를 **선행 필수**로 끌고 와, 막지 않으려고
+        #    만든 표가 손으로 돌릴 때만 다시 막는 꼴이 된다.
+        #    stale_upstream 과 같은 규칙을 써야 한 가지로 말한다.
+        pre = [sid for sid in dep_closure(stages, want, hard_only=True)
                if sid not in want
                and stage_status(by_id[sid], st)[0] != "done"]
         if a.only_exact:
