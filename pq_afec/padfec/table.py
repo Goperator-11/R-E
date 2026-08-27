@@ -30,8 +30,20 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from padfec import policy   # noqa: E402
 
 K_VALS = [1, 2, 3, 4]
-M_VALS = [0, 1, 2]
-P_VALS = [0.0, 0.002, 0.005, 0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.20, 0.30]
+# 🩸 2026-08-25 - m=3 을 추가했다. policy.M_MAX_DEFAULT 와 **반드시**
+#    맞아야 한다 - policy.go 는 표에 없는 (k,m) 을 받으면 죽는다
+#    (experiments/quicbed/policy.go 119 행). 근거는 policy.py 의
+#    M_MAX_DEFAULT 주석: cert 14,601~16,125 에서 m=2 는 2-RTT,
+#    m=3 은 1-RTT 라는 실측.
+M_VALS = [0, 1, 2, 3]
+# 🩸 2026-08-25 - 0.15 를 마디로 추가했다. 관문이 42,768 격자점 중
+#    2 건에서 불일치를 신고했는데(k=3 cert=12000 rtt=100 **p=0.15**),
+#    Python J 로 본 대가가 0.104 ms 로 보간 허용치 0.100 ms 를 아슬하게
+#    넘었다. 원인은 0.15 가 마디가 아니라 0.12~0.20 **사이**라 Go 가
+#    넓은 구간을 선형보간한 것이다. 자를 늘리는 대신 **표를 촘촘히**
+#    한다 - 게다가 0.15 는 우리가 실제로 재는 손실률이다(p3/p11/p18).
+P_VALS = [0.0, 0.002, 0.005, 0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.15,
+          0.20, 0.30]
 L_VALS = [1.0, 2.0, 3.0, 5.0]
 
 
@@ -48,22 +60,78 @@ def pfail(k, m, p, L):
 
 
 def joint(k, m, p, L):
-    """P[a][b] = 원본 a 개·패리티 b 개 도착. policy.joint_arrival_pmf 그대로."""
-    return policy.joint_arrival_pmf(k, m, p, L)
+    """P[a][b][r] = 원본 a·패리티 b 도착, r = 복구용 패리티가 왔는가.
+
+    🩸 2026-08-21 - 2 지표에서 3 지표로 늘렸다. "몇 개 왔나"만으로는 복구
+       여부를 알 수 없기 때문이다. 구현(qamp.go)은 **마지막으로 보낸 패리티
+       하나로 소거 하나만** 복구하는데, 예전 표는 MDS(패리티 b 개면 소거 b
+       개까지)를 가정한 채로 Go 에 심겨 있었다. 자세한 근거는
+       padfec/policy.py joint_arrival_pmf3 주석.
+    """
+    return policy.joint_arrival_pmf3(k, m, p, L)
+
+
+def _check_consistent():
+    """표의 m 범위와 정책 상한이 어긋나면 **표를 만들지 않는다.**
+
+    🩸 2026-08-25 - 어긋나면 policy.go 가 표에 없는 (k,m) 을 받고
+       죽는데(policy.go 119 행), 그건 **실행 중**에 터진다. 측정을
+       한참 돌린 뒤에 알게 되느니 생성 시점에 막는다.
+    """
+    if max(M_VALS) != policy.M_MAX_DEFAULT:
+        raise SystemExit(
+            "표의 M_VALS 최대(%d) 와 policy.M_MAX_DEFAULT(%d) 가 다르다. "
+            "둘을 맞춰라 - 안 맞으면 Go 가 실행 중에 죽는다."
+            % (max(M_VALS), policy.M_MAX_DEFAULT))
+
+
+def fail_frac(k, m, p, L):
+    """실패 질량을 세 가지로 나눈 **비율** (합 1, 실패가 0 이면 (1,0,0)).
+
+    🩸 2026-08-27 신설. 실패의 대가는 **마지막 원본이 도착했는가**로 갈린다
+       (padfec/policy.py last_original_pmf - RFC 9002 §6.1 과 p7 의 V2/V3/V9).
+       그 판별자는 결합 도착분포의 축(a, b, r)에 없으므로 jointTable3 만으로는
+       Go 가 가를 수 없다.
+
+    **표를 하나 더 싣되 확률이 아니라 비율을 싣는다.** 총 실패 질량은 Go 가
+    이미 jointTable3 에서 정확히 세고 있으므로, 비율만 보간해서 곱하면
+    (a) 총합이 옛 값과 **비트 단위로 같고** (b) 보간 오차가 세 가지 사이의
+    배분에만 남는다. 확률 세 개를 따로 실으면 보간 뒤 합이 총 실패와 미세하게
+    어긋나 회계가 두 군데로 갈라진다 - 이 저장소가 2026-08-20 감사 결함 1 에서
+    겪은 것과 같은 형태다.
+    """
+    a, b, c = policy.fail_split(k, m, p, L)
+    tot = a + b + c
+    if tot <= 0.0:
+        # 2026-08-27 - **경계값(1,0,0) 을 실으면 안 된다.** p=0 에서는
+        #    실패 질량이 0 이라 비율이 정의되지 않는데, Go 는 마디 사이를
+        #    **선형보간**하므로 0 < p < 0.002 인 모든 점에서 이 뜻 없는
+        #    (1,0,0) 을 실제 비율 쪽으로 끌고 간다. 그 구간에서 Go 는
+        #    가장 비싼 가지(표본 없는 PTO, 200.86 ms)에 질량을 몰아
+        #    Python 보다 J 를 부풀린다 - 감사에서 m=0 후보 기준 최대
+        #    0.168 ms 로 잡혔고, 그건 J_TIE_MS(0.01)의 17 배다.
+        #    비율의 **극한값**(p -> 0+)을 실으면 보간이 연속이 된다.
+        a, b, c = policy.fail_split(k, m, 1e-9, L)
+        tot = a + b + c
+        if tot <= 0.0:
+            return (1.0, 0.0, 0.0)
+    return (a / tot, b / tot, c / tot)
 
 
 def build():
-    tab, jtab = {}, {}
+    _check_consistent()
+    tab, jtab, ftab = {}, {}, {}
     for k in K_VALS:
         for m in M_VALS:
             for pi, p in enumerate(P_VALS):
                 for li, L in enumerate(L_VALS):
                     tab[(k, m, pi, li)] = pfail(k, m, p, L)
                     jtab[(k, m, pi, li)] = joint(k, m, p, L)
-    return tab, jtab
+                    ftab[(k, m, pi, li)] = fail_frac(k, m, p, L)
+    return tab, jtab, ftab
 
 
-def emit_go(tab, jtab, out):
+def emit_go(tab, jtab, ftab, out):
     w = out.write
     w("// 자동 생성 파일. 손대지 마라.\n")
     w("//   생성: python -m padfec.table experiments/quicbed/pfail_table.go\n")
@@ -93,11 +161,45 @@ def emit_go(tab, jtab, out):
 
     w("// 정책이 쓰는 상수. 정의는 padfec/policy.py 한 곳뿐이다.\n")
     w("//   quicgoMaxIPS  실측: -ips 1707 을 줘도 클라는 1452 로 깎아 보낸다\n")
-    w("//   cPktDefault   서버 패킷 오버헤드. 34.5~40.0 구간이라 상단을 쓴다\n")
-    w("//                 (크게 잡아야 1-RTT 를 살 수 있다고 과신하지 않는다)\n")
+    w("//   cPktDefault   서버 첫 비행 유효 모형 S_eff(n)=s0_base+n*c 의 기울기.\n")
+    w("//                 **물리 바이트 수가 아니라 임계를 재현하는 유효값**이다\n")
+    w("//                 (2026-08-21: quic-go 는 마지막 패킷이 작으면 한도를\n")
+    w("//                  최대 +72 B 넘겨 보낸다. 그 여유를 유효 s0 가 흡수한다).\n")
+    w("//                 임계 앵커 6 개 최소제곱. 패킷 직접 계수(40.55/41.39)와\n")
+    w("//                 1.5 B/패킷 안에서 일치한다 - 근거는 padfec/policy.py.\n")
     w("const quicgoMaxIPS = %d\n" % policy.QUICGO_MAX_IPS)
     w("const maxStepsDefault = %d\n" % policy.MAX_STEPS_DEFAULT)
-    w("const cPktDefault = %.10g\n\n" % policy.C_PKT_POLICY_DEFAULT)
+    # 🩸 2026-08-25 - mMax 도 여기서 심는다. 그전에는 policy.go 의
+    #    policyGrid 안에 **리터럴 2** 로 박혀 있어서, Python 이 상한을
+    #    3 으로 올렸을 때 Go 격자만 옛 상한으로 답했다(관문이 42,768 중
+    #    15,561 건 불일치로 잡았다). 정본을 한 곳에 두면 못 갈라진다.
+    w("const mMaxDefault = %d\n" % max(M_VALS))
+    w("const cPktDefault = %.10g\n" % policy.C_PKT_POLICY_DEFAULT)
+
+    w("\n// 업링크 대역 Mbps. J 의 t_tx 항이 쓴다. 0 이면 대역 제한 없음.\n")
+    w("//   🩸 2026-08-21 - 그전에는 policy.go 안에 `10e6` 이 리터럴로 박혀\n")
+    w("//   있었다. 어디서도 측정된 적 없는 수인데 격자 720 점 중 312 점\n")
+    w("//   (43.3%) 의 선택을 좌우했고, 정작 이 테스트베드는 netem 이 대역을\n")
+    w("//   안 걸어 실측과 25 배 어긋났다. 이제 `-uplink-mbps` 로 받고,\n")
+    w("//   기본값 정의는 padfec/policy.py 한 곳뿐이다.\n")
+    w("const uplinkMbpsDefault = %.10g\n\n" % policy.UPLINK_MBPS_DEFAULT)
+
+    w("// J 를 동점으로 볼 분해능(ms). 1 ns 로 두면 모형의 반올림 잡음이\n")
+    w("// 정책을 정한다 - 실제로 그랬다(2026-08-21: 헤드라인 조건에서\n")
+    w("// 0.0008 ms 차이로 1,325 B 를 더 사는 결정이 나왔다. 그 차이는\n")
+    w("// 이 테스트베드의 측정 분해능 1 us 보다 작다).\n")
+    w("// 정의는 padfec/policy.py 한 곳뿐이다.\n")
+    w("const jTieMs = %.10g\n\n" % policy.J_TIE_MS)
+
+    w("\n// 뒤따르는 패리티의 신용이 **송신 결정에 잡힐** 확률 q(d) 의 실측 표.\n")
+    w("//   d = 패리티 바이트 / 업링크 대역 (ms). 마디 사이는 선형보간하고\n")
+    w("//   마지막 마디 위는 0 이다. 이 표를 왜 함수꼴로 안 적는지, 어떻게\n")
+    w("//   쟀는지는 padfec/policy.py 의 '경주' 절에 있다 - 정의는 거기 한 곳뿐이다.\n")
+    w("//   실측 2026-08-26 probe_race2.py (cert 9000·k=2·RTT 50·손실 0%·gap 50).\n")
+    w("var raceDelayMs = []float64{%s}\n"
+      % ", ".join("%.17g" % v for v in policy.RACE_DELAY_MS))
+    w("var raceWinQ = []float64{%s}\n\n"
+      % ", ".join("%.17g" % v for v in policy.RACE_WIN_Q))
 
     w("var pfailK = []int{%s}\n" % ", ".join(str(v) for v in K_VALS))
     w("var pfailM = []int{%s}\n" % ", ".join(str(v) for v in M_VALS))
@@ -110,9 +212,18 @@ def emit_go(tab, jtab, out):
     # 별도 표에서 읽으면 기대 왕복 수와 다른 분포에서 나온다 - 그게 결함 1
     # 이었다. flightOutcome 이 jointTable 하나에서 둘 다 뽑는다.
     # Python 쪽 pfail() 은 v1 호환과 자체검증용으로 남겨 둔다.
-    w("// jointTable[k인덱스][m인덱스][p인덱스][L인덱스] = 평탄화된 (k+1)x(m+1)\n")
-    w("//   원소 [a*(m+1)+b] = 원본 a 개·패리티 b 개가 도착할 확률\n")
-    w("var jointTable = [][][][][]float64{\n")
+    w("// jointTable3[k인덱스][m인덱스][p인덱스][L인덱스] = 평탄화된 (k+1)x(m+1)x2\n")
+    w("//   원소 [(a*(m+1)+b)*2 + r]\n")
+    w("//     = 원본 a 개·패리티 b 개가 도착하고, 그중 **복구용 패리티**\n")
+    w("//       (마지막으로 보낸 것, index m-1)의 도착 여부가 r 일 확률\n")
+    w("//\n")
+    w("// 🩸 2026-08-21 - 이름을 jointTable -> jointTable3 으로 바꿨다. 배치가\n")
+    w("//   달라졌는데 이름이 같으면 옛 pfail_table.go 가 남아 있을 때 Go 가\n")
+    w("//   **조용히 잘못 읽는다.** 이름을 바꾸면 컴파일이 깨져 드러난다.\n")
+    w("//   왜 r 이 필요한가: 서버(qamp.go)는 마지막 패리티 하나로 소거 하나만\n")
+    w("//   복구하고, 복구하면 그 패리티를 버리고 복구본(원본 크기)을 스택에\n")
+    w("//   넘긴다. '몇 개 왔나' 만으로는 복구 여부도 신용 바이트도 정할 수 없다.\n")
+    w("var jointTable3 = [][][][][]float64{\n")
     for k in K_VALS:
         w("\t{ // k=%d\n" % k)
         for m in M_VALS:
@@ -125,10 +236,39 @@ def emit_go(tab, jtab, out):
                     # '글자 단위로 맞춘다'는 약속이 검증 불가가 된다.
                     # 파일이 커지는 대신 두 구현이 비트 단위로 같아진다.
                     mat = jtab[(k, m, pi, li)]
-                    flat = [mat[a_][b_] for a_ in range(k + 1)
-                            for b_ in range(m + 1)]
+                    flat = [mat[a_][b_][r_] for a_ in range(k + 1)
+                            for b_ in range(m + 1) for r_ in (0, 1)]
                     w("\t\t\t\t{%s}, // L=%g\n"
                       % (", ".join("%.17g" % v for v in flat), L))
+                w("\t\t\t},\n")
+            w("\t\t},\n")
+        w("\t},\n")
+    w("}\n\n")
+
+    w("// RTT 표본이 있을 때의 첫 PTO 배율. RFC 9002 §5.3 + §6.2.1 에서\n")
+    w("// **유도한** 값이지 맞춘 상수가 아니다 - 근거는 padfec/policy.py 의\n")
+    w("// PTO_SAMPLED_RTT_MULT 주석에 있다.\n")
+    w("const ptoSampledRttMult = %g\n\n" % policy.PTO_SAMPLED_RTT_MULT)
+
+    w("// failFracTable[k][m][p][L] = {표본없는PTO, 표본있는PTO, 시간임계} 의 **비율**\n")
+    w("//\n")
+    w("// 실패 한 번의 대가는 **마지막 원본이 도착했는가**로 갈린다.\n")
+    w("//   마지막 원본 도착 -> 그 ACK 이 시간 임계를 무장 -> 9/8·RTT\n")
+    w("//   마지막 원본 유실, 앞의 것은 도착 -> 구멍을 못 봄 -> PTO(표본 있음) = 3·RTT\n")
+    w("//   아무것도 없음 -> ACK 도 표본도 없음 -> PTO(표본 없음) = 상수\n")
+    w("// 판별자가 jointTable3 의 축(a,b,r)에 없어서 표를 하나 더 싣는다.\n")
+    w("// **확률이 아니라 비율**인 이유는 padfec/table.py 의 fail_frac 주석 참고.\n")
+    w("var failFracTable = [][][][][]float64{\n")
+    for k in K_VALS:
+        w("\t{ // k=%d\n" % k)
+        for m in M_VALS:
+            w("\t\t{ // m=%d\n" % m)
+            for pi, p in enumerate(P_VALS):
+                w("\t\t\t{ // p=%g\n" % p)
+                for li, L in enumerate(L_VALS):
+                    fr = ftab[(k, m, pi, li)]
+                    w("\t\t\t\t{%s}, // L=%g\n"
+                      % (", ".join("%.17g" % v for v in fr), L))
                 w("\t\t\t},\n")
             w("\t\t},\n")
         w("\t},\n")
@@ -139,12 +279,12 @@ def main():
     if len(sys.argv) < 2:
         sys.stderr.write('사용: python -m padfec.table <출력경로>' + chr(10))
         return 2
-    tab, jtab = build()
+    tab, jtab, ftab = build()
     import io as _io
     with _io.open(sys.argv[1], 'w', encoding='utf-8', newline=chr(10)) as f:
-        emit_go(tab, jtab, f)
-    sys.stderr.write('wrote %s (pfail %d + joint %d)'
-                     % (sys.argv[1], len(tab), len(jtab)) + chr(10))
+        emit_go(tab, jtab, ftab, f)
+    sys.stderr.write('wrote %s (pfail %d + joint %d + failfrac %d)'
+                     % (sys.argv[1], len(tab), len(jtab), len(ftab)) + chr(10))
     return 0
 
 

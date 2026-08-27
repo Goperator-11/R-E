@@ -35,21 +35,95 @@ from afec.channel import GilbertElliott  # noqa: E402
 
 from . import amplif, capacity, quantum  # noqa: E402
 
+# 🩸 2026-08-25 - auto 가 고를 수 있는 최대 패리티 수.
+#
+#    **실측 1**: 무손실에서 m 별 1-RTT 한계 cert 를 이분탐색으로 직접
+#    쟀다(고정팔 `-m`, 패딩 없음, n=20/점, 해상도 100 B). 같은 조건의
+#    모형값과 나란히 놓으면:
+#            모형      실측      차이
+#        m=1 10,906   10,855    +51 B
+#        m=2 14,609   14,601    **+8 B**
+#        m=3 18,312   >=16,125 (천장에 막힘)
+#    -> 모형은 이 축에서 정확하다(해상도 안). 교차 확인: m=1 의 실측
+#       한계 10,855 는 p2 가 따로 잰 FEC 임계 [10,901 , 10,958] 과
+#       100 B 해상도 안에서 일치한다.
+#
+#    **실측 2 (천장)**: 이 스택의 클라이언트는 CRYPTO 스트림을
+#    16,384 B 로 막는다(CRYPTO_BUFFER_EXCEEDED). cert 16,125~16,187
+#    위로는 **어떤 m 으로도 악수가 안 된다**.
+#
+#    **근거**: 정책이 *실제로 고르는 것*으로 보면
+#        cert 15,860 까지  m_max=2 는 combo(패딩+m=2) 로 1-RTT 유지
+#        cert 15,861 부터  m_max=2 는 **아예 포기**(none, 2-RTT)
+#                          m_max=3 은 parity m=3 으로 1-RTT
+#    -> 이득 구간 cert 15,861~16,125 (폭 265 B). 실측으로도 확인:
+#       cert 16,000 에서 m=2 106.3 ms / m=3 53.7 ms (각 25/25 연결,
+#       무손실이라 분산 없음 - 잡음이 아니다).
+#
+#    ⚠ 구간이 좁은 것은 **측정 환경의 천장 때문**이다. 모형상
+#      m_max=3 은 cert 20,810 까지 1-RTT 를 유지하므로 CRYPTO 버퍼가
+#      더 큰 스택에서는 이득 구간이 약 4,950 B 로 넓어진다.
+#
+#    m=4 로 올리지 않은 이유: m=3 이 이미 이 스택의 천장까지 덮는다.
+#    손실 자리에서 m=4 가 나을 가능성은 남아 있지만 그건 아직
+#    판정 불능이다(p18: 필요 표본 팔당 3,014~11,343, 지금 1,000).
+#
+#    ⚠ 이 수를 바꾸면 **확률표(padfec/table.py M_VALS)도 같이**
+#      늘려야 한다. policy.go 는 표에 없는 (k,m) 을 받으면 죽는다.
+M_MAX_DEFAULT = 3
+
 # quic-go 가 실제로 내보낼 수 있는 InitialPacketSize 의 상한.
 # 2026-08-20 실측: -ips 1707 을 줘도 클라이언트는 1452 B 로 깎아 보냈다.
 # 그래서 δ 지렛대로 갈 수 있는 칸이 막힌다 — x25519 는 칸 3·4, ML-KEM 은 6·7 까지.
 # 이 상수를 넘는 후보는 **보낼 수 없으므로** 기본적으로 후보에서 뺀다.
 QUICGO_MAX_IPS = 1452
 
-# 서버 패킷 오버헤드 c (명세 §2.5). 칸이 오르면 서버가 패킷을 하나 더 쓰므로
-# 서버 첫 비행이 그만큼 커진다.
+# ---------------------------------------------------------------------------
+# 서버 첫 비행의 **유효** 모형  S_eff(n) = s0_base + n*c   (명세 §2.5)
 #
-# ⚠️ 정본값이 아직 **구간으로만** 확정돼 있다 — 임계 역산 34.5, 서버 바이트
-#    직접 계수 36.1(x25519)·40.0(ML-KEM). 명세는 "하나로 못 박지 마라"고 적었다.
-#    그래서 **정책 기본값은 구간 상단**을 쓴다: c 를 크게 잡으면 임계를 낮게
-#    보므로 1-RTT 를 살 수 있다고 과신하지 않는다. 모형 탐색·검증에서는
-#    호출자가 명시적으로 준다(probe 들은 34.5 를 쓴다).
-C_PKT_POLICY_DEFAULT = 40.0
+# ⚠️ 이 둘은 **물리적 바이트 수가 아니다.** 임계(1-RTT/2-RTT 가 뒤집히는 인증서
+#    크기)를 재현하도록 맞춘 **유효 파라미터**다. 그 사실을 여기 못박는 이유는
+#    2026-08-21 에 두 측정이 100 B 어긋나 보였기 때문이다.
+#
+#      p13 직접 계수 : cert=3000, x25519 에서 서버 첫 비행 = 3,604 B (s0 = 604)
+#      임계 역산     : 같은 칸(n=3)에서 s0 = 3,840 - 3,340 = 500
+#
+#    ✅ 2026-08-21 직접 실험으로 원인을 규명했다(서버 송신 타임라인의 패킷 크기).
+#
+#      cert=3250  첫 비행 [1280, 1280, 1209,  95] = 3,864 B  -> 1-RTT
+#      cert=3300  첫 비행 [1280, 1280, 1257,  95] = 3,912 B  -> 1-RTT
+#      cert=3340  첫 비행 [1280, 1280, 1280]      = 3,840 B  -> **2-RTT**
+#
+#    quic-go 는 패킷을 만들기 **전에** `bytesSent >= 3*bytesReceived` 를 본다.
+#    그래서 마지막 패킷이 작으면 한도를 **넘겨서** 보낸다 - 실측 최대 +72 B.
+#    정확한 규칙은 `S <= allowed` 가 아니라
+#
+#        1-RTT  ⟺  S - (마지막 패킷 크기) < 3B
+#
+#    이고, 마지막 패킷 크기는 cert 에 따라 95~1,280 B 로 변한다. 그 여유분을
+#    유효 모형이 s0 를 ~100 B 작게 잡는 것으로 흡수한다. 즉 두 측정은 서로
+#    모순이 아니라 **다른 양**이었다. 물리 s0 를 여기 넣으면 임계를 100 B
+#    낮게 예측한다(= 정책이 필요 없는 바이트를 산다).
+#
+# 값의 출처 — 임계 앵커 6 개(그룹 x 팔)에 공통 c · 그룹별 s0_base 최소제곱.
+#   B_eff 는 p13 이 직접 잰 값을 쓴다(results/p13_beff.json).
+#
+#   🩸 그전에는 **앵커 하나**(x25519 n=3, ML-KEM n=6)로 s0_base 를 정했다.
+#      그러면 그 점은 정확히 맞지만 다른 칸에서 어긋난다 - p4 의 x25519 on1
+#      예측이 8,300.0 으로 실측 밴드 8,239~8,296 을 **4 B 벗어났다**(7/8).
+#      6 앵커 최소제곱으로 바꾸면 **6/6 전부 밴드 안**에 든다.
+#
+#   ✅ 교차 확인: 이렇게 얻은 c = 41.98 은 p13 이 **서버 패킷을 직접 세어**
+#      얻은 c = 40.55(x25519) / 41.39(ML-KEM) 와 1.5 B/패킷 안에서 맞는다.
+#      전혀 다른 두 관측(임계 이분탐색 vs 패킷 계수)이 같은 기울기를 준다 -
+#      아핀 형태 S(n) = s0_base + n*c 자체가 옳다는 근거다.
+C_PKT_POLICY_DEFAULT = 41.983
+
+# 위 최소제곱의 그룹별 절편.
+#   x25519  : 382.45   (옛 단일앵커 값 380.0)
+#   ML-KEM  : 1472.00  (옛 단일앵커 값 1494.5)
+S0_BASE_X25519 = 382.45
+S0_BASE_MLKEM = 1472.00
 
 # 후보로 볼 칸 수. 명세 §3 의 J 상한. 2 칸이면 δ 로 최대 2 칸까지 올린다.
 MAX_STEPS_DEFAULT = 2
@@ -99,9 +173,73 @@ DEFAULT_ASSUMED_BURST = 1.0
 #
 # ⚠️ 이 세 수는 **quic-go v0.61.0 의 타이머**를 잰 것이다. 다른 스택에서는
 #    다시 재야 한다. 상수를 쓰는 게 아니라 상수의 출처를 밝히는 게 요점이다.
+# ⚠️ **알려진 한계 — 버스트에서 이 상수는 절반이다** (2026-08-25 실측)
+#
+# p3 원자료에서 t > 3·RTT 인 표본(=PTO 가지)만 골라 그 값을 직접 쟀다:
+#
+#     버스트   표본    PTO 한 번의 실측 값   모형(RTT+T_pto)   비
+#       1      248        239.7 ms           250.9 ms      0.96 배
+#       3      224        499.5 ms           250.9 ms      1.99 배
+#
+# 기전은 지수 백오프 마디 분포가 그대로 보여 준다
+# (누적 마디 RTT + T·(2^n - 1) = 251 / 653 / 1456 / 3063 ms):
+#
+#     버스트 1:  1 차 97%   2 차  3%   3 차  0%   4 차 0%
+#     버스트 3:  1 차 62%   2 차 24%   3 차 11%   4 차 3%
+#
+# 즉 버스트에서는 **재전송도 잃어서 PTO 가 연쇄**한다.
+#
+# **왜 안 고쳤나.** 두 점에서 배율을 뽑아 넣는 것은 곡선 적합이지 모형이
+# 아니다. 대신 연쇄 확률 q = P(다음 재전송도 실패) 를 이미 가진 GE
+# 모형으로 유도할 수 있는지 봤다(재전송이 원본만인 경우 R1, 패리티까지
+# 보내는 경우 R2):
+#
+#     버스트   실측 q    R1 예측   R2 예측
+#       1      0.038     0.065     0.036   <- R2 가 맞는다
+#       3      0.397     0.052     0.042   <- 둘 다 8 배 낮다
+#
+# 원인은 이름 붙일 수 있다: **우리 버스트 모형에는 시간 축이 없다.**
+# GilbertElliott.for_prior(p, burst) 는 연속된 *심볼* 의 묶음을 말하지
+# 지속 *시간* 을 말하지 않는다. PTO 재전송은 200 ms 뒤에 나가는데 실측은
+# 그때 채널이 아직 같은 나쁜 상태라고 말한다 - 심볼 단위 모형으로는
+# 원리적으로 못 낸다. 시간 축이 있는 채널 모형으로 바꾸는 것은 별개의
+# 큰 작업이다.
+#
+# **영향 범위 (재확인함).** PTO 값을 실측 배율로 바꿔 격자 528 점을 다시
+# 결정해 봤더니 **0 점에서 선택이 바뀐다.** 즉 이것은 J 의 *크기* 오차이지
+# *선택* 오차가 아니다. 보고되는 J 는 버스트 3 의 실패 가지에서 2 배
+# 낮지만, 그 때문에 정책이 다른 것을 고르는 자리는 없다.
+# (바른 C=1448 과 m_max=3 을 반영해 다시 잰 수다 - 예전 확인은 틀린 C
+#  위에 있었다. 28 절 참고.)
 T_PTO_NO_ACK_MS = 200.86        # 실측 200.90 / 200.96 / 200.73 의 평균
 T_ACK_RETX_SLOPE = 1.1250       # 최소제곱 적합, 잔차 |0.10| ms 이내
 T_ACK_RETX_BASE_MS = 1.424
+
+
+# RFC 9002 에서 **유도한** 값. 맞춘 상수가 아니다.
+#
+#   §5.3  첫 RTT 표본에서   smoothed_rtt = 표본,  rttvar = 표본/2
+#   §6.2.1 PTO = smoothed_rtt + max(4·rttvar, kGranularity) + max_ack_delay
+#          Initial/Handshake 패킷 번호 공간에서는 max_ack_delay = 0
+#   => PTO = rtt + 4·(rtt/2) = **3·rtt**
+#
+# 마지막 원본만 잃은 가지에서 클라이언트는 (앞의 원본이 ACK 됐으므로)
+# RTT 표본을 갖고 있다. 그래서 표본 없는 PTO(T_PTO_NO_ACK_MS)가 아니라
+# 이 값을 문다. last_original_pmf 주석에 근거와 실측이 있다.
+#
+# ⚠️ **한 점에서만 대조했다.** p7 V3(RTT 50, k=2): 실측 증분 154.5 ms vs
+#    이 식 150.0 ms — +4.5 ms 어긋난다. 다른 두 상수의 잔차(V2 +0.5, V9
+#    −0.3)보다 크다. **맞추지 않는다** — 한 점에서 배율을 뽑는 것은 곡선
+#    적합이지 모형이 아니고, 이 저장소가 T_PTO 버스트 배율에서 같은 이유로
+#    거부한 적이 있다(T_PTO_NO_ACK_MS 주석). 대신 재는 쪽을 만든다:
+#    `_probe_trecover.py` 에 `-drop-initial k-1` 팔을 여러 RTT 에서 돌리면
+#    이 식이 RTT 에 비례하는지가 직접 나온다. 그전까지는 **RFC 유도값**이다.
+PTO_SAMPLED_RTT_MULT = 3.0
+
+
+def pto_with_rtt_sample_ms(rtt_ms):
+    """RTT 표본이 있을 때의 첫 PTO (ms). 위 주석의 유도."""
+    return PTO_SAMPLED_RTT_MULT * float(rtt_ms)
 
 
 def default_t_recover(rtt_ms, arrived_any):
@@ -125,11 +263,86 @@ def p_unrecoverable(k, m, p, burst):
     return float(sum(pmf[e] for e in range(m + 1, len(pmf))))
 
 
+# ---------------------------------------------------------------------------
+# 업링크 대역 — J 의 t_tx 항.
+#
+# 🩸 2026-08-21 수리. 그전에는 이 수(10.0)가 **함수 기본 인자에 리터럴로**
+#    여덟 군데 박혀 있었고, Go(policy.go)에도 `10e6` 이 따로 박혀 있었다.
+#    세 가지가 잘못돼 있었다.
+#
+#    (1) **출처가 없다.** 명세 어디에도 없고 측정한 적도 없다. 이 저장소의
+#        규칙은 "상수를 쓰는 게 아니라 상수의 출처를 밝히는 게 요점"인데
+#        (T_PTO_NO_ACK_MS 주석) 이 수만 예외였다.
+#    (2) **측정 환경에 그 비용이 존재하지 않는다.** experiments/padbed.py 의
+#        netem 은 delay 와 loss 만 걸고 rate 를 안 건다. 실측(p14, 무손실):
+#            pad(1,281 B) 51.668 ms  vs  parity(2,605 B) 51.711 ms
+#            -> 1,324 B 추가에 0.043 ms.  모형은 같은 자리에 1.06 ms 를 청구한다(25 배).
+#    (3) 그런데 이 항은 "이득이 같으면 큰 m 을 고르는 편향"을 막는 **유일한
+#        힘**이라, 틀리면 결정이 통째로 흔들린다. 격자 720 점 중 312 점(43.3%)
+#        에서 선택이 뒤집힌다. p11·p15 가 실패하던 두 조건이 정확히 이것이었다:
+#            임계아래/손실5%  모형 m=1 (J 51.62 vs 52.17) / 실측 최선 m=2 (52.49 vs 53.96)
+#            임계사이/손실2%  모형 m=1 (J 52.120 vs 52.141) / 실측 최선 m=2 (51.11 vs 52.88)
+#        두 자리 다 tx 항(1.06 ms)이 딱 뒤집을 만큼이었고, 항을 실측값으로
+#        바꾸면 모형의 선택이 실측 최선과 일치한다.
+#
+# 그래서 **숨은 상수를 없애고 인자로 만든다.** 호출부가 자기가 도는 링크의
+# 값을 준다(Go 는 `-uplink-mbps`, padbed 가 넘긴다).
+#
+#   UPLINK_UNSHAPED (=0.0)  대역 제한 없음 -> t_tx = 0.
+#                           **우리 테스트베드의 실제 조건이다.**
+#   UPLINK_MOBILE_MBPS      10 Mbps. 전형적인 모바일 업링크로 흔히 인용되는
+#                           값이지만 이 연구가 측정한 값은 아니다. 대역이
+#                           있는 경로의 거동을 보고 싶을 때 **명시적으로** 준다.
+#
+# 기본값은 모바일 시나리오 그대로 둔다 - 모형만 쓰는 호출자의 답을 말없이
+# 바꾸지 않기 위해서다. 측정과 맞물리는 자리(padbed -> qamp)는 실제 링크 값을
+# 넘긴다. 재는 쪽은 p16 이 만든다(experiments/p16_uplink.py).
+UPLINK_UNSHAPED = 0.0
+UPLINK_MOBILE_MBPS = 10.0
+# 🩸 2026-08-25 - p17(적응의 값어치)용. **측정한 현장 값이 아니다.**
+#    출처: 모형이 "두 손실 구간의 최적 m 이 갈리는" 대역 구간이
+#    1~3 Mbps 라고 말한다(0.5 이하도, 4 이상도 안 갈린다). 그 가운데
+#    값이다. 적응에 값어치가 생기려면 패리티가 공짜가 아니어야 하고,
+#    이 수는 그 조건을 만드는 대역이다 - 현장 대표값이 아니라
+#    **실험 조건**이다. p17 의 검사 9(무제한에서는 안 갈린다)가
+#    이 사실을 음성 대조로 드러낸다.
+UPLINK_CONSTRAINED_MBPS = 2.0
+UPLINK_MBPS_DEFAULT = UPLINK_MOBILE_MBPS
+
+# J 를 동점으로 볼 분해능 (ms).
+#
+# 🩸 2026-08-21. 그전에는 `round(j_ms, 6)` 즉 **1 나노초**였다. 그 정도 차이는
+#    이 테스트베드에서 측정할 수 없는데도 순위를 갈랐다. 임계경로 t_tx 수리
+#    (critical_path_bytes)로 m=1 의 대역 비용이 0 이 되자 곧바로 드러났다:
+#
+#        헤드라인 조건(p=0, 임계 바로 위, 10 Mbps)
+#          parity m=1  J = 50.0000 ms   (패리티가 원본 뒤라 임계경로 밖)
+#          pad    δ=1  J = 50.0008 ms   (1 바이트가 임계경로에 든다)
+#
+#    0.0008 ms 를 아끼려고 **1,325 바이트를 더 보내는** 결정이 된다. 시간으로는
+#    맞지만 자원으로는 명백히 틀렸고, 무엇보다 그 0.0008 ms 는 **잴 수 없다**
+#    (테스트베드의 HCT 분해능은 1 us = 0.001 ms, 팔 평균의 표준오차는 ~0.03 ms,
+#     p11/p15 후회 지표의 잡음은 ~1 ms).
+#
+#    그래서 **잴 수 없는 차이는 동점으로 본다.** 동점이면 명세 §3 의 다음
+#    기준이 정한다 - 추가 바이트가 적은 쪽, 그 다음 패리티 우선.
+#    이건 기준 완화가 아니라 **분해능을 측정 가능한 값으로 되돌린 것**이다.
+#    (1 ns 로 두면 모형의 반올림 잡음이 정책을 정하게 된다.)
+#
+#    0.01 ms 의 근거: 측정 분해능(0.001 ms)의 10 배이면서, 팔 평균 표준오차
+#    (~0.03 ms)의 1/3, 이 연구가 주장하는 최소 효과(1 왕복 = 10~250 ms)의
+#    1/1000 이하. Go 의 evalCands 정렬도 같은 값을 써야 한다(격자 대조가 잡는다).
+J_TIE_MS = 0.01
+
+
 def tx_cost_ms(extra_bytes, uplink_mbps):
     """추가 바이트를 실제로 밀어내는 데 드는 시간.
 
     작지만 0 이 아니다. 이 항이 없으면 정책이 이득이 같을 때도 무조건 큰
     m 을 고른다 - 1차 때 겪은 것과 같은 종류의 편향이다.
+
+    uplink_mbps <= 0 이면 **대역 제한이 없다**는 뜻이라 0 이다(위 상수 주석).
+    Go 의 evalCands 와 글자 단위로 같은 식이어야 한다.
     """
     if uplink_mbps <= 0:
         return 0.0
@@ -137,7 +350,7 @@ def tx_cost_ms(extra_bytes, uplink_mbps):
 
 
 def expected_hct_ms(cert_bytes, k, m, W, rtt_ms, p, burst, s0,
-                    pto_ms=PTO_NO_SAMPLE_MS, uplink_mbps=10.0):
+                    pto_ms=PTO_NO_SAMPLE_MS, uplink_mbps=UPLINK_MBPS_DEFAULT):
     client_bytes = (k + m) * W
     n = amplif.rtt_count(cert_bytes, client_bytes, s0)
     pf = p_unrecoverable(k, m, p, burst)
@@ -154,8 +367,8 @@ def expected_hct_ms(cert_bytes, k, m, W, rtt_ms, p, burst, s0,
 
 
 def decide(C, cert_bytes, rtt_ms, p, burst, s0,
-           W=capacity.MIN_INITIAL_DATAGRAM, m_max=2,
-           pto_ms=PTO_NO_SAMPLE_MS, uplink_mbps=10.0):
+           W=capacity.MIN_INITIAL_DATAGRAM, m_max=M_MAX_DEFAULT,
+           pto_ms=PTO_NO_SAMPLE_MS, uplink_mbps=UPLINK_MBPS_DEFAULT):
     """이 조건에서 패리티 데이터그램을 몇 개 붙일지 고른다.
 
     돌려주는 것: 선택과 그 근거, 그리고 후보 전부의 계산 결과.
@@ -247,13 +460,16 @@ def p_fail_of(cand, p, burst):
     if p <= 0.0:
         return 0.0
     k, m = cand["k"], cand["m"]
-    pm = joint_arrival_pmf(k, m, p, burst)
-    return float(sum(pm[a_][b_]
+    # 🩸 2026-08-21 - MDS 규칙 `(k-a) > b` 가 아니라 **구현의 규칙**을 쓴다.
+    #    서버는 마지막 패리티 하나로 소거 하나만 복구한다(recovers 주석).
+    pm = joint_arrival_pmf3(k, m, p, burst)
+    return float(sum(pm[a_][b_][r_]
                      for a_ in range(k + 1) for b_ in range(m + 1)
-                     if (k - a_) > b_))
+                     for r_ in (0, 1)
+                     if (k - a_) > 0 and not recovers(k, a_, r_)))
 
 
-def cost_of(cand, rtt_ms, p, burst, t_recover_ms=None, uplink_mbps=10.0):
+def cost_of(cand, rtt_ms, p, burst, t_recover_ms=None, uplink_mbps=UPLINK_MBPS_DEFAULT):
     """명세 §3 의 J (결정론 n_rtt 판, 보고용). 낮을수록 좋다.
 
     ⚠️ 정책은 이걸 안 쓴다 — decide_v2 는 cost_of_v2 를 쓴다. 여기 기본값
@@ -275,6 +491,44 @@ def cost_of(cand, rtt_ms, p, burst, t_recover_ms=None, uplink_mbps=10.0):
     }
 
 
+def _tie_key(e):
+    """동점 구간 안에서의 순서. 명세 §3: 추가 바이트 -> 패리티 우선 -> ...
+
+    J 는 여기 안 들어간다. **동점으로 본 것들끼리** 고르는 자리이기 때문이다.
+    """
+    return (e["added_bytes_real"],
+            0 if e["cand"]["m"] > 0 else 1,          # 같은 바이트면 패리티 우선
+            1 if e["cand"]["late_parity_risk"] else 0,
+            1 if e["cand"]["over_mtu"] else 0,
+            e["cand"]["mode"])
+
+
+def _pick_best(scored):
+    """2 단 argmin. 명세 §3 의 순서를 **분해능을 인정하며** 적용한다.
+
+    1) 정확한 J 로 최소를 찾는다.
+    2) 그 최소에서 J_TIE_MS 이내인 후보들만 모아 동점으로 보고,
+       그 안에서 추가 바이트가 적은 쪽을 고른다.
+
+    🩸 2026-08-21. 처음에는 J 를 J_TIE_MS 로 **양자화(버킷)** 해서 정렬 키의
+       첫 성분으로 썼다. **그게 더 나빴다.** 버킷 경계에서는 아주 작은 차이가
+       칸을 가르므로, Go(표+보간)와 Python(정확 계산)의 미세한 J 차이가
+       **순위 뒤집힘으로 증폭**된다 - 격자 대조에서 불일치 117 건으로 즉시
+       드러났다. 양자화는 "가까우면 같다"를 표현하는 올바른 방법이 아니다
+       (동치관계가 아니라 추이성이 깨진다).
+
+       2 단 argmin 은 그 문제가 없다. 갈릴 수 있는 자리는 후보가 정확히
+       `j_min + J_TIE_MS` 선에 걸터앉은 경우뿐이고, 그때의 대가는 정의상
+       J_TIE_MS 이하다(관문의 보간 한도 0.1 ms 안).
+    """
+    exact = sorted(scored, key=lambda e: (e["j_ms"],) + _tie_key(e))
+    j_min = exact[0]["j_ms"]
+    tied = [e for e in exact if e["j_ms"] <= j_min + J_TIE_MS]
+    tied.sort(key=_tie_key)
+    rest = [e for e in exact if e["j_ms"] > j_min + J_TIE_MS]
+    return tied + rest
+
+
 def _rank_key(e):
     """동점 처리. 명세 §3: J -> 추가 바이트 -> 같은 바이트면 패리티 우선.
 
@@ -289,6 +543,8 @@ def _rank_key(e):
         **같은 값이면 피한다**는 소극적 처리만 한다 — 신용을 임의로 깎지 않는다.)
       - over_mtu 후보를 뒤로.
     """
+    # 🩸 2026-08-21 - 이 키는 이제 **보고용 정렬**에만 쓴다. 실제 선택은
+    #    _pick_best(2 단 argmin)가 한다. 근거는 그 함수 주석.
     return (round(e["j_ms"], 6),
             e["added_bytes_real"],
             0 if e["cand"]["m"] > 0 else 1,          # 같은 바이트면 패리티 우선
@@ -299,10 +555,10 @@ def _rank_key(e):
 
 def decide_v2(C, cert_bytes, rtt_ms, p, burst=DEFAULT_ASSUMED_BURST, s0=None,
               W=quantum.P_SERVER, h=51, f=16,
-              max_steps=2, m_max=2,
+              max_steps=2, m_max=M_MAX_DEFAULT,
               s0_base=None, c_pkt=0.0,
               t_recover_ms=None, t_recover_ack_ms=None,
-              uplink_mbps=10.0,
+              uplink_mbps=UPLINK_MBPS_DEFAULT,
               max_ips=QUICGO_MAX_IPS, allow_repack=False):
     """이 조건에서 첫 비행을 어떻게 만들지 고른다 (δ 와 m 을 함께).
 
@@ -316,10 +572,15 @@ def decide_v2(C, cert_bytes, rtt_ms, p, burst=DEFAULT_ASSUMED_BURST, s0=None,
     """
     # 패리티 실크기를 후보 생성기에 넘긴다 — 이래야 후보 dict 의
     # client_bytes·allowed·n_rtt·added_bytes 가 점수와 같은 바이트를 가리킨다.
+    # max_delta - 결합 후보(δ>0·m>0)의 δ 상한. 어차피 아래에서 max_ips 로
+    # 거르므로 생성 단계에서 미리 막아 후보 목록이 헛되이 길어지지 않게 한다.
+    # None 이면 안 막는다(모형 탐색용).
+    _max_delta = None if max_ips is None else max(0, int(max_ips) - int(W))
     cands = quantum.levers(C, cert_bytes, s0, W=W, h=h, f=f,
                            max_steps=max_steps, m_max=m_max,
                            s0_base=s0_base, c_pkt=c_pkt,
-                           parity_bytes=parity_datagram_bytes)
+                           parity_bytes=parity_datagram_bytes,
+                           max_delta=_max_delta)
     k0 = capacity.natural_k(C, W, h)
 
     kept, dropped = [], []
@@ -346,7 +607,10 @@ def decide_v2(C, cert_bytes, rtt_ms, p, burst=DEFAULT_ASSUMED_BURST, s0=None,
                        k0=k0, t_recover_ack_ms=t_recover_ack_ms)
         e["cand"] = c
         scored.append(e)
-    scored.sort(key=_rank_key)
+    # 🩸 2026-08-21 - 정렬 키 하나로 고르지 않는다. 잴 수 없는 J 차이가
+    #    1,325 바이트짜리 후보를 1 바이트짜리보다 위에 올리던 자리다.
+    #    _pick_best 가 명세 §3 의 순서를 분해능을 인정하며 적용한다.
+    scored = _pick_best(scored)
 
     best = scored[0]
     base = next((e for e in scored if e["cand"]["mode"] == "none"), scored[-1])
@@ -414,7 +678,13 @@ def decide_v2(C, cert_bytes, rtt_ms, p, burst=DEFAULT_ASSUMED_BURST, s0=None,
 # 그래서 v2 정책은 **후보 생성만** quantum.levers 에 맡기고, 비용 계산은
 # 아래 Go 이식 함수로 다시 한다.
 
-PARITY_OVERHEAD_BASE = 32      # 롱헤더 약 19 + FEC 머리 13
+# 🩸 2026-08-20 p13 실측 수정. 예전 값 32(롱헤더 ~19 + FEC 머리 13)는 연결 ID
+# 를 과소평가했다 - 실측 패리티 크기(서버 연결별 회계의 beff_parity)는
+# x25519 1323.5~1326.5, ML-KEM 1331~1332 로, W+32+6k(1318/1324)보다 ~7 B 크다.
+# 원인은 CID 길이(quic-go 가 고르는 무작위 길이)라 연결마다 ±수 B 흔들리며,
+# 실측 중앙값 기준 base ≈ 38.5~39.5 다. 39 로 둔다. 남는 ±수 B 는 신용을
+# 과소평가하는 쪽(보수)으로만 작용한다.
+PARITY_OVERHEAD_BASE = 39      # 롱헤더+CID 약 26 + FEC 머리 13 (p13 실측)
 PARITY_OVERHEAD_PER_K = 6      # crc/len 목록
 
 
@@ -491,7 +761,368 @@ def joint_arrival_pmf(k, m, p, burst):
             for a_ in range(k + 1)]
 
 
-def flight_outcome(k, m, w, p, burst, server_flight):
+def joint_arrival_pmf3(k, m, p, burst):
+    """P[a][b][r] - 원본 a 개·패리티 b 개 도착, r = **복구용 패리티가 도착했는가**.
+
+    🩸 2026-08-21 수리. 그전에는 도착 **개수**만 셌고(joint_arrival_pmf),
+       flight_outcome 이 MDS 규칙 `(k-a) <= b` 로 복구 가능 여부를 판정했다.
+       **구현은 그렇게 동작하지 않는다.**
+
+       `experiments/quicbed/qamp.go` 의 서버는 역할을 나눠 놨다:
+         - 마지막으로 보낸 패리티(index m-1) **하나만** 복구용이다.
+         - 그 앞의 것들은 순전히 증폭 신용용이라 복구에 쓰지 않는다
+           (신용 패리티는 원본보다 먼저 도착하므로 그것으로 복구를 시도하면
+            "마지막 원본이 아직 안 왔다"를 소거로 오해한다 - 실제로 그렇게
+            오작동해서 역할을 코드에 못박은 것이다).
+         - `tryRecoverLocked` 는 `len(missing) > 1` 이면 곧바로 포기한다.
+
+       즉 **실제 복구 능력은 m 과 무관하게 소거 1 개**다. 모형은 m=2 에서
+       소거 2 개까지 복구된다고 믿었다 - k=1·m=2·p=0.05 에서 P_fail 이
+       1.25e-4 vs 실제 2.5e-3 으로 **20 배 낙관**이었다.
+
+    그래서 "몇 개 왔나"가 아니라 "**어느 것이** 왔나"를 알아야 한다.
+    flight_order 는 복구용 패리티를 항상 **맨 끝**에 둔다(m=1 은 [O..,P],
+    m>=2 는 [P, O.., P..] 로 마지막 P 가 index m-1). 그래서 DP 의 마지막
+    토큰만 표시하면 된다. m=0 이면 마지막 토큰이 "O" 라 r 은 언제나 0 이다.
+
+    규약은 joint_arrival_pmf 와 같다(현재 상태로 손실을 내고 -> 전이한다).
+    r 로 주변화하면 joint_arrival_pmf 와 정확히 같아야 한다 - 자체시험 3b.
+    """
+    ge = GilbertElliott.for_prior(p, burst)
+    order = flight_order(k, m)
+    trans = ge.transition
+    loss = (ge.p_good, ge.p_bad)
+    pi = ge.stationary
+    last = len(order) - 1
+
+    def _blank():
+        return [[[[0.0, 0.0] for _ in range(m + 1)] for _ in range(k + 1)]
+                for _ in range(2)]
+
+    cur = _blank()
+    cur[0][0][0][0] = pi[0]
+    cur[1][0][0][0] = pi[1]
+
+    for ti, tok in enumerate(order):
+        nxt = _blank()
+        for s_ in (0, 1):
+            l = loss[s_]
+            for a_ in range(k + 1):
+                for b_ in range(m + 1):
+                    for r_ in (0, 1):
+                        wgt = cur[s_][a_][b_][r_]
+                        if wgt == 0.0:
+                            continue
+                        for s2 in (0, 1):
+                            t = trans[s_][s2]
+                            if t == 0.0:
+                                continue
+                            if l > 0.0:
+                                nxt[s2][a_][b_][r_] += wgt * l * t
+                            if l < 1.0:
+                                keep = wgt * (1.0 - l) * t
+                                if tok == "O":
+                                    nxt[s2][a_ + 1][b_][r_] += keep
+                                else:
+                                    rr = 1 if ti == last else r_
+                                    nxt[s2][a_][b_ + 1][rr] += keep
+        cur = nxt
+
+    return [[[cur[0][a_][b_][r_] + cur[1][a_][b_][r_] for r_ in (0, 1)]
+             for b_ in range(m + 1)] for a_ in range(k + 1)]
+
+
+def last_original_index(k, m):
+    """비행 안에서 **마지막 원본**이 놓이는 자리. flight_order 와 짝이다."""
+    order = flight_order(k, m)
+    return max((i for i, t in enumerate(order) if t == "O"), default=-1)
+
+
+def last_original_pmf(k, m, p, burst):
+    """P[a][r][o] - o = **마지막 원본이 도착했는가.**
+
+    🩸 2026-08-27 수리. 그전에는 복구 실패의 대가를 `a == 0`(서버가 하나도
+       못 받았는가)로 갈랐다. **틀린 판별자다.**
+
+       RFC 9002 §6.1 - QUIC 은 패킷 손실을 **그보다 뒤에 보낸 패킷이
+       ACK 됐을 때만** 패킷 임계/시간 임계로 선언할 수 있다. 우리 패리티는
+       심(shim)이 소켓에 직접 쓰는 롱헤더 위장 패킷이라 **클라이언트 패킷
+       번호를 안 갖고**, 서버는 AEAD 에서 버리므로 **영원히 ACK 되지 않는다**
+       (qamp.go flushFlight -> c.PacketConn.WriteTo). 그러므로 첫 비행에서
+       **가장 큰 패킷 번호는 마지막 원본**의 것이다.
+
+         · 마지막 원본이 **도착**하고 앞의 것이 없어졌다
+             -> 그 ACK 이 시간 임계를 무장시킨다 -> 9/8·RTT 만에 재전송.
+                (T_ACK_RETX_SLOPE 가 1.125 = 9/8 인 것이 우연이 아니다 —
+                 RFC 9002 §6.1.2 의 kTimeThreshold 가 바로 9/8 이다.)
+         · 마지막 원본이 **없어졌다** (앞의 것은 도착)
+             -> 뒤에 ACK 될 패킷이 없다 -> **구멍을 영영 못 본다** -> PTO.
+                다만 앞의 원본이 ACK 됐으므로 **RTT 표본이 있다**:
+                RFC 9002 §5.3 첫 표본에서 rttvar = 표본/2 이고, §6.2.1 의
+                PTO = srtt + 4·rttvar (Initial/Handshake 는 max_ack_delay 제외)
+                -> **PTO = 3·RTT.** 맞춘 상수가 아니라 RFC 에서 나온 값이다.
+         · 아무것도 도착 안 했다
+             -> ACK 자체가 없어 RTT 표본도 없다 -> 경로 무관 상수(T_PTO_NO_ACK_MS).
+
+    **이 저장소의 원자료가 그대로 판정한다** (`results/p7_verify.json`,
+    결정적 소거, k=2 · RTT 50 · cert 2955 · 팔당 n=40):
+
+        V1 소거 없음                        p50  54.027 ms   (기준선)
+        V2 원본0 소거 (마지막 원본 **도착**)   p50 112.258 ms   +58.2  ≈ 9/8·RTT
+        V3 원본1 소거 (마지막 원본 **유실**)   p50 208.545 ms   +154.5 ≈ 3·RTT
+        V9 원본0+1 소거 (아무것도 없음)        p50 254.623 ms   +200.6 ≈ 200.86
+
+    **V2 와 V3 은 옛 모형에서 완전히 같은 상태(a=1, r=0)인데 96.3 ms 갈린다.**
+    p95 가 각각 114.8 / 210.7 로 붙어 있으니 잡음이 아니라 서로 다른 두
+    결정적 모드다. 옛 식은 둘 다 V2 쪽으로 봤고, 그래서 V3 에서 **96.8 ms**
+    를 빠뜨렸다.
+
+    T_ACK_RETX 세 상수가 `-drop-initial 0`(= V2 조건)으로만 측정된 것이
+    이 결함이 오래 숨은 이유다. k=1 에서 그 조건은 "아무것도 안 왔다"이자
+    "마지막 원본이 없어졌다"이고, k=2 에서는 "뭔가 왔다"이자 "마지막 원본이
+    왔다"라서 **두 후보 규칙이 설계상 완전히 교락**돼 있었다. 한 설계로 두
+    규칙을 가를 수 없었다는 뜻이고, 그래서 검사가 아니라 **설계**를 고쳐야
+    한다 - `_probe_trecover.py` 에 `-drop-initial k-1` 팔을 더할 것.
+
+    ⚠️ 왜 (a, r, o) 만 돌려주고 b 를 안 세나 - 실패 가지의 값은 b 에
+       의존하지 않기 때문이다. b 가 필요한 회계(신용·왕복 수)는
+       joint_arrival_pmf3 이 그대로 맡는다. **분포를 하나 더 만드는 것이
+       아니라 같은 DP 를 다른 축으로 주변화하는 것**이라 두 분포는 정의상
+       서로 맞는다 - 자체시험 19a 가 확인한다.
+    """
+    ge = GilbertElliott.for_prior(p, burst)
+    order = flight_order(k, m)
+    trans = ge.transition
+    loss = (ge.p_good, ge.p_bad)
+    pi = ge.stationary
+    last = len(order) - 1
+    last_o = last_original_index(k, m)
+
+    def _blank():
+        return [[[[0.0, 0.0] for _ in (0, 1)] for _ in range(k + 1)]
+                for _ in range(2)]
+
+    cur = _blank()
+    cur[0][0][0][0] = pi[0]
+    cur[1][0][0][0] = pi[1]
+
+    for ti, tok in enumerate(order):
+        nxt = _blank()
+        for s_ in (0, 1):
+            l = loss[s_]
+            for a_ in range(k + 1):
+                for r_ in (0, 1):
+                    for o_ in (0, 1):
+                        wgt = cur[s_][a_][r_][o_]
+                        if wgt == 0.0:
+                            continue
+                        for s2 in (0, 1):
+                            t = trans[s_][s2]
+                            if t == 0.0:
+                                continue
+                            if l > 0.0:
+                                nxt[s2][a_][r_][o_] += wgt * l * t
+                            if l < 1.0:
+                                keep = wgt * (1.0 - l) * t
+                                if tok == "O":
+                                    oo = 1 if ti == last_o else o_
+                                    nxt[s2][a_ + 1][r_][oo] += keep
+                                else:
+                                    rr = 1 if ti == last else r_
+                                    nxt[s2][a_][rr][o_] += keep
+        cur = nxt
+
+    return [[[cur[0][a_][r_][o_] + cur[1][a_][r_][o_] for o_ in (0, 1)]
+             for r_ in (0, 1)] for a_ in range(k + 1)]
+
+
+def fail_split(k, m, p, burst):
+    """실패 질량을 세 가지로 나눈 (pto_noack, pto_sampled, ack).
+
+    합은 p_fail 과 정확히 같아야 한다(자체시험 19b). 이 함수만 새 분포를
+    쓰고, 나머지 회계는 joint_arrival_pmf3 그대로다 - 수리의 접촉면을
+    **실패 가지 하나로** 좁혀 둔다.
+    """
+    if p <= 0.0:
+        return 0.0, 0.0, 0.0
+    pm = last_original_pmf(k, m, p, burst)
+    noack = sampled = ack = 0.0
+    for a_ in range(k + 1):
+        for r_ in (0, 1):
+            for o_ in (0, 1):
+                pr = pm[a_][r_][o_]
+                if pr <= 0.0:
+                    continue
+                miss = k - a_
+                if miss <= 0 or recovers(k, a_, r_):
+                    continue
+                if o_:
+                    ack += pr
+                elif a_ == 0:
+                    noack += pr
+                else:
+                    sampled += pr
+    return noack, sampled, ack
+
+
+def recovers(k, a, recovery_parity_arrived):
+    """이 도착 상태에서 서버가 실제로 복구하는가. qamp.go tryRecoverLocked 와 같다.
+
+    소거 0 개 -> 복구할 것이 없다(False, 그러나 실패도 아니다).
+    소거 1 개 -> 복구용 패리티가 왔을 때만 복구한다.
+    소거 2 개 이상 -> 패리티 1 개로는 불가. 언제나 실패다.
+    """
+    miss = k - a
+    if miss <= 0:
+        return False
+    return miss == 1 and bool(recovery_parity_arrived)
+
+
+def n_need_for_flight(server_flight, pkt=quantum.P_SERVER):
+    """칸에 의존하지 않는 S 를 담는 최소 칸. 자체시험·탐침용 보조."""
+    import math
+    return max(1, int(math.ceil(float(server_flight) / float(pkt))))
+
+
+# ---------------------------------------------------------------------------
+# 증폭 신용의 '경주' — 뒤따르는 패리티는 **송신 결정 전에** 닿아야 신용이 된다
+# ---------------------------------------------------------------------------
+#
+# 🩸 2026-08-26 실측 수리. 그전 모형은 패리티 m 개의 바이트를 **무조건** 증폭
+#    예산에 넣었다. 바이트 회계로는 그게 옳다(qamp.go:1402 - 복호 불가 패킷도
+#    quic-go 가 바이트를 센 뒤 버리므로 예산은 그만큼 오른다). 틀린 것은
+#    바이트가 아니라 **시각**이었다.
+#
+#    송신 순서(qamp.go flushFlight)가 m 으로 갈린다:
+#        m = 1  : [원본..., 패리티]              패리티가 원본 **뒤**
+#        m >= 2 : [패리티0, 원본..., 패리티1..]   하나가 원본 **앞**
+#
+#    서버는 **복호 가능한 마지막 패킷**을 처리할 때 보낼지를 정한다. 패리티는
+#    복호가 안 되므로 송신을 깨우지 못한다(quic-go connection.go:669 의
+#    `if !wasProcessed { continue }`). 그래서 뒤따르는 패리티의 바이트는 예산에
+#    들어가되 **그 결정보다 늦으면 그 연결에서는 소용이 없다.**
+#
+#    대역이 걸리면 늦는 정도는 직렬화 시간 그대로다:  d = 패리티 바이트 / 대역
+#    m=1 은 이 경주에서 지면 왕복을 통째로 하나 더 쓴다. 2 Mbps·cert 9000·k=2
+#    에서 모형 53.0 ms vs 실측 122.2 ms - **오차 69.2 ms** 였고, 정책이 그 값을
+#    믿고 m=1 을 골라 최선(m=3, 71.0 ms)보다 51 ms 손해를 봤다.
+#
+#    ⚠️ 대역 무제한이면 d=0 이라 q=1 이고, 이 항은 **아무것도 바꾸지 않는다.**
+#       그래서 무제한에서 이미 검증된 것들(p4·p16·p18)은 그대로 남는다.
+#
+# q(d) 를 **표로** 심는 이유는 padfec/table.py 머리말과 같다 - 이건 유도한
+# 모형이 아니라 **이 기계에서 잰 값**이고, 함수꼴로 적으면 자료에 없는 모양을
+# 지어내게 된다. 실제로 지수꼴·정규꼴을 맞춰 봤는데 평평한 머리(d<=0.27)와
+# 꼬리를 동시에 못 맞췄다(정규꼴은 d=0.133 에서 0.86 이라 실측 0.996 과
+# 14 %p 어긋난다). 마디 사이는 선형보간하고 마지막 마디 위는 0 이다.
+#
+# 실측 2026-08-26 (probe_race2.py, cert 9000·k=2·RTT 50·**손실 0%**·gap 50 ms
+# ·팔당 250 연결). 손실 0 으로 재는 이유: 손실이 있으면 m=1 의 2-RTT 가 두
+# 원인(경주에 짐 / 패리티 자체를 잃음)에서 나와 섞인다. 손실 0 이면 이 모형의
+# p_two_rtt 가 0 이므로 **m1 의 1-RTT 비율이 곧 q(d)** 다.
+#
+#     업링크   80    40    30    20    15    10 Mbps   (무제한 = d 0)
+#     d(ms)  0.133 0.266 0.355 0.533 0.710 1.066
+#     m1 q   0.996 0.972 0.640 0.404 0.212 0.004
+#     m2     1.000 1.000 1.000 1.000 1.000 1.000   <- 앞선 패리티는 경주가 없다
+#
+# m=2 가 **어느 대역에서도 100%** 인 것이 이 모형의 뼈대를 그대로 확인해 준다.
+# 그리고 1.066 ms 위는 아침 스윕(4·2·1 Mbps, d = 2.66·5.32·10.65)에서 팔당
+# 150 연결 중 **1-RTT 가 한 건도 없었다.**
+#
+# ⚠️ 한계: q 는 서버의 송신 결정 지연 X 의 분포이고 그건 **기계와 부하에**
+#    달렸다(T_PTO_NO_ACK_MS·C_PKT_POLICY_DEFAULT 와 같은 종류의 환경 상수다).
+#    같은 자리를 부하가 있을 때 재면 X 가 커져 q 가 올라간다 - 실제로 다른
+#    실험과 겹쳐 돌던 아침 탐침은 d=1.066 에서 0.387 이 나왔다(여기서는
+#    0.004). 정책이 실제로 밟는 자리는 d>=1 ms(대역 <=10 Mbps, q~0)이거나
+#    d=0(무제한, q=1)이라 이 흔들림이 선택을 바꾸지는 않는다.
+RACE_DELAY_MS = (0.0, 0.133, 0.266, 0.355, 0.533, 0.710, 1.066)
+RACE_WIN_Q = (1.0, 0.996, 0.972, 0.640, 0.404, 0.212, 0.004)
+
+
+def trailing_parity_delay_ms(k, w, uplink_mbps):
+    """뒤따르는 패리티 하나가 **마지막 원본보다** 늦게 도착하는 시간 (ms).
+
+    앞선 패리티(m>=2 의 index 0)는 원본보다 먼저 나가므로 이 지연을 안 겪는다.
+    uplink_mbps <= 0 이면 대역 제한이 없다는 뜻이라 0 이다 - tx_cost_ms 와
+    같은 약속이다.
+    """
+    if not uplink_mbps or uplink_mbps <= 0:
+        return 0.0
+    return parity_datagram_bytes(w, k) * 8.0 / (float(uplink_mbps) * 1e6) * 1e3
+
+
+def race_win_prob(delay_ms):
+    """지연 delay_ms 로 도착한 패리티의 신용이 **송신 결정에 잡힐** 확률.
+
+    마디 사이는 선형보간, 마지막 마디 위는 0. Go 의 raceWinProb 와 글자 단위로
+    같은 식이어야 한다(표는 pfail_table.go 에 심는다).
+    """
+    d = float(delay_ms)
+    if d <= RACE_DELAY_MS[0]:
+        return RACE_WIN_Q[0]
+    if d >= RACE_DELAY_MS[-1]:
+        return 0.0
+    for i in range(1, len(RACE_DELAY_MS)):
+        if d <= RACE_DELAY_MS[i]:
+            lo, hi = RACE_DELAY_MS[i - 1], RACE_DELAY_MS[i]
+            t = (d - lo) / (hi - lo)
+            return RACE_WIN_Q[i - 1] + t * (RACE_WIN_Q[i] - RACE_WIN_Q[i - 1])
+    return 0.0
+
+
+def credit_branches(a, w, parity, b_credit, r, m, trail_delay_ms):
+    """송신 결정 시점의 신용 바이트를 (확률, 바이트) 가지로 쪼갠다.
+
+    **복구가 없는 상태에서만** 부른다(복구가 일어나면 서버는 복구용 패리티를
+    받은 뒤에야 원본을 다 갖게 되므로 경주 자체가 없다).
+
+    두 갈래를 편다.
+      1) 앞선 패리티(m>=2 의 index 0)가 왔는가. 결합분포는 패리티를 개수로만
+         세므로(복구용 여부 r 만 따로), 복구용이 아닌 m-1 개 중 b_credit 개가
+         왔을 때 그 특정한 하나가 왔을 확률은 b_credit/(m-1) 이다.
+      2) 뒤따르는 것들 중 몇 개가 결정 전에 닿았는가. i 번째 뒤따르는 패리티는
+         마지막 원본보다 i*d 늦으므로 P(i 개 이상 닿음) = q(i*d) 이고,
+         정확히 j 개일 확률은 q(j*d) - q((j+1)*d) 다(중첩이라 이렇게 갈린다).
+
+    trail_delay_ms = 0 이면 q 가 전부 1 이라 옛 식(도착한 패리티 전부를 신용에
+    넣는 식)과 **글자 그대로 같은 값**이 나온다.
+
+    ⚠️ **알려진 근사 (2026-08-27 확인).** 뒤따르는 패리티를 **개수로만** 센다.
+       n_trail 개가 도착했으면 그것이 송신 순서상 **앞의 n_trail 개**라고 보고
+       i 번째에 지연 i·d 를 매긴다. 실제로는 어느 것이 살아남았는지가 정해져
+       있고(특히 버스트 손실에서는 살아남는 것이 뒤쪽에 몰린다), 마지막
+       복구용 패리티만 왔다면 그 지연은 1·d 가 아니라 (m−1)·d 다.
+       즉 이 근사는 신용을 **낙관 쪽으로** 민다.
+
+       크기를 쟀다 - 자리를 정확히 센 열거와 대조하면 최악이
+       k=1·m=3·p=0.3·L=1·40 Mbps 에서 기대 왕복 수 1.2416 vs 1.2997 로
+       **0.058 왕복**(RTT 50 에서 2.9 ms)이다. 격자 전수 대조에서 **선택이
+       바뀌는 점은 0 건**이다 - q(d) 가 사실상 계단이라(d>=1.066 ms 면 0,
+       d=0 이면 1) 정책이 실제로 밟는 자리에서는 i 가 몇이든 답이 같기
+       때문이다. 고치려면 DP 에 자리 축을 하나 더 얹어야 하는데(상태 수 2^m
+       배), 얻는 것이 없다. **고치지 않고 적어 둔다.**
+    """
+    n_nonrec = m - 1 if m >= 2 else 0     # 앞선 것을 포함한 '복구용 아닌' 패리티
+    p_lead = (b_credit / float(n_nonrec)) if n_nonrec > 0 else 0.0
+    out = []
+    for n_lead, p_l in ((1, p_lead), (0, 1.0 - p_lead)):
+        if p_l <= 0.0:
+            continue
+        n_trail = (b_credit - n_lead) + r
+        base = a * w + n_lead * parity
+        prev = 1.0
+        for i in range(1, n_trail + 1):
+            qi = race_win_prob(i * trail_delay_ms)
+            if prev - qi > 0.0:
+                out.append((p_l * (prev - qi), base + (i - 1) * parity))
+            prev = qi
+        if prev > 0.0:
+            out.append((p_l * prev, base + n_trail * parity))
+    return out
+
+
+def flight_outcome(k, m, w, p, burst, n_need, trail_delay_ms=0.0):
     """한 비행의 결과를 **하나의 분포에서** 낸다. policy.go flightOutcome 과 같다.
 
         n_rtt_expected  복구에 성공한 상태들만의 기대 왕복 수
@@ -512,37 +1143,102 @@ def flight_outcome(k, m, w, p, burst, server_flight):
     식과 결과가 완전히 같다 — 헤드라인(1 바이트 절벽)은 영향받지 않는다.
     """
     parity = parity_datagram_bytes(w, k)
-    pm = joint_arrival_pmf(k, m, p, burst)
+    pm = joint_arrival_pmf3(k, m, p, burst)
     n_sum = 0.0
     p_fail = 0.0
-    p_fail_pto = 0.0
-    p_fail_ack = 0.0
     p_two = 0.0
+    p_rec = 0.0
     for a_ in range(k + 1):
         for b_ in range(m + 1):
-            pr = pm[a_][b_]
-            if pr <= 0.0:
-                continue
-            # MDS: 받은 심볼이 k 개 이상이면 복구된다(잃은 원본 <= 도착 패리티).
-            if (k - a_) > b_:
-                p_fail += pr
-                # 실패의 대가는 **서버가 하나라도 받았는지**로 갈린다.
-                # 0 개면 ACK 자체가 없어 PTO(경로 무관 상수), 1 개 이상이면
-                # ACK 로 구멍이 드러나 즉시 재전송(왕복 하나). 실측 근거는
-                # 위 T_PTO_NO_ACK_MS 주석.
-                if (a_ + b_) == 0:
-                    p_fail_pto += pr
-                else:
-                    p_fail_ack += pr
-                continue
-            # 복구된 원본의 바이트는 신용에 안 넣는다 — 회계 규칙상 복구본을
-            # 넣을 때 패리티를 버리므로 서버가 실제로 센 바이트만 예산이 된다.
-            arrived = a_ * w + b_ * parity
-            if server_flight > float(quantum.allowed(arrived)):
-                n_sum += pr * 2.0
-                p_two += pr
-            else:
-                n_sum += pr
+            for r_ in (0, 1):
+                pr = pm[a_][b_][r_]
+                if pr <= 0.0:
+                    continue
+                miss = k - a_
+                rec = recovers(k, a_, r_)
+                if miss > 0 and not rec:
+                    p_fail += pr
+                    # 실패의 대가는 **서버 QUIC 스택이 ACK 를 낼 수 있었는지**
+                    # 로 갈린다. 0 이면 ACK 가 없어 PTO(경로 무관 상수),
+                    # 아니면 ACK 로 구멍이 드러나 즉시 재전송(왕복 하나).
+                    #
+                    # 🩸 2026-08-23 정정 — 조건이 `(a_ + b_) == 0` 이었다.
+                    #    즉 **패리티만 도착해도 ACK 가 난다**고 봤는데 틀렸다.
+                    #    우리 패리티는 롱헤더로 위장한 패킷이라 AEAD 를 통과하지
+                    #    못하고, QUIC 스택은 복호 실패 패킷을 **조용히 버리며
+                    #    ACK 하지 않는다**(RFC 9000 §12.2). 복구에 성공해야만
+                    #    원본이 스택에 올라가고, 실패했으면 올라가는 것은
+                    #    복호 불가 바이트뿐이다. 그러므로 ACK 를 낼 수 있는
+                    #    조건은 **복호 가능한 원본이 하나라도 왔는가**(a_ >= 1)다.
+                    #
+                    #    실측이 이 정정을 지지한다(p17, 10Mbps·p=0.155·k=2):
+                    #        모형(옛): m=1 PTO 0.0241 / m=2 PTO 0.0037
+                    #        **실측**: m=1 PTO 0.023  / m=2 PTO 0.023
+                    #        모형(새): m=1 PTO 0.0241 / m=2 PTO 0.0241
+                    #    옛 식은 m 을 늘리면 PTO 가 6 배 줄어든다고 봐서 m=2 를
+                    #    과대평가했다. m2-m1 예측이 -1.85 ms(m2 유리)였는데
+                    #    실측은 +0.94 ms(m1 유리)로 **부호가 반대**였다.
+                    #    정정 후 예측 +1.06 ms — 부호도 크기도 맞는다.
+                    #    격자 330 점 중 81 점(24.5%)에서 선택이 바뀐다.
+                    # 🩸 2026-08-27 - 여기서는 **합계만** 센다. 세 가지로
+                    #    가르는 것은 fail_split 이 한다(그 주석에 근거와
+                    #    실측이 있다). 판별자가 이 루프의 축(a, b, r)에
+                    #    없는 값(마지막 원본의 도착 여부)이라 같은 자리에서
+                    #    못 가른다 - 축을 늘리는 대신 주변화된 분포를 따로
+                    #    쓴다. 둘의 합이 같은지는 자체시험 19b 가 못 박는다.
+                    continue
+                # 🩸 2026-08-21 수리 — 신용은 **서버 QUIC 스택이 실제로 센
+                #    바이트**다. qamp.go 의 decodeConn.ReadFrom 이 하는 일:
+                #      · 신용 패리티(index < m-1) -> 그대로 스택에 넘긴다(파 바이트)
+                #      · 복구용 패리티(index m-1)
+                #          복구 성공 -> **패리티를 버리고 복구본(원본, w 바이트)**
+                #                       을 대신 넘긴다(불변식: 스택 누적 <= 물리
+                #                       수신 누적. 안 그러면 3 배 한도를 우회한다)
+                #          그 외     -> 패리티를 그대로 넘긴다
+                #
+                #    그전 식 `a*w + b*파` 는 복구가 일어난 상태에서 **잃은
+                #    원본의 신용까지 패리티 크기로 셌다.** k=1·m=1 에서 실제
+                #    신용은 1,280 B 인데 모형은 2,605 B 로 봤고, 그래서
+                #    임계 근처에서 2-RTT 를 1-RTT 로 착각했다.
+                #
+                #    실측이 그대로 보여 준다(p15 임계사이/손실5%, k=1·m=1):
+                #      모형(옛) 2-RTT 4.75%  |  실측 꼬리 9.0%
+                #      옳은 회계: P(패리티 유실)=4.75% + P(원본 유실->복구)=4.75%
+                #                 = 9.5%  <- 두 경우 다 신용이 1,280 으로 떨어진다
+                b_credit = b_ - r_                 # 신용 전용 패리티 개수
+                # 2026-08-21 - `server_flight > allowed(arrived)` 가
+                # 아니라 **칸 비교**다. 필요한 칸 n_need 는 연결마다
+                # 하나의 상수이고 도착 상태와 무관하다 - 서버는 자기가
+                # 실제로 받은 신용으로 보낼 수 있는 만큼만 보낸다.
+                # 근거는 quantum._candidate 의 n_need 주석.
+                if rec:
+                    # 🩸 2026-08-26 (2) - 이 가지의 질량을 따로 센다. 여기가
+                    #    **뒤따르는 패리티가 임계경로에 드는 유일한 가지**다
+                    #    (아래 trailing_parity_bytes 주석 참고).
+                    p_rec += pr
+                    # 🩸 2026-08-26 - 복구가 일어난 상태에는 **경주가 없다.**
+                    #    서버는 복구용 패리티(송신 순서상 마지막)를 받고 나서야
+                    #    원본을 다 갖게 되므로 송신 결정이 모든 패킷보다 뒤에
+                    #    온다. 즉 도착한 바이트가 전부 예산에 들어간 상태다.
+                    arrived = a_ * w + b_credit * parity + w
+                    if quantum.bin_index(arrived) < n_need:
+                        n_sum += pr * 2.0
+                        p_two += pr
+                    else:
+                        n_sum += pr
+                    continue
+                # 복구가 없는 상태 = 원본이 다 왔다. 서버는 **마지막 원본**을
+                # 처리하면서 보낼지 정하므로, 뒤따르는 패리티의 신용은 그
+                # 결정보다 먼저 닿아야 한다(위 '경주' 절).
+                for wgt, arrived in credit_branches(a_, w, parity, b_credit,
+                                                    r_, m, trail_delay_ms):
+                    if quantum.bin_index(arrived) < n_need:
+                        n_sum += pr * wgt * 2.0
+                        p_two += pr * wgt
+                    else:
+                        n_sum += pr * wgt
+    # 실패 질량을 세 가지로 나눈다. 합은 정의상 p_fail 이다.
+    p_fail_pto, p_fail_pto_sampled, p_fail_ack = fail_split(k, m, p, burst)
     ok = 1.0 - p_fail
     return {
         # 복구 성공 상태들에 대한 **가중합**이다. 질량이 (1 - p_fail) 이므로
@@ -552,10 +1248,16 @@ def flight_outcome(k, m, w, p, burst, server_flight):
         "n_rtt_given_ok": (n_sum / ok if ok > 1e-15 else 2.0),
         "p_fail": p_fail,
         # 실패 질량을 두 가지로 나눈다. 합은 p_fail 이다.
-        "p_fail_pto": p_fail_pto,   # 서버가 0 개 받음 -> ACK 없음 -> PTO
-        "p_fail_ack": p_fail_ack,   # 1 개 이상 받음 -> ACK -> 즉시 재전송
+        "p_fail_pto": p_fail_pto,                  # 아무것도 없음 -> 표본 없는 PTO
+        "p_fail_pto_sampled": p_fail_pto_sampled,  # 마지막 원본 유실 -> 3·RTT PTO
+        "p_fail_ack": p_fail_ack,                  # 마지막 원본 도착 -> 시간 임계
         "p_two_rtt": p_two,
         "p_recoverable": ok,
+        # 복구가 **실제로 일어난** 질량(소거가 있었고 복원에 성공). 성공
+        # 상태 전체(ok)가 아니다 - ok 에는 "소거가 아예 없었다" 가 들어 있고
+        # 그 가지에서는 서버가 마지막 원본에서 결정하므로 뒤따르는 패리티를
+        # 기다리지 않는다.
+        "p_recovered": p_rec,
     }
 
 
@@ -565,8 +1267,95 @@ def client_bytes_of(cand):
     return k * w + m * parity_datagram_bytes(w, k)
 
 
+def critical_path_bytes(k, m, w):
+    """업링크 직렬화가 **핸드셰이크를 실제로 늦추는** 바이트.
+
+    🩸 2026-08-21 p16 실측 수리. 그전에는 t_tx 를 `추가 바이트 전부`에 물렸다.
+       **틀렸다** - 비행 안에서 패리티가 어디에 실리는지에 따라 임계경로에
+       드는 것과 안 드는 것이 갈린다. 송신 순서는 flight_order 와 같고,
+       그 순서를 정하는 코드는 `qamp.go` 의 flushFlight 다.
+
+         m = 1  : [원본..., 패리티]            패리티가 **뒤**라 원본을 안 늦춘다
+         m >= 2 : [패리티0, 원본..., 패리티1..] 앞의 하나가 원본을 늦춘다
+
+       서버가 응답을 만들려면 원본(CRYPTO)이 다 와야 하므로, 임계경로는
+       `원본 k 개 + (m>=2 일 때) 앞선 패리티 하나` 다. 뒤따르는 패리티들은
+       핸드셰이크를 안 늦춘다.
+
+    실측(p16, netem rate 10mbit, x25519 k=1, 임계 아래):
+
+        팔            추가 바이트   옛 모형     이 식      실측
+        pad δ=172         172     0.138 ms   0.138 ms   0.141 ms
+        m=1             1,326     1.061 ms   0.000 ms   0.002 ms   <- 530 배 과대였다
+        m=2             2,654     2.121 ms   1.060 ms   0.951 ms
+
+    옛 식은 m=1 의 대역 비용을 **530 배** 과대평가했다. 그래서 대역이 있는
+    경로에서 정책이 패리티를 부당하게 기피했다.
+
+    ⚠️ 이 식은 우리 배치(flight_order)에 묶여 있다. 배치를 바꾸면 여기도
+       같이 바꿔야 한다 - 그래서 flight_order 바로 아래에 두지 않고 이름을
+       주고 한 곳에서만 정의한다. Go 는 criticalPathBytes 가 같은 식이다.
+    """
+    if m >= 2:
+        return k * w + parity_datagram_bytes(w, k)
+    return k * w
+
+
+def trailing_parity_bytes(k, m, w):
+    """**복구 가지에서만** 임계경로에 드는, 뒤따르는 패리티의 바이트.
+
+    🩸 2026-08-26 (2) **구조 수리** — 근거는 실측이 아니라 식 자체다.
+       `critical_path_bytes` 는 *첫 비행*의 임계경로로는 옳지만(서버가 응답을
+       만들려면 원본이 다 와야 한다), J 는 **핸드셰이크 완료 시각**이다. 복구가
+       일어나는 가지에서는 서버가 **복구용 패리티(송신 순서상 마지막)까지
+       받아야** 원본을 복원하므로, 그 앞에 줄 서 있는 패리티들의 직렬화가
+       통째로 임계경로에 든다. flight_outcome 이 이미 그 사실을 신용 회계에
+       쓰고 있었다("복구가 일어난 상태에는 경주가 없다") — 같은 분해를
+       **시간**에는 안 쓰고 있었던 것이 결함이다.
+
+       그전 식은 뒤따르는 패리티의 시간 비용을 **정확히 0** 으로 줬다. 그래서
+       m=2·3·4 의 t_tx 가 전부 같은데 P_fail 은 안 오르므로, **J 에서 m 은 클수록
+       좋고 정책은 늘 m_max 를 골랐다.** 대역이 걸린 자리에서 그것은 물리적으로
+       틀렸다 — 패리티 데이터그램 하나가 2 Mbps 에서 5.32 ms 를 쓴다.
+
+    ⚠️ **인용 정정 (2026-08-26 저녁).** 이 수정은 처음에 p17 한 판(cert 9000,
+       k=2, 17:31)의 부호를 인용해 정당화됐다. **그 인용은 철회한다.** 같은
+       운용점을 p18 이 독립으로 다시 재니 부호가 반대로 나왔다:
+
+           m3 − m2                손실 2%     손실 15%
+           p17 (n=750/팔, 17:31)   +0.73 ms   +1.86 ms
+           p18 (n=1000/팔, 19:01)  −0.16 ms   −1.26 ms
+           모형 (이 수정 후)        +0.17 ms   −0.23 ms   <- 두 측정 **사이**
+
+       p18 은 자기 정밀도를 스스로 계산한다 — 이 크기를 판정하려면 **팔당
+       8,544~12,404 판**이 필요한데 지금은 1,000 판이다. 두 측정 다 잡음에서
+       나온 draw 이고, 따라서 이 수정은 **반증되지도 검증되지도 않았다.**
+
+       그래도 남기는 근거는 셋이며 **전부 측정과 무관하다**:
+         (1) 기전을 `qamp.go` 의 송신 순서가 직접 뒷받침한다 — 복구 가지에서
+             서버는 송신 순서상 마지막 패리티까지 받아야 원본을 복원한다.
+         (2) **맞춘 상수가 하나도 없다.** 바이트 수와 대역만으로 정해진다.
+         (3) 무제한(대역 0)에서 옛 식과 **비트 단위로 같다**(자체시험 17a).
+             즉 이미 검증된 무제한 결과를 하나도 안 흔든다.
+
+       앞으로 이 수정을 인용할 때는 「실측이 요구해서」가 아니라 **「식이
+       구조적으로 뒤따르는 패리티를 0 으로 셌으므로」** 라고 적는다.
+
+    (이 식을 세운 p16 실측(2026-08-21)은 **임계 아래·저손실**이라 복구 가지를
+     한 번도 안 밟았다 — 그것이 이 항이 빠진 채로 남아 있던 이유다.)
+
+    보내는 순서(qamp.go flushFlight):
+        m = 1  : [원본..., 패리티]              뒤따름 = 패리티 1 개
+        m >= 2 : [패리티0, 원본..., 패리티1..]   뒤따름 = 패리티 (m−1) 개
+    """
+    if m <= 0:
+        return 0
+    parity = parity_datagram_bytes(w, k)
+    return parity * (m - 1 if m >= 2 else 1)
+
+
 def cost_of_v2(cand, W_base, rtt_ms, p, burst,
-               t_recover_ms=None, uplink_mbps=10.0, k0=None,
+               t_recover_ms=None, uplink_mbps=UPLINK_MBPS_DEFAULT, k0=None,
                t_recover_ack_ms=None):
     """명세 §3 의 J — Go(policy.go) 와 같은 식으로 계산한다.
 
@@ -597,16 +1386,95 @@ def cost_of_v2(cand, W_base, rtt_ms, p, burst,
              else float(t_recover_ms))
     t_ack = (default_t_recover(rtt_ms, True) if t_recover_ack_ms is None
              else float(t_recover_ack_ms))
+    # 🩸 2026-08-21 - 2 차 수정으로 이 함수의 **계약이 바뀌었다**:
+    #    1-RTT 판정을 cand["server_flight"] 가 아니라 상태 무관 상수
+    #    cand["n_need"] 로 한다. 그런데 그 사실이 아무 데도 안 적혀
+    #    있어서, 손으로 후보를 만드는 호출자(p4_model)가 조용히
+    #    KeyError 로 죽었다. 무엇을 어떻게 채우라고 말한다.
+    if "n_need" not in cand:
+        raise KeyError(
+            "cost_of_v2: 후보에 'n_need' 가 없다. 2026-08-21 부터 "
+            "1-RTT 판정은 상태 무관 상수 n* 로 한다. "
+            "quantum._candidate() 가 만든 후보는 이미 담고 있고, "
+            "손으로 만들 때는 "
+            "quantum.bin_needed(cert, None, s0_base, c_pkt) 로 채운다. "
+            "(policy.n_need_for_flight(S) 는 c 항이 없는 근사라 "
+            "정책 경로와 어긋날 수 있다 - 탐침 전용이다.) "
+            "받은 열쇠: %s" % sorted(cand))
     k, m, w = cand["k"], cand["m"], cand["W_eff"]
     base_k = k if k0 is None else k0
     cb = client_bytes_of(cand)
     added = max(0, cb - base_k * W_base)
-    out = flight_outcome(k, m, w, p, burst, cand["server_flight"])
+    tx_added = max(0, critical_path_bytes(k, m, w)
+                   - critical_path_bytes(base_k, 0, W_base))
+    # 🩸 2026-08-26 - 뒤따르는 패리티의 신용이 송신 결정 전에
+    #    닿는지가 대역에 달렸다. 그 지연을 여기서 재서 넘긴다.
+    out = flight_outcome(k, m, w, p, burst, cand["n_need"],
+                         trail_delay_ms=trailing_parity_delay_ms(
+                             k, w, uplink_mbps))
     n_exp = out["n_rtt_expected"]
     pf = out["p_fail"]
+    # 🩸 2026-08-27 **구조 수리 — 실패 가지에 왕복 수를 안 물리고 있었다.**
+    #
+    #    T_recover 두 상수는 **기준선 대비 증분**으로 쟀다. 원자료가 그렇게
+    #    말한다(`results/probe_trecover_rtt.json`): 행마다
+    #        t_recover_ms = drop_p50 - base_p50
+    #    이고, 그 잰 자리(cert 2308 · ips 1280)의 base_p50 은 51.3 ms —
+    #    즉 **1-RTT 기준선**이다. 그런데 이 식은 `rtt_ms + t_recover` 로
+    #    청구한다. 그것은 「기준선이 언제나 1 왕복」일 때만 맞는다.
+    #
+    #    기준선이 2 왕복인 팔(증폭 예산이 모자라 어차피 2-RTT 인 후보)에서는
+    #    **왕복 하나를 통째로 빠뜨린다.**
+    #
+    #    실측이 이 자리를 직접 보여 준다(p17, 무제한 · 손실 15% · cert 9000 ·
+    #    m=0, n=750). 느린 연결의 히스토그램이 여러 봉우리로 갈리는데:
+    #        90~110 ms  463 건   정상 2-RTT (기준선 103 ms)
+    #        150~170 ms  59 건   **103 + 57.7** <- ACK 재전송 가지
+    #        250~270 ms  80 건   **50 + 200.86** <- PTO 가지
+    #    ACK 가지는 기준선(2-RTT) **위에** 증분이 얹혀 있다. 모형은 그것을
+    #    50 + 57.7 = 107.7 로 청구했다 - 왕복 하나(50 ms)가 빈다.
+    #
+    #    두 가지가 왜 다른가 — 재전송하는 **양**이 다르다.
+    #      ACK 가지 : 서버가 ACK 를 줘 구멍이 드러나므로 클라는 **잃은 것만**
+    #                 다시 보낸다. 서버의 누적 수신은 결국 깨끗한 비행과 같고,
+    #                 따라서 왕복 수도 그 팔의 정상값 그대로다.
+    #      PTO 가지 : 서버가 하나도 못 받았으므로 클라는 **비행 전체**를 다시
+    #                 보낸다. 서버의 누적 신용이 사실상 두 배가 되어 그 뒤는
+    #                 1 왕복이다. 위 히스토그램의 250~270 봉우리(=50+200.86,
+    #                 2-RTT 기준선 103 이 아니라 **1 왕복**)가 그 증거다.
+    #    그래서 PTO 가지의 옛 식은 옳고, **ACK 가지만** 고친다.
+    #
+    #    ⚠️ 맞춘 상수는 하나도 없다. n_rtt_given_ok 는 이미 같은 분포에서
+    #       나오는 값이고, 여기서 새로 도입한 수는 없다.
+    #
+    #    반증 시험(experiments/p20_residual.py 의 84 팔쌍, p17·p18·p15·p16
+    #    네 계기 전부): 팔쌍 잔차 |측정Δ - 모형ΔJ| 의 평균이
+    #        7.149 ms -> 6.002 ms (-16.1%)  개선 33 · 악화 9 · 무변화 42
+    #    악화 9 건은 전부 0.1 ms 미만(J_TIE_MS 의 10 배 안)이다. 한 조건에
+    #    맞춘 것이 아니라 **독립인 네 계기에서 같이 좋아진다.**
+    #
+    #    p=0 이면 p_fail_ack = 0 이라 이 항은 통째로 사라진다 - 헤드라인
+    #    (1 바이트 절벽)은 영향받지 않는다. 자체시험 18a 가 그것을 못 박는다.
+    n_ok = out["n_rtt_given_ok"]
+    # 🩸 2026-08-27 (2) - 실패 가지가 **셋**이다. 판별자와 근거는
+    #    last_original_pmf 주석(p7 의 V2/V3/V9 가 96 ms 로 갈린다).
+    #    세 가지가 무는 왕복 수도 다르다:
+    #      표본 없는 PTO : 아무것도 ACK 안 됐으므로 클라가 **비행 전체**를
+    #                      다시 보낸다 -> 서버 신용이 사실상 두 배 -> 1 왕복.
+    #      표본 있는 PTO : 앞의 원본은 ACK 됐으므로 **못 받은 것만** 다시
+    #                      보낸다 -> 누적 신용이 깨끗한 비행과 같다 -> n_ok.
+    #      시간 임계     : 같은 이유로 n_ok.
+    t_pto_s = pto_with_rtt_sample_ms(rtt_ms)
     stall = (out["p_fail_pto"] * (rtt_ms + t_pto)
-             + out["p_fail_ack"] * (rtt_ms + t_ack))
-    tx = tx_cost_ms(added, uplink_mbps)
+             + out["p_fail_pto_sampled"] * (n_ok * rtt_ms + t_pto_s)
+             + out["p_fail_ack"] * (n_ok * rtt_ms + t_ack))
+    # 🩸 2026-08-26 (2) - 복구 가지의 직렬화. 대역이 무제한이면 tx_cost_ms 가
+    #    0 이므로 **이 항은 통째로 사라지고 옛 식과 비트 단위로 같다**(자체시험
+    #    17b). 그래서 무제한에서 이미 검증된 것들은 그대로 남는다 - 이게 이
+    #    수리의 안전판이다. 맞춘 상수는 하나도 없다.
+    tx = (tx_cost_ms(tx_added, uplink_mbps)
+          + out["p_recovered"]
+          * tx_cost_ms(trailing_parity_bytes(k, m, w), uplink_mbps))
     return {
         "j_ms": n_exp * rtt_ms + stall + tx,
         "n_rtt_expected": n_exp,
@@ -620,6 +1488,8 @@ def cost_of_v2(cand, W_base, rtt_ms, p, burst,
         "tx_ms": tx,
         "p_fail": pf,
         "p_fail_pto": out["p_fail_pto"],
+        "p_fail_pto_sampled": out["p_fail_pto_sampled"],
+        "t_pto_sampled_ms": t_pto_s,
         "p_fail_ack": out["p_fail_ack"],
         "t_pto_ms": t_pto,
         "t_ack_ms": t_ack,
@@ -679,32 +1549,88 @@ if __name__ == "__main__":
     _chk("2. marginal == afec.channel.erasure_pmf", worst < 1e-12,
          "worst %.3g" % worst)
 
-    # 3. p_fail_of 가 p_unrecoverable 과 같은가 (한 분포에서 나오는지의 시험)
-    worst = 0.0
+    # 3. 🩸 2026-08-21. 예전 시험은 `p_fail_of == p_unrecoverable` 이었다.
+    #    p_unrecoverable 은 **MDS 가정**(패리티 b 개면 소거 b 개까지 복구)인데
+    #    구현은 마지막 패리티 하나로 소거 하나만 복구한다(recovers 주석).
+    #    같기를 요구하던 시험이 곧 결함을 고정하고 있었다.
+    #
+    #    정정판이 요구하는 것 둘:
+    #      (a) 구현 규칙이 MDS 보다 **낙관적일 수 없다** (p_fail_of >= MDS)
+    #      (b) m=1 에서는 둘이 정확히 같다 (m=1 이면 MDS 도 소거 1 개다)
+    #      (c) m=2 에서는 실제로 갈린다 - 안 갈리면 이 시험이 공허하다
+    worst_neg = 0.0
+    worst_m1 = 0.0
+    gap_m2 = 0.0
     for k in (1, 2, 3, 4):
         for m in (1, 2):
             for pp in (0.01, 0.05, 0.2):
                 for LL in (1.0, 2.0, 5.0):
                     va = p_fail_of({"k": k, "m": m}, pp, LL)
                     vb = p_unrecoverable(k, m, pp, LL)
-                    worst = max(worst, abs(va - vb))
-    _chk("3. p_fail_of == p_unrecoverable", worst < 1e-12, "worst %.3g" % worst)
+                    worst_neg = max(worst_neg, vb - va)      # 음수여야 정상
+                    if m == 1:
+                        worst_m1 = max(worst_m1, abs(va - vb))
+                    else:
+                        gap_m2 = max(gap_m2, va - vb)
+    _chk("3. p_fail_of >= MDS 하한, m=1 에서는 일치",
+         worst_neg < 1e-12 and worst_m1 < 1e-12,
+         "MDS 초과 %.3g / m=1 차 %.3g" % (worst_neg, worst_m1))
+    _chk("3a. m=2 에서 구현 규칙이 MDS 와 실제로 갈린다 (시험이 공허하지 않다)",
+         gap_m2 > 1e-6, "최대 차 %.4g (0 이면 결함이 되살아난 것)" % gap_m2)
+
+    # 3b. 3-지표 분포를 r 로 주변화하면 2-지표 분포와 같아야 한다.
+    worst = 0.0
+    for k in (1, 2, 3):
+        for m in (0, 1, 2):
+            for pp in (0.0, 0.05, 0.2):
+                for LL in (1.0, 3.0):
+                    p3 = joint_arrival_pmf3(k, m, pp, LL)
+                    p2 = joint_arrival_pmf(k, m, pp, LL)
+                    for a_ in range(k + 1):
+                        for b_ in range(m + 1):
+                            worst = max(worst,
+                                        abs(p3[a_][b_][0] + p3[a_][b_][1]
+                                            - p2[a_][b_]))
+    _chk("3b. joint_arrival_pmf3 를 r 로 주변화 == joint_arrival_pmf",
+         worst < 1e-12, "worst %.3g" % worst)
+
+    # 3c. 실측 고정. p15/p14 가 잰 자리(x25519 k=1, cert 4032, 손실 5%)에서
+    #     m=1 의 2-RTT 확률이 **9.5%** 여야 한다. 옛 회계는 4.75% 였고 실측은
+    #     9.0%(p15, n=400) / 8.0%(p14, n=200) 였다. 이 수가 다시 반토막 나면
+    #     복구 상태의 신용 회계가 되살아난 것이다.
+    _s0 = S0_BASE_X25519 + 7 * C_PKT_POLICY_DEFAULT      # 칸 7
+    _o = flight_outcome(1, 1, 1280, 0.05, 1.0,
+                        n_need_for_flight(4032 + _s0))
+    _chk("3c. 복구 상태의 신용 하락이 반영된다 (실측 p15 9.0% / p14 8.0%)",
+         abs(_o["p_two_rtt"] - 0.095) < 1e-3,
+         "p_two_rtt %.4f (옛 회계는 0.0475)" % _o["p_two_rtt"])
 
     # 4. 결함 1 - n_rtt 항이 버스트에 반응해야 한다.
-    o1 = flight_outcome(2, 1, 1280, 0.05, 1.0, 6000.0)
-    o5 = flight_outcome(2, 1, 1280, 0.05, 5.0, 6000.0)
+    o1 = flight_outcome(2, 1, 1280, 0.05, 1.0, n_need_for_flight(6000.0))
+    o5 = flight_outcome(2, 1, 1280, 0.05, 5.0, n_need_for_flight(6000.0))
     _chk("4. n_rtt term reacts to burst (defect 1)",
          abs(o1["n_rtt_expected"] - o5["n_rtt_expected"]) > 1e-6,
          "L=1 %.6f vs L=5 %.6f" % (o1["n_rtt_expected"],
                                    o5["n_rtt_expected"]))
 
     # 5. 결함 2 - 같은 손실 사건을 두 번 청구하지 않는다.
-    o = flight_outcome(1, 0, 1280, 0.2, 1.0, 3000.0)
+    o = flight_outcome(1, 0, 1280, 0.2, 1.0, n_need_for_flight(3000.0))
     _chk("5. n-term mass == 1 - p_fail (defect 2)",
          abs(o["p_recoverable"] - 0.8) < 1e-12
          and abs(o["n_rtt_expected"] - 0.8) < 1e-12,
          "n=%.6f p_ok=%.6f" % (o["n_rtt_expected"], o["p_recoverable"]))
-    e = cost_of_v2({"k": 1, "m": 0, "W_eff": 1280, "server_flight": 3000.0},
+    # 5a2. 계약: n_need 없는 후보는 **무엇을 채우라고** 말하며 죽는다.
+    #      (2026-08-21 p4 가 이 자리에서 KeyError 로 죽었다)
+    try:
+        cost_of_v2({"k": 1, "m": 0, "W_eff": 1280,
+                    "server_flight": 3000.0}, 1280, 50.0, 0.2, 1.0)
+        _chk("5a2. n_need 없는 후보는 거절된다", False, "안 죽었다")
+    except KeyError as _ex:
+        _chk("5a2. n_need 없는 후보는 거절된다 (안내문 포함)",
+             "bin_needed" in str(_ex), str(_ex)[:60])
+    e = cost_of_v2({"k": 1, "m": 0, "W_eff": 1280,
+                    "server_flight": 3000.0,
+                    "n_need": n_need_for_flight(3000.0)},
                    1280, 50.0, 0.2, 1.0, t_recover_ms=50.0,
                    t_recover_ack_ms=50.0)
     _chk("5b. J = 60ms not 70ms  (k=1 m=0 p=0.2 rtt=50, T_rec forced to RTT)",
@@ -714,12 +1640,22 @@ if __name__ == "__main__":
     _chk("5c. k=1,m=0 failure is always the PTO branch",
          abs(o["p_fail_pto"] - o["p_fail"]) < 1e-12 and o["p_fail_ack"] == 0.0,
          "pto=%.6f ack=%.6f" % (o["p_fail_pto"], o["p_fail_ack"]))
-    o2 = flight_outcome(2, 0, 1280, 0.2, 1.0, 3000.0)
-    _chk("5d. k=2,m=0 failure splits into both branches",
-         o2["p_fail_pto"] > 0 and o2["p_fail_ack"] > 0
-         and abs(o2["p_fail_pto"] + o2["p_fail_ack"] - o2["p_fail"]) < 1e-12,
-         "pto=%.6f ack=%.6f fail=%.6f" % (o2["p_fail_pto"], o2["p_fail_ack"],
-                                          o2["p_fail"]))
+    o2 = flight_outcome(2, 0, 1280, 0.2, 1.0, n_need_for_flight(3000.0))
+    # 🩸 2026-08-27 - 가지가 **셋**이 됐다(last_original_pmf). 이 검사는
+    #    "둘로 갈린다"였는데 이제 셋이고, 셋의 합이 p_fail 이어야 한다.
+    #    k=2 · m=0 · p=0.2 의 손계산: 둘 다 유실 0.04 / 마지막만 유실
+    #    0.8x0.2=0.16 / 마지막은 도착 0.2x0.8=0.16, 합 0.36.
+    _s3 = (o2["p_fail_pto"] + o2["p_fail_pto_sampled"] + o2["p_fail_ack"])
+    _chk("5d. k=2,m=0 failure splits into three branches (sums to p_fail)",
+         o2["p_fail_pto"] > 0 and o2["p_fail_pto_sampled"] > 0
+         and o2["p_fail_ack"] > 0
+         and abs(_s3 - o2["p_fail"]) < 1e-12
+         and abs(o2["p_fail_pto"] - 0.04) < 1e-12
+         and abs(o2["p_fail_pto_sampled"] - 0.16) < 1e-12
+         and abs(o2["p_fail_ack"] - 0.16) < 1e-12,
+         "pto=%.6f sampled=%.6f ack=%.6f fail=%.6f"
+         % (o2["p_fail_pto"], o2["p_fail_pto_sampled"], o2["p_fail_ack"],
+            o2["p_fail"]))
     # results/probe_trecover.json, RTT 50 ms:
     #   k=1 기준 51.27 -> 소거 252.09 (PTO)   k=2 기준 51.30 -> 소거 109.07 (ACK)
     _chk("5e. PTO branch reproduces measured 252.09 ms",
@@ -742,7 +1678,7 @@ if __name__ == "__main__":
     for k in (1, 2, 3):
         for m in (0, 1, 2):
             for sf in (3000.0, 5000.0, 9000.0):
-                oo = flight_outcome(k, m, 1280, 0.0, 1.0, sf)
+                oo = flight_outcome(k, m, 1280, 0.0, 1.0, n_need_for_flight(sf))
                 det = 1.0 if sf <= quantum.allowed(
                     k * 1280 + m * parity_datagram_bytes(1280, k)) else 2.0
                 if abs(oo["n_rtt_expected"] - det) > 1e-12 or oo["p_fail"] != 0.0:
@@ -769,15 +1705,142 @@ if __name__ == "__main__":
          not _bad, str(_bad[:3]))
 
     # 9. 결함 4 - levers 의 n_rtt 와 실제 기대 왕복이 무손실에서 일치
+    #
+    # 🩸 2026-08-26 - **대역 무제한에서** 잰다. levers 의 n_rtt 는 도착한
+    #    바이트를 전부 신용으로 세는 결정론 근사이고, 그건 시간 축이 없다.
+    #    대역이 걸리면 뒤따르는 패리티의 신용이 송신 결정보다 늦게 닿아
+    #    (위 '경주' 절) 둘이 **정당하게** 갈린다 - 자를 늘린 게 아니라
+    #    자가 재는 것을 정확히 적은 것이다. 갈리는 자리는 바로 아래 9a 가
+    #    따로 못 박는다.
     _bad = []
     for cert in range(2000, 9001, 100):
         r = decide_v2(C=259, cert_bytes=cert, rtt_ms=50.0, p=0.0, burst=1.0,
-                      s0_base=396.5, c_pkt=34.5)
+                      s0_base=396.5, c_pkt=34.5, uplink_mbps=0.0)
         for c in r["candidates"]:
             if abs(c["n_rtt"] - c["n_rtt_expected"]) > 1e-9:
                 _bad.append((cert, c["mode"], c["m"]))
-    _chk("9. levers n_rtt == expected n_rtt at p=0 (defect 4)",
+    _chk("9. levers n_rtt == expected n_rtt at p=0, uplink 0 (defect 4)",
          not _bad, str(_bad[:3]))
+
+    # 9a. 경주가 무는 자리는 **"앞선 패리티만으로 신용이 차는가"** 하나다
+    #
+    # ⚠️ 처음에는 "대역이 걸리면 m=1 만 갈린다"로 적었다가 **틀린 것을 확인해
+    #    고쳤다.** m>=2 도 앞선 패리티 하나로 칸이 안 차면(큰 cert) 뒤따르는
+    #    것의 신용이 필요하고, 그러면 그것도 경주다. 실측에서 m2 가 늘 100%
+    #    였던 것은 그 자리가 앞선 하나로 차는 자리였기 때문이지 m>=2 라서가
+    #    아니다. 그러므로 자는 m 이 아니라 **칸**으로 재야 한다.
+    #
+    #   (1) 앞선 패리티만으로 차면  -> 지연이 아무리 커도 1-RTT (결정적)
+    #   (2) 원본만으로는 안 차고 뒤따르는 것이 있어야 차면
+    #       -> 지연 0 이면 1-RTT, 지연이 크면 2-RTT 로 **간다**
+    _bad_lead, _bad_trail, _n1, _n2 = [], [], 0, 0
+    for k in (1, 2, 3):
+        w_ = 1280
+        _par = parity_datagram_bytes(w_, k)
+        for m in (1, 2, 3):
+            for nn in range(1, 12):
+                lead = k * w_ + (_par if m >= 2 else 0)
+                allp = k * w_ + m * _par
+                n_far = flight_outcome(k, m, w_, 0.0, 1.0, nn,
+                                       trail_delay_ms=5.0)["n_rtt_expected"]
+                n_near = flight_outcome(k, m, w_, 0.0, 1.0, nn,
+                                        trail_delay_ms=0.0)["n_rtt_expected"]
+                if quantum.bin_index(lead) >= nn:
+                    _n1 += 1
+                    if abs(n_far - 1.0) > 1e-12 or abs(n_near - 1.0) > 1e-12:
+                        _bad_lead.append((k, m, nn, n_near, n_far))
+                elif quantum.bin_index(allp) >= nn:
+                    _n2 += 1
+                    if abs(n_near - 1.0) > 1e-12 or abs(n_far - 2.0) > 1e-12:
+                        _bad_trail.append((k, m, nn, n_near, n_far))
+    _chk("9a. race bites exactly where the lead parity alone is not enough",
+         (not _bad_lead) and (not _bad_trail) and _n1 > 0 and _n2 > 0,
+         ("앞선것만으로 차는 자리 %d 개(어긋남 %s) / 뒤따르는것이 필요한 자리 "
+          "%d 개(어긋남 %s)") % (_n1, _bad_lead[:2], _n2, _bad_trail[:2]))
+
+    # 9b. 경주 항은 **대역 무제한에서 아무것도 바꾸지 않는다**
+    #
+    # 이게 이 수리의 안전판이다. 무제한(d=0)이면 q=1 이라 옛 식과 글자
+    # 그대로 같은 값이 나와야 한다 - 그래야 무제한에서 이미 검증된 것들
+    # (p4·p16·p18)이 그대로 남는다. 옛 식을 여기 다시 적어 직접 댄다.
+    def _old_flight_outcome(k, m, w, p_, burst_, n_need):
+        parity = parity_datagram_bytes(w, k)
+        pm = joint_arrival_pmf3(k, m, p_, burst_)
+        n_sum = 0.0
+        for a_ in range(k + 1):
+            for b_ in range(m + 1):
+                for r_ in (0, 1):
+                    pr = pm[a_][b_][r_]
+                    if pr <= 0.0:
+                        continue
+                    miss = k - a_
+                    rec = recovers(k, a_, r_)
+                    if miss > 0 and not rec:
+                        continue
+                    arrived = a_ * w + (b_ - r_) * parity
+                    if r_:
+                        arrived += w if rec else parity
+                    n_sum += pr * (2.0 if quantum.bin_index(arrived) < n_need
+                                   else 1.0)
+        return n_sum
+
+    _worst, _bad = 0.0, []
+    for k in (1, 2, 3):
+        for m in (0, 1, 2, 3):
+            for pp in (0.0, 0.02, 0.15):
+                for sf in (3000.0, 6000.0, 9000.0):
+                    nn = n_need_for_flight(sf)
+                    a = flight_outcome(k, m, 1280, pp, 1.0, nn,
+                                       trail_delay_ms=0.0)["n_rtt_expected"]
+                    b = _old_flight_outcome(k, m, 1280, pp, 1.0, nn)
+                    if abs(a - b) > _worst:
+                        _worst = abs(a - b)
+                    if abs(a - b) > 1e-12:
+                        _bad.append((k, m, pp, sf, a, b))
+    _chk("9b. trail_delay=0 reproduces the pre-race formula exactly",
+         not _bad, "최대 차이 %.3g %s" % (_worst, _bad[:2]))
+
+    # 9c. q(d) 자체의 성질 - 단조 비증가, q(0)=1, 마지막 마디 위는 0
+    _xs = [i * 0.01 for i in range(0, 300)]
+    _qs = [race_win_prob(x) for x in _xs]
+    _mono = all(_qs[i + 1] <= _qs[i] + 1e-12 for i in range(len(_qs) - 1))
+    _chk("9c. race_win_prob is monotone, q(0)=1, q(2ms)=0",
+         _mono and race_win_prob(0.0) == 1.0 and race_win_prob(2.0) == 0.0,
+         "q(0)=%.3f q(0.5)=%.3f q(1)=%.3f q(2)=%.3f"
+         % (race_win_prob(0.0), race_win_prob(0.5), race_win_prob(1.0),
+            race_win_prob(2.0)))
+
+    # 9d. credit_branches 가 확률분포인가 (질량 1, 바이트 단조)
+    _bad = []
+    for m in (0, 1, 2, 3):
+        for b_credit in range(0, max(m, 1)):
+            for r in (0, 1):
+                if b_credit + r > m:
+                    continue
+                for d in (0.0, 0.3, 0.6, 1.5):
+                    br = credit_branches(2, 1280, 1332, b_credit, r, m, d)
+                    tot = sum(x[0] for x in br)
+                    if abs(tot - 1.0) > 1e-12 or any(x[0] < 0 for x in br):
+                        _bad.append((m, b_credit, r, d, tot))
+    _chk("9d. credit_branches is a distribution", not _bad, str(_bad[:3]))
+
+    # 9e. ⭐ 실측 대조 - 2 Mbps 에서 m=1 이 m=2 보다 **비싸야** 한다
+    #
+    # 이게 이 수리가 고친 결함 그 자체다. 고치기 전 모형은 m1 을 53.0 ms 로
+    # 봐서 최적이라 했는데 실측은 121.3 ms 로 두 번째로 나빴다(오차 68.3).
+    # 실측(p17 2026-08-26, cert 9000·k=2·RTT 50·손실 2%·gap 50, 팔당 750):
+    #     m0 126.78   m1 121.31   m2 70.36   m3 70.50
+    # 즉 **m1 > m2** 이고 m2 ~= m3 이다. 모형도 그 순서를 내야 한다.
+    _r2 = decide_v2(C=1450, cert_bytes=9000, rtt_ms=50.0, p=0.02, burst=1.0,
+                    s0_base=S0_BASE_MLKEM, c_pkt=C_PKT_POLICY_DEFAULT,
+                    W=1280, max_steps=2, uplink_mbps=2.0)
+    _j = {c["m"]: c["j_ms"] for c in _r2["candidates"]
+          if c["mode"] in ("none", "parity")}
+    _chk("9e. 2Mbps: model puts m=1 above m=2 (measured 121.3 vs 70.4)",
+         _j.get(1, 0) > _j.get(2, 0) + 20.0 and _r2["choice"]["m"] >= 2,
+         "m0=%.2f m1=%.2f m2=%.2f m3=%.2f -> 고른 m=%d"
+         % (_j.get(0, -1), _j.get(1, -1), _j.get(2, -1), _j.get(3, -1),
+            _r2["choice"]["m"]))
 
     # 10. 결함 4 - pad_repack 의 추가 바이트를 기준선(k0) 대비로 센다
     r = decide_v2(C=1150, cert_bytes=6000, rtt_ms=50.0, p=0.0, burst=1.0,
@@ -790,17 +1853,41 @@ if __name__ == "__main__":
     _chk("10. pad_repack added measured vs baseline k0 (defect 4)",
          not _bad, str(_bad[:2]))
 
-    # 11. 정책이 기준선보다 나쁜 것을 고르지 않는다
+    # 11. 🩸 2026-08-21. 예전 판정은 `gain_ms >= 0` 이었다. **항등이라 실패할 수
+    #     없다** - decide_v2 는 base 를 **포함한** 집합에서 최소를 고르므로
+    #     gain_ms = J(base) - J(best) >= 0 이 정의상 항상 참이다. 비용식이
+    #     난수여도 통과한다. 헤드라인 안전성질("정책은 손해보지 않는다")을
+    #     지키는 척만 하고 있었다.
+    #
+    #     정정판이 지키는 것: **고른 후보가 후보 전부에 대해 실제로 최소인가.**
+    #     candidates 를 다시 훑어 J 최소를 독립적으로 구하고, 고른 것이 그
+    #     최소에서 J_TIE_MS 안에 있는지 본다(2 단 argmin 의 계약).
+    #     이건 argmin 의 항등이 아니라 **_pick_best 의 계약**을 시험한다 -
+    #     정렬 키를 망가뜨리면 여기서 붉어진다.
     _bad = []
+    _n11 = 0
     for C in (259, 1450):
         for cert in range(1000, 9001, 500):
             for pp in (0.0, 0.05, 0.2):
                 for LL in (1.0, 3.0):
                     r = decide_v2(C=C, cert_bytes=cert, rtt_ms=50.0, p=pp,
-                                  burst=LL, s0_base=396.5, c_pkt=34.5)
+                                  burst=LL, s0_base=S0_BASE_X25519,
+                                  c_pkt=C_PKT_POLICY_DEFAULT)
+                    _n11 += 1
+                    cs = r["candidates"]
+                    jmin = min(c["j_ms"] for c in cs)
+                    jsel = r["choice_cost"]["j_ms"]
+                    if jsel > jmin + J_TIE_MS + 1e-9:
+                        _bad.append((C, cert, pp, LL, jsel - jmin))
+                    # 동점 구간 안에서는 **추가 바이트가 최소**여야 한다.
+                    tied = [c for c in cs if c["j_ms"] <= jmin + J_TIE_MS]
+                    if tied and (r["choice_cost"]["added_bytes_real"]
+                                 > min(c["added_bytes_real"] for c in tied)):
+                        _bad.append((C, cert, pp, LL, "bytes"))
                     if r["gain_ms"] < -1e-9:
                         _bad.append((C, cert, pp, LL, r["gain_ms"]))
-    _chk("11. gain_ms >= 0 over the sweep", not _bad, str(_bad[:3]))
+    _chk("11. 고른 후보가 (J 최소 +- 분해능) 이고 그 안에서 바이트 최소",
+         not _bad, "%d 조건 / 위반 %s" % (_n11, _bad[:3]))
 
     # 12. 손실이 커지면 고르는 m 이 줄어들면 안 된다
     _bad = []
@@ -811,6 +1898,266 @@ if __name__ == "__main__":
         if any(seq[i] > seq[i + 1] for i in range(len(seq) - 1)):
             _bad.append((cert, seq))
     _chk("12. chosen m is non-decreasing in p", not _bad, str(_bad[:2]))
+
+    # ---- 13~16b. 단조성 불변식 --------------------------------------
+    # 2026-08-21 신설. 이 검사들이 **실제로 결함 셋을 잡아냈다**:
+    #   - 결합 후보의 목표 칸을 기준선에서 계산하던 버그 (cert 단조 위반)
+    #   - 서버 비행 S 를 전체 도착 기준으로 고정하던 근사 (delta/m 단조 위반)
+    #   - for_prior 의 버스트 경계가 1.0 이던 것 (L=1.001 에서 50 배 낙관)
+    # 저장소에 이 성질을 지키는 검사가 **하나도 없어서** 셋 다 살아남았다.
+    _CERTS = list(range(1000, 14001, 500))
+    _GRPS = ((1146, S0_BASE_X25519), (2308, S0_BASE_MLKEM))
+
+    def _cand13(C, cert, s0b, dl, m, k0):
+        return quantum._candidate(
+            "x", m, dl, C, 1280, 51, 16, cert, None, k0 * 1280,
+            quantum.bin_index(k0 * 1280), 1280, k_floor=k0,
+            s0_base=s0b, c_pkt=C_PKT_POLICY_DEFAULT,
+            parity_bytes=parity_datagram_bytes)
+
+    _bd, _bm, _bc = [], [], []
+    for _C, _s0b in _GRPS:
+        _k0 = capacity.natural_k(_C, 1280, 51)
+        _prevc = None
+        for _cert in _CERTS:
+            for _m in (0, 1, 2):                       # 13. delta 단조
+                _pv = None
+                for _dl in range(0, 173, 16):
+                    _c = _cand13(_C, _cert, _s0b, _dl, _m, _k0)
+                    if _c["W_eff"] > QUICGO_MAX_IPS:
+                        break
+                    _j = cost_of_v2(_c, 1280, 50.0, 0.05, 1.0, k0=_k0,
+                                    uplink_mbps=UPLINK_UNSHAPED)["j_ms"]
+                    if _pv is not None and _j > _pv + 1e-9:
+                        _bd.append((_C, _cert, _m, _dl))
+                    _pv = _j
+            for _dl in (0, 1, 81):                     # 14. m 단조
+                _pv = None
+                for _m in (0, 1, 2):
+                    _c = _cand13(_C, _cert, _s0b, _dl, _m, _k0)
+                    if _c["W_eff"] > QUICGO_MAX_IPS:
+                        continue
+                    _j = cost_of_v2(_c, 1280, 50.0, 0.05, 1.0, k0=_k0,
+                                    uplink_mbps=UPLINK_UNSHAPED)["j_ms"]
+                    if _pv is not None and _j > _pv + 1e-9:
+                        _bm.append((_C, _cert, _dl, _m))
+                    _pv = _j
+            _r = decide_v2(C=_C, cert_bytes=_cert, rtt_ms=50.0, p=0.05,
+                           burst=1.0, s0=None, s0_base=_s0b,
+                           c_pkt=C_PKT_POLICY_DEFAULT,
+                           uplink_mbps=UPLINK_UNSHAPED)
+            _v = _r["choice_cost"]["j_ms"]             # 15. cert 단조
+            if _prevc is not None and _v < _prevc - 1e-9:
+                _bc.append((_C, _cert, round(_prevc, 4), round(_v, 4)))
+            _prevc = _v
+    _chk("13. 대역 비용 0 에서 delta 를 키우면 J 가 늘지 않는다",
+         not _bd, str(_bd[:3]))
+    _chk("14. 대역 비용 0 에서 m 을 키우면 J 가 늘지 않는다",
+         not _bm, str(_bm[:3]))
+    _chk("15. cert 를 키우면 정책의 최적 J 가 줄지 않는다",
+         not _bc, str(_bc[:3]))
+
+    # 16. 버스트 단조. **방향이 m 으로 갈리고, 증가 방향은 범위가 있다.**
+    #   m = 0 : 복구가 없으므로 '하나라도 잃으면 실패'다. 손실이 뭉치면 같은
+    #           손실 질량이 더 적은 비행에 몰려 **전부 깨끗한 비행이 늘어난다**
+    #           -> P_fail 이 **줄어야** 한다. 이건 전 범위에서 참이다.
+    #   m >= 1: 원본과 패리티를 **같이** 잃어야 실패인데 뭉치면 그 사건이
+    #           흔해진다 -> P_fail 이 **늘어야** 한다. 다만 L -> 무한이면
+    #           채널이 all-or-nothing 이 되어 P_fail 이 p 로 되돌아온다.
+    #           즉 단조가 아니라 **단봉**이다. 직접 확인(k=3, m=1, p=0.2):
+    #             L=1.0 0.1808 -> L=3.0 0.2310(정점) -> L=200 0.2010 ~= p
+    #           그래서 증가 방향은 **운용 구간**(k<=3, p<=0.05)에서만 단언한다.
+    #           그 밖에서 붉어지면 결함이 아니라 물리다 - 범위를 넓히기 전에
+    #           이 주석을 먼저 읽을 것.
+    _bl = []
+    _Ls = (1.0, 1.001, 1.01, 1.05, 1.1, 1.5, 2.0, 3.0, 5.0)
+    for _k in (1, 2, 3, 4):
+        for _p in (0.002, 0.01, 0.05, 0.1, 0.2, 0.3):
+            _row = [p_fail_of({"k": _k, "m": 0}, _p, _L)
+                    for _L in _Ls + (50.0,)]
+            for _i in range(len(_row) - 1):
+                if _row[_i + 1] > _row[_i] + 1e-15:
+                    _bl.append(("m0증가", _k, _p))
+    for _k in (1, 2, 3):
+        for _m in (1, 2):
+            for _p in (0.002, 0.005, 0.01, 0.02, 0.03, 0.05):
+                _row = [p_fail_of({"k": _k, "m": _m}, _p, _L) for _L in _Ls]
+                for _i in range(len(_row) - 1):
+                    if _row[_i + 1] < _row[_i] - 1e-15:
+                        _bl.append(("m1감소", _k, _m, _p, _Ls[_i + 1]))
+    _chk("16. P_fail 버스트 단조 (m=0 전범위 감소 / m>=1 운용구간 증가)",
+         not _bl, str(_bl[:3]))
+    _j0 = p_fail_of({"k": 1, "m": 1}, 0.05, 1.0)
+    _j1 = p_fail_of({"k": 1, "m": 1}, 0.05, 1.001)
+    _chk("16a. L=1.0 과 1.001 이 같다 (옛 경계는 50 배 차이가 났다)",
+         abs(_j0 - _j1) < 1e-12,
+         "L=1.0 %.6e vs L=1.001 %.6e" % (_j0, _j1))
+    _sp = (p_fail_of({"k": 2, "m": 1}, 0.05, 5.0)
+           - p_fail_of({"k": 2, "m": 1}, 0.05, 1.0))
+    _chk("16b. [부정] 버스트가 P_fail 을 실제로 움직인다 (시험이 공허하지 않다)",
+         _sp > 1e-3, "k=2 m=1 p=0.05 에서 L 1->5 차이 %.5f" % _sp)
+
+    # --- 17. 복구 가지의 뒤따르는 패리티 직렬화 (2026-08-26 (2) 수리) --------
+    def _J(m, up, p, cert=9000):
+        d = decide_v2(C=1450, cert_bytes=cert, rtt_ms=50.0, p=p, burst=1.0,
+                      s0_base=S0_BASE_MLKEM, c_pkt=C_PKT_POLICY_DEFAULT,
+                      W=1280, max_steps=2, m_max=3, uplink_mbps=up)
+        return min(c["j_ms"] for c in d["candidates"] if c["m"] == m)
+
+    # 🩸 **안전판**: 대역이 무제한이면 새 항이 통째로 0 이라 옛 식과 같아야
+    #    한다. 이게 성립해야 "무제한에서 이미 검증된 것들은 그대로 남는다" 고
+    #    말할 수 있다. 새 항을 손으로 빼서 직접 댄다.
+    _worst = 0.0
+    for _m in (0, 1, 2, 3):
+        for _p in (0.0, 0.02, 0.15):
+            _o = flight_outcome(2, _m, 1280, _p, 1.0, 9,
+                                trail_delay_ms=trailing_parity_delay_ms(
+                                    2, 1280, 0.0))
+            _extra = (_o["p_recovered"]
+                      * tx_cost_ms(trailing_parity_bytes(2, _m, 1280), 0.0))
+            _worst = max(_worst, abs(_extra))
+    _chk("17a. [안전판] 무제한(대역 0)이면 새 항이 정확히 0 이다 (옛 식과 같다)",
+         _worst == 0.0, "최대 추가항 %.3e ms" % _worst)
+
+    # 🩸 [부정] 시험이 공허하지 않다 - 대역이 걸리면 항이 실제로 붙는다.
+    _e2 = (flight_outcome(2, 2, 1280, 0.15, 1.0, 9,
+                          trail_delay_ms=trailing_parity_delay_ms(2, 1280, 2.0))
+           ["p_recovered"] * tx_cost_ms(trailing_parity_bytes(2, 2, 1280), 2.0))
+    _e3 = (flight_outcome(2, 3, 1280, 0.15, 1.0, 9,
+                          trail_delay_ms=trailing_parity_delay_ms(2, 1280, 2.0))
+           ["p_recovered"] * tx_cost_ms(trailing_parity_bytes(2, 3, 1280), 2.0))
+    _chk("17b. [부정] 2 Mbps 에서는 항이 붙고 m 이 클수록 크다 (공허하지 않다)",
+         _e3 > _e2 > 0.1, "m2 %.3f ms < m3 %.3f ms" % (_e2, _e3))
+
+    # 🩸 이 수리가 **고치려던 것**: 대역이 걸린 자리에서 뒤따르는 패리티의
+    #    직렬화를 0 으로 세던 것을 뒤집는다. 자는 **구조**다 — 대역이 걸리면
+    #    패리티 하나가 실제 시간을 쓰므로, 저손실(복구가 드물어 P_fail 이
+    #    거의 안 내려가는 자리)에서는 m 을 늘린 값이 그 비용을 못 갚는다.
+    #    ⚠️ 실측을 자로 쓰지 않는다. 이 크기(1~2 ms)는 팔당 8,544~12,404 판이
+    #    있어야 판정되는데 지금 1,000 판이라 p17(+0.73)과 p18(−0.16)의 부호가
+    #    갈린다. 두 값 어느 쪽도 인용하지 않는다 — trailing_parity_bytes 참고.
+    _d2 = _J(3, 2.0, 0.02) - _J(2, 2.0, 0.02)
+    _chk("17c. 2 Mbps 저손실에서 m3 이 m2 보다 **비싸다** (직렬화가 값을 못 갚는다)",
+         _d2 > 0, "모형 m3-m2 = %+.3f ms" % _d2)
+
+    # 🩸 [부정] 무제한에서는 **부호가 반대**여야 한다. 이게 아니면 위 검사가
+    #    대역이 아니라 다른 것을 재고 있다는 뜻이다. 17a 가 무제한에서 새 항이
+    #    정확히 0 임을 못 박으므로, 여기 부호는 **옛 식의 부호와 같아야** 한다.
+    _du = _J(3, 0.0, 0.02) - _J(2, 0.0, 0.02)
+    _chk("17d. [부정] 무제한에서는 m3 이 여전히 싸다 (새 항이 0 이라 옛 식과 같다)",
+         _du < 0, "모형 m3-m2 = %+.3f ms" % _du)
+
+    # --- 18. ACK 실패 가지의 왕복 수 (2026-08-27 수리) ---------------------
+    #
+    # T_recover 는 **기준선 대비 증분**이다. 그러므로 실패 가지의 값은
+    # (그 팔의 정상 왕복 수)x RTT + 증분 이어야 한다. 옛 식은 왕복 수를
+    # 언제나 1 로 봤다 - 기준선이 2-RTT 인 팔에서 왕복 하나가 통째로 빈다.
+
+    def _cost(m, cert, p, up=0.0, k=2, w=1280):
+        d = decide_v2(C=1450, cert_bytes=cert, rtt_ms=50.0, p=p, burst=1.0,
+                      s0_base=S0_BASE_MLKEM, c_pkt=C_PKT_POLICY_DEFAULT,
+                      W=w, max_steps=2, m_max=max(m, 1), uplink_mbps=up)
+        cs = [c for c in d["candidates"]
+              if c["m"] == m and c.get("delta_per_dgram", 0) == 0
+              and c["mode"] in ("none", "parity")]
+        return min(cs, key=lambda e: e["j_ms"])
+
+    # 🩸 **안전판**: 손실이 0 이면 p_fail_ack = 0 이라 이 항이 통째로 사라진다.
+    #    헤드라인(1 바이트 절벽)이 무손실 자리라 영향을 안 받는다는 근거다.
+    _w18 = 0.0
+    for _cert in (3000, 9000, 15000):
+        for _m in (0, 1, 2, 3):
+            _c = _cost(_m, _cert, 0.0)
+            _w18 = max(_w18, _c["p_fail_ack"], _c["p_fail_pto"])
+    _chk("18a. [안전판] 무손실이면 실패 가지 질량이 정확히 0 (옛 식과 같다)",
+         _w18 == 0.0, "최대 실패 질량 %.3e" % _w18)
+
+    # 🩸 이 수리가 **고치려던 것**. 기준선이 2 왕복인 팔(cert 9000 의 m=0 -
+    #    증폭 예산이 모자라 어차피 2-RTT)에서 실패 가지 값이 왕복 하나만큼
+    #    올라야 한다. 실측 근거: p17 무제한 손실 15% 의 m=0 히스토그램에서
+    #    ACK 가지 봉우리가 **2-RTT 기준선(103 ms) 위에** 얹혀 있다(150~170).
+    _c0 = _cost(0, 9000, 0.15)
+    _n_ok0 = _c0["n_rtt_given_ok"]
+    _gap = _c0["p_fail_ack"] * (_n_ok0 - 1.0) * 50.0
+    _chk("18b. 기준선이 2 왕복인 팔은 실패 가지가 왕복 하나만큼 더 든다",
+         _n_ok0 > 1.99 and _gap > 5.0,
+         "n_rtt|ok = %.3f, 옛 식이 빠뜨리던 양 %.2f ms" % (_n_ok0, _gap))
+
+    # 🩸 [부정] 기준선이 1 왕복인 팔에서는 **아무것도 안 바뀐다.** 이게
+    #    아니면 위 검사가 왕복 수가 아니라 다른 것을 재고 있다는 뜻이다.
+    _c3 = _cost(3, 9000, 0.15)
+    _gap3 = _c3["p_fail_ack"] * (_c3["n_rtt_given_ok"] - 1.0) * 50.0
+    _chk("18c. [부정] 기준선이 1 왕복인 팔은 옛 식과 사실상 같다",
+         _gap3 < 0.2, "n_rtt|ok = %.3f, 차이 %.3f ms"
+         % (_c3["n_rtt_given_ok"], _gap3))
+
+    # 🩸 PTO 가지는 **안 건드렸다.** 비행 전체를 다시 보내 신용이 두 배가
+    #    되므로 그 뒤는 1 왕복이고, 실측 봉우리(50+200.86=251)가 그렇게 말한다.
+    #    이 검사는 누가 나중에 "대칭이 예쁘다"며 PTO 가지도 바꾸는 것을 막는다.
+    _pto_only = _c0["p_fail_pto"] * (50.0 + _c0["t_pto_ms"])
+    _stall_expect = (_pto_only
+                     + _c0["p_fail_pto_sampled"]
+                     * (_n_ok0 * 50.0 + _c0["t_pto_sampled_ms"])
+                     + _c0["p_fail_ack"] * (_n_ok0 * 50.0 + _c0["t_ack_ms"]))
+    _chk("18d. 표본 없는 PTO 가지만 1 왕복 (나머지 둘은 n_ok 왕복)",
+         abs(_c0["stall_ms"] - _stall_expect) < 1e-9,
+         "stall %.6f vs 기대 %.6f" % (_c0["stall_ms"], _stall_expect))
+
+    # --- 19. 마지막 원본 판별자 (2026-08-27 수리) ---------------------------
+    #
+    # p7 의 V2/V3 은 옛 모형에서 **같은 상태**였는데 실측이 96.3 ms 갈렸다.
+    # 이 검사들은 그 수리가 되살아나 사라지지 않도록 못 박는다.
+
+    # 🩸 **안전판**: 새 분포는 같은 DP 의 다른 주변화이므로 실패 질량의
+    #    합이 옛 p_fail 과 **비트 단위로** 같아야 한다. 이게 깨지면 회계가
+    #    두 군데로 갈라진 것이다.
+    _w19 = 0.0
+    for _k in (1, 2, 3, 4):
+        for _m in (0, 1, 2, 3):
+            for _p in (0.0, 0.02, 0.15, 0.3):
+                for _L in (1.0, 3.0):
+                    _o = flight_outcome(_k, _m, 1280, _p, _L, 9)
+                    _w19 = max(_w19, abs(_o["p_fail_pto"]
+                                         + _o["p_fail_pto_sampled"]
+                                         + _o["p_fail_ack"] - _o["p_fail"]))
+    _chk("19a. [안전판] 세 가지의 합 == p_fail (분포가 안 갈라졌다)",
+         _w19 < 1e-12, "최대 차이 %.3e" % _w19)
+
+    # 🩸 이 수리가 **고치려던 것**: 마지막 원본이 도착했는지로 갈린다.
+    #    k=2·m=0 은 두 원본 중 하나만 잃는 두 경우가 정확히 대칭이므로
+    #    (p(1-p) 씩) 옛 규칙에서는 **둘 다 ACK 가지**였다.
+    #    ⚠️ k=2 로는 이 검사를 세울 수 없다 - 두 가지 질량이 둘 다
+    #       p(1-p)=0.16 으로 **같아서**, 판별자를 통째로 뒤집어도 검사가
+    #       통과한다(감사 2026-08-27 이 지적). k=3 을 쓰면 셋이 전부
+    #       갈린다. 손계산(p=0.2, 독립):
+    #         아무것도 없음      0.2^3            = 0.008
+    #         마지막만 유실      0.2(1 - 0.2^2)   = 0.192
+    #         마지막은 도착      0.8(1 - 0.8^2)   = 0.288
+    #         합 0.488 = 1 - 0.8^3  ✓
+    _fs = fail_split(3, 0, 0.2, 1.0)
+    _chk("19b. 마지막 원본 유실이 ACK 가지가 아니라 PTO 가지로 간다",
+         abs(_fs[0] - 0.008) < 1e-12 and abs(_fs[1] - 0.192) < 1e-12
+         and abs(_fs[2] - 0.288) < 1e-12,
+         "표본없는PTO %.4f / 표본있는PTO %.4f / 시간임계 %.4f" % _fs)
+
+    # 🩸 [부정] k=1 에서는 **아무것도 안 바뀐다** - 원본이 하나뿐이라
+    #    "마지막 원본 유실"과 "아무것도 없음"이 같은 사건이다. 이게 아니면
+    #    위 검사가 마지막 원본이 아니라 다른 것을 재고 있다는 뜻이다.
+    _fs1 = fail_split(1, 0, 0.2, 1.0)
+    _chk("19c. [부정] k=1 에서는 세 번째 가지가 비어 있다 (사건이 같다)",
+         _fs1[1] == 0.0 and _fs1[2] == 0.0 and abs(_fs1[0] - 0.2) < 1e-12,
+         "표본없는PTO %.4f / 표본있는PTO %.4f / 시간임계 %.4f" % _fs1)
+
+    # 🩸 p7 의 세 모드를 모형이 실제로 재현하는지 - 값으로 못 박는다.
+    #    (기준선 1 왕복, RTT 50, k=2. 실측 증분 58.2 / 154.5 / 200.6)
+    _p7 = [("V2 마지막 원본 도착", default_t_recover(50.0, True), 58.2),
+           ("V3 마지막 원본 유실", pto_with_rtt_sample_ms(50.0), 154.5),
+           ("V9 아무것도 없음", default_t_recover(50.0, False), 200.6)]
+    _worst7 = max(abs(mo - me) for _, mo, me in _p7)
+    _chk("19d. p7 결정적 소거 세 모드를 10 ms 안에서 재현한다",
+         _worst7 < 10.0,
+         " | ".join("%s 모형 %.1f vs 실측 %.1f" % (n, mo, me)
+                    for n, mo, me in _p7))
 
     print("")
     print("%d checks, %d failed" % (_n[0], _fail[0]))

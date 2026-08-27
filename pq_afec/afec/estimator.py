@@ -35,8 +35,16 @@ class LossEstimator:
     블록 크기가 바뀌어도 가중이 흐트러지지 않는다.
     """
 
+    # 🩸 2026-08-20: surprise_threshold 0.10 -> 0.05. 정상 채널(p=5%, L=4,
+    # 300블록x12시드)의 허위 급변 3.08회/연결의 구성을 계측하니 **상단
+    # 단일블록 검정이 31건, 하단 CUSUM 이 6건**이었다 - 표류가 아니라 상단
+    # 문턱이 주범이다(꼬리확률 0.10 문턱은 정의상 블록의 ~10% 를 '놀랍다'고
+    # 부르고, confirm=2 를 거쳐도 연결당 ~2.6회가 남는다). 0.05 로 내리면
+    # 허위 급변이 1.25회/연결로 줄고, 진짜 급변(꼬리확률이 수십 배 작다)의
+    # 감지는 최악 한 블록 늦어질 뿐이다. 판정 기준(<4.0)은 그대로 두고
+    # 여유를 3.3배로 벌린다.
     def __init__(self, alpha=0.08, p_init=0.01, z=1.0,
-                 jump_alpha=0.40, surprise_threshold=0.10, jump_min_losses=2,
+                 jump_alpha=0.40, surprise_threshold=0.05, jump_min_losses=2,
                  jump_confirm=2, prior_weight=100.0, burst_init=1.0,
                  down_h=3.0):
         self.alpha = alpha

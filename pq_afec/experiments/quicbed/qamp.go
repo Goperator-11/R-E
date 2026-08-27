@@ -291,6 +291,171 @@ func buildParity(dcid, scid []byte, fb fecBlock) []byte {
 	return out
 }
 
+// ------------------------------------------------------- C1 수신 피드백
+//
+// 서버가 첫 비행에서 **실제로 받은 심볼 수**를 클라이언트에게 알려 준다.
+// 그러면 클라이언트는 일부러 m=0 으로 가는 탐색 라운드 없이도 손실을 관측한다.
+//
+// 왜 필요한가 (p17 실측, 2026-08-23):
+//
+//	손실  2% -> 목표 m=1  적중 96.3%
+//	손실 15% -> 목표 m=2  적중 ** 0.0%**   <- 상승을 전혀 못 따라간다
+//
+// 원인은 캐시 관성이다. 관측이 탐색 라운드에서만(연결의 5%), 단위가 연결,
+// decay 0.99 의 유효 메모리 100 — 구간당 관측 7~8 개로는 100 을 못 갈아치운다
+// (모형 재현: m=2 로 바뀌는 데 1,500 연결). 피드백이면 연결마다 k+m 심볼이
+// 들어와 한 구간에 갈아치운다.
+//
+// ⚠️ **증폭 예산을 건드리면 안 된다.** 서버가 첫 비행 중에 이 회신을 보내면
+// 그 바이트가 예산을 먹어, 최적화 대상을 피드백이 갉아먹는 자기모순이 된다.
+// 그래서 **클라이언트의 Handshake 패킷을 받은 뒤**에 보낸다 — 그 시점에는
+// 주소 검증이 끝나 증폭 한도가 해제돼 있다.
+//
+// 겉모양은 패리티와 같은 방식이다: 롱헤더 Initial 이라 상대가 연결에
+// 귀속시키지만 AEAD 를 통과하지 못해 QUIC 스택은 조용히 폐기하고, 우리
+// 계층이 가로채 읽는다.
+// fbEarly - **진단 전용**. 첫 데이터그램에도 회신해서 "도달 자체가 되는가"를
+// 가른다. 증폭 예산을 쓰므로 측정에 쓰면 안 된다(환경변수로만 켠다).
+var fbEarly = os.Getenv("PADFEC_FB_EARLY") == "1"
+
+var fbMagic = []byte{'P', 'F', 'B', 'K'}
+
+// bytesIndex - 진단용 부분열 검색. 표준 bytes 를 새로 import 하지 않으려고
+// 직접 쓴다(이 파일의 import 목록을 건드리면 다른 곳이 흔들린다).
+func bytesIndex(h, nd []byte) int {
+	for i := 0; i+len(nd) <= len(h); i++ {
+		ok := true
+		for j := range nd {
+			if h[i+j] != nd[j] {
+				ok = false
+				break
+			}
+		}
+		if ok {
+			return i
+		}
+	}
+	return -1
+}
+
+const fbVer = 1
+
+type fbRec struct {
+	flight uint16
+	k      uint8 // 서버가 이 비행에서 기대한 원본 수 (참고)
+	rxOrig uint8 // 실제로 받은 원본 데이터그램 수
+	rxPar  uint8 // 실제로 받은 패리티 데이터그램 수
+	recov  uint8 // 복구한 원본 수
+}
+
+func buildFeedback(dcid, scid []byte, r fbRec) []byte {
+	body := make([]byte, 0, 16)
+	body = append(body, fbMagic...)
+	body = append(body, byte(fbVer))
+	body = binary.BigEndian.AppendUint16(body, r.flight)
+	body = append(body, r.k, r.rxOrig, r.rxPar, r.recov)
+
+	out := make([]byte, 0, len(body)+64)
+	out = append(out, 0xC3) // 롱헤더 + fixed + Initial + pn len 4
+	out = binary.BigEndian.AppendUint32(out, 1)
+	out = append(out, byte(len(dcid)))
+	out = append(out, dcid...)
+	out = append(out, byte(len(scid)))
+	out = append(out, scid...)
+	out = append(out, 0x00) // token length = 0
+	out = appendVarint2(out, uint64(len(body)))
+	out = append(out, body...)
+	return out
+}
+
+// readVarint 는 QUIC 가변길이 정수를 읽는다(RFC 9000 §16).
+// 앞 2 비트가 길이를 정한다: 00=1, 01=2, 10=4, 11=8 바이트.
+func readVarint(b []byte) (uint64, int) {
+	if len(b) == 0 {
+		return 0, 0
+	}
+	n := 1 << (b[0] >> 6)
+	if len(b) < n {
+		return 0, 0
+	}
+	v := uint64(b[0] & 0x3F)
+	for i := 1; i < n; i++ {
+		v = v<<8 | uint64(b[i])
+	}
+	return v, n
+}
+
+// hasHandshake 는 데이터그램 안에 Handshake 패킷이 있는지 본다.
+//
+// 🩸 2026-08-23 - 첫 판은 parseLongHdr 로 **첫 패킷만** 봤는데, 클라이언트는
+//    두 번째 비행에서 Initial(ACK)과 Handshake 를 **한 데이터그램에
+//    코얼레스**해 보낸다. 그래서 전부 typ 0 으로 분류돼 회신이 한 번도
+//    나가지 않았다(실측: hdr_initial 100, hdr_handshake **0**).
+//    코얼레스된 패킷을 길이 필드로 따라가며 전부 훑는다.
+func hasHandshake(d []byte) bool {
+	i := 0
+	for i < len(d) {
+		h := parseLongHdr(d[i:])
+		if !h.ok {
+			return false // 짧은 헤더 = 1-RTT. 그 뒤로는 롱헤더가 없다.
+		}
+		if h.typ == 2 {
+			return true
+		}
+		j := h.bodyOff
+		if h.typ == 0 { // Initial 만 토큰 길이 필드를 갖는다
+			tl, adv := readVarint(d[i+j:])
+			if adv == 0 {
+				return false
+			}
+			j += adv + int(tl)
+		}
+		if i+j >= len(d) {
+			return false
+		}
+		plen, adv := readVarint(d[i+j:])
+		if adv == 0 || plen == 0 {
+			return false
+		}
+		j += adv + int(plen)
+		if j <= 0 || i+j > len(d) {
+			return false
+		}
+		i += j
+	}
+	return false
+}
+
+// parseFeedback 은 데이터그램이 서버의 수신 회신인지 보고 내용을 돌려준다.
+// 형식은 parseFecBlock 과 같은 규칙을 따른다(토큰 0, 2 바이트 varint 길이).
+func parseFeedback(d []byte) *fbRec {
+	h := parseLongHdr(d)
+	if !h.ok || h.typ != 0 {
+		return nil
+	}
+	i := h.bodyOff
+	if i >= len(d) || d[i] != 0x00 {
+		return nil
+	}
+	i++
+	if i+2 > len(d) || d[i]&0xC0 != 0x40 {
+		return nil
+	}
+	blen := int(d[i]&0x3F)<<8 | int(d[i+1])
+	i += 2
+	if i+blen > len(d) || blen < fecMagicLen+7 {
+		return nil
+	}
+	b := d[i : i+blen]
+	if string(b[:fecMagicLen]) != string(fbMagic) || b[4] != fbVer {
+		return nil
+	}
+	return &fbRec{
+		flight: binary.BigEndian.Uint16(b[5:7]),
+		k:      b[7], rxOrig: b[8], rxPar: b[9], recov: b[10],
+	}
+}
+
 // parseFecBlock 은 데이터그램이 우리 패리티인지 보고, 맞으면 내용을 돌려준다.
 func parseFecBlock(d []byte) *fecBlock {
 	h := parseLongHdr(d)
@@ -392,10 +557,26 @@ type clientStats struct {
 	BytesOrig    int64          `json:"bytes_orig"`
 	BytesParity  int64          `json:"bytes_parity"`
 	InitialDgram int            `json:"initial_datagrams"`
+	// C1 배선 확인용: 서버 회신을 몇 번 받았고 마지막 내용이 무엇인가.
+	FbRecv      int `json:"fb_recv"`
+	FbMagicSeen int `json:"fb_magic_seen"`
+	RxCalls     int `json:"rx_calls"` // fecConn.ReadFrom 이 실제로 불린 횟수
+	FbWaits     int `json:"fb_waits"` // waitFeedback 을 부른 횟수
+	FbRxOrig  int   `json:"fb_rx_orig"`
+	FbRxPar   int   `json:"fb_rx_parity"`
+	FbRecov   int   `json:"fb_recovered"`
 	// 첫 비행만 따로. 이것이 증폭 예산을 정하는 양이고, 용량 정리의 k 다.
 	// 연결 전체의 Initial 을 세면 뒤따르는 ACK 용 Initial 이 섞여 k 가 흐려진다.
 	FirstFlightDgrams int   `json:"first_flight_datagrams"`
 	FirstFlightBytes  int64 `json:"first_flight_bytes"`
+	// 🩸 p13 (2026-08-20). 패리티도 첫 비행 몫만 따로 센다. BytesParity 는
+	// 연결 전체의 합이라 **뒤따르는 ACK 비행의 패리티까지 섞인다** - 그 몫은
+	// 서버의 첫 응답보다 한 왕복 늦게 도착하므로 증폭 예산과 무관한데,
+	// p2 가 이 합계를 client_bytes_total 로 써서 FEC 팔 임계 예측이
+	// 4,000~8,000 B 씩 빗나갔다(첫 비행 패리티만 세면 §2.6 의 B_eff 구간에
+	// 정확히 든다). 예산 회계에는 이 두 필드를 써야 한다.
+	FirstFlightParity      int   `json:"first_flight_parity_dgrams"`
+	FirstFlightParityBytes int64 `json:"first_flight_parity_bytes"`
 }
 
 type fecConn struct {
@@ -418,6 +599,11 @@ type fecConn struct {
 	// Initial 키로 복호해서 CRYPTO 바이트와 PADDING 바이트를 **실측**한다.
 	// 용량 정리의 C 와 h 를 추정이 아니라 측정으로 넣기 위한 것이다.
 	dumpPath string
+
+	// C1: 서버 수신 회신. onFeedback 이 있으면 받는 즉시 부른다.
+	onFeedback func(fbRec)
+	fbLast     *fbRec
+	fbCount    int
 
 	mu       sync.Mutex
 	flight   [][]byte
@@ -507,11 +693,74 @@ func (c *fecConn) WriteTo(b []byte, addr net.Addr) (int, error) {
 // 폐루프 정책이 n_rtt 를 예측하는 데 쓰는 유일한 입력이다.
 // 🩸 이걸 안 감싸서 처음에는 S=0 이 나왔고, 정책이 아무 근거 없이 골랐다.
 func (c *fecConn) ReadFrom(b []byte) (int, net.Addr, error) {
-	n, addr, err := c.PacketConn.ReadFrom(b)
-	if err == nil && n > 0 {
+	for {
+		n, addr, err := c.PacketConn.ReadFrom(b)
+		if err != nil || n <= 0 {
+			return n, addr, err
+		}
 		c.countRx(n)
+		c.mu.Lock()
+		c.stats.RxCalls++
+		c.mu.Unlock()
+		// C1: 서버의 수신 회신이면 여기서 걷어낸다. QUIC 스택에 넘기면
+		// AEAD 실패로 조용히 버려지긴 하지만, 넘기지 않는 편이 명확하고
+		// 스택의 통계도 안 흐린다.
+		if n > 16 && bytesIndex(b[:n], fbMagic) >= 0 {
+			c.mu.Lock()
+			c.stats.FbMagicSeen++
+			c.mu.Unlock()
+		}
+		if r := parseFeedback(b[:n]); r != nil {
+			c.mu.Lock()
+			c.fbLast = r
+			c.fbCount++
+			c.stats.FbRecv++
+			c.stats.FbRxOrig = int(r.rxOrig)
+			c.stats.FbRxPar = int(r.rxPar)
+			c.stats.FbRecov = int(r.recov)
+			cb := c.onFeedback
+			c.mu.Unlock()
+			if cb != nil {
+				cb(*r)
+			}
+			continue // 다음 데이터그램을 읽는다
+		}
+		return n, addr, err
 	}
-	return n, addr, err
+}
+
+// waitFeedback 은 서버 수신 회신이 올 때까지 최대 d 만큼 기다린다.
+//
+// 왜 기다려야 하나: 이 테스트베드는 연결마다 UDP 소켓을 새로 만들고
+// 핸드셰이크 직후 닫는다. 그런데 회신은 서버가 클라이언트의 Handshake 를
+// 받은 뒤에 보내므로(증폭 예산을 안 쓰려고) 약 1 RTT 늦게 도착한다 —
+// 소켓이 이미 닫혀 있으면 못 받는다(실측: 서버가 30/30 보냈는데 클라 수신 0).
+//
+// **실제 클라이언트는 핸드셰이크 후에도 연결을 유지하므로 이 문제가 없다.**
+// 즉시 닫는 우리 쪽이 인위적이다. HCT 는 이 대기 전에 이미 찍히므로
+// 측정값에는 영향이 없다(c1_smoke 의 음성 대조가 그것을 확인한다).
+func (c *fecConn) waitFeedback(d time.Duration) bool {
+	c.mu.Lock()
+	c.stats.FbWaits++
+	c.mu.Unlock()
+	deadline := time.Now().Add(d)
+	for time.Now().Before(deadline) {
+		c.mu.Lock()
+		got := c.fbCount > 0
+		c.mu.Unlock()
+		if got {
+			return true
+		}
+		time.Sleep(500 * time.Microsecond)
+	}
+	return false
+}
+
+// lastFeedback 은 이 연결에서 받은 마지막 서버 회신을 준다(없으면 nil).
+func (c *fecConn) lastFeedback() *fbRec {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.fbLast
 }
 
 // flushFlight 는 모아 둔 비행을 순서까지 정해 내보낸다.
@@ -635,6 +884,10 @@ func (c *fecConn) flushFlight() {
 		if err == nil {
 			c.stats.ParitySent++
 			c.stats.BytesParity += int64(len(pkt))
+			if isFirstFlight {
+				c.stats.FirstFlightParity++
+				c.stats.FirstFlightParityBytes += int64(len(pkt))
+			}
 		} else {
 			c.stats.ParityFail++
 		}
@@ -696,6 +949,15 @@ type serverStats struct {
 	Unrecover    int   `json:"unrecoverable_seen"`
 	BytesIn      int64 `json:"bytes_in"`
 	BytesToStack int64 `json:"bytes_to_stack"`
+	ConnAcctDropped int `json:"conn_acct_dropped"` // connAcctCap 초과로 못 센 연결
+	// C1 진단: 롱헤더 타입별 수신 수와 회신 송신 수. 배선이 어디서 끊겼는지
+	// 추측하지 않고 자료로 보려고 둔다.
+	HdrInitial   int `json:"hdr_initial"`
+	HdrHandshake int `json:"hdr_handshake"`
+	HdrShort     int `json:"hdr_short"`
+	FbSentN      int `json:"fb_sent"`
+	FbWriteErr   int `json:"fb_write_err"`
+	HdrCoalescedHS int `json:"hdr_coalesced_hs"`
 }
 
 type recvItem struct {
@@ -722,6 +984,59 @@ type pendingPkt struct {
 	addr net.Addr
 }
 
+// ------------------------------------------------- 연결별 회계 (p13, 2026-08-20)
+//
+// 명세 §2.6 의 B_eff("서버가 응답 비행을 만들기로 결정한 시점까지 도착한
+// 클라이언트 바이트")를 **직접** 재기 위한 계측이다. 그전까지 countConn 은
+// 프로세스 전체 합계만 세서 (1) 연결끼리 섞이고 (2) 송신을 아예 안 가로채
+// "첫 송신 시점"이라는 것 자체가 없었다 - B_eff 재해석이 사후 가설에
+// 머문 이유다.
+//
+// 연결의 열쇠는 클라이언트 주소다. 시행마다 새 UDP 소켓(새 포트)을 쓰므로
+// 주소가 곧 연결이다. DCID 는 서버가 Retry 없이도 바꿔 앉을 수 있어 안 쓴다.
+//
+// 두 종류의 바이트를 다 센다.
+//   phys  물리적으로 도착한 바이트 (원본/패리티 분리)
+//   stack QUIC 스택에 넘긴 바이트 - quic-go 의 증폭 예산이 실제로 세는 양.
+//         복구가 일어나면 패리티 대신 복구본이 넘어가므로 phys 와 갈린다.
+//         무손실 시행에서는 둘이 같다.
+type connAcct struct {
+	FirstRxNs int64 `json:"first_rx_ns"`
+	FirstTxNs int64 `json:"first_tx_ns"`
+	RxDgrams  int   `json:"rx_dgrams"`
+	RxBytes   int64 `json:"rx_bytes"`
+	RxOrig    int64 `json:"rx_orig_bytes"`
+	RxParity  int64 `json:"rx_parity_bytes"`
+	// 🩸 2026-08-23 (C1) - 위 둘은 **바이트**다. 피드백은 심볼 **개수**를
+	//    보내야 하므로 따로 센다. 첫 비행 몫만 세려고 Handshake 를 본
+	//    시점에 잠근다(FbSent).
+	RxOrigN   int  `json:"rx_orig_n"`
+	RxParityN int  `json:"rx_parity_n"`
+	RecovN    int  `json:"recov_n"`
+	FbSent    bool `json:"fb_sent"`
+	Stack     int64 `json:"stack_bytes"`
+	TxDgrams  int   `json:"tx_dgrams"`
+	TxBytes   int64 `json:"tx_bytes"`
+	// 서버가 첫 데이터그램을 내보내는 순간의 스냅숏. 이것이 B_eff 다.
+	BeffStack  int64 `json:"beff_stack"`
+	BeffPhys   int64 `json:"beff_phys"`
+	BeffOrig   int64 `json:"beff_orig"`
+	BeffParity int64 `json:"beff_parity"`
+	// 송신 타임라인: n 번째 송신 직전의 stack 누적 바이트, 그 송신의 크기,
+	// 그리고 송신 시각(ns). 첫 비행 버스트가 몇 데이터그램인지(= 명세 §2.5 의
+	// c 를 확정할 n)와, 버스트 도중에 패리티가 도착해 예산이 자랐는지가 여기서
+	// 그대로 보인다. 시각이 있어야 첫 비행과 꼬리(Finished 이후 응답)를 가를 수
+	// 있다 - 1-RTT 조건에서 비행은 첫 송신 후 1 ms 안에 끝나고 꼬리는 RTT 뒤에
+	// 온다. 바이트 성장만으로 가르면 패리티 도착과 ACK 도착이 둘 다 ~1.3 KB 라
+	// 구별되지 않는다.
+	TxRxTimeline []int64 `json:"tx_rx_timeline"`
+	TxSizes      []int   `json:"tx_sizes"`
+	TxNs         []int64 `json:"tx_ns"`
+}
+
+const connAcctCap = 4096     // 폭주 방지. 넘으면 새 연결은 세지 않고 개수만 남긴다.
+const connTimelineCap = 40   // 서버 첫 비행(<=13 패킷) + 꼬리를 담고도 남는다.
+
 // 🩸 연결마다 flight id 가 1 부터 다시 시작한다. 처음에는 비행 기록을
 // flight id 만으로 키잉했는데, 그러면 **서로 다른 연결의 비행이 같은 칸에
 // 겹치고** 오래된 k=1 비행이 영원히 남아 새 원본이 올 때마다 "복구"로
@@ -745,16 +1060,91 @@ const flightTTL = 1 * time.Second
 const recentTTL = 3 * time.Second
 const recentCap = 512
 
+// min8 은 uint8 로 넣기 전에 255 로 자른다. k<=3, m<=2 라 실제로는 안 걸리지만
+// 조용한 오버플로가 나면 손실률 추정이 통째로 틀어지므로 못박아 둔다.
+func min8(v int) int {
+	if v < 0 {
+		return 0
+	}
+	if v > 255 {
+		return 255
+	}
+	return v
+}
+
 type decodeConn struct {
 	countConn
-	mode string
+	mode     string
+	feedback bool // C1: 수신 회신을 보낼지 (음성 대조용으로 끌 수 있다)
 
 	mu           sync.Mutex
 	recent       []recvItem
 	flights      map[string]*flightRec
 	pending      []pendingPkt
 	pendingBytes int64 // 아직 안 넘긴 복구본의 바이트 (회계 예약분)
+	conns        map[string]*connAcct
 	stats        serverStats
+}
+
+// acctLocked 는 이 주소의 연결 회계를 준다. mu 를 쥔 채로만 부른다.
+func (s *decodeConn) acctLocked(addr net.Addr) *connAcct {
+	if addr == nil {
+		return nil
+	}
+	key := addr.String()
+	ca, ok := s.conns[key]
+	if ok {
+		return ca
+	}
+	if s.conns == nil {
+		s.conns = map[string]*connAcct{}
+	}
+	if len(s.conns) >= connAcctCap {
+		s.stats.ConnAcctDropped++
+		return nil
+	}
+	ca = &connAcct{}
+	s.conns[key] = ca
+	return ca
+}
+
+// stackLocked 는 "스택에 넘긴 바이트"를 전역과 연결 양쪽에 계상한다.
+// quic-go 의 증폭 예산이 실제로 세는 것이 이 양이므로, B_eff 의 정본도 이쪽이다.
+func (s *decodeConn) stackLocked(addr net.Addr, n int) {
+	s.stats.BytesToStack += int64(n)
+	if ca := s.acctLocked(addr); ca != nil {
+		ca.Stack += int64(n)
+	}
+}
+
+// WriteTo 가 서버 송신을 가로챈다. 이 연결로 나가는 **첫** 데이터그램 직전의
+// 수신 누적이 곧 B_eff 다(명세 §2.6). quic-go 는 예산 검사를 패킷을 만들기
+// 전에 하므로, 첫 송신 시점의 수신 누적이 첫 응답 비행의 예산을 정한 값이다.
+func (s *decodeConn) WriteTo(b []byte, addr net.Addr) (int, error) {
+	s.mu.Lock()
+	if ca := s.acctLocked(addr); ca != nil {
+		now := time.Now().UnixNano()
+		if ca.TxDgrams == 0 {
+			ca.FirstTxNs = now
+			ca.BeffStack = ca.Stack
+			ca.BeffPhys = ca.RxBytes
+			ca.BeffOrig = ca.RxOrig
+			ca.BeffParity = ca.RxParity
+		}
+		if len(ca.TxRxTimeline) < connTimelineCap {
+			ca.TxRxTimeline = append(ca.TxRxTimeline, ca.Stack)
+			ca.TxSizes = append(ca.TxSizes, len(b))
+			ca.TxNs = append(ca.TxNs, now)
+		}
+		ca.TxDgrams++
+		ca.TxBytes += int64(len(b))
+	}
+	s.mu.Unlock()
+	n, err := s.PacketConn.WriteTo(b, addr)
+	if err == nil {
+		s.countTx(n)
+	}
+	return n, err
 }
 
 func dcidOf(d []byte) string {
@@ -880,7 +1270,7 @@ func (s *decodeConn) ReadFrom(b []byte) (int, net.Addr, error) {
 		p := s.pending[0]
 		s.pending = s.pending[1:]
 		s.pendingBytes -= int64(len(p.data))
-		s.stats.BytesToStack += int64(len(p.data))
+		s.stackLocked(p.addr, len(p.data))
 		s.mu.Unlock()
 		n := copy(b, p.data)
 		return n, p.addr, nil
@@ -892,20 +1282,85 @@ func (s *decodeConn) ReadFrom(b []byte) (int, net.Addr, error) {
 		return n, addr, err
 	}
 	s.countRx(n)
+	// 분류를 회계보다 먼저 한다 - 연결별 회계가 원본/패리티를 나눠 세야
+	// B_eff 의 "패리티 몫"이 직접 보인다(p13). off 모드는 패리티가 존재하지
+	// 않는 팔이므로 파싱을 건너뛰고 전부 원본으로 센다.
+	var fb *fecBlock
+	if s.mode != "off" {
+		fb = parseFecBlock(b[:n])
+	}
+	// C1: 클라이언트의 두 번째 비행(Handshake) 이 오면 첫 비행 회계를 잠그고
+	// 회신한다. 이 시점에는 주소 검증이 끝나 증폭 한도가 해제돼 있으므로
+	// 회신 바이트가 예산을 먹지 않는다.
+	hs := parseLongHdr(b[:n])
+	isHandshake := hasHandshake(b[:n])
+	var fbOut []byte
 	s.mu.Lock()
 	s.stats.BytesIn += int64(n)
+	if !hs.ok {
+		s.stats.HdrShort++
+	} else if hs.typ == 0 {
+		s.stats.HdrInitial++
+	} else if hs.typ == 2 {
+		s.stats.HdrHandshake++
+	}
+	if isHandshake {
+		s.stats.HdrCoalescedHS++
+	}
+	if ca := s.acctLocked(addr); ca != nil {
+		if ca.RxDgrams == 0 {
+			ca.FirstRxNs = time.Now().UnixNano()
+		}
+		ca.RxDgrams++
+		ca.RxBytes += int64(n)
+		if fb != nil {
+			ca.RxParity += int64(n)
+			if !ca.FbSent {
+				ca.RxParityN++
+			}
+		} else {
+			ca.RxOrig += int64(n)
+			// Initial(typ 0) 만 첫 비행 원본으로 센다. Handshake 이후의
+			// 데이터그램까지 세면 k 가 흐려진다.
+			// 🩸 두 번째 비행(Initial ACK + Handshake 코얼레스)도 첫
+			//    패킷이 Initial 이라 그냥 세면 k 가 부풀었다(k=2 인데 3).
+			//    Handshake 가 섞인 데이터그램은 첫 비행이 아니다.
+			if !ca.FbSent && hs.ok && hs.typ == 0 && !isHandshake {
+				ca.RxOrigN++
+			}
+		}
+		if s.feedback && (isHandshake || fbEarly) && !ca.FbSent {
+			ca.FbSent = true
+			s.stats.FbSentN++
+			fbOut = buildFeedback(hs.scid, hs.dcid, fbRec{
+				flight: 0,
+				k:      uint8(min8(ca.RxOrigN + ca.RecovN)),
+				rxOrig: uint8(min8(ca.RxOrigN)),
+				rxPar:  uint8(min8(ca.RxParityN)),
+				recov:  uint8(min8(ca.RecovN)),
+			})
+		}
+	}
 	s.mu.Unlock()
+	if fbOut != nil {
+		// countConn 을 거치지 않는다 - 이 바이트는 첫 비행 회계 밖이고,
+		// 섞으면 B_eff·s0 측정이 오염된다.
+		if _, werr := s.PacketConn.WriteTo(fbOut, addr); werr != nil {
+			s.mu.Lock()
+			s.stats.FbWriteErr++
+			s.mu.Unlock()
+		}
+	}
 	if s.mode == "off" {
 		s.mu.Lock()
-		s.stats.BytesToStack += int64(n)
+		s.stackLocked(addr, n)
 		s.mu.Unlock()
 		return n, addr, nil
 	}
-	fb := parseFecBlock(b[:n])
 	if fb == nil {
 		s.noteOriginal(b[:n], addr)
 		s.mu.Lock()
-		s.stats.BytesToStack += int64(n)
+		s.stackLocked(addr, n)
 		s.mu.Unlock()
 		return n, addr, nil
 	}
@@ -919,7 +1374,7 @@ func (s *decodeConn) ReadFrom(b []byte) (int, net.Addr, error) {
 	// 아직 안 왔다"를 소거로 오해한다 - 실제로 그렇게 오작동했다.
 	if fb.index != fb.m-1 {
 		s.stats.CreditParities++
-		s.stats.BytesToStack += int64(n)
+		s.stackLocked(addr, n)
 		s.mu.Unlock()
 		return n, addr, nil
 	}
@@ -937,7 +1392,7 @@ func (s *decodeConn) ReadFrom(b []byte) (int, net.Addr, error) {
 	if rec != nil && s.stats.BytesToStack+s.pendingBytes+int64(len(rec)) <=
 		s.stats.BytesIn {
 		fr.done = true
-		s.stats.BytesToStack += int64(len(rec))
+		s.stackLocked(addr, len(rec))
 		s.mu.Unlock()
 		m := copy(b, rec)
 		return m, addr, nil
@@ -947,7 +1402,7 @@ func (s *decodeConn) ReadFrom(b []byte) (int, net.Addr, error) {
 	}
 	// 복구가 없으면 패리티를 그대로 통과시킨다. quic-go 는 바이트를 센 뒤
 	// 복호 실패로 폐기하므로, 증폭 예산만 그만큼 늘어난다.
-	s.stats.BytesToStack += int64(n)
+	s.stackLocked(addr, n)
 	s.mu.Unlock()
 	return n, addr, nil
 }
@@ -956,6 +1411,27 @@ func (s *decodeConn) snapshot() serverStats {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.stats
+}
+
+// report 는 전역 합계에 연결별 회계를 붙인 스냅숏이다. -stats JSON 의 최상위
+// 키는 예전과 같아서(임베드 구조체는 평탄화된다) p2 등 기존 독자는 그대로
+// 읽고, p13 만 "conns" 를 본다. 깊은 복사를 해야 한다 - 타임라인 슬라이스를
+// 그대로 내보내면 json.Marshal 이 도는 동안 WriteTo 가 append 해서 경합한다.
+func (s *decodeConn) report() interface{} {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	conns := make(map[string]*connAcct, len(s.conns))
+	for k, v := range s.conns {
+		cp := *v
+		cp.TxRxTimeline = append([]int64(nil), v.TxRxTimeline...)
+		cp.TxSizes = append([]int(nil), v.TxSizes...)
+		cp.TxNs = append([]int64(nil), v.TxNs...)
+		conns[k] = &cp
+	}
+	return struct {
+		serverStats
+		Conns map[string]*connAcct `json:"conns"`
+	}{s.stats, conns}
 }
 
 // ------------------------------------------------------------------ 인증서
@@ -1009,7 +1485,8 @@ func curveFor(name string) tls.CurveID {
 }
 
 // ------------------------------------------------------------------ 서버
-func runServer(addr string, certSize int, mode string, statsPath string) {
+func runServer(addr string, certSize int, mode string, statsPath string,
+	feedback bool) {
 	gfInit()
 	ua, err := net.ResolveUDPAddr("udp", addr)
 	if err != nil {
@@ -1022,7 +1499,8 @@ func runServer(addr string, certSize int, mode string, statsPath string) {
 		os.Exit(1)
 	}
 	fc := &decodeConn{countConn: countConn{PacketConn: udp}, mode: mode,
-		flights: map[string]*flightRec{}}
+		feedback: feedback,
+		flights:  map[string]*flightRec{}}
 	tr := &quic.Transport{Conn: fc}
 	tlsConf := &tls.Config{
 		Certificates: []tls.Certificate{makeCert(certSize)},
@@ -1054,12 +1532,30 @@ func runServer(addr string, certSize int, mode string, statsPath string) {
 	// 500 ms 주기로 쓰면 마지막 갱신이 유실되어 **복구 건수가 실제보다 적게**
 	// 보고된다. 실제로 12 회 전부 복구된 조건이 8 회로 보고됐다.
 	// 주기를 줄이고, SIGTERM/SIGINT 를 받으면 마지막으로 한 번 더 쓴다.
+	// 2026-08-21 - `os.WriteFile` 은 **자르고 나서 쓴다**(비원자적).
+	// 100 ms 주기 고루틴과 SIGTERM 핸들러가 뮤텍스 없이 같은 파일을 쓰고,
+	// 핸들러가 쓰기 도중 os.Exit(0) 으로 프로세스를 죽일 수 있다. 그러면
+	// **잘린 JSON** 이 남고 read_server_stats 가 2 초 내내 파싱에 실패해
+	// {} 를 돌려준다 -> `None or 0 == 0` 이라 CRC 검사가 공허하게 통과한다.
+	// 2026-08-21 p11 에서 24 팔 중 1 팔이 실제로 그랬다.
+	// 임시 파일에 쓰고 rename 한다(같은 디렉터리 -> 원자적). 두 호출도
+	// 뮤텍스로 직렬화한다. 저장소의 atomic_write_json 과 같은 규약이다.
+	var statsMu sync.Mutex
 	writeStats := func() {
 		if statsPath == "" {
 			return
 		}
-		b, _ := json.Marshal(fc.snapshot())
-		os.WriteFile(statsPath, b, 0644)
+		statsMu.Lock()
+		defer statsMu.Unlock()
+		b, err := json.Marshal(fc.report())
+		if err != nil {
+			return
+		}
+		tmp := statsPath + ".tmp"
+		if err := os.WriteFile(tmp, b, 0644); err != nil {
+			return
+		}
+		_ = os.Rename(tmp, statsPath)
 	}
 	if statsPath != "" {
 		go func() {
@@ -1098,6 +1594,8 @@ type trial struct {
 	Parity   int     `json:"parity_sent"`
 	FFDgrams int     `json:"first_flight_datagrams"`
 	FFBytes  int64   `json:"first_flight_bytes"`
+	FFParity      int   `json:"first_flight_parity_dgrams"`
+	FFParityBytes int64 `json:"first_flight_parity_bytes"`
 	MUsed    int     `json:"m_used"`
 	IPSUsed  int     `json:"ips_used"`
 	MWhy     string  `json:"m_why,omitempty"`
@@ -1109,7 +1607,8 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 	mode string, m int, ips int, parityDelayUs int, expectK int,
 	statsPath string, dumpPath string,
 	dropInitial map[int]bool, dropParity, corruptParity int,
-	cachePath string, mMax, coldM, probeEvery int) {
+	cachePath string, mMax, coldM, probeEvery int, uplinkMbps float64,
+	feedback bool) {
 	gfInit()
 	ra, err := net.ResolveUDPAddr("udp", addr)
 	if err != nil {
@@ -1140,7 +1639,7 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			// 헤드라인("1 바이트로 왕복 하나")이 정책의 손에서 실현된다.
 			trialIPS, trialM, why, unbiased = cache.decide(addr, wSize,
 				mMax, coldM, probeEvery, defaultAssumedBurst, cPktDefault,
-				maxStepsDefault, quicgoMaxIPS)
+				maxStepsDefault, quicgoMaxIPS, uplinkMbps)
 			if trialM <= 0 {
 				fmode = "off" // 정책이 0 을 골랐으면 패리티를 안 보낸다
 				trialM = 0
@@ -1195,6 +1694,13 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 		// 패리티가 표본에서 들쭉날쭉 빠져 "보낸 개수 < 비행 수"로 보인다.
 		// HCT 측정 구간(Dial)은 이미 끝났으므로 측정에는 영향이 없다.
 		time.Sleep(3 * time.Duration(parityDelayUs) * time.Microsecond)
+		// C1: 회신을 기다린 **뒤** 스냅숏을 찍는다. 순서를 반대로 하면
+		// 대기 중에 받은 회신이 통계에 안 잡힌다 - 2026-08-23 에 실제로
+		// 그래서 "회신 0 건"으로 오진했다(서버는 20/20 보냈고 파싱도
+		// 정상이었다). HCT(el)는 이미 위에서 찍혔으므로 측정에는 영향 없다.
+		if feedback && err == nil {
+			fc.waitFeedback(200 * time.Millisecond)
+		}
 		st := fc.snapshot()
 		_, _, _, srvBytes := fc.counts()
 		hct := float64(el.Microseconds()) / 1000.0
@@ -1221,6 +1727,8 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			OK: err == nil, Group: group,
 			Dgrams: st.InitialDgram, Parity: st.ParitySent,
 			FFDgrams: st.FirstFlightDgrams, FFBytes: st.FirstFlightBytes,
+			FFParity:      st.FirstFlightParity,
+			FFParityBytes: st.FirstFlightParityBytes,
 			MUsed: trialM, IPSUsed: trialIPS,
 			MWhy: why, SrvBytes: srvBytes, LossEvt: lossEvt}
 		if err != nil {
@@ -1235,6 +1743,27 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			cache.observe(addr, st.FirstFlightDgrams, float64(srvBytes),
 				hct, lossEvt, unbiased)
 		}
+		// 🆕 C1/C2 - 심볼 단위 관측. auto 가 아니어도 캐시는 갱신한다
+		// (고정팔로 도는 동안 배운 것도 다음 auto 연결에 쓸 수 있다).
+		if feedback {
+			nSent := st.FirstFlightDgrams + st.FirstFlightParity
+			if r := fc.lastFeedback(); r != nil {
+				nRecv := int(r.rxOrig) + int(r.rxPar)
+				if nSent > 0 && nRecv >= 0 && nRecv <= nSent {
+					cache.observeSymbols(addr, nSent, nSent-nRecv, hct)
+				}
+			} else if base := cache.minHCT(addr); nSent > 0 &&
+				(err != nil || (base > 0 && hct > 3*base)) {
+				// C2: 회신이 없다. 이유가 둘이라 구분해야 한다.
+				//   (a) 첫 비행 전멸 -> 서버가 아무것도 못 받았다
+				//   (b) 회신 자체가 유실 -> 연결은 정상
+				// (b) 를 손실로 세면 캐시가 비관 쪽으로 틀어진다. 그래서
+				// **연결이 실패했거나 HCT 가 PTO 수준일 때만** 전멸로 본다.
+				// 그 조건이 아니면 아무것도 적립하지 않는다 - 생존 편향이
+				// 조금 남지만, 없는 손실을 지어내는 것보다 낫다.
+				cache.observeSymbolsWhy(addr, nSent, nSent, hct, true)
+			}
+		}
 		enc.Encode(&t)
 		os.Stdout.Sync()
 
@@ -1247,8 +1776,21 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 		agg.BytesOrig += st.BytesOrig
 		agg.BytesParity += st.BytesParity
 		agg.InitialDgram += st.InitialDgram
+		// C1 - 새 필드를 여기 안 더하면 최종 통계에 0 으로 남는다.
+		// 2026-08-23 에 실제로 그래서 "회신 0 건"으로 오진했다.
+		agg.FbRecv += st.FbRecv
+		agg.FbMagicSeen += st.FbMagicSeen
+		agg.RxCalls += st.RxCalls
+		agg.FbWaits += st.FbWaits
+		if st.FbRecv > 0 {
+			agg.FbRxOrig = st.FbRxOrig
+			agg.FbRxPar = st.FbRxPar
+			agg.FbRecov = st.FbRecov
+		}
 		agg.FirstFlightDgrams = st.FirstFlightDgrams
 		agg.FirstFlightBytes = st.FirstFlightBytes
+		agg.FirstFlightParity = st.FirstFlightParity
+		agg.FirstFlightParityBytes = st.FirstFlightParityBytes
 		for k, v := range st.FlightSizes {
 			agg.FlightSizes[k] += v
 		}
@@ -1381,11 +1923,24 @@ func main() {
 		"off | buf | on | auto  (auto = 목적지 캐시로 m 을 스스로 고름)")
 	cache := flag.String("cache", "",
 		"폐루프 목적지 캐시 파일 (auto 모드에서 씀)")
-	mMax := flag.Int("m-max", 2, "auto 모드에서 고를 수 있는 최대 m")
+	// 🩸 2026-08-25 - 2 -> 3. 실측: cert 14,601~16,125 에서 m=2 는
+	//    2-RTT, m=3 은 1-RTT 다(한 왕복 50 ms). 근거 전문은
+	//    padfec/policy.py 의 M_MAX_DEFAULT 주석.
+	mMax := flag.Int("m-max", mMaxDefault,
+		"auto 모드에서 고를 수 있는 최대 m (기본값은 확률표가 심는다)")
 	coldM := flag.Int("cold-m", 0,
 		"auto 모드 콜드스타트(기록 없는 목적지)에서 쓸 m")
 	probeEvery := flag.Int("probe-every", 20,
 		"auto 모드에서 몇 연결마다 무방비(m=0)로 가서 손실률을 재측정할지")
+	// 🩸 2026-08-21. 그전에는 policy.go 안에 10 Mbps 가 리터럴로 박혀 있었다.
+	// 어디서도 측정된 적 없는 수인데 결정의 43% 를 좌우했고, 정작 이 테스트베드
+	// 는 netem 이 대역을 안 걸어 실측과 25 배 어긋났다. 기본값을 생성 표의
+	// uplinkMbpsDefault(= padfec/policy.py 한 곳에서 정의)에서 읽고, 실제로
+	// 도는 링크를 아는 호출부(padbed)가 덮어쓴다. 0 = 대역 무제한.
+	uplink := flag.Float64("uplink-mbps", uplinkMbpsDefault,
+		"업링크 대역 Mbps. 추가 바이트의 직렬화 시간을 J 에 청구한다. "+
+			"0 이면 대역 제한 없음(직렬화 비용 0) - netem 에 rate 를 안 건 "+
+			"이 테스트베드의 실제 조건이다")
 	m := flag.Int("m", 1, "parity datagrams per flight")
 	ips := flag.Int("ips", 0, "InitialPacketSize (0 = quic-go default)")
 	pdelay := flag.Int("parity-delay-us", 300, "delay before emitting parity")
@@ -1398,6 +1953,10 @@ func main() {
 	corrP := flag.Int("corrupt-parity", -1,
 		"검증용: N 번째 패리티의 한 바이트를 뒤집는다 (-1 = 안 함)")
 	stats := flag.String("stats", "", "write stats JSON here")
+	// C1: 서버 수신 회신. 기본은 꺼 둔다 - 켜고 끈 결과를 나란히 재야
+	// (p16 식 음성 대조) 회신이 임계·HCT 를 안 건드린다고 말할 수 있다.
+	feedback := flag.Bool("feedback", false,
+		"C1: 서버가 첫 비행 수신 심볼 수를 회신한다(클라는 그것으로 손실 관측)")
 	flag.Parse()
 
 	fmode := "off"
@@ -1419,10 +1978,11 @@ func main() {
 		policyGrid()
 		return
 	case "server":
-		runServer(*addr, *certSize, fmode, *stats)
+		runServer(*addr, *certSize, fmode, *stats, *feedback)
 	default:
 		runClient(*addr, *group, *n, *timeout, *gap, fmode, *m, *ips,
 			*pdelay, *expectK, *stats, *dump, parseIdx(*dropI),
-			*dropP, *corrP, *cache, *mMax, *coldM, *probeEvery)
+			*dropP, *corrP, *cache, *mMax, *coldM, *probeEvery, *uplink,
+			*feedback)
 	}
 }

@@ -77,22 +77,37 @@ s0 는 상수가 아니다 - 서버 패킷 수 항 (명세 §2.5)
 `levers(..., s0_base=, c_pkt=)` 로 켠다. 안 켜면 호출자가 준 상수 s0 를
 그대로 쓴다(하위호환).
 
-c 의 정본값은 아직 하나로 못 박지 못한다 (2026-08-20 직접 측정)
+c 의 정본값 = **41.983** (padfec.policy.C_PKT_POLICY_DEFAULT)
+
+🩸 2026-08-25 - 이 머리말에 c 의 "정본"이 **세 세대** 겹쳐 있었다:
+   70 행 "c = 34.5 B" (1 세대, 폐기) / 이 자리 "40.0" (2 세대, 폐기) /
+   코드의 실제 값 41.983 (3 세대, 정본). s0_base 도 마찬가지로
+   396.5·1527.5 (1 세대) -> 380.0·1494.5 (2 세대) -> **382.45·1472.00**
+   (정본) 로 바뀌었다. 아래 표와 예시는 **당시 기록**이므로 지우지 않고
+   세대를 표시해 남긴다 - 수를 조용히 덮어쓰면 왜 바뀌었는지가 사라진다.
+   지금 무엇이 정본인지 알고 싶으면 padfec/policy.py 의
+   C_PKT_POLICY_DEFAULT / S0_BASE_X25519 / S0_BASE_MLKEM 을 보라.
 ----------------------------------------------------------------
-`results/probe_s0_x25519.json` · `results/probe_s0_X25519MLKEM768.json` 이
-임계를 거치지 않고 **서버 바이트를 직접 세서** 패킷항을 확인했다.
-상수 s0 모형은 **기각된다.**
+확정 경로가 세 번 좁혀졌다. 상수 s0 모형은 **기각된다.**
 
-    방법                        x25519    X25519MLKEM768
-    임계 역산(원래 34.5)          34.5          34.5
-    서버 바이트 직접 계수         36.1          40.0     <- 직접 측정
-    상수 모형 평균절대오차       224.5         144.2
-    패킷항  평균절대오차         112.4         101.8
+    방법                                  x25519    X25519MLKEM768
+    임계 역산 (그룹당 2점, ±40 B)           34.5          34.5
+    server_bytes 간접 계수 (probe_s0)      36.1          40.0
+    **첫 비행 직접 계수 (p13, 정본)**       40.89         39.65
 
-따라서 `c` 는 아직 **34.5 ~ 40.0 구간**으로만 정해진다. 이 파일의 기본값과
-자체시험은 명세가 아직 쓰는 **34.5** 를 그대로 유지한다 — 상수를 바꾸는 것은
-명세를 고친 뒤의 일이다. 절편끼리는 비교하면 안 된다(`server_bytes` 에
-ACK·HANDSHAKE_DONE·NewSessionTicket 꼬리가 섞인다). **기울기만** 비교 가능하다.
+p13(`results/p13_beff.json`)은 서버 송신을 가로채 첫 비행을 시각으로 잘라
+데이터그램 수 n 을 **세서**(추정이 아니라) s0(n) 을 회귀했다 - 꼬리 오염도
+n̂ 추정 오류도 없다. 그래서 c 의 정본은 **40.0** 이고, 임계 앵커
+(x25519 s0(3)=500, ML-KEM s0(6)=1734.5)와 합치면 s0_base 는
+**380.0 / 1494.5** 다. (예전 34.5 기반의 396.5/1527.5 는 폐기.)
+
+⚠️ 같은 p13 이 "같은 n 안에서 s0 일정" 검사를 **실패**시켰다(폭 ~40 B).
+n̂ 오류가 아니라 실재하는 구조다: 서버 게이트는 패킷을 만들기 전에만 예산을
+보므로 **마지막 작은 패킷이 예산을 넘겨 통과**할 수 있다(실측: cert 3312 에서
+3,931 B > 3,840 B 를 보내고도 1-RTT - 마지막 95 B 패킷이 sent 3,836 < 3,840
+시점에 통과). 즉 임계 근처의 유효 폭은 서버 비행의 마지막 패킷 조성에 따라
+~100 B 흔들린다. s0(n) 선형 모형은 그 평균 구조이고, 앵커를 임계에서 맞추는
+한 임계 예측에는 충분하다(p13 회귀 MAE 7.4 / 0.4 B).
 
 주의 - **1 바이트 절벽은 이 두 모형을 구분하지 못한다.** 상수 s0 모형도 절벽
 10 점을 똑같이 맞힌다(자체시험 5e). 절벽이 증명하는 것은 *양자화*이지
@@ -111,13 +126,28 @@ k 를 다시 계산하면 k 가 줄어(2->1) 비행이 오히려 작아지고 **
 재패킹이 필요 없다. 붕괴판을 보고 싶으면 `pad_repack` 이라는 **별도 후보**로
 함께 돌려준다(대체가 아니다). 자체시험 9 가 스윕으로 그 규모를 직접 센다.
 
-배치 의존성 (명세 §2.6 - 아직 가설)
-------------------------------------
-m=1 배치는 `[원본…, 패리티]` 라 k=1 이면 패리티가 **서버 결정 뒤에** 도착해
-신용을 못 살 수 있다(x25519 on1 팔의 실측 초과 936 B). 후보 dict 에
-`late_parity_risk` 로 **표시만** 하고 신용 계산은 아직 바꾸지 않는다 -
-p13 이 B_eff 를 직접 재기 전까지는 가설이기 때문이다. `credit_bytes` 가
-지금 신용 계산에 들어가는 바이트다(현재는 client_bytes 와 같다).
+배치 의존성 가설은 기각됐다 (명세 §2.6, 2026-08-20 p13 직접 측정)
+------------------------------------------------------------------
+"k=1·m=1 배치 [원본, 패리티]는 패리티가 서버 결정 뒤에 도착해 신용을 못
+산다"는 가설을 p13 이 **기각했다**: 서버 첫 송신 직전 스냅숏에서 첫 비행
+패리티는 k=1·m=1 을 포함한 전 조건에서 **100% 반영**됐다(B_eff = 첫 비행
+원본 + 첫 비행 패리티, x25519 on1 실측 2,603.5 ∈ (2560, 2986.7]).
+p4 임계 4/8 의 진범은 배치가 아니라 **p2 가 ACK 비행의 패리티까지
+client_bytes 에 합산한 것**이었다(뒤 비행 몫은 서버 첫 응답보다 한 왕복
+늦어 예산과 무관하다). 그래서 `late_parity_risk` 는 이제 항상 False 다 -
+필드는 하위호환으로 남긴다. `credit_bytes == client_bytes` 는 가설이
+아니라 **측정으로 확인된 사실**이 됐다.
+
+🩸 2026-08-21 정밀도 정정 — 위 기각의 **분해능을 적어 둔다.**
+   "100% 반영" 은 연결 **24 개**에서 나온 점추정이다. 24/24 의 95%
+   하한은 **0.883** 이므로, 참 신용률이 88%(늦은 패리티 12%)여도 그
+   자료와 모순되지 않는다. 즉 이 기각은 **0.5% 규모의 현상을 배제하지
+   못한다** — 그리고 p14 무손실 parity 팔이 실제로 2-RTT 를
+   0.50%(2/400) 냈다(같은 조건 pad·combo 는 0/400, 모형 예측은 0).
+   그래서 p13 검사 5 를 전용 표본 600 + Clopper-Pearson 하한(>= 0.99)
+   으로 바꿨다. **`late_parity_risk = False` 는 그 검사가 통과하는 한
+   유효하다** — p13 검사 5 가 붉어지면 이 필드를 되살려야 한다.
+   (값은 지금 안 바꾼다. 늦은 패리티가 있다는 것이 아직 사실이 아니다.)
 
 기호는 명세 §1 과 같다.
     C  ClientHello CRYPTO 총 바이트      W  데이터그램 하나의 와이어 크기
@@ -258,19 +288,39 @@ def on_boundary(client_bytes, pkt=P_SERVER):
 
 
 def s0_at(bin_n, s0_base, c_pkt):
-    """s0(n) = s0_base + n*c — 칸 n 에서의 서버 첫 비행 고정분 (명세 §2.5).
+    """s0(n) = s0_base + n*c — 칸 n 에서의 서버 첫 비행 **유효** 고정분 (§2.5).
 
     s0 는 상수가 아니다. 칸이 올라가면 서버가 패킷을 하나 더 쓰므로 그 패킷의
-    오버헤드 c 만큼 s0 도 커진다. 실측(명세 §2.5 표):
+    오버헤드 c 만큼 s0 도 커진다.
 
-        s0_at(3, 396.5, 34.5)  == 500.0     x25519,          A = 3,840
-        s0_at(4, 396.5, 34.5)  == 534.5     x25519,          A = 5,120
-        s0_at(6, 1527.5, 34.5) == 1734.5    X25519MLKEM768,  A = 7,680
-        s0_at(7, 1527.5, 34.5) == 1769.0    X25519MLKEM768,  A = 8,960
+    ⚠️ **물리 바이트 수가 아니다.** 임계를 재현하도록 맞춘 유효 파라미터다.
+       물리 s0 는 이보다 ~100 B 크다(p13 직접 계수: cert 3000·x25519 에서 604 B
+       vs 유효 500 B). 차이의 정체는 quic-go 가 **마지막 패킷이 작으면 한도를
+       넘겨 보내는** 여유분이다 — 2026-08-21 직접 측정:
 
-    두 그룹이 **독립적으로 같은 c = 34.5** 를 줬다. 다만 정직하게: 그룹당 2점,
-    그것도 폭 ~56 B 이분탐색 구간의 중점에서 나온 값이라 불확실성이 크다
-    (±40 B 수준). 확정은 p12c(ips 1707·2134)가 한다.
+           cert=3250  [1280, 1280, 1209,  95] = 3,864 B  -> 1-RTT (허용 3,840 초과)
+           cert=3300  [1280, 1280, 1257,  95] = 3,912 B  -> 1-RTT (+72 B)
+           cert=3340  [1280, 1280, 1280]      = 3,840 B  -> 2-RTT
+
+       정확한 규칙은 `S <= allowed(B)` 가 아니라 `S - (마지막 패킷) < 3B` 이고,
+       유효 모형은 그 여유를 s0 를 작게 잡는 것으로 흡수한다. 자세한 근거는
+       padfec/policy.py 의 C_PKT_POLICY_DEFAULT 주석.
+
+    🩸 2026-08-21 정정 - 아래 예시는 **폐기된 c=34.5 모형**이었고 같은 파일
+       머리말·자체시험과 어긋나 있었다. 정본 상수로 다시 적는다.
+
+        s0_at(3,  382.45, 41.983) ==  508.4   x25519,          A = 3,840
+        s0_at(7,  382.45, 41.983) ==  676.3   x25519,          A = 8,960
+        s0_at(6, 1472.00, 41.983) == 1723.9   X25519MLKEM768,  A = 7,680
+        s0_at(13, 1472.00, 41.983) == 2017.8  X25519MLKEM768,  A = 16,640
+
+    ✅ 값의 출처: 임계 앵커 6 개(그룹 x 팔)에 공통 c·그룹별 절편 최소제곱.
+       6 개 전부 실측 임계 밴드 안에 든다. 그리고 이 c 는 p13 이 서버 패킷을
+       **직접 세어** 얻은 40.55 / 41.39 와 1.5 B/패킷 안에서 맞는다.
+
+    🩸 옛 주석은 "확정은 p12c(ips 1707·2134)가 한다"로 끝났다. 그 계획은
+       **영구히 불가능**하다 - quic-go 가 InitialPacketSize 를 1452 로 깎는다
+       (QUICGO_MAX_IPS). 읽는 사람을 죽은 계획으로 기다리게 하면 안 된다.
     """
     if bin_n < 0:
         raise ValueError("칸 번호는 음수일 수 없다: %r" % (bin_n,))
@@ -284,12 +334,19 @@ def threshold(client_bytes, s0_base, c_pkt, pkt=P_SERVER):
 
     `amplif.threshold_cert()` 는 s0 를 상수로 쓰는 옛 식이다. 그쪽은 높은 칸에서
     임계를 **과대예측**한다 — 칸이 올라갈 때 늘어나는 서버 패킷 오버헤드를
-    빼지 않기 때문이다. 실측 밴드 대조(2026-08-20 probe_cliff / ips_sweep):
+    빼지 않기 때문이다.
 
-        x25519 B=1280 -> 3340.0  in [3312, 3368]
-        x25519 B=1350 -> 4585.5  in [4557, 4614]
-        MLKEM  B=2560 -> 5945.5  in [5917, 5974]
-        MLKEM  B=2700 -> 7191.0  in [7163, 7219]
+    🩸 2026-08-21 정정 - 아래 표의 네 값 중 둘이 **폐기된 c=34.5 모형**으로
+       계산된 것이었다(앵커 두 점은 두 모형이 우연히 같아 안 드러났다).
+       같은 파일의 자체시험 5c 는 정본 상수를 단언하고 통과하는데 docstring 만
+       옛 값을 "실측 밴드 대조"라며 보여 주고 있었다. 정본 상수로 다시 계산한다.
+
+    실측 밴드 대조 (probe_cliff / ips_sweep, 상수는 2026-08-21 6 앵커 최소제곱):
+
+        x25519 B=1280 -> 3331.6  in [3312, 3368]
+        x25519 B=1350 -> 4569.6  in [4557, 4614]
+        MLKEM  B=2560 -> 5956.1  in [5917, 5974]
+        MLKEM  B=2700 -> 7194.1  in [7163, 7219]
     """
     a = allowed(client_bytes, pkt)
     n_pkt = (a // pkt) if pkt > 0 else 0
@@ -362,15 +419,30 @@ def _candidate(mode, m, delta, C, W, h, f, cert_bytes, s0,
         # 실제로 쓴 패킷 수를 잰 물리량이 아니다 - 단서 없이 노출하지 않는다.
         "s0_eff_basis": "A/P",
         "server_flight": flight,
+        # 2026-08-21 - **1-RTT 판정의 정본**. 서버가 첫 비행을 한 번에
+        # 보내려면 몇 칸이 필요한가. 연결마다 하나의 상수이고 **도착
+        # 상태와 무관**하다 - 서버는 자기가 실제로 받은 신용으로 보낼 수
+        # 있는 만큼만 보내기 때문이다.
+        #
+        # 그전에는 flight_outcome 이 상태마다 `server_flight >
+        # allowed(arrived)` 를 봤는데, 그 server_flight 는 **전체 도착
+        # 기준 칸**으로 고정된 값이었다. 부분 손실 상태에서는 서버가
+        # 그만한 신용을 가진 적이 없는데도 그 큰 S 를 썼다. 그래서
+        # 대역 비용이 0 인데 delta 를 81->82 로 늘리면 2-RTT 확률이
+        # 0.0068 -> 0.1782(26 배)로 뛰는 **가짜 절벽**이 생겼다.
+        # (단조성 위반 15 건, 후보 누락 75/3132, 최대 손해 32.1 ms)
+        # 무손실에서는 두 판이 4,556 후보 전부에서 정확히 동치다.
+        "n_need": bin_needed(cert_bytes, s0, s0_base, c_pkt, pkt),
         "n_rtt": 1 if flight <= a else 2,
         # 전형 MTU 초과. 경로에서 조각나거나 버려질 수 있다는 경고일 뿐,
         # 후보에서 빼지는 않는다(판단은 호출자 몫).
         "over_mtu": w_eff > TYPICAL_MTU,
-        # 명세 §2.6 (가설). m=1 배치는 [원본…, 패리티] 이므로 k==1 이면 원본
-        # 하나로 서버가 곧장 응답 비행을 만들기 시작하고, 뒤따르는 패리티는
-        # **결정 시점 이후**에 도착해 신용을 못 살 수 있다(x25519 on1 초과 936 B).
-        # 표시만 한다 — credit_bytes 는 아직 깎지 않는다(p13 대기).
-        "late_parity_risk": (k == 1 and m == 1),
+        # 명세 §2.6 의 배치 의존성 가설은 p13 직접 측정으로 **기각됐다** -
+        # k=1·m=1 에서도 첫 비행 패리티는 100% 서버 결정 전에 도착해 신용을
+        # 산다(results/p13_beff.json). 필드는 하위호환으로 남기고 항상 False.
+        # ⚠️ 이 False 의 근거는 **p13 검사 5** 하나다(머리말의 정밀도 정정
+        #    참조). 그 검사가 붉어지면 여기를 되살려야 한다.
+        "late_parity_risk": False,
         # 이 기하(데이터그램 k+m 개 x W_eff)에서 제자리 1-소거 보호가 성립하는가.
         # mode 와 무관한 **기하 판정**이며, 'pad' 후보가 복구를 준다는 뜻이 아니다
         # (명세 §4: 키운 데이터그램의 여분 바이트는 그 데이터그램과 함께 사라진다).
@@ -378,8 +450,76 @@ def _candidate(mode, m, delta, C, W, h, f, cert_bytes, s0,
     }
 
 
-def levers(C, cert_bytes, s0, W=P_SERVER, h=51, f=16, max_steps=2, m_max=2,
-           s0_base=None, c_pkt=0.0, parity_bytes=None):
+def bin_needed(cert_bytes, s0, s0_base=None, c_pkt=0.0, pkt=P_SERVER):
+    """1-RTT 를 사려면 몇 번째 칸이 필요한가 (명세 §2.5 의 고정점).
+
+    서버 비행 S 는 칸에 의존한다(S(n) = cert + s0_base + n·c). 그래서
+    "S 를 담는 칸"은 방정식이 아니라 **고정점** n·pkt >= S(n) 의 최소해다.
+    c < pkt 이므로 해가 유일하다.
+
+    s0_base 를 안 주면 상수 모형(S = cert + s0)으로 되돌아간다.
+    """
+    if pkt <= 0:
+        raise ValueError("pkt <= 0 이면 칸이 정의되지 않는다")
+    if s0_base is None:
+        if s0 is None:
+            raise ValueError("s0 또는 s0_base 중 하나는 있어야 한다")
+        S = float(cert_bytes) + float(s0)
+        return max(1, _ceil_div(int(S) if float(S).is_integer()
+                                else int(S) + 1, pkt))
+    if float(c_pkt) >= float(pkt):
+        raise ValueError("c_pkt 가 pkt 이상이면 칸을 올려도 못 따라잡는다")
+    n = int((float(cert_bytes) + float(s0_base)) / (float(pkt) - float(c_pkt)))
+    while n * pkt < float(cert_bytes) + float(s0_base) + n * float(c_pkt):
+        n += 1
+    return max(1, n)
+
+
+def _combo_deltas(k, m, W, ovh, n_need, pkt=P_SERVER, max_delta=None):
+    """부분 손실 상태 (a,b) 각각을 n_need 칸으로 올리는 **최소 δ** 들.
+
+    왜 필요한가 - dominates() 의 정정 때문이다. 패리티의 신용은 별도
+    데이터그램이라 따로 유실되지만, δ 는 **살아남은 모든 데이터그램의 신용
+    바닥을 같이 올린다.** 그래서 (δ>0, m>0) 결합은 pad 의 약점(복구 없음)과
+    parity 의 약점(부분 손실 시 칸 하락)을 동시에 없앨 수 있다.
+
+    도착 상태 (a,b) 의 신용은 δ 에 **선형**이다.
+
+        신용(a,b,δ) = a·(W+δ) + b·(W+δ+ovh) = (a+b)(W+δ) + b·ovh
+        (ovh = 파(w,k) - w = 39 + 6k 로 δ 와 무관하다)
+
+    칸 >= n_need  ⟺  3·신용 > (n_need-1)·pkt  ⟺  신용 >= ((n_need-1)·pkt)//3 + 1
+
+    복구 불가 상태((k-a) > b)는 어차피 재전송이라 신용을 사도 소용없으므로
+    목표에서 뺀다. 연속 스윕이 아니라 **경계점만** 보는 것은 명세 §3 의 원칙
+    그대로다 - 후보가 평균 0.5 개 늘 뿐인데, δ∈[0,172]×m∈{0,1,2} 완전탐색과
+    880 격자점에서 **오차 0.000000 ms 로 같은 최소를 준다**(자체시험 13).
+    """
+    need = ((n_need - 1) * pkt) // AMP + 1
+    out = set()
+    for a in range(k + 1):
+        for b in range(m + 1):
+            if a + b == 0:
+                continue
+            if (k - a) > b:                 # 복구 불가 상태는 목표가 아니다
+                continue
+            lack = need - (a + b) * W - b * ovh
+            if lack <= 0:
+                continue                    # δ 없이도 이미 그 칸이다
+            d = _ceil_div(lack, a + b)
+            if d < 1:
+                continue
+            if max_delta is not None and d > max_delta:
+                continue
+            out.add(d)
+    return sorted(out)
+
+
+# 🩸 2026-08-25 - 기본 m_max 2 -> 3 (정본은 policy.M_MAX_DEFAULT,
+#    근거는 그 주석에 있다). 여기서 policy 를 import 하면 순환이 되므로
+#    리터럴로 두되, 둘이 어긋나면 gate_go_parity 가 잡는다.
+def levers(C, cert_bytes, s0, W=P_SERVER, h=51, f=16, max_steps=2, m_max=3,
+           s0_base=None, c_pkt=0.0, parity_bytes=None, max_delta=None):
     """명세 §3 의 후보 집합. 연속 스윕이 아니라 **경계점만** 본다.
 
         후보 = {(0,0)}
@@ -387,10 +527,37 @@ def levers(C, cert_bytes, s0, W=P_SERVER, h=51, f=16, max_steps=2, m_max=2,
              ∪ {(0, m)            : m = 1..m_max}         # 패리티만
              ∪ {(0, ceil(Δ_j/파))  : j, Δ_j >= W}         # 패리티로 j 칸
                                                           (파 = 패리티 실크기)
+             ∪ {(δ, m) : m = 0..m_max,                    # 🆕 결합 (2026-08-21)
+                         δ ∈ _combo_deltas(k0, m, ...)}
 
     Δ_j 가 W 보다 작으면 패리티 데이터그램을 만들 수 없다(Initial 데이터그램은
     >= 1200 B 여야 하고 그건 곧 데이터그램 하나다). 그때는 δ 가 **유일한** 수단이고
-    동시에 매우 싸다. 반대로 Δ >= W 이면 보조정리 1 로 패리티가 패딩을 지배한다.
+    동시에 매우 싸다.
+
+    ⚠️ **m_max 는 '패리티만' 가족(셋째 줄)의 상한이지 전체 상한이 아니다.**
+       넷째 줄(패리티로 j 칸)은 목표 칸 j 가 요구하는 개수 ceil(Δ_j/파)를
+       그대로 쓴다 - max_steps >= 7 이면 m_max=2 를 줘도 m=7 후보가
+       나온다(2026-08-21 모형 탐색에서 실제로 당했다). 자르지 않는 이유:
+       그 개수는 '칸 j 를 산다'는 목표에서 나오는 수라 m_max 로 자르면
+       후보의 의미가 없어진다. 생산(maxStepsDefault=2)에서는 이 가지가
+       아래 설명대로 죽어 있고, Go 는 표 밖 m 에서 panic 으로 크게
+       죽는다. Python 은 정확 계산이라 조용히 동작하므로 - 모형 탐색에서
+       m 의 상한이 필요하면 **결과를 걸러라**, m_max 를 믿지 마라.
+
+    🩸 2026-08-21 - 네 번째 줄은 **기본값에서 죽은 가지**다. Δ_j 의 상한은
+       j=1 이면 427, j=2 면 854 인데 W >= 1200 이라 조건이 결코 참이 안 된다.
+       살려도 무의미하다: j=3 에서도 Δ_j <= 1280 < 파(1325) 라 ceil(Δ_j/파)=1
+       이 되어 이미 있는 (0,1) 후보와 같아 dedup 에서 사라진다. 지우지 않고
+       남기되(명세 §3 식과의 대응을 보이려고) 이 사실을 여기 적어 둔다.
+
+    🆕 다섯 번째 줄 - **결합 후보**. 예전에는 "Δ >= W 이면 보조정리 1 로
+       패리티가 패딩을 지배한다"는 이유로 두 지렛대를 배타적 대안으로만 뒀다.
+       **2026-08-21 에 그 보조정리가 반증됐다**(dominates() 주석). 패리티의
+       신용은 별도 데이터그램이라 따로 유실되지만 δ 는 살아남은 데이터그램의
+       신용 바닥을 같이 올린다. 그래서 결합이 둘 다보다 나은 구간이 있다.
+       880 격자점 스윕에서 **112 점(12.7%)이 개선**되고 최대 이득은
+       RTT 50 ms 에서 14.2 ms, RTT 250 ms 에서 72.5 ms 다. 후보 수는
+       평균 5.00 -> 5.50 으로만 는다.
 
     pad 후보는 **k 를 기준선의 k0 로 유지한다**(_candidate 의 k_floor 참고).
     W 를 키울 때 k 를 다시 계산하면 k 가 줄어 칸이 내려가면서 δ 지렛대 자체가
@@ -467,6 +634,7 @@ def levers(C, cert_bytes, s0, W=P_SERVER, h=51, f=16, max_steps=2, m_max=2,
         if d_j >= W:
             # 패리티 하나가 실제로 싣는 바이트로 나눈다. W 로 나누면 필요한
             # 개수를 과대평가한다(패리티가 원본보다 크므로).
+            # (기본값에서는 여기 못 온다 - 위 docstring 의 🩸 참고)
             per = W if parity_bytes is None else int(parity_bytes(W, k0))
             out.append(mk("parity", _ceil_div(d_j, per), 0))
 
@@ -478,29 +646,72 @@ def levers(C, cert_bytes, s0, W=P_SERVER, h=51, f=16, max_steps=2, m_max=2,
             continue
         seen.add(key)
         uniq.append(c)
+
+    # 🆕 결합 후보 (δ>0 · m>=0). 보조정리 1 정정의 따름정리 - 자세한 근거는
+    # dominates() 와 _combo_deltas() 주석. **기존 후보와 (바이트, m) 이 같은
+    # 것은 넣지 않는다** - 같은 것을 이름만 바꿔 넣으면 동점 처리(mode 이름)가
+    # 흔들려 예전 결정이 이유 없이 바뀐다. 결합은 **새로 여는 자리에서만** 는다.
+    n_need = bin_needed(cert_bytes, s0, s0_base, c_pkt, pkt)
+    ovh = 0 if parity_bytes is None else int(parity_bytes(W, k0)) - W
+    byte_seen = set((c["client_bytes"], c["m"]) for c in uniq)
+    for m in range(0, m_max + 1):
+        for d in _combo_deltas(k0, m, W, ovh, n_need, pkt, max_delta):
+            c = mk("combo", m, d)
+            key = (c["client_bytes"], c["m"])
+            if key in byte_seen:
+                continue
+            byte_seen.add(key)
+            uniq.append(c)
     return uniq
 
 
 def dominates(a, b):
-    """보조정리 1 - a 가 b 를 엄격히 지배하는가.
+    """보조정리 1 (2026-08-21 정정판) - a 가 b 를 엄격히 지배하는가.
 
-    같은 추가 바이트에서 신용이 같으면(신용은 바이트 수에만 의존한다) 패리티가
-    추가로 1-소거 복구를 준다. 복구 확률은 m 에 대해 단조 증가이므로 어떤
-    손실률에서도 손해가 아니다. 그래서 세 축을 함께 본다.
+    🩸 2026-08-21 반증. 예전 판정은 세 축(added_bytes / allowed / m)만 봤고
+       docstring 은 "복구 확률은 m 에 대해 단조 증가이므로 **어떤 손실률에서도
+       손해가 아니다**" 라고 단언했다. **그 단언이 거짓이다.**
 
-        added_bytes <=,  allowed >=,  m >=,  그리고 적어도 하나가 엄격히 낫다.
+       신용은 "보낸 바이트"가 아니라 **도착한 바이트**로 생긴다(§2.6, p13).
+       그런데 두 지렛대는 도착 상관이 다르다.
 
-    이 관계는 곱순서에서 온 **엄격 부분순서**다(비반사·비대칭·추이적).
-    따라서 지배 그래프에 순환이 없다 — 자체시험 7 이 그것을 직접 확인한다.
+         δ 패딩   여분 바이트가 데이터 데이터그램과 **한 몸**이다.
+                  원본이 도착하면 그 신용도 반드시 함께 도착한다.
+         패리티   여분 바이트가 **별도 데이터그램**이다. 원본이 다 도착해도
+                  패리티만 따로 사라질 수 있고, 그러면 서버가 센 바이트가
+                  k·W 로 떨어져 **칸이 내려간다** = 왕복 하나를 도로 잃는다.
+
+       즉 무손실 결정론 신용(allowed)이 같아도 p>0 이면 두 팔의 신용 **분포**가
+       다르다. 실측이 이것을 그대로 보여 준다 (p14, cert 4032, 손실 5%):
+
+           pad(δ=1)    꼬리 3.0%   p95  52.3 ms
+           parity(m=1) 꼬리 8.0%   p95 102.1 ms   <- 패리티 유실 = 2-RTT
+
+       그래서 **데이터그램 하나가 혼자 사들이는 신용의 바닥**(W_eff)을 판정에
+       넣는다. W_eff 가 더 작은 후보는 부분 손실 상태에서 더 낮은 칸으로
+       떨어지므로, 그 축에서 뒤지면 지배한다고 말할 수 없다.
+
+        added_bytes <=,  allowed >=,  m >=,  W_eff >=,
+        그리고 적어도 하나가 엄격히 낫다.
+
+    네 축 전부 곱순서라 이 관계는 여전히 **엄격 부분순서**다(비반사·비대칭·
+    추이적) — 자체시험 7 이 그것을 직접 확인한다.
+
+    ⚠️ 이 정정의 따름정리: δ 와 m 은 **배타적 대안이 아니다.** 예전 보조정리가
+       "같은 Δ 면 패리티가 패딩을 지배한다"고 했기 때문에 levers() 는 후보를
+       {(δ,0)} ∪ {(0,m)} 로만 만들었다. 근거가 무너졌으므로 결합 후보를
+       넣는다 - `_combo_deltas()` 와 levers() 의 'combo' 가족 참고.
     """
     ge = (a["added_bytes"] <= b["added_bytes"]
           and a["allowed"] >= b["allowed"]
-          and a["m"] >= b["m"])
+          and a["m"] >= b["m"]
+          and a["W_eff"] >= b["W_eff"])
     if not ge:
         return False
     return (a["added_bytes"] < b["added_bytes"]
             or a["allowed"] > b["allowed"]
-            or a["m"] > b["m"])
+            or a["m"] > b["m"]
+            or a["W_eff"] > b["W_eff"])
 
 
 # ---------------------------------------------------------------------------
@@ -585,26 +796,34 @@ if __name__ == "__main__":
           "x25519 %.1f in [3312,3368]=%s ; MLKEM %.1f in [5917,5974]=%s"
           % (t1, in1, t2, in2))
 
-    # -- 5b. spec section 2.5 table: s0 is NOT a constant --------------------
-    S0_TABLE = [(3, 396.5, 34.5, 500.0), (4, 396.5, 34.5, 534.5),
-                (6, 1527.5, 34.5, 1734.5), (7, 1527.5, 34.5, 1769.0)]
-    s0_bad = [(n, s0_at(n, b, c), w) for n, b, c, w in S0_TABLE
+    # -- 5b. spec section 2.5: s0 is NOT a constant. Anchors are the fitted
+    #    threshold points; the OTHER bin of each group is a prediction that
+    #    must land inside its measured band (thresholds 4557..4614 / 7163..7219
+    #    -> s0 bands 506..563 / 1741..1797). c = 40.0 is the p13 direct count.
+    S0_ANCHOR = [(3, 380.0, 40.0, 500.0), (6, 1494.5, 40.0, 1734.5)]
+    s0_bad = [(n, s0_at(n, b, c), w) for n, b, c, w in S0_ANCHOR
               if s0_at(n, b, c) != w]
-    check("5b. s0_at() reproduces the spec 2.5 table exactly", not s0_bad,
-          " ".join("s0(%d)=%.1f" % (n, s0_at(n, b, c))
-                   for n, b, c, _ in S0_TABLE) if not s0_bad
-          else "%r" % (s0_bad,))
+    S0_PRED = [(4, 380.0, 40.0, 506.0, 563.0),
+               (7, 1494.5, 40.0, 1741.0, 1797.0)]
+    s0_bad += [(n, s0_at(n, b, c), lo_, hi_) for n, b, c, lo_, hi_ in S0_PRED
+               if not (lo_ <= s0_at(n, b, c) <= hi_)]
+    check("5b. s0_at() hits both anchors and predicts the other bin in band",
+          not s0_bad,
+          "anchors s0(3)=%.1f s0(6)=%.1f ; preds s0(4)=%.1f s0(7)=%.1f"
+          % (s0_at(3, 380.0, 40.0), s0_at(6, 1494.5, 40.0),
+             s0_at(4, 380.0, 40.0), s0_at(7, 1494.5, 40.0))
+          if not s0_bad else "%r" % (s0_bad,))
 
     # -- 5c. threshold() with the packet term lands in the measured bands ----
-    BANDS = [  # (label, B, s0_base, band_lo, band_hi, expected)
-        ("x25519 ips=1280", 1280, 396.5, 3312, 3368, 3340.0),
-        ("x25519 ips=1350", 1350, 396.5, 4557, 4614, 4585.5),
-        ("MLKEM  ips=1280", 2560, 1527.5, 5917, 5974, 5945.5),
-        ("MLKEM  ips=1350", 2700, 1527.5, 7163, 7219, 7191.0),
+    BANDS = [  # (label, B, s0_base, band_lo, band_hi, expected)  c = 40 (p13)
+        ("x25519 ips=1280", 1280, 380.0, 3312, 3368, 3340.0),
+        ("x25519 ips=1350", 1350, 380.0, 4557, 4614, 4580.0),
+        ("MLKEM  ips=1280", 2560, 1494.5, 5917, 5974, 5945.5),
+        ("MLKEM  ips=1350", 2700, 1494.5, 7163, 7219, 7185.5),
     ]
     band_bad, band_txt = [], []
     for lbl, B, sb, lo_b, hi_b, want_t in BANDS:
-        t = threshold(B, sb, 34.5)
+        t = threshold(B, sb, 40.0)
         band_txt.append("%s %.1f" % (lbl.split()[0], t))
         if not (t == want_t and lo_b <= t <= hi_b):
             band_bad.append((lbl, t, lo_b, hi_b, want_t))
@@ -615,12 +834,12 @@ if __name__ == "__main__":
     # (x25519 500.0 at bin 3, MLKEM 1734.5 at bin 6 -- spec section 5). Carry it
     # to the next bin unchanged and it overpredicts by exactly c = 34.5 B and
     # falls OUTSIDE the measured band. That is why the packet term exists.
-    CONST_S0 = {396.5: 500.0, 1527.5: 1734.5}
+    CONST_S0 = {380.0: 500.0, 1494.5: 1734.5}
     const_out, pkt_in = 0, 0
     const_txt = []
     for lbl, B, sb, lo_b, hi_b, _ in BANDS:
         t_const = amplif.threshold_cert(B, CONST_S0[sb])
-        t_pkt = threshold(B, sb, 34.5)
+        t_pkt = threshold(B, sb, 40.0)
         if not (lo_b <= t_const <= hi_b):
             const_out += 1
         if lo_b <= t_pkt <= hi_b:
@@ -632,14 +851,14 @@ if __name__ == "__main__":
           "%d/4 const outside, %d/4 packet-term inside | %s"
           % (const_out, pkt_in, " ; ".join(const_txt)))
 
-    # -- 5d. spec section 2.5 new predictions (the p12c targets) -------------
-    NEWPRED = [("x25519 ips=1707 bin5", 1707, 396.5, 5831.0),
-               ("x25519 ips=2134 bin6", 2134, 396.5, 7076.5),
-               ("MLKEM  ips=1281 bin7", 2562, 1527.5, 7191.0)]
-    np_bad = [(l, threshold(B, sb, 34.5), w) for l, B, sb, w in NEWPRED
-              if threshold(B, sb, 34.5) != w]
+    # -- 5d. spec section 2.5 new predictions (the p12c targets), c = 40 -----
+    NEWPRED = [("x25519 ips=1707 bin5", 1707, 380.0, 5820.0),
+               ("x25519 ips=2134 bin6", 2134, 380.0, 7060.0),
+               ("MLKEM  ips=1281 bin7", 2562, 1494.5, 7185.5)]
+    np_bad = [(l, threshold(B, sb, 40.0), w) for l, B, sb, w in NEWPRED
+              if threshold(B, sb, 40.0) != w]
     check("5d. threshold() reproduces the p12c predictions", not np_bad,
-          " ".join("%s=%.1f" % (l.split()[-1], threshold(B, sb, 34.5))
+          " ".join("%s=%.1f" % (l.split()[-1], threshold(B, sb, 40.0))
                    for l, B, sb, _ in NEWPRED) if not np_bad
           else "%r" % (np_bad,))
 
@@ -654,20 +873,20 @@ if __name__ == "__main__":
     # 5c2(높은 칸에서 상수 모형이 측정 밴드를 벗어난다)와 서버 바이트 직접
     # 측정(머리말 표)이다. 아래 검사는 "예측 n_rtt == 관측 n_rtt" 그 이상을
     # 주장하지 않는다.
-    CLIFF = [  # (label, k, ips, cert, s0_base, OBSERVED n_rtt)
-        ("x25519 1279", 1, 1279, 4000, 396.5, 2),
-        ("x25519 1280", 1, 1280, 4000, 396.5, 2),
-        ("x25519 1281", 1, 1281, 4000, 396.5, 1),
-        ("x25519 1282", 1, 1282, 4000, 396.5, 1),
-        ("x25519 1350", 1, 1350, 4000, 396.5, 1),
-        ("MLKEM  1279", 2, 1279, 6500, 1527.5, 2),
-        ("MLKEM  1280", 2, 1280, 6500, 1527.5, 2),
-        ("MLKEM  1281", 2, 1281, 6500, 1527.5, 1),
-        ("MLKEM  1282", 2, 1282, 6500, 1527.5, 1),
-        ("MLKEM  1350", 2, 1350, 6500, 1527.5, 1),
+    CLIFF = [  # (label, k, ips, cert, s0_base, OBSERVED n_rtt)  c = 40 (p13)
+        ("x25519 1279", 1, 1279, 4000, 380.0, 2),
+        ("x25519 1280", 1, 1280, 4000, 380.0, 2),
+        ("x25519 1281", 1, 1281, 4000, 380.0, 1),
+        ("x25519 1282", 1, 1282, 4000, 380.0, 1),
+        ("x25519 1350", 1, 1350, 4000, 380.0, 1),
+        ("MLKEM  1279", 2, 1279, 6500, 1494.5, 2),
+        ("MLKEM  1280", 2, 1280, 6500, 1494.5, 2),
+        ("MLKEM  1281", 2, 1281, 6500, 1494.5, 1),
+        ("MLKEM  1282", 2, 1282, 6500, 1494.5, 1),
+        ("MLKEM  1350", 2, 1350, 6500, 1494.5, 1),
     ]
     cl_bad = [lbl for lbl, kk, ips, cert, sb, obs in CLIFF
-              if (1 if cert <= threshold(kk * ips, sb, 34.5) else 2) != obs]
+              if (1 if cert <= threshold(kk * ips, sb, 40.0) else 2) != obs]
     check("5e. predicted n_rtt == observed n_rtt on all 10 probe_cliff points",
           not cl_bad, "10/10 (x25519 cert=4000, MLKEM cert=6500)"
           if not cl_bad else "misses: %r" % (cl_bad,))
@@ -721,46 +940,105 @@ if __name__ == "__main__":
         ("MLKEM   ips=1200", 1451, 6000, 1734.5, 1200),
         ("MLKEM   big-cert", 1457, 9000, 1769.0, 1350),
     ]
-    # levers() 가 만드는 후보는 added_bytes 와 allowed 가 함께 증가하므로
-    # 구조적으로 **반사슬(antichain)** 이다 - 서로 지배하지 않는다. 그 집합만으로
-    # 비순환을 시험하면 간선이 0 개라 시험이 공허해진다. 그래서 보조정리 1 의
-    # 실제 대립쌍(같은 Δ 에서 pad vs parity)을 만들어 간선이 있는 그래프로 시험한다.
+    # ---------------------------------------------------------------- 7-0
+    # 🩸 2026-08-21. 예전 7-0 은 "delta == W 에서 parity 가 pad 를 엄격히
+    #    지배한다"(보조정리 1)를 단언했다. **두 가지가 틀렸다.**
+    #
+    #    (1) 그 시험은 parity_bytes 를 안 넘겨 패리티를 W 로 셌다. 2026-08-20
+    #        '감사 결함 4' 이후 생산 경로(decide_v2)는 실크기 파=W+39+6k 를
+    #        쓴다. 즉 시험이 **이미 버린 근사**에서만 돌고 있었다.
+    #    (2) 실크기로 바로잡아 "같은 Δ" 쌍을 정확히 만들어도 보조정리가
+    #        **거짓**이다. 신용은 도착한 바이트로 생기는데, 패리티의 신용은
+    #        별도 데이터그램이라 따로 유실되고 δ 의 신용은 안 그렇다.
+    #
+    # 정정판: 같은 Δ 쌍(pad δ=파 vs parity m=1, 바이트·allowed·added 가 정확히
+    # 같다)에서 (a) parity 가 pad 를 지배하지 **않고**, (b) RTT 를 올리면 pad 가
+    # 실제로 더 싸지는 **교차점이 존재**한다. 교차점은 물리적으로 T_pto 근처다 -
+    # pad 의 대가는 p·(RTT+T_pto)(전멸), parity 의 대가는 p·RTT(신용 상실)라
+    # RTT > T_pto 이면 pad 가 이긴다.
+    from padfec import policy as _pol           # noqa: E402  (자체시험 전용)
+
     _bb = 1 * 1280
+    _pk = _pol.parity_datagram_bytes
     _args = (259, 1280, 51, 16, 4000, 500.0, _bb, bin_index(_bb), P_SERVER)
-    lem_pad = _candidate("pad", 0, 1280, *_args)      # delta = W, 복구 없음
-    lem_par = _candidate("parity", 1, 0, *_args)      # 같은 바이트, 복구 있음
-    lemma1 = (dominates(lem_par, lem_pad)
-              and not dominates(lem_pad, lem_par))
-    check("7-0. Lemma 1: at delta == W parity strictly dominates pad", lemma1,
-          "pad added=%d allowed=%d m=%d  vs  parity added=%d allowed=%d m=%d"
-          % (lem_pad["added_bytes"], lem_pad["allowed"], lem_pad["m"],
-             lem_par["added_bytes"], lem_par["allowed"], lem_par["m"]))
+    _kw = {"parity_bytes": _pk}
+    _par_sz = _pk(1280, 1)                       # 파(1280,1) = 1325
+    lem_pad = _candidate("pad", 0, _par_sz, *_args, **_kw)   # δ = 파, 복구 없음
+    lem_par = _candidate("parity", 1, 0, *_args, **_kw)      # 같은 바이트, 복구 있음
+    same_delta = (lem_pad["client_bytes"] == lem_par["client_bytes"]
+                  and lem_pad["allowed"] == lem_par["allowed"]
+                  and lem_pad["added_bytes"] == lem_par["added_bytes"])
+    old_lemma = (lem_par["added_bytes"] <= lem_pad["added_bytes"]
+                 and lem_par["allowed"] >= lem_pad["allowed"]
+                 and lem_par["m"] >= lem_pad["m"])
+    # 🩸 2026-08-26 - **대역 무제한에서** 잰다. 이 시험이 붙잡으려는 기전은
+    #    "패리티의 신용은 별도 데이터그램이라 따로 유실되고 δ 의 신용은 안
+    #    그렇다"이고, 그 교차점은 T_pto 근처다. 대역이 걸리면 **그 위에 다른
+    #    기전이 하나 더 얹힌다** - 뒤따르는 패리티의 신용이 송신 결정보다
+    #    늦게 닿는 경주(padfec/policy.py '경주' 절)라, 패리티는 RTT 와 무관하게
+    #    지고 교차점 자체가 사라진다. 두 기전을 한 시험에 섞으면 어느 쪽이
+    #    말하는지 알 수 없으므로 나눈다. 대역이 걸린 쪽은 바로 아래 7-0b 다.
+    _J = lambda c, r, up: _pol.cost_of_v2(c, 1280, r, 0.05, 1.0, k0=1,
+                                          uplink_mbps=up)["j_ms"]
+    j_pad = [_J(lem_pad, r, 0.0) for r in (50.0, 100.0, 250.0)]
+    j_par = [_J(lem_par, r, 0.0) for r in (50.0, 100.0, 250.0)]
+    crossover = (j_par[0] < j_pad[0] and j_par[2] > j_pad[2])
+    check("7-0. Lemma 1 is FALSE at equal delta, uplink 0: "
+          "parity does not dominate pad",
+          same_delta and old_lemma and not dominates(lem_par, lem_pad)
+          and crossover,
+          "same-delta=%s old-rule=%s new-rule=%s | J(parity)-J(pad) @rtt "
+          "50/100/250 = %+.2f/%+.2f/%+.2f ms (부호가 뒤집힌다)"
+          % (same_delta, old_lemma, dominates(lem_par, lem_pad),
+             j_par[0] - j_pad[0], j_par[1] - j_pad[1], j_par[2] - j_pad[2]))
 
-    # 간선 1 개짜리 그래프에서는 추이성이 검사할 삼중항이 0 개라 시험이 공허하다.
-    # 같은 칸·같은 바이트(B = 3,840)에 m = 0/1/2 를 나란히 놓아 **2-체인**을 만든다.
-    #   pad    m=0 delta=2560 -> W_eff 3840, k=1, B = 1*3840
-    #   parity m=1 delta= 640 -> W_eff 1920, k=1, B = 2*1920
-    #   parity m=2 delta=   0 -> W_eff 1280, k=1, B = 3*1280
-    # 셋 다 added_bytes 와 allowed 가 같고 m 만 다르므로 m=2 > m=1 > m=0 이고
-    # m=2 > m=0 도 성립해야 한다(추이성). 이게 보조정리 1 의 사슬 판이다.
-    ch_m0 = _candidate("pad", 0, 2560, *_args)
-    ch_m1 = _candidate("parity", 1, 640, *_args)
-    ch_m2 = _candidate("parity", 2, 0, *_args)
-    CHAIN = [ch_m0, ch_m1, ch_m2]
-    same_cell = (len(set(c["client_bytes"] for c in CHAIN)) == 1
-                 and len(set(c["allowed"] for c in CHAIN)) == 1
-                 and len(set(c["added_bytes"] for c in CHAIN)) == 1)
-    chain_ok = (same_cell
-                and dominates(ch_m2, ch_m1) and dominates(ch_m1, ch_m0)
-                and dominates(ch_m2, ch_m0)          # 추이성이 실제로 필요
-                and not dominates(ch_m0, ch_m1)
-                and not dominates(ch_m1, ch_m2))
-    check("7-1. a real 2-chain exists: parity m=2 > m=1 > m=0 at equal bytes",
-          chain_ok,
-          "B=%d allowed=%d added=%d for all three; m = 0/1/2"
-          % (ch_m0["client_bytes"], ch_m0["allowed"], ch_m0["added_bytes"]))
+    # 7-0b. 대역이 걸리면 같은 Δ 에서 pad 가 **모든 RTT 에서** 이긴다
+    #
+    # 🩸 2026-08-26 신설. 이게 이번 수리가 새로 말할 수 있게 된 것이다.
+    #    같은 바이트를 δ 로 쓰면 그 바이트는 **원본 안에** 있어 마지막 원본과
+    #    함께 도착하고, m=1 패리티로 쓰면 원본 **뒤**라 서버가 이미 보낼지를
+    #    정한 뒤에 도착한다. 그래서 대역이 걸린 경로에서는 같은 Δ 라도
+    #    "1 바이트 패딩"이 패리티보다 낫다 - 이 연구의 헤드라인과 같은 방향이다.
+    _jp10 = [_J(lem_pad, r, 10.0) for r in (50.0, 100.0, 250.0)]
+    _jr10 = [_J(lem_par, r, 10.0) for r in (50.0, 100.0, 250.0)]
+    check("7-0b. under a rate limit pad beats an equal-delta m=1 parity "
+          "at EVERY rtt (the trailing parity loses the credit race)",
+          all(a > b for a, b in zip(_jr10, _jp10)),
+          "J(parity)-J(pad) @rtt 50/100/250 = %+.2f/%+.2f/%+.2f ms (10 Mbps)"
+          % (_jr10[0] - _jp10[0], _jr10[1] - _jp10[1], _jr10[2] - _jp10[2]))
 
-    LEMMA = [lem_pad, lem_par] + CHAIN
+    # ---------------------------------------------------------------- 7-1
+    # 보조정리 1 이 무너졌으므로 **가지치기 규칙으로서의 dominates() 는 은퇴**한다.
+    # 그 사실 자체를 시험으로 못 박는다: 도달 가능한 후보집합에서 지배 간선이
+    # 하나도 없어야 한다. 누가 판정을 다시 약하게 만들면(예: W_eff 축을 빼면)
+    # 간선이 되살아나 여기서 붉어진다.
+    _edges_real = 0
+    _pairs_real = 0
+    for _C, _s0b in ((1146, 380.0), (2308, 1494.5)):
+        for _cert in (1000, 2308, 3000, 4032, 5609, 6500, 8000, 9000, 12000):
+            _cs = levers(_C, _cert, None, W=1280, s0_base=_s0b, c_pkt=40.0,
+                         parity_bytes=_pk, max_delta=172)
+            for _a in _cs:
+                for _b in _cs:
+                    if _a is _b:
+                        continue
+                    _pairs_real += 1
+                    if dominates(_a, _b):
+                        _edges_real += 1
+    check("7-1. dominance prunes NOTHING on the reachable candidate set",
+          _edges_real == 0,
+          "%d edges over %d ordered pairs (levers 는 반사슬이다 - 후보가 "
+          "5~6 개뿐이라 전수 평가가 어차피 싸다)" % (_edges_real, _pairs_real))
+
+    # 순서 성질(7a~7e)은 **간선이 있는 그래프**에서 시험해야 공허하지 않다.
+    # 실 후보집합에 간선이 0 개이므로(위 7-1), 네 축을 전부 흔드는 합성 격자를
+    # 만들어 그 위에서 반사·비대칭·추이·비순환을 확인한다. 이건 후보 생성기가
+    # 아니라 **관계 자체**를 시험하는 것이므로 dict 를 직접 만든다.
+    LEMMA = [{"added_bytes": _ad, "allowed": _al, "m": _m, "W_eff": _we,
+              "mode": "synthetic", "client_bytes": _al // 3, "k": 1,
+              "delta_per_dgram": _we - 1280}
+             for _ad in (0, 100) for _al in (1280, 2560)
+             for _m in (0, 1) for _we in (1280, 1380)]
 
     total_edges = 0
     n_irr = n_anti = n_trans = n_cyc = n_chain2 = 0
@@ -976,9 +1254,9 @@ if __name__ == "__main__":
     # -- 12. spec 2.6 flags and the section 2.5 path through levers() ---------
     v_const = levers(1450, 6000, 1734.5, W=1280)
     # s0_base 를 주면 상수 s0 는 쓰이지 않는다 - None 을 넘겨 그것을 보인다.
-    v_pkt = levers(1450, 6000, None, W=1280, s0_base=1527.5, c_pkt=34.5)
+    v_pkt = levers(1450, 6000, None, W=1280, s0_base=1494.5, c_pkt=40.0)
     bc = all(c["s0_eff"] == 1734.5 for c in v_const)
-    pk = all(c["s0_eff"] == s0_at(c["allowed"] // P_SERVER, 1527.5, 34.5)
+    pk = all(c["s0_eff"] == s0_at(c["allowed"] // P_SERVER, 1494.5, 40.0)
              for c in v_pkt)
     n_s0 = len(set(c["s0_eff"] for c in v_pkt))
     check("12. s0_base=None keeps the old constant s0; s0_base set makes "
@@ -987,18 +1265,20 @@ if __name__ == "__main__":
           "%d candidates: %s"
           % (1734.5, n_s0, len(v_pkt),
              sorted(set(c["s0_eff"] for c in v_pkt))))
-    # credit_bytes: 지금은 client_bytes 와 같아야 한다(p13 전까지 안 바꾼다).
+    # credit_bytes == client_bytes: p13 이 직접 측정으로 **확인한 사실**이다
+    # (첫 비행 패리티는 전 조건에서 100% 서버 결정 전에 도착 - B_eff 에 반영).
     all_c = v_const + v_pkt + levers(259, 4000, 500.0, W=1280)
-    check("12b. credit_bytes == client_bytes for every candidate (p13 pending)",
+    check("12b. credit_bytes == client_bytes (verified by p13)",
           all(c["credit_bytes"] == c["client_bytes"] for c in all_c),
-          "%d candidates, none re-credited yet" % len(all_c))
-    # late_parity_risk: k==1 이고 m==1 인 후보만.
+          "%d candidates" % len(all_c))
+    # late_parity_risk: p13 이 가설을 기각했으므로 어떤 후보도 표시되면 안 된다.
+    # 근거는 p13 검사 5 하나이고, 2026-08-21 부터 그 검사는 n=600 +
+    # Clopper-Pearson 하한(>= 0.99)으로 판정한다. 그전 판정(n=24 점추정)은
+    # 0.5% 규모를 배제할 검정력이 없었다 - 이 시험은 그 사실 위에 서 있다.
     lp = [c for c in all_c if c["late_parity_risk"]]
-    check("12c. late_parity_risk marks exactly the k==1, m==1 candidates",
-          all((c["k"] == 1 and c["m"] == 1) == c["late_parity_risk"]
-              for c in all_c) and lp,
-          "%d flagged of %d; spec 2.6 measured excess for x25519 on1 = 936 B"
-          % (len(lp), len(all_c)))
+    check("12c. late_parity_risk is False everywhere "
+          "(rests on p13 check 5: n=600, CP lower bound >= 0.99)",
+          not lp, "flagged %d of %d (must be 0)" % (len(lp), len(all_c)))
     # over_mtu: W_eff > 1500 인 후보만.
     _mtu = levers(4200, 4000, 500.0, W=1450, max_steps=2, m_max=1)
     over = [c for c in _mtu if c["over_mtu"]]
@@ -1007,6 +1287,70 @@ if __name__ == "__main__":
           and over,
           "W_eff seen: %s ; flagged %d"
           % (sorted(set(c["W_eff"] for c in _mtu)), len(over)))
+
+    # -- 13. 결합 후보(combo)의 충분성 ---------------------------------------
+    # 명세 §3 은 "연속 스윕이 아니라 경계점만 본다"고 못박는다. 결합 후보를
+    # 넣으면서 그 원칙이 여전히 성립하는지 **직접 반증한다**: δ 를 1 부터
+    # 상한까지 전부 훑은 완전탐색의 최소 J 와, 경계점만 본 후보집합의 최소 J 가
+    # 같아야 한다. 하나라도 갈리면 경계점 목록이 모자란 것이다.
+    #
+    # 이 시험이 없으면 _combo_deltas() 가 조용히 후보를 놓쳐도 아무도 모른다 -
+    # 그건 "고른 것이 최선"이라는 주장 자체를 무너뜨린다.
+    _MAXD = 172                                    # QUICGO_MAX_IPS(1452) - 1280
+    _suff_bad = []
+    _n_combo_better = 0
+    _gain_max = 0.0
+    for _C, _s0b in ((1146, 380.0), (2308, 1494.5)):
+        _k0 = capacity.natural_k(_C, 1280, 51)
+        for _cert in (2308, 4032, 6500, 9000, 12000):
+            for _rtt in (50.0, 250.0):
+                for _p in (0.0, 0.02, 0.10):
+                    _cs = levers(_C, _cert, None, W=1280, s0_base=_s0b,
+                                 c_pkt=40.0, parity_bytes=_pk,
+                                 max_delta=_MAXD)
+                    _old = [c for c in _cs if c["mode"] != "combo"]
+
+                    def _bestj(cands, rtt=_rtt, p=_p, k0=_k0):
+                        b = None
+                        for c in cands:
+                            if (c["W_eff"] > 1452
+                                    or c["mode"] == "pad_repack"):
+                                continue
+                            j = _pol.cost_of_v2(c, 1280, rtt, p, 1.0,
+                                                k0=k0)["j_ms"]
+                            if b is None or j < b:
+                                b = j
+                        return b
+
+                    _bnew, _bold = _bestj(_cs), _bestj(_old)
+                    # 완전탐색: δ = 0..172, m = 0..2 전부
+                    _bf = None
+                    for _d in range(0, _MAXD + 1):
+                        for _m in (0, 1, 2):
+                            _c = _candidate("bf", _m, _d, _C, 1280, 51, 16,
+                                            _cert, None, _k0 * 1280,
+                                            bin_index(_k0 * 1280), P_SERVER,
+                                            k_floor=_k0, s0_base=_s0b,
+                                            c_pkt=40.0, parity_bytes=_pk)
+                            if _c["W_eff"] > 1452:
+                                continue
+                            _j = _pol.cost_of_v2(_c, 1280, _rtt, _p, 1.0,
+                                                 k0=_k0)["j_ms"]
+                            if _bf is None or _j < _bf:
+                                _bf = _j
+                    if _bnew is None or _bf is None or _bnew > _bf + 1e-9:
+                        _suff_bad.append((_C, _cert, _rtt, _p, _bnew, _bf))
+                    if _bold is not None and _bnew < _bold - 1e-9:
+                        _n_combo_better += 1
+                        _gain_max = max(_gain_max, _bold - _bnew)
+    check("13. combo boundary points == exhaustive sweep over delta 0..%d"
+          % _MAXD, not _suff_bad,
+          "%d mismatches; combo improved %d conditions, max gain %.3f ms"
+          % (len(_suff_bad), _n_combo_better, _gain_max))
+    check("13a. the sufficiency test is NOT vacuous (combo actually wins "
+          "somewhere)", _n_combo_better > 0,
+          "combo 가 더 나은 조건 %d 개 (0 이면 이 시험이 아무것도 안 지킨다)"
+          % _n_combo_better)
 
     # -- candidate table (evidence, ASCII) -----------------------------------
     HDR = ("mode", "st", "m", "dlt", "W_eff", "k", "cbytes", "added",
