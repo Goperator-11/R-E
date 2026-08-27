@@ -185,9 +185,24 @@ def verify_link(mtu):
         raise RuntimeError("%s 가 루트 네임스페이스에 남아 있다" % DEV_PEER)
 
 
-def _netem_spec(one_way_ms, loss_pct, burst_len):
-    # 문서 5절과 같은 형태: `netem delay 25ms loss 5%`
+def _netem_spec(one_way_ms, loss_pct, burst_len, rate_mbit=0.0):
+    """문서 5절과 같은 형태: `netem delay 25ms loss 5%`.
+
+    🆕 2026-08-21 - `rate` 를 선택적으로 붙일 수 있게 했다. **기본은 안 건다**
+    (rate_mbit=0). 문서 5절 환경이 대역을 안 걸기 때문이고, p9(교차환경)가
+    그 환경을 대조하므로 기본값을 바꾸면 안 된다.
+
+    왜 필요했나: J 의 t_tx 항(추가 바이트의 직렬화 시간)은 "이득이 같으면 큰
+    m 을 고르는 편향"을 막는 **유일한 힘**인데, 대역을 안 건 이 테스트베드에는
+    그 비용이 아예 존재하지 않았다(실측 1,324 B 추가에 0.043 ms). 그래서
+      (a) 모형이 청구하는 10 Mbps 가 측정과 25 배 어긋났고,
+      (b) **패리티를 과하게 사도 벌점이 없어** 어떤 조건에서도 상수 정책
+          m≡2 가 최선이거나 동률이 됐다 — 적응성을 잴 수 없는 환경이었다.
+    rate 를 걸면 두 문제가 같이 없어진다. 그 환경은 **새 조건으로 따로** 돌린다.
+    """
     spec = "netem delay %.3fms" % one_way_ms
+    if rate_mbit and rate_mbit > 0:
+        spec += " rate %gmbit" % float(rate_mbit)
     if loss_pct and loss_pct > 0:
         if burst_len and burst_len > 1:
             # gemodel p r : 좋은->나쁜 p, 나쁜->좋은 r.  평균 버스트 = 1/r,
@@ -202,15 +217,26 @@ def _netem_spec(one_way_ms, loss_pct, burst_len):
     return spec
 
 
-def set_netem(one_way_ms, loss_c2s=0.0, loss_s2c=0.0, burst_len=1.0):
-    """문서 5절대로 netem 을 양쪽에 절반씩 건다(그래야 대칭 지연이 된다)."""
+def set_netem(one_way_ms, loss_c2s=0.0, loss_s2c=0.0, burst_len=1.0,
+              rate_up_mbit=0.0, rate_down_mbit=0.0):
+    """문서 5절대로 netem 을 양쪽에 절반씩 건다(그래야 대칭 지연이 된다).
+
+    rate_up_mbit   클라이언트 -> 서버(업링크) 대역. 0 이면 안 건다(기본).
+    rate_down_mbit 서버 -> 클라이언트 대역. 0 이면 안 건다(기본).
+
+    ⚠️ 업링크에 rate 를 걸면 **정책에도 같은 값을 알려 줘야 한다**
+       (`run_client(uplink_mbps=...)`). 안 그러면 모형이 없는 비용을 청구하거나
+       있는 비용을 빼먹는다 - 그게 2026-08-21 에 고친 결함의 정체다.
+    """
     run("tc qdisc del dev %s root" % DEV_LOCAL, check=False)
     run("ip netns exec %s tc qdisc del dev %s root" % (NS, DEV_PEER),
         check=False)
     run("tc qdisc add dev %s root %s"
-        % (DEV_LOCAL, _netem_spec(one_way_ms, loss_c2s, burst_len)))
+        % (DEV_LOCAL, _netem_spec(one_way_ms, loss_c2s, burst_len,
+                                  rate_up_mbit)))
     run("ip netns exec %s tc qdisc add dev %s root %s"
-        % (NS, DEV_PEER, _netem_spec(one_way_ms, loss_s2c, burst_len)))
+        % (NS, DEV_PEER, _netem_spec(one_way_ms, loss_s2c, burst_len,
+                                     rate_down_mbit)))
 
 
 def start_server(certsize, fec="off", stats_path=None, extra=()):
@@ -256,12 +282,21 @@ def stop_server(p):
 
 def run_client(group, n, fec="off", m=1, ips=0, gap_ms=25, timeout_s=12,
                stats_path=None, quiet=True, expect_k=0, dump=None,
-               extra=(), warmup=0):
+               extra=(), warmup=0, uplink_mbps=0.0):
     """warmup - 명세 5절의 "워밍업 20~50회, 통계에서 제외".
 
     앞의 warmup 개 행을 버린다. 캐시·분기예측기·목적지 캐시가 데워지기 전의
     표본이 섞이면 p50/p95 가 위로 끌린다. **버리는 것도 기록에 남긴다** -
     조용히 버리면 표본 수가 왜 다른지 나중에 아무도 모른다.
+
+    uplink_mbps - 이 실행의 **실제 업링크 대역**. 정책(J 의 t_tx 항)에 그대로
+    넘긴다. 기본 0 = 대역 제한 없음이고, 그게 `set_netem` 의 기본 환경이다.
+
+    🩸 2026-08-21. 그전에는 정책이 10 Mbps 를 리터럴로 박고 있었는데 이
+       테스트베드에는 대역 제한이 아예 없었다. 모형이 없는 비용을 청구하니
+       패리티를 과소 구매했고, p11·p15 의 실패 조건이 정확히 그것이었다.
+       **환경과 모형이 같은 수를 보게 하는 것**이 이 인자의 목적이다.
+       set_netem(rate_up_mbit=X) 를 쓰면 여기에도 X 를 줘야 한다.
     """
     qamp = require_bin()
     if stats_path is None:
@@ -278,7 +313,11 @@ def run_client(group, n, fec="off", m=1, ips=0, gap_ms=25, timeout_s=12,
            "-fec", fec, "-m", str(m),
            "-gap", "%dms" % int(gap_ms),
            "-timeout", "%ds" % int(timeout_s),
-           "-stats", stats_path]
+           "-stats", stats_path,
+           # 정책이 쓰는 업링크 대역. 여기서 **항상** 명시한다 - 안 주면
+           # Go 가 생성 표의 기본값(10 Mbps)을 쓰는데, 이 테스트베드의
+           # 기본 환경에는 대역 제한이 없어 그 값이 틀린다.
+           "-uplink-mbps", ("%g" % float(uplink_mbps))]
     if ips:
         cmd += ["-ips", str(ips)]
     if expect_k:
@@ -359,6 +398,38 @@ def summarize(rows, rtt_ms=None):
               if r.get("initial_datagrams")]
         out["initial_datagrams_median"] = pctl(dg, 0.5)
     return out
+
+
+def measured_C(group):
+    """이 그룹의 ClientHello 크기(C)를 **측정 결과에서** 읽는다.
+
+    🩸 2026-08-25 - p17·p18 이 X25519MLKEM768 을 재면서 모형에는
+       `C=1146` 을 박아 넣고 있었다. 실측은 1448 이고(x25519 는 270),
+       natural_k(1146)=1 vs natural_k(1448)=2 라 **모형이 k=1 로**
+       계산했다. p18 의 '모형이 m=4 이득을 12 배 과대평가' 는 그래서
+       생긴 허상이었다(바른 C 로는 예측 +2.38 / 실측 +1.43).
+
+       p4 는 이미 p1_flight.json 에서 읽고 있었다. 창구를 하나로
+       모으고, 없으면 **대체값으로 넘어가지 말고 죽는다** - 조용한
+       대체값이 바로 이 사고를 만든 물건이다.
+    """
+    p = os.path.join(RESULTS, "p1_flight.json")
+    if not os.path.exists(p):
+        raise SystemExit(
+            "measured_C: %s 가 없다. C 는 측정값이므로 지어낼 수 없다. "
+            "먼저 p1 을 돌려라 (python experiments/loop2.py --only p1)."
+            % p)
+    with open(p, encoding="utf-8") as f:
+        d = json.load(f)
+    for c in d.get("capacity_checks", []):
+        if c.get("group") == group and c.get("ips") == 0 \
+                and isinstance(c.get("C"), int):
+            return c["C"]
+    raise SystemExit(
+        "measured_C: p1_flight.json 에 그룹 %r 의 C 가 없다. "
+        "있는 그룹: %s"
+        % (group, [c.get("group") for c in d.get("capacity_checks", [])
+                   if c.get("ips") == 0]))
 
 
 def save(name, obj):

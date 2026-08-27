@@ -40,7 +40,18 @@ from _journal import Journal, code_fingerprint   # noqa: E402
 
 RTT_MS = 50.0
 CERT = 2955          # 두 팔 모두 1-RTT 인 크기. 증폭 효과와 섞이지 않게.
-N = 200
+# 🩸 2026-08-21 - p11·p15 와 같은 처방. 6 차에서 p4 의 정책 일치가
+#    10 조건 중 **3 개**만 판정 가능했다(나머지는 전 팔이 잡음 동률).
+#    원자료로 필요 표본을 계산하니 553~2,498 이었다 - 차이가 5 ms 인
+#    조건도 꼬리 분산(SE 9.1)이 그만큼 커서 판정이 안 된다.
+#    기준은 그대로 두고 표본만 키운다. 저널 키에 n 이 들어가므로
+#    상시 실행분 캐시는 덮이지 않는다.
+#        python experiments/p3_effect.py --precise      (N=1200)
+#        PADFEC_P3_N=800 python experiments/p3_effect.py
+N_DEFAULT = 200
+N_PRECISE = 1200
+N = int(os.environ.get("PADFEC_P3_N")
+        or (N_PRECISE if "--precise" in sys.argv else N_DEFAULT))
 GROUPS = [("X25519MLKEM768", 2), ("x25519", 1)]
 
 # (손실%, 평균버스트) - 버스트는 netem gemodel
@@ -76,6 +87,10 @@ def unit(group, k, loss, burst, dname, lc, ls, arm, fec, m, jr):
            "p50": s["p50"], "p90": s["p90"], "p95": s["p95"], "p99": s["p99"],
            "mean": s["mean"], "max": s["max"],
            "pto_rate": s["pto_rate"],
+           # 🩸 2026-08-21 - 원자료를 버리지 않는다. 요약만 남기면
+           #    '팔 간 차이가 잡음인가'를 사후에 잴 수 없다 - p4 의
+           #    정책 일치가 그 질문에 답해야 한다(부트스트랩).
+           "samples": [r["ms"] for r in rows if r.get("ok")],
            "srv_originals": ss.get("originals"),
            "srv_parities": ss.get("parities"),
            "srv_recovered": ss.get("recovered"),
@@ -180,12 +195,86 @@ def main():
     print("유효 단위 %d/%d | 총 복구 %d 건 | 복구 CRC 실패 %d 건"
           % (n_valid, len(results), recovered, crc_fail))
 
+    # ------------------------------------------------------------ 판정
+    # 2026-08-21 - 이 단계는 그전까지 `return 0 if crc_fail == 0 else 1`
+    # **하나뿐**이었다. 이름은 "복구 동작 + 손실 조건 효과" 인데
+    #   d_p95 = +100 ms 여도 / 복구가 0 건이어도 / 유효 단위가 0 이어도
+    # 전부 통과했다. 게다가 서버 통계를 못 읽으면 crc_fail 이 None 이라
+    # `None or 0 == 0` 으로 조용히 통과한다(p11 에서 실제로 겪은 함정).
+    #
+    # ⚠️ **d_p95 / d_p99 는 판정에 쓰지 않는다.** 기준선 p95 가 꼬리에
+    #    걸리는지에 따라 개선 여지 자체가 달라져서 20 조건 중 9 건이
+    #    양수다(p8 도 같은 이유로 "기준선 p95 는 불연속면에 걸려
+    #    불안정하다" 고 적어 두었다). 그리고 d_p99 는 실행 간에
+    #    −151.8 ↔ −93.5 로 뒤집힌다(n=200 에서 위에서 두 번째 표본 하나).
+    #    **효과의 통계적 판정은 p8 이 부트스트랩 신뢰구간으로 한다.**
+    #    여기서는 실행 간에 흔들리지 않는 것만 못 박는다.
+    checks = []
+
+    def add(name, ok, detail):
+        checks.append({"check": name, "ok": bool(ok),
+                       "detail": detail})
+        print("[%s] %-54s %s" % ("통과" if ok else "실패", name,
+                                 detail[:60]))
+
+    print()
+    add("유효 단위가 전부다 (무효 측정이 조용히 빠지지 않는다)",
+        n_valid == len(results),
+        "%d/%d" % (n_valid, len(results)))
+    _nostat = [r for r in results if r.get("srv_recovered") is None]
+    add("모든 팔에서 서버 통계가 실제로 있었다 "
+        "(없으면 CRC 판정이 공허해진다)",
+        not _nostat,
+        "없는 팔 %d 개" % len(_nostat))
+    _loss = [r for r in results if (r.get("loss") or 0) > 0
+             and r.get("arm") != "off"]
+    # 🩸 2026-08-21 재보정 - 첫 판은 **모든** 손실 조건에 복구 > 0 을
+    #    요구했다. 그런데 버스트 L 채널에서 손실은 에피소드로 뭉치고
+    #    기대 에피소드 수는 λ = n·p/L 이다. 2%·버스트3 이면 λ=1.33 →
+    #    정상인데도 P(복구 0) ≈ 26%. 실제 기저율: 1차 1 조건, 2차 0,
+    #    3차 1 조건 - 정상 작동 중에 실행의 3~5 할이 붉어지는 **양치기
+    #    검사**였다. λ >= 5 (P(0|정상) <= 0.7%) 인 조건에만 조건별로
+    #    요구하고, 전면 고장은 전체 합(합 λ ≈ 150)으로 잡는다.
+    #    λ 낮은 조건의 복구 0 은 정보로 찍는다 - 감추지 않는다.
+    def _lam(r):
+        return (r.get("n") or 0) * (r.get("loss") or 0) / 100.0 \
+            / max(1.0, r.get("burst") or 1.0)
+    _hi = [r for r in _loss if _lam(r) >= 5.0]
+    _norec_hi = [r for r in _hi if (r.get("srv_recovered") or 0) <= 0]
+    _norec_lo = [(r["group"], r["loss"], r["burst"], r["dir"],
+                  r["arm"], round(_lam(r), 2)) for r in _loss
+                 if _lam(r) < 5.0 and (r.get("srv_recovered") or 0) <= 0]
+    add("복구가 실제로 일어난다 (λ>=5 인 손실 조건 전부)",
+        _hi and not _norec_hi,
+        "λ>=5 조건 %d 개 중 복구 0 인 것 %d | λ<5 에서 복구 0: %s"
+        % (len(_hi), len(_norec_hi), _norec_lo or "없음"))
+    _tot_rec = sum(r.get("srv_recovered") or 0 for r in _loss)
+    add("손실 조건 전체 합의 복구 > 0 (전면 고장 감지)",
+        _loss and _tot_rec > 0,
+        "손실 %d 조건 합계 %d 건" % (len(_loss), _tot_rec))
+    _clean = [r for r in results if (r.get("loss") or 0) == 0]
+    _ghost = sum(r.get("srv_recovered") or 0 for r in _clean)
+    add("[부정] 무손실 조건의 복구가 정확히 0 (헛복구가 없다)",
+        _clean and _ghost == 0,
+        "무손실 %d 팔에서 복구 %d 건" % (len(_clean), _ghost))
+    _d50 = [abs(c.get("d_p50") or 0.0) for c in comps
+            if (c.get("loss") or 0) == 0]
+    add("무손실에서 FEC 의 p50 비용이 1 ms 미만 (공짜에 가깝다)",
+        _d50 and max(_d50) < 1.0,
+        "최대 %.3f ms (%d 조건)" % (max(_d50) if _d50 else -1,
+                                   len(_d50)))
+    add("복구 CRC 실패 0", crc_fail == 0, "총 %d 건" % crc_fail)
+    npass = sum(1 for c in checks if c["ok"])
+    print("-" * 78)
+    print("%d / %d 통과" % (npass, len(checks)))
+
     out = {"rtt_ms": RTT_MS, "cert": CERT, "n": N, "runs": results,
            "comparisons": comps, "valid_units": n_valid,
            "total_units": len(results), "total_recovered": recovered,
-           "recover_crc_fail": crc_fail}
+           "recover_crc_fail": crc_fail,
+           "checks": checks, "passed": npass, "total": len(checks)}
     print("saved:", B.save("p3_effect.json", out))
-    return 0 if crc_fail == 0 else 1
+    return 0 if npass == len(checks) else 1
 
 
 if __name__ == "__main__":

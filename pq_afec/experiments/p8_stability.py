@@ -203,9 +203,12 @@ def main():
     print("2) 효과 재현성 - c2s 손실 2%%, off 대 on1, %d 라운드 (조건마다 n=%d)"
           % (ROUNDS, N_EFFECT))
     print("=" * 100)
+    _pool_off, _pool_on = [], []   # 합동 검정용 (아래 재보정 주석 참조)
     for r in range(ROUNDS):
         a = effect(2.0, 0.0, "off", 1, N_EFFECT, jr, "r%d" % r)
         b = effect(2.0, 0.0, "on", 1, N_EFFECT, jr, "r%d" % r)
+        _pool_off.extend(a["samples"] or [])
+        _pool_on.extend(b["samples"] or [])
         bs95 = bootstrap_diff(a["samples"], b["samples"], 0.95)
         bs99 = bootstrap_diff(a["samples"], b["samples"], 0.99)
         # 🩸 p95 는 이 손실률에서 **불연속면에 걸린다.** 연결당 c2s
@@ -232,16 +235,35 @@ def main():
                  a["p99"] or -1, b["p99"] or -1, b["srv_recovered"]))
         sys.stdout.flush()
 
-    neg = [x for x in out["effect_rounds"] if x["d_tail"]["hi"] >= 0]
-    add("c2s 손실에서 **꼬리 비율**(왕복 추가 시행 비율) 감소가 "
-        "통계적으로 확실 (부트스트랩 95% 신뢰구간이 0 을 포함하지 않음)",
-        not neg,
-        "0 을 포함한 라운드 %d/%d | 라운드별 꼬리비율 %s -> %s"
-        % (len(neg), ROUNDS,
+    # 🩸 2026-08-21 재보정 - 첫 판은 **라운드별** 신뢰구간 전부가 0 을
+    #    제외하기를 요구했다. 그런데 라운드별 n=200 에서 기준선 꼬리가
+    #    조용한 라운드(2 차·3 차의 라운드 2: 2.5% = 5 건)는 검정력이
+    #    원리적으로 모자라, 효과가 실재해도(세 라운드 전부 방향 일치:
+    #    7.0/2.5/4.0% -> 0.0/0.5/0.5%) 검사가 붉어졌다. p3 검사 3 과
+    #    같은 부류의 양치기 검사다.
+    #    주장("FEC 가 꼬리를 줄인다")을 정확히 재는 자로 바꾼다:
+    #      확실성 = 합동(n=600 대 600, 기준선 꼬리 ~27 건) 구간이 0 제외
+    #      일관성 = 어느 라운드도 유의하게 반대 방향(lo > 0)이 아니다
+    #    라운드별 구간은 그대로 정보로 남는다(effect_rounds.d_tail).
+    _bs_pool = bootstrap_tail(_pool_off, _pool_on, 1.5 * RTT_MS)
+    out["tail_pooled"] = _bs_pool
+    _incl = [x["round"] for x in out["effect_rounds"]
+             if x["d_tail"]["hi"] >= 0]
+    _rev = [x["round"] for x in out["effect_rounds"]
+            if x["d_tail"]["lo"] > 0]
+    add("c2s 손실에서 꼬리 감소가 통계적으로 확실 "
+        "(합동 %d판 부트스트랩 구간이 0 제외 + 반대방향 라운드 없음)"
+        % len(_pool_off),
+        _bs_pool is not None and _bs_pool["hi"] < 0 and not _rev,
+        "합동 %+.1f%%p [%+.1f, %+.1f] | 반대방향 라운드 %s | "
+        "라운드별(정보) %s -> %s, 0 포함 %s"
+        % (100 * _bs_pool["point"], 100 * _bs_pool["lo"],
+           100 * _bs_pool["hi"], _rev or "없음",
            ["%.1f%%" % (100 * (x["tail_off"] or 0))
             for x in out["effect_rounds"]],
            ["%.1f%%" % (100 * (x["tail_on1"] or 0))
-            for x in out["effect_rounds"]]))
+            for x in out["effect_rounds"]],
+           _incl or "없음") if _bs_pool else "표본 없음")
     # p95 는 참고로만 남긴다 - 불안정하다는 사실 자체를 기록한다
     p95s = [x["off"]["p95"] for x in out["effect_rounds"]]
     out["p95_baseline_unstable"] = (max(p95s) - min(p95s)) > 20

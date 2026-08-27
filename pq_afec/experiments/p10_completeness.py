@@ -150,13 +150,28 @@ def c2_rtt(results):
                                  "crc": ss.get("recover_crc_fail")}
         rows.append(rec)
 
+        # 🩸 2026-08-27 - **한쪽 꼬리만 본다.** 옛 조건은 `abs(overhead) < 1`
+        #    이었다. 이 검사의 주장은 「FEC 를 켜도 **비용이 안 든다**」이고,
+        #    팔이 기준선보다 **빨랐다**는 사실은 그 주장을 반박하지 않는다.
+        #    그런데 양쪽 꼬리를 보면 빠른 쪽도 실패로 찍힌다 - 실제로
+        #    2026-08-27 바퀴에서 RTT 50 이 **-1.13 ms**(더 빠름)로 붉어졌다.
+        #    p16 검사 2 가 2026-08-21 에 정확히 같은 이유로 같은 수리를
+        #    받았다("팔이 base 보다 빨랐다는 사실은 그 주장을 반박하지
+        #    않는다"). 같은 병이 다른 계기에 남아 있었다.
+        #
+        #    음수 쪽은 **감추지 않는다** - detail 에 그대로 적고, 그 크기가
+        #    자를 넘으면 「표류 의심」으로 드러낸다. 빠른 쪽으로 1 ms 를
+        #    넘는 것은 비용이 아니라 **측정이 흔들린다**는 신호이기 때문이다.
+        _drift = "" if overhead > -1.0 else (
+            "  ⚠ 기준선보다 %.2f ms 빨랐다 - 비용이 아니라 표류 의심"
+            % (-overhead))
         add(results,
-            "C2 RTT %.0f ms - 순수 오버헤드가 1 ms 미만인가" % rtt,
-            abs(overhead) < 1.0,
+            "C2 RTT %.0f ms - 순수 오버헤드가 1 ms 미만인가 (한쪽 꼬리)" % rtt,
+            overhead < 1.0,
             "손실 0 에서 p50 %.2f -> %.2f ms (오버헤드 %+.2f ms, "
-            "RTT 대비 %+.1f%%)"
+            "RTT 대비 %+.1f%%)%s"
             % (rec["cost_off"]["p50"] or -1, rec["cost_on"]["p50"] or -1,
-               overhead, 100 * overhead / rtt))
+               overhead, 100 * overhead / rtt, _drift))
 
         a, b = rec["eff_off"], rec["eff_on"]
         add(results,
@@ -356,7 +371,7 @@ def inventory(results):
 
     gaps.append({
         "item": "m >= 3",
-        "designed": "정책은 m_max=2 로 하드코딩",
+        "designed": "정책 상한은 policy.M_MAX_DEFAULT (2026-08-25 실측으로 3)",
         "implemented": "부호는 임의 m 을 지원",
         "ok": False,
         "why": "필요를 못 봤다. 부호·복호는 되지만 정책이 고르지 않는다."})

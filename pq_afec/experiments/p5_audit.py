@@ -236,18 +236,31 @@ def feasible_bruteforce(C, k, W, h, f, step=1):
     room = W - h - f
     if room <= 0:
         return False
-    # c 를 균등에서 벗어나 훑되, 대칭성 때문에 오름차순만 본다
+    # 🩸 2026-08-21 감사. 예전에는 패리티를 `ps = [room - c for c in cs]` 로
+    #    **c 에서 유도**했다. 그러면 판정이 항등으로 축약된다:
+    #        sum(ps) = k*room - C  이므로
+    #        sum(ps) - ps[j] >= cs[j]
+    #      ⟺ (k*room - C) - (room - cs[j]) >= cs[j]
+    #      ⟺ (k-1)*room - C >= 0                     <- cs[j] 가 소거된다
+    #    즉 "완전탐색"이 곧 정리 그 자체였다. **정리가 틀려 있어도 700 경우
+    #    전부 '일치'가 나온다.** 반증 시도라고 이름 붙일 수 없다.
+    #
+    #    이제 패리티 분배 ps 를 **c 와 독립적으로** 훑는다. 제약은 데이터그램
+    #    하나에 들어가는 것뿐이다: c_i + p_i <= room. 두 계산이 서로 다른
+    #    경로를 밟으므로 일치가 비로소 의미를 갖는다.
     for cs in itertools.product(range(0, room + 1, step), repeat=k):
         if sum(cs) != C:
             continue
-        ok = True
-        ps = [room - c for c in cs]        # 남는 자리를 전부 패리티에 준다
-        for j in range(k):
-            if sum(ps) - ps[j] < cs[j]:
-                ok = False
-                break
-        if ok:
-            return True
+        # p_i 는 0..(room - c_i) 안에서 **독립적으로** 고른다.
+        for ps in itertools.product(*[range(0, room - c + 1, step)
+                                      for c in cs]):
+            ok = True
+            for j in range(k):
+                if sum(ps) - ps[j] < cs[j]:
+                    ok = False
+                    break
+            if ok:
+                return True
     return False
 
 
@@ -276,6 +289,49 @@ def audit_capacity(results):
         "ok": not bad,
         "detail": ("; ".join(bad[:5]) if bad else
                    "모든 경우에서 정리와 완전탐색이 일치 - 반례 없음")})
+
+    # 🆕 2026-08-21 [부정] 위 대조가 **공허하지 않은지** 확인한다.
+    #
+    #  (a) 양쪽 답이 다 나와야 한다. 완전탐색이 언제나 False 만 돌려주면
+    #      "일치"는 아무것도 보증하지 않는다(실제 크기 설정은 전부 불가라
+    #      그 함정에 빠지기 쉽다).
+    #  (b) 경계에서 정확히 갈려야 한다. C = (k-1)*room 은 가능, +1 은 불가.
+    #      한 바이트 어긋나면 여기서 붉어진다 - 이 연구의 헤드라인이 1 바이트다.
+    n_true = n_false = 0
+    for k in (2, 3):
+        for W in (20, 26):
+            for h in (3, 5):
+                for f in (1, 2):
+                    room = W - h - f
+                    for C in range(1, k * room + 1):
+                        if feasible_bruteforce(C, k, W, h, f):
+                            n_true += 1
+                        else:
+                            n_false += 1
+    results.append({
+        "check": "[부정] 완전탐색이 가능/불가를 둘 다 낸다 (한쪽만이면 공허)",
+        "ok": n_true > 0 and n_false > 0,
+        "detail": "가능 %d 건 / 불가 %d 건" % (n_true, n_false)})
+
+    edge = []
+    for k in (2, 3, 4):
+        for W in (20, 26, 30):
+            for h in (3, 5):
+                for f in (1, 2):
+                    room = W - h - f
+                    lim = (k - 1) * room
+                    if lim < 1 or lim + 1 > k * room:
+                        continue
+                    if not feasible_bruteforce(lim, k, W, h, f):
+                        edge.append("k=%d W=%d h=%d f=%d C=%d 이 불가로 나온다"
+                                    % (k, W, h, f, lim))
+                    if feasible_bruteforce(lim + 1, k, W, h, f):
+                        edge.append("k=%d W=%d h=%d f=%d C=%d 가 가능으로 나온다"
+                                    % (k, W, h, f, lim + 1))
+    results.append({
+        "check": "[부정] 경계 C=(k-1)(W-h-f) 에서 1 바이트로 정확히 갈린다",
+        "ok": not edge,
+        "detail": "; ".join(edge[:4]) or "전 설정에서 경계가 정확하다"})
 
 
 # --------------------------------------------------------------- C. 불변식

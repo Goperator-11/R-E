@@ -322,8 +322,12 @@ def run_stage(stage, verbose=True):
     env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONUNBUFFERED"] = "1"
     try:
-        p = subprocess.run(cmd, capture_output=True, text=True, errors="replace",
-                           timeout=stage.timeout, env=env, shell=shell, **proc_kw)
+        # 🩸 2026-08-26 - loop2.run_stage 와 같은 구멍. encoding 을 안 주면
+        #    부모 로캘(cp949)로 자식의 UTF-8 을 풀어 로그가 통째로 깨진다.
+        p = subprocess.run(cmd, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace",
+                           timeout=stage.timeout, env=env, shell=shell,
+                           **proc_kw)
         out = (p.stdout or "") + (p.stderr or "")
         ok = p.returncode == 0
         err = "" if ok else "exit %d" % p.returncode

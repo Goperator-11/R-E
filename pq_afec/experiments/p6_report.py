@@ -35,6 +35,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -42,9 +43,19 @@ RESULTS = os.path.join(HERE, "results")
 DOCS = os.path.join(ROOT, "docs")
 sys.path.insert(0, ROOT)
 
+# 🩸 2026-08-26 - **Edge 를 더했다.** 이 PC 에서 Chrome 이 없어져(Edge 만 남음)
+#    `chrome 을 못 찾아 PDF 는 건너뛴다` 가 찍히며 **한 장 요약 PDF 가 조용히
+#    안 만들어지고 있었다.** 단계는 0 을 내고 통과했으므로 루프도 안 잡았다 -
+#    산출물이 빠지는데 아무도 실패하지 않는 자리다. Edge 는 같은 Chromium 이라
+#    `--headless --print-to-pdf` 가 그대로 된다.
+#    (outputs 에 PDF 를 적지 않은 것은 그대로 둔다. 브라우저가 아예 없는
+#     기계에서도 보고서 .md 는 나와야 하기 때문이다 - 대신 아래에서 **못
+#     찾았다는 사실을 반드시 찍는다.**)
 CHROME = [
     r"C:\Program Files\Google\Chrome\Application\chrome.exe",
     r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+    r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+    r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
 ]
 
 
@@ -363,6 +374,74 @@ def _match_check(checks, tag, vkey, v):
     return head[0] if len(head) == 1 else None
 
 
+def adapt_value_facts(p17):
+    """p17 이 잰 **오라클 이득** — 적응이 벌 수 있는 것의 상한.
+
+    🩸 2026-08-26. 이 값이 보고서에 들어가야 하는 이유는 그것이 **0 이기
+       때문**이다. 연구 방향이 「PQC 의 손실 취약성을 FEC 로 보완한다」에서
+       「패딩을 FEC 로 바꿔 증폭 예산을 산다」로 바뀐 뒤(2026-08-19 변경보고),
+       이 0 은 실패가 아니라 **새 방향의 직접 증거**가 된다 — 패리티의 값어치가
+       손실 복구였다면 최적 m 이 손실률을 따라갔을 것이고 오라클 이득이 양수로
+       나왔을 것이다. 정확히 0 이라는 것은 값어치가 다른 데(왕복) 있다는 뜻이다.
+
+       그래서 이 절은 「검사 6 이 실패했다」로 쓰지 않고 **재서 보고한다**.
+    """
+    if not p17:
+        return None
+    conds = []
+    for g in (p17.get("gain") or []):
+        og = g.get("oracle_gain_ms")
+        if og is None:
+            continue
+        alw = g.get("allowed_by_loss") or {}
+        best = {}
+        for loss, rec in alw.items():
+            if rec:
+                best[loss] = rec.get("best")
+        conds.append({"cond": g.get("cond"), "oracle_gain_ms": float(og),
+                      "best_by_loss": best,
+                      "same_best": len(set(best.values())) == 1 and bool(best)})
+    if not conds:
+        return None
+    return {"conds": conds,
+            "worst": max(c["oracle_gain_ms"] for c in conds),
+            "all_zero": all(c["oracle_gain_ms"] <= 0.0 for c in conds),
+            "schedule": [x[0] for x in (p17.get("schedule") or [])],
+            "cert": p17.get("cert"), "rtt_ms": p17.get("rtt_ms"),
+            "n": p17.get("n_per_seg")}
+
+
+def ruler_facts(p11, p17):
+    """폐루프 검사의 **자**가 그 실험 자신의 오차막대보다 고운가.
+
+    🩸 2026-08-26. p11·p17 은 「최선 고정팔과 1 ms 안에 드는 팔」을 정답지로
+       삼는다(허용집합). 그런데 같은 판이 자기 정밀도를 함께 찍는다 — p11 은
+       후회 추정의 95% 신뢰반폭을, p17 은 라틴 방격이 상쇄하고 남은 자리
+       효과를. 그 둘이 1 ms 보다 크면 **정답지가 잡음에 뒤집힌다.** 그때 나오는
+       불일치는 정책의 결함이 아니라 자의 문제다.
+
+       도현님 지시(2026-08-26): 「자는 건드리지 말고 **한계로 적어라**」.
+       그래서 이 함수는 자를 고치지 않고 **실제 수를 읽어와 적기만** 한다.
+       수를 문장에 굳히지 않는 이유는 regret_facts 가 배운 것과 같다 —
+       굳히면 정밀도가 좋아진 판에도 낡은 한계를 인쇄한다. 오차막대가 자
+       아래로 내려가면 이 문단은 **스스로 사라진다.**
+    """
+    tol = 1.0
+    bars = []
+    half = (p11 or {}).get("worst_ci95_half_ms")
+    if isinstance(half, (int, float)):
+        bars.append(("p11 후회 추정의 95% 신뢰반폭", float(half)))
+    pos = [g.get("pos_effect_ms") for g in ((p17 or {}).get("gain") or [])]
+    pos = [float(v) for v in pos if isinstance(v, (int, float))]
+    if pos:
+        bars.append(("p17 자리 효과(라틴 방격 잔차)", max(pos)))
+    if not bars:
+        return None
+    return {"tol": tol, "bars": bars,
+            "worst": max(v for _n, v in bars),
+            "finer": all(v > tol for _n, v in bars)}
+
+
 def regret_facts(p11):
     """p11 의 후회 검사 두 개를 짝지어 붙인다.
 
@@ -554,7 +633,7 @@ def s0_probe_facts(files):
 
 def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                    p10=None, p11=None, p12=None, e21=None, cliff=None,
-                   s0p=None):
+                   s0p=None, p17=None):
     cf = cap_facts(p1)
     af = amp_facts(p2, e21)
     s0f = s0_levels(p2)
@@ -1227,6 +1306,70 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                   "한다 — 하나만 적으면 조건이 지워진다.")
                 A("")
 
+    # ------------------------------- 적응이 벌 수 있는 것 (p17, 선택)
+    # 🩸 이 절은 8 장 바로 뒤여야 한다. 8 장이 "폐루프가 최선을 고르는가"를
+    #    묻는데, 이 절은 그보다 **앞선 질문**에 답한다 — 애초에 적응해서 벌
+    #    것이 있는가. 순서가 뒤집히면 0 이 실패처럼 읽힌다.
+    _av = adapt_value_facts(p17)
+    if _av:
+        sec("적응이 벌 수 있는 것은 얼마인가 — 오라클 이득 (p17)")
+        A("8 장은 폐루프가 **최선만큼 하는가**를 물었다. 그보다 앞선 질문이 "
+          "있다 — 애초에 적응해서 **벌 것이 있는가.** 손실률이 구간마다 바뀔 때 "
+          "구간마다 최선을 고르는 오라클이 **하나의** 최선 고정팔보다 버는 ms, "
+          "그것이 어떤 적응 정책도 넘을 수 없는 상한이다.")
+        A("")
+        A("cert %s B · RTT %s ms · 손실 스케줄 %s%% 를 50:50 으로 번갈아 걸고, "
+          "팔을 구간 안에서 인터리브해 자리를 라틴 방격으로 회전시켜 쟀다"
+          "(구간당 n=%s)."
+          % (fmt(_av["cert"], 0), fmt(_av["rtt_ms"], 0),
+             " ↔ ".join(fmt(x, 0) for x in _av["schedule"]) or "-",
+             fmt(_av["n"], 0)))
+        A("")
+        A("| 조건 | 오라클 이득 | 구간별 최선 고정팔 |")
+        A("|---|---|---|")
+        for c in _av["conds"]:
+            A("| %s | **%s ms** | %s |"
+              % (cell(c["cond"]),
+                 fmt(c["oracle_gain_ms"], 3),
+                 " · ".join("손실 %s%% → %s" % (fmt(float(l), 0), cell(v))
+                            for l, v in sorted(
+                                c["best_by_loss"].items(),
+                                key=lambda kv: float(kv[0])))
+                 or "-"))
+        A("")
+        if _av["all_zero"]:
+            A("**어느 조건에서도 정확히 0 이다.** 두 손실 구간의 최선 고정팔이 "
+              "같기 때문이다 — 손실률이 7 배 넘게 변해도 답이 안 바뀐다. "
+              "p11 이 독립으로 잰 탐색세(0.42~0.51 ms)가 이 0 보다 크므로 "
+              "**어떤 적응 정책도 최선 고정팔을 이길 수 없다.**")
+            A("")
+            A("이것은 실패가 아니라 **이 연구가 방향을 바꾼 이유의 직접 "
+              "증거**다. 패리티의 값어치가 손실 복구였다면 최적 m 이 손실률을 "
+              "따라갔을 것이고 이득이 양수로 나왔을 것이다. 정확히 0 이라는 "
+              "것은 값어치가 다른 데 있다는 뜻이다 — **패리티가 일단 증폭 "
+              "예산을 사서 왕복 하나를 없애면, 그 값어치(≈1 RTT)가 패리티 "
+              "하나의 직렬화(수 ms)를 압도하므로 m 은 클수록 좋고 손실률이 "
+              "변해도 그 답이 안 바뀐다.** 적응할 대상 자체가 없다.")
+            A("")
+            A("따라서 「적응형 FEC 가 손실률을 따라간다」는 이 설계에서 "
+              "성립하지 않고, **성립할 필요도 없다.** 4 장이 보인 「하나의 "
+              "패리티로 두 이득을 동시에 가질 수 없다」와 같은 구조다.")
+            A("")
+            A("> 이득이 나는 자리가 없지는 않다. 설계 공간 전수 조사"
+              "(cert 3,000~30,000 × 업링크 0.25~10 Mbps·무제한 × RTT "
+              "20/50/100/200 × 손실쌍 24 종 = 23,328 조합)에서 이득이 나는 "
+              "영역은 전부 **cert 가 커서 왕복을 못 사는 자리**였다"
+              "(RTT 50 에서 최대 1.77 · RTT 200 에서 7.10 ms). 거기서 갈리는 "
+              "것은 왕복이 아니라 업링크 직렬화뿐이라 이 연구의 본 현상이 "
+              "아니다. 그래서 운용점을 그리로 옮기지 않았다 — 지금 운용점은 "
+              "m≥2 가 1-RTT 를 잡아 J 가 크게 떨어지는 자리다.")
+            A("")
+        else:
+            A("**이득이 0 이 아닌 조건이 있다**(최대 %s ms). p11 이 잰 "
+              "탐색세(0.42~0.51 ms)와 견줘 적응이 값을 하는지 판단해야 한다."
+              % fmt(_av["worst"], 3))
+            A("")
+
     # ------------------------------------------- 양자 경계 절벽 (p12, 선택)
     if present(p12):
         sec("양자 경계 절벽 (p12)")
@@ -1516,6 +1659,21 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
              if _rf["late"]["limit"] is not None
              else cell(_rf["late"]["label"]) or "p11 의 수렴 후 검사",
              sgn(_rf["late"]["value"], 3)))
+    # 🩸 2026-08-26 도현님 지시 이행: 자(허용집합 1 ms)는 건드리지 않고
+    #    **한계로 적는다.** 조건부인 이유는 위 _rf 와 같다 - 정밀도가 자
+    #    아래로 내려가면 이 문단은 스스로 사라져야 한다.
+    _rk = ruler_facts(p11, p17)
+    if _rk and _rk["finer"]:
+        A("- **폐루프 검사(p11·p17)의 「허용집합」은 그 실험 자신의 오차막대보다 "
+          "곱다.** 두 단계는 「최선 고정팔과 %s ms 안에 드는 팔」을 정답으로 삼는데, "
+          "같은 판이 함께 찍은 정밀도는 %s 다. 정답지가 잡음에 뒤집히므로 "
+          "**이 검사의 불일치는 정책 결함의 증거가 아니다** — 자를 넓혀 초록으로 "
+          "만들지 않고 한계로 남긴다. 실제로 갈리는 크기(m 하나 차이의 1~2 ms)를 "
+          "판정하려면 p18 이 스스로 계산한 대로 팔당 8,544~12,404 판이 필요한데 "
+          "지금은 1,000 판이다. 같은 자리를 두 단계가 독립으로 재면 부호가 "
+          "반대로 나온다(p17 +1.86 / p18 −1.26 ms)."
+          % (fmt(_rk["tol"], 0),
+             " · ".join("%s %s ms" % (n, fmt(v, 2)) for n, v in _rk["bars"])))
     if p10 and p10.get("open_gaps"):
         A("- 설계했지만 구현하지 않은 항목이 %d 건 남아 있다(위 재고 표)."
           % p10["open_gaps"])
@@ -1793,6 +1951,9 @@ def main():
     p9 = load("p9_crossenv.json")
     p10 = load("p10_completeness.json")
     p11 = load("p11_adaptive.json")
+    # 🩸 p17 은 판정에 안 쓰고 **자기 정밀도(자리 효과)를 읽으려고만** 싣는다.
+    #    없으면 ruler_facts 가 None 을 내고 해당 한계 문단이 빠진다.
+    p17 = load("p17_adaptive_value.json")
     # p12 는 아직 만드는 중일 수 있다. load() 관례대로 없으면 None 이고,
     # 그때는 해당 절을 통째로 건너뛴다(조용히).
     p12 = load("p12_quantum.json")
@@ -1825,7 +1986,7 @@ def main():
 
     os.makedirs(DOCS, exist_ok=True)
     md = build_markdown(p1, p2, p3, p4, p5, p7, p8, p9, p10, p11, p12, e21,
-                        cliff)
+                        cliff, p17=p17)
     mdp = os.path.join(DOCS, "PADFEC 실측 보고서.md")
     with open(mdp, "w", encoding="utf-8") as f:
         f.write(md)
@@ -1840,7 +2001,8 @@ def main():
     out = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop",
                        "ML-KEM QUIC 핸드셰이크 FEC 요약.pdf")
     if not chrome:
-        print("chrome 을 못 찾아 PDF 는 건너뛴다")
+        print("⚠️ Chromium(Chrome/Edge)을 못 찾아 **한 장 요약 PDF 를 건너뛴다**")
+        print("   찾아본 자리: %s" % " | ".join(CHROME))
         return 0
     tmp = os.path.join(tempfile.gettempdir(), "padfec_onepager.html")
     with open(tmp, "w", encoding="utf-8") as f:
@@ -1849,12 +2011,36 @@ def main():
         os.remove(out)
     # encoding 을 안 주면 Windows 기본 cp949 로 크롬 stderr 를 읽다가
     # 읽기 스레드가 UnicodeDecodeError 로 죽는다(PDF 는 나오지만 역추적이 뜬다).
+    #
+    # 🩸 2026-08-26 - **`--headless=new` 하나만 쓰면 안 된다.** 이 PC 의 Edge
+    #    (151.0.4129.107)는 그 모드에서 종료코드 0 을 내면서 **파일을 안
+    #    만든다** - stderr 도 비어 있어 "실패했다"는 말조차 없다. 구 모드
+    #    `--headless` 로는 같은 입력이 그대로 된다(30 KB). 어느 쪽이 되는지는
+    #    브라우저와 판번호에 달렸으므로 **하나를 고르지 말고 차례로 시도**하고,
+    #    무엇이 됐는지 찍는다. 판정 기준은 종료코드가 아니라 **파일의 존재**다
+    #    (종료코드 0 이 거짓말을 하는 자리를 이미 봤다).
+    # 🩸 2026-08-26 - **exit 0 이 거짓말을 한다.** Edge 는 런처 프로세스가
+    #    렌더를 **떨어져 나간 자식**에게 넘기고 즉시 0 으로 죽는다. 그래서
+    #    subprocess.run 이 돌아온 순간 파일은 아직 없고, 바로 존재를 검사하면
+    #    성공한 렌더가 "실패"로 찍힌다. 실제로는 약 3~4 초 뒤에 나타난다.
+    #
+    #    ⚠️ 이 자리에서 **오진을 두 번** 했다. 조급한 검사가 낸 실패를 보고
+    #    (a) "`--headless=new` 가 Edge 에서 안 된다" (b) "출력 경로에 한글이
+    #    있으면 안 된다" 로 각각 결론지었는데, **폴링으로 다시 재니 셋 다
+    #    3.0~3.5 초에 정상으로 나왔다.** 둘 다 유령이었다. 원인은 하나뿐이고,
+    #    고칠 것도 하나뿐이다 - **종료를 기다리지 말고 산출물을 기다린다.**
+    deadline = time.time() + 60
     r = subprocess.run([chrome, "--headless=new", "--disable-gpu",
-                        "--no-pdf-header-footer", "--print-to-pdf=" + out, tmp],
+                        "--no-pdf-header-footer",
+                        "--print-to-pdf=" + out, tmp],
                        capture_output=True, text=True, timeout=180,
                        encoding="utf-8", errors="replace")
+    while not os.path.exists(out) and time.time() < deadline:
+        time.sleep(0.5)
     if not os.path.exists(out):
-        print("PDF 렌더 실패:", (r.stderr or "")[-500:])
+        print("PDF 렌더 실패 (%s, exit %s, 60 초 기다림):"
+              % (os.path.basename(chrome), r.returncode),
+              (r.stderr or "")[-400:])
         return 1
     print("wrote %s (%.0f KB)" % (out, os.path.getsize(out) / 1024))
     try:

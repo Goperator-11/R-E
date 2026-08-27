@@ -68,9 +68,15 @@ def probe(group, arm_fec, m, cert, k, n, jr):
     B.stop_server(p)
     ss = B.read_server_stats(sp)
     s = B.summarize(rows, rtt_ms=RTT_MS)
+    # 🩸 2026-08-20 p13. 증폭 예산에 드는 패리티는 **첫 비행 몫뿐**이다.
+    # bytes_parity/n(연결 전체 평균)은 ACK 비행의 패리티까지 섞는데, 그 몫은
+    # 서버 첫 응답보다 한 왕복 늦게 도착해 예산과 무관하다. 이 오합산이
+    # p4 임계 예측을 FEC 팔에서 4,000~8,000 B 씩 빗나가게 한 진범이었다.
+    ffp = sorted(r.get("first_flight_parity_bytes") or 0 for r in rows)
     rec = {"cert": cert, "n": s["n"], "ok": s["ok"], "p50": s["p50"],
            "two_rtt_rate": s["two_rtt_rate"],
            "first_flight_bytes": cs.get("first_flight_bytes"),
+           "ff_parity_bytes_med": (ffp[len(ffp) // 2] if ffp else 0),
            "parity_bytes_per_conn": (
                round((cs.get("bytes_parity") or 0) / float(max(1, s["n"])), 1)),
            "srv_bytes_in": ss.get("bytes_in"),
@@ -151,14 +157,22 @@ def main():
             th = bisect_threshold(group, fec, m, k, jr, log)
             # 이 팔의 클라이언트 첫 비행 바이트(패리티 포함)를 확인용으로 하나 더
             ref = probe(group, fec, m, 3000, k, N_PROBE, jr)
+            # 🩸 p13 수정: 예산 회계는 첫 비행 원본 + **첫 비행** 패리티다.
+            # 예전에는 연결 전체 패리티 평균(parity_bytes_per_conn)을 더해
+            # ACK 비행 몫까지 섞였다(on1 인데 ~2,640 B). 옛 합계는
+            # client_bytes_total_legacy 로 남겨 무엇이 바뀌었는지 보이게 한다.
             client_bytes = (ref["first_flight_bytes"] or 0) + (
+                ref.get("ff_parity_bytes_med", 0) if fec == "on" else 0)
+            legacy = (ref["first_flight_bytes"] or 0) + (
                 ref["parity_bytes_per_conn"] if fec == "on" else 0)
             rec = {"group": group, "arm": arm, "m": m,
                    "threshold_lo": th["lo"], "threshold_hi": th["hi"],
                    "note": th["note"],
                    "first_flight_bytes": ref["first_flight_bytes"],
+                   "ff_parity_bytes": ref.get("ff_parity_bytes_med", 0),
                    "parity_bytes": ref["parity_bytes_per_conn"],
-                   "client_bytes_total": client_bytes}
+                   "client_bytes_total": client_bytes,
+                   "client_bytes_total_legacy": legacy}
             if th["lo"] and th["hi"]:
                 rec["s0_est"] = amplif.fit_s0(th["lo"], th["hi"],
                                               client_bytes)
@@ -316,9 +330,69 @@ def main():
                "일치" if agree else "불일치"))
         o["team_agrees"] = agree
 
+    # ------------------------------------------------------------ 판정
+    # 2026-08-21 - 이 단계는 그전까지 **무조건 `return 0`** 이었다.
+    # 증폭 임계는 이 연구의 **핵심 관측**이고 p4·p9·p12 가 전부 여기에
+    # 얹혀 있는데, 이분탐색이 실패해 임계를 못 정해도, 팀 자료와
+    # 어긋나도, 팔 순서가 뒤집혀도 loop2 에 "완료" 로 남았다.
+    # 여기 넣는 것은 전부 **이미 계산돼 있던 값**이다 - 재지 않고
+    # 버려지고 있었다(team_agrees 가 대표적이다).
+    checks = []
+
+    def add(name, ok, detail):
+        checks.append({"check": name, "ok": bool(ok),
+                       "detail": detail})
+        log("[%s] %-50s %s" % ("통과" if ok else "실패", name,
+                               detail[:60]))
+
+    log("")
+    ths = out["thresholds"]
+    _nolo = [t for t in ths
+             if not t.get("threshold_lo") or not t.get("threshold_hi")]
+    add("전 팔에서 임계가 확정됐다",
+        ths and not _nolo,
+        "%d 팔 중 미확정 %d" % (len(ths), len(_nolo)))
+    _w = [t["threshold_hi"] - t["threshold_lo"] for t in ths
+          if t.get("threshold_lo") and t.get("threshold_hi")]
+    add("밴드 폭이 이분탐색 해상도 이내 (<= 64 B)",
+        _w and max(_w) <= 64,
+        "최대 %d B (팔 %d 개)" % (max(_w) if _w else -1, len(_w)))
+    _ta = [t for t in ths if "team_agrees" in t]
+    _bad = [t for t in _ta if not t["team_agrees"]]
+    add("팀 자료와 일치 (이미 계산해 놓고 안 쓰던 값)",
+        _ta and not _bad,
+        "대조 %d 건 중 불일치 %d" % (len(_ta), len(_bad)))
+
+    def _band(group, arm):
+        r = [t for t in ths if t["group"] == group and t["arm"] == arm]
+        return (r[0]["threshold_lo"], r[0]["threshold_hi"]) if r else None
+
+    _groups = sorted(set(t["group"] for t in ths))
+    _obdiff = []
+    for _g in _groups:
+        _o, _b = _band(_g, "off"), _band(_g, "buf")
+        if _o and _b and _o != _b:
+            _obdiff.append((_g, _o, _b))
+    add("[부정] off 와 buf 의 임계가 같다 "
+        "(버퍼링만으로는 임계가 안 움직인다)",
+        not _obdiff, str(_obdiff[:2]) or "전 그룹 동일")
+    _mono = []
+    for _g in _groups:
+        _seq = [_band(_g, a) for a in ("off", "on1", "on2")]
+        if all(_seq) and not (_seq[0][1] < _seq[1][0]
+                              and _seq[1][1] < _seq[2][0]):
+            _mono.append((_g, _seq))
+    add("패리티가 늘수록 임계가 오른다 (off < on1 < on2, 밴드가 안 겹친다)",
+        _groups and not _mono, str(_mono[:1]) or "전 그룹 단조")
+    npass = sum(1 for c in checks if c["ok"])
+    log("-" * 78)
+    log("%d / %d 통과" % (npass, len(checks)))
+    out["checks"] = checks
+    out["passed"], out["total"] = npass, len(checks)
+
     path = B.save("p2_threshold.json", out)
     log("saved: %s" % path)
-    return 0
+    return 0 if npass == len(checks) else 1
 
 
 if __name__ == "__main__":
