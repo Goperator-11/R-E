@@ -118,7 +118,33 @@ def c2_rtt(results):
     """
     rows = []
     for rtt in (5.0, 50.0, 300.0):
-        tail_thresh = 1.5 * rtt
+        # 🩸 2026-08-28 - 꼬리 기준이 `1.5 * rtt` 였다. 그 식은 **핸드셰이크가
+        #    딱 1 왕복**이라고 가정한다. 실제로는 RTT 에 비례하지 않는 고정
+        #    비용(암호 연산·직렬화·스케줄링)이 약 2 ms 붙는다 - 실측 세 점이
+        #    전부 같은 값을 말한다:
+        #        RTT   5 무손실 p50   6.94  (= RTT + 1.94)
+        #        RTT  50 무손실 p50  52.45  (= RTT + 2.45)
+        #        RTT 300 무손실 p50 302.10  (= RTT + 2.10)
+        #    그래서 기준까지의 여유가 RTT 마다 딴판이 된다:
+        #        RTT   5   7.50 - 7.09 =   0.41 ms  (왕복의  8%)
+        #        RTT  50  75.00 - 52.08 = 22.92 ms  (왕복의 46%)
+        #        RTT 300 450.00 - 302.19 = 147.81 ms (왕복의 49%)
+        #    RTT 5 에서는 자에 분해능이 없다. 2026-08-28 바퀴에서 중앙값이
+        #    **0.15 ms** 움직이자 표본의 58% 가 기준을 넘어가 꼬리가
+        #    11.5% -> 70.0% 로 찍혔다. FEC 가 나빠진 게 아니라 자가 무너진
+        #    것이다(RTT 50·300 에서는 같은 검사가 8.0%->0.5%, 2.0%->0.0% 로
+        #    주장대로 작동했다).
+        #
+        #    고친 기준: **기준선 팔(off)의 무손실 중앙값 + 0.5 왕복.**
+        #    이 검사의 진짜 주장은 「왕복이 하나 더 붙었나」이고, 그 판단의
+        #    기준점은 RTT 의 배수가 아니라 **손실 없을 때 실제로 걸린 시간**
+        #    이다. 두 팔에 같은 절대 기준을 써야 팔끼리 견줄 수 있으므로
+        #    off 팔 하나에서만 뽑는다(그러면 FEC 의 고정 오버헤드도 정직하게
+        #    FEC 쪽 꼬리에 잡힌다).
+        #
+        #    ⚠ `-gap` 은 **핸드셰이크 사이**의 간격이지(client.go:47
+        #    "gap between handshakes") 핸드셰이크 안의 간격이 아니다.
+        #    한 번의 지연에 영향을 주지 않으므로 RTT 에 맞춰 줄일 것이 없다.
         rec = {"rtt": rtt}
 
         # (1) 비용 - 손실 0 에서 순수 오버헤드
@@ -129,10 +155,27 @@ def c2_rtt(results):
                                       timeout_s=10, expect_k=K)
             B.stop_server(p)
             s = B.summarize(r, rtt_ms=rtt)
+            # p95 도 남긴다 - 아래 분해능 검사가 **이 팔 자신의 흔들림**을
+            # 자로 삼는다. 없으면 "여유가 충분한가"를 물을 수가 없다.
             rec["cost_" + arm] = {"p50": s["p50"], "mean": s["mean"],
-                                  "ok": s["ok"], "n": s["n"]}
+                                  "p95": s["p95"], "ok": s["ok"], "n": s["n"]}
         overhead = (rec["cost_on"]["p50"] or 0) - (rec["cost_off"]["p50"] or 0)
         rec["overhead_ms"] = overhead
+
+        # 기준선 팔의 무손실 중앙값에서 기준을 뽑는다(위 🩸 참고).
+        # 못 재면 옛 식으로 물러서되, **물러섰다는 사실을 기록에 남긴다** -
+        # 조용히 옛 자로 채점하면 이 수리가 없던 일이 된다.
+        _base = rec["cost_off"]["p50"]
+        if _base is None:
+            tail_thresh = 1.5 * rtt
+            rec["tail_thresh_basis"] = "물러섬: 1.5*rtt (기준선 p50 없음)"
+        else:
+            tail_thresh = _base + 0.5 * rtt
+            rec["tail_thresh_basis"] = ("off 무손실 p50 %.2f + 0.5*%.0f"
+                                        % (_base, rtt))
+        rec["tail_thresh"] = tail_thresh
+        rec["tail_headroom_ms"] = (
+            None if _base is None else tail_thresh - (rec["cost_on"]["p50"] or _base))
 
         # (2) 효과 - 손실 3% 에서 꼬리 비율
         for arm, fec in (("off", "off"), ("on", "on")):
@@ -144,10 +187,16 @@ def c2_rtt(results):
             ss = B.read_server_stats(sp)
             s = B.summarize(r, rtt_ms=rtt)
             ms = [x["ms"] for x in r if x.get("ok")]
+            # 🩸 2026-08-28 - **연결별 ms 를 남긴다.** 2026-08-28 바퀴에서
+            #    이 검사가 붉어졌을 때 요약(tail/p50/ok/n)만 남아 있어서
+            #    **새 기준으로 재채점을 할 수 없었다.** 자를 고치면 옛
+            #    원자료를 다시 채점할 수 있어야 한다 - 안 그러면 자를 고칠
+            #    때마다 그 전 측정이 통째로 버려진다.
             rec["eff_" + arm] = {"tail": tail_rate(ms, tail_thresh),
                                  "p50": s["p50"], "ok": s["ok"], "n": s["n"],
                                  "rec": ss.get("recovered"),
-                                 "crc": ss.get("recover_crc_fail")}
+                                 "crc": ss.get("recover_crc_fail"),
+                                 "ms": ms}
         rows.append(rec)
 
         # 🩸 2026-08-27 - **한쪽 꼬리만 본다.** 옛 조건은 `abs(overhead) < 1`
@@ -174,13 +223,51 @@ def c2_rtt(results):
                overhead, 100 * overhead / rtt, _drift))
 
         a, b = rec["eff_off"], rec["eff_on"]
+
+        # 🩸 2026-08-28 - **자에 분해능이 있는지 먼저 묻는다.** 위 🩸 에서
+        #    본 병은 "기준이 틀렸다"만이 아니라 "기준이 틀렸는데도 검사가
+        #    당당히 합격/불합격을 말했다"는 것이다. 기준까지의 여유가 이 팔
+        #    자신의 흔들림(무손실 p95-p50)에 묻히면, 이 검사는 FEC 가 아니라
+        #    잡음을 재는 것이다. 그때는 통과도 실패도 말하지 않는다.
+        _jit = None
+        if rec["cost_on"]["p95"] is not None and rec["cost_on"]["p50"] is not None:
+            _jit = rec["cost_on"]["p95"] - rec["cost_on"]["p50"]
+        _head = rec["tail_headroom_ms"]
+        _ruler_ok = (_head is not None and _jit is not None
+                     and _head >= 3.0 * _jit)
+        _ruler_note = ("" if _ruler_ok else
+                       "  ⚠ 자 분해능 부족 - 여유 %s ms vs 흔들림 %s ms"
+                       % ("?" if _head is None else "%.2f" % _head,
+                          "?" if _jit is None else "%.2f" % _jit))
+
         add(results,
-            "C2 RTT %.0f ms - 손실 3%% 에서 꼬리 비율이 줄어드는가" % rtt,
-            b["ok"] == b["n"] and (b["crc"] or 0) == 0
-            and (b["tail"] or 0) <= (a["tail"] or 0),
-            "꼬리 %.1f%% -> %.1f%%, 복구 %s, CRC거절 %s"
-            % (100 * (a["tail"] or 0), 100 * (b["tail"] or 0), b["rec"],
-               b["crc"]))
+            "C2 RTT %.0f ms - 자에 분해능이 있는가 (여유 >= 3x 흔들림)" % rtt,
+            _ruler_ok,
+            "기준 %.2f ms (%s) | 여유 %s ms | 무손실 흔들림 %s ms"
+            % (rec["tail_thresh"], rec["tail_thresh_basis"],
+               "?" if _head is None else "%.2f" % _head,
+               "?" if _jit is None else "%.2f" % _jit))
+
+        # 분해능이 없으면 꼬리 비교는 **판정하지 않는다.** 조용히 통과시키면
+        # 진짜 회귀가 숨고, 조용히 실패시키면 오늘처럼 멀쩡한 알고리즘이
+        # 붉어진다. 둘 다 거짓말이므로 판정을 유보하고 그 사실을 적는다.
+        if not _ruler_ok:
+            add(results,
+                "C2 RTT %.0f ms - 손실 3%% 에서 꼬리 비율이 줄어드는가" % rtt,
+                True,
+                "판정불능 - 자에 분해능이 없다%s (꼬리 %.1f%% -> %.1f%%, "
+                "복구 %s, CRC거절 %s)"
+                % (_ruler_note, 100 * (a["tail"] or 0), 100 * (b["tail"] or 0),
+                   b["rec"], b["crc"]),
+                kind="판정불능")
+        else:
+            add(results,
+                "C2 RTT %.0f ms - 손실 3%% 에서 꼬리 비율이 줄어드는가" % rtt,
+                b["ok"] == b["n"] and (b["crc"] or 0) == 0
+                and (b["tail"] or 0) <= (a["tail"] or 0),
+                "꼬리 %.1f%% -> %.1f%%, 복구 %s, CRC거절 %s (기준 %.2f ms)"
+                % (100 * (a["tail"] or 0), 100 * (b["tail"] or 0), b["rec"],
+                   b["crc"], rec["tail_thresh"]))
     return rows
 
 

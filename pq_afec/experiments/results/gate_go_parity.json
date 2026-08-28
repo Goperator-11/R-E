@@ -1,23 +1,23 @@
 {
- "grid_points": 85536,
+ "grid_points": 142560,
  "source": "/tmp/qamp",
  "mismatch": 0,
  "mismatches": [],
- "interp_near_misses": 96,
- "interp_worst_j_regret_ms": 0.009663280199987412,
+ "interp_near_misses": 238,
+ "interp_worst_j_regret_ms": 0.009999936061303671,
  "interp_tol_ms": 0.1,
  "picks": {
-  "none": 6834,
-  "parity": 63254,
-  "pad": 1176,
-  "combo": 14272
+  "none": 11390,
+  "parity": 104770,
+  "pad": 1960,
+  "combo": 24440
  },
  "pad_deltas": {
-  "81": 432,
-  "1": 432,
-  "223": 96,
-  "143": 108,
-  "73": 108
+  "81": 720,
+  "1": 720,
+  "223": 160,
+  "143": 180,
+  "73": 180
  },
  "uplinks": [
   0.0,

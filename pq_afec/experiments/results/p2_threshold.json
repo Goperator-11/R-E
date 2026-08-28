@@ -51,13 +51,13 @@
    "threshold_hi": 8296,
    "note": "",
    "first_flight_bytes": 1280,
-   "ff_parity_bytes": 1326,
+   "ff_parity_bytes": 1327,
    "parity_bytes": 2642.3,
-   "client_bytes_total": 2606,
+   "client_bytes_total": 2607,
    "client_bytes_total_legacy": 3922.3,
    "s0_est": {
     "allowed": 8960,
-    "budget": 7818,
+    "budget": 7821,
     "s0_lo": 664,
     "s0_hi": 721,
     "s0_mid": 692.5
@@ -71,13 +71,13 @@
    "threshold_hi": 12034,
    "note": "",
    "first_flight_bytes": 1280,
-   "ff_parity_bytes": 2656,
-   "parity_bytes": 5286.3,
-   "client_bytes_total": 3936,
-   "client_bytes_total_legacy": 6566.3,
+   "ff_parity_bytes": 2652,
+   "parity_bytes": 5284.5,
+   "client_bytes_total": 3932,
+   "client_bytes_total_legacy": 6564.5,
    "s0_est": {
     "allowed": 12800,
-    "budget": 11808,
+    "budget": 11796,
     "s0_lo": 766,
     "s0_hi": 823,
     "s0_mid": 794.5
@@ -133,9 +133,9 @@
    "note": "",
    "first_flight_bytes": 2560,
    "ff_parity_bytes": 1331,
-   "parity_bytes": 1331.1,
+   "parity_bytes": 1418.5,
    "client_bytes_total": 3891,
-   "client_bytes_total_legacy": 3891.1,
+   "client_bytes_total_legacy": 3978.5,
    "s0_est": {
     "allowed": 12800,
     "budget": 11673,
@@ -152,13 +152,13 @@
    "threshold_hi": 14640,
    "note": "",
    "first_flight_bytes": 2560,
-   "ff_parity_bytes": 2672,
-   "parity_bytes": 2667.3,
-   "client_bytes_total": 5232,
-   "client_bytes_total_legacy": 5227.3,
+   "ff_parity_bytes": 2670,
+   "parity_bytes": 2842.0,
+   "client_bytes_total": 5230,
+   "client_bytes_total_legacy": 5402.0,
    "s0_est": {
     "allowed": 16640,
-    "budget": 15696,
+    "budget": 15690,
     "s0_lo": 2000,
     "s0_hi": 2057,
     "s0_mid": 2028.5
@@ -264,16 +264,16 @@
    {
     "group": "x25519",
     "arm": "on1",
-    "d_client_bytes": 1326,
+    "d_client_bytes": 1327,
     "d_threshold": 4927.5,
-    "ratio": 3.7160633484162897
+    "ratio": 3.7132629992464206
    },
    {
     "group": "x25519",
     "arm": "on2",
-    "d_client_bytes": 2656,
+    "d_client_bytes": 2652,
     "d_threshold": 8665.5,
-    "ratio": 3.262612951807229
+    "ratio": 3.2675339366515836
    },
    {
     "group": "X25519MLKEM768",
@@ -285,12 +285,12 @@
    {
     "group": "X25519MLKEM768",
     "arm": "on2",
-    "d_client_bytes": 2672,
+    "d_client_bytes": 2670,
     "d_threshold": 8666.0,
-    "ratio": 3.2432634730538923
+    "ratio": 3.245692883895131
    }
   ],
-  "mean_ratio": 4.0655778455256595,
+  "mean_ratio": 4.066032850177232,
   "slope_x25519": 5.89585798816568,
   "slope_X25519MLKEM768": 2.94792899408284
  },

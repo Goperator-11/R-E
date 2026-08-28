@@ -115,15 +115,68 @@ func idxNearest(xs []int, v int) int {
 	return best
 }
 
-func idxNearestF(xs []float64, v float64) int {
-	best, bd := 0, math.Inf(1)
-	for i, x := range xs {
-		d := math.Abs(x - v)
-		if d < bd {
-			bd, best = d, i
-		}
+// axisLerp 는 오름차순 축 xs 에서 v 를 감싸는 두 마디와 섞음비를 준다.
+//
+// 🩸 2026-08-28 - 예전에는 버스트 축을 idxNearestF 로 **최근접 스냅**했다
+//
+//	(p 축만 선형보간했다). 그래서 격자 {1,2,3,5} 밖의 버스트는 통째로
+//	가장 가까운 마디의 값으로 읽혔다. 격자 밖 640 점을 쓸어보니 13 건
+//	(2.0%) 에서 **정책의 결정 자체가 갈렸고**, 그 오결정을 진짜 버스트에서
+//	평가한 후회가 최악 1.528 ms · 평균 0.600 ms 였다(J 허용오차 0.100 ms).
+//	P_fail 오차로 보면 최근접 평균 0.00791 · 최악 0.03435 인데 선형보간은
+//	평균 0.00267 · 최악 0.01914 로 **평균 3.0 배 정확**하다.
+//
+//	이 결함은 오래 잠복해 있었다 - 심이 항상 defaultAssumedBurst=1
+//	(격자 위 점)을 넘겨서 대가가 0 이었기 때문이다. 그런데 2026-08-27 의
+//	2 단계(다중 소거 복구)가 **버스트를 m 결정의 주축**으로 만들어
+//	잠복 결함의 값이 올라갔다. 버스트 추정기를 붙이는 날 살아난다.
+//
+//	idxNearestF 는 **지웠다.** 남겨 두면 누군가 다시 그걸 부른다
+//	(pfailLookup 을 지운 것과 같은 이유, 이 파일 99 행 참고).
+// normBurst 는 평균 버스트 L 을 표의 축인 **정규화 버스트 u = L*(1-p)** 로
+// 바꾼다. 근거와 클램프는 padfec/table.py 의 U_VALS / _clamp_p 주석에 있다.
+//
+// 왜 필요한가: P_fail 은 L 에 대해 매끄럽지 않다. 채널이 L <= 1/(1-p) 에서
+// 독립 손실, 그 위에서 GE 라서 **꺾인 점이 L = 1/(1-p)** 에 있고, 그 자리가
+// p 에 따라 움직인다(p=0.2 -> 1.25, p=0.05 -> 1.053). 고정 L 격자로는 못
+// 얹는다. u 로 바꾸면 꺾인 점이 항상 u=1 이라 첫 마디에 정확히 얹힌다.
+//
+// 이 식이 Python(table.py) 과 **글자 단위로 같아야 한다.** 갈라지면 표를
+// 만든 지점과 읽는 지점이 어긋나 조용히 다른 채널을 읽는다.
+func normBurst(p, l float64) float64 {
+	pc := p
+	if pc < 0 {
+		pc = 0
 	}
-	return best
+	if pc > 0.999 {
+		pc = 0.999
+	}
+	return l * (1.0 - pc)
+}
+
+func axisLerp(xs []float64, v float64) (int, int, float64) {
+	if len(xs) < 2 {
+		return 0, 0, 0
+	}
+	lo := 0
+	for lo < len(xs)-2 && xs[lo+1] < v {
+		lo++
+	}
+	hi := lo + 1
+	span := xs[hi] - xs[lo]
+	t := 0.0
+	if span > 0 {
+		t = (v - xs[lo]) / span
+	}
+	// 축 밖은 끝값으로 눌러 붙인다 - 외삽하면 표가 담지 않은 기하를
+	// 지어내게 된다. 눌러 붙이는 것은 "표 밖은 모른다"의 정직한 표현이다.
+	if t < 0 {
+		t = 0
+	}
+	if t > 1 {
+		t = 1
+	}
+	return lo, hi, t
 }
 
 // binomPMF 는 시행 n 회 중 성공 k 회 확률이다.
@@ -148,7 +201,6 @@ func recoveryGroup(m int) int {
 func jointLookup(k, m int, p, l float64) []float64 {
 	ki := idxNearest(pfailK, k)
 	mi := idxNearest(pfailM, m)
-	li := idxNearestF(pfailL, l)
 	// 🩸 2026-08-21 - idxNearest 는 표 밖의 k·m 을 **조용히 가장 가까운
 	//    마디로 잘라 읽는다.** k>=5 나 m>=3 을 주면 다른 기하의 분포를
 	//    읽어 무손실 경로에서도 P_fail 이 1.0 이 나온다(감사 2026-08-21).
@@ -162,27 +214,22 @@ func jointLookup(k, m int, p, l float64) []float64 {
 	}
 	row := jointTable4[ki][mi]
 
-	// p 선형 보간. 두 끝점이 각각 합 1 이므로 볼록결합도 합이 1 이다.
-	lo := 0
-	for lo < len(pfailP)-2 && pfailP[lo+1] < p {
-		lo++
-	}
-	hi := lo + 1
-	a, b := row[lo][li], row[hi][li]
-	span := pfailP[hi] - pfailP[lo]
-	t := 0.0
-	if span > 0 {
-		t = (p - pfailP[lo]) / span
-	}
-	if t < 0 {
-		t = 0
-	}
-	if t > 1 {
-		t = 1
-	}
-	out := make([]float64, len(a))
-	for i := range a {
-		out[i] = a[i]*(1-t) + b[i]*t
+	// p 와 버스트 **둘 다** 선형 보간한다(쌍선형). 네 꼭짓점이 각각 합 1 인
+	// 분포이고 가중치 넷의 합이 1 이므로, 섞은 것도 합 1 인 분포다:
+	//   (1-t)(1-tl) + t(1-tl) + (1-t)tl + t·tl = 1
+	// 음수도 안 생긴다(음이 아닌 값들의 볼록결합).
+	plo, phi, t := axisLerp(pfailP, p)
+	llo, lhi, tl := axisLerp(pfailU, normBurst(p, l))
+
+	a00, a10 := row[plo][llo], row[phi][llo]
+	a01, a11 := row[plo][lhi], row[phi][lhi]
+	w00 := (1 - t) * (1 - tl)
+	w10 := t * (1 - tl)
+	w01 := (1 - t) * tl
+	w11 := t * tl
+	out := make([]float64, len(a00))
+	for i := range a00 {
+		out[i] = a00[i]*w00 + a10[i]*w10 + a01[i]*w01 + a11[i]*w11
 	}
 	return out
 }
@@ -197,32 +244,27 @@ func jointLookup(k, m int, p, l float64) []float64 {
 func failFracLookup(k, m int, p, l float64) (float64, float64, float64) {
 	ki := idxNearest(pfailK, k)
 	mi := idxNearest(pfailM, m)
-	li := idxNearestF(pfailL, l)
 	if k != pfailK[ki] || m != pfailM[mi] {
 		panic(fmt.Sprintf(
 			"failFracLookup: 표 범위 밖 (k=%d m=%d)", k, m))
 	}
 	row := failFracTable[ki][mi]
-	lo := 0
-	for lo < len(pfailP)-2 && pfailP[lo+1] < p {
-		lo++
-	}
-	hi := lo + 1
-	a, b := row[lo][li], row[hi][li]
-	span := pfailP[hi] - pfailP[lo]
-	t := 0.0
-	if span > 0 {
-		t = (p - pfailP[lo]) / span
-	}
-	if t < 0 {
-		t = 0
-	}
-	if t > 1 {
-		t = 1
-	}
-	f0 := a[0]*(1-t) + b[0]*t
-	f1 := a[1]*(1-t) + b[1]*t
-	f2 := a[2]*(1-t) + b[2]*t
+
+	// p·버스트 쌍선형. jointLookup 과 **반드시 같은 식**이어야 한다 -
+	// 두 표가 다른 지점에서 읽히면 회계가 갈라진다. 그래서 둘 다
+	// axisLerp 하나만 쓴다(두 곳에 같은 산수를 적어 두면 한쪽만 고쳐진다).
+	plo, phi, t := axisLerp(pfailP, p)
+	llo, lhi, tl := axisLerp(pfailU, normBurst(p, l))
+
+	a00, a10 := row[plo][llo], row[phi][llo]
+	a01, a11 := row[plo][lhi], row[phi][lhi]
+	w00 := (1 - t) * (1 - tl)
+	w10 := t * (1 - tl)
+	w01 := (1 - t) * tl
+	w11 := t * tl
+	f0 := a00[0]*w00 + a10[0]*w10 + a01[0]*w01 + a11[0]*w11
+	f1 := a00[1]*w00 + a10[1]*w10 + a01[1]*w01 + a11[1]*w11
+	f2 := a00[2]*w00 + a10[2]*w10 + a01[2]*w01 + a11[2]*w11
 	sum := f0 + f1 + f2
 	if sum <= 0 {
 		return 1, 0, 0
@@ -1274,7 +1316,16 @@ func policyGrid() {
 				for _, s0base := range []float64{396.5, 1527.5, 382.45, 1472.0} {
 					for _, rtt := range []float64{10, 50, 100} {
 						for _, p := range []float64{0, 0.005, 0.007, 0.02, 0.035, 0.05, 0.15, 0.2} {
-							for _, l := range []float64{1, 2, 3} {
+							// 🩸 2026-08-28 - 예전에는 {1, 2, 3} 이었다. 셋 다
+							//    그때의 버스트 격자({1,2,3,5}) **위의 점**이라,
+							//    버스트 축의 보간(예전에는 최근접 스냅)이 이
+							//    관문에 **원리적으로 안 보였다** - 격자 위에서는
+							//    어떤 보간법을 써도 오차가 0 이기 때문이다.
+							//    p 축은 0.007·0.035 가 격자 밖이라 진작부터
+							//    시험되고 있었는데 버스트만 빠져 있었다.
+							//    1.5(1~2 사이)·4(3~5 사이)를 넣어 격자 밖을
+							//    실제로 밟는다.
+							for _, l := range []float64{1, 1.5, 2, 3, 4} {
 								for _, up := range []float64{0, 10, 100} {
 									// 관측 S 는 **지금 칸**의 값이다. Python 은
 									// s0_at(n) = s0_base + n·c 로 절대값을 쓰므로,

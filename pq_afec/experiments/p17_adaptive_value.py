@@ -135,9 +135,26 @@ CYCLES = len(ARMS)  # 라틴 방격 닫힘: 손실률마다 각 팔이 각 자�
 #    않았다. 무제한 조건은 **음성 대조로 그대로 둔다** - 거기서는
 #    여전히 안 갈리고, 그것이 "패리티가 공짜면 적응할 것이 없다"를
 #    드러낸다(검사 9).
+# 🩸 2026-08-28 - **cert 와 RTT 를 조건마다 준다.** 그전에는 둘 다 모듈
+#    상수(CERT=9000, RTT_MS=50)라 이 단계가 **한 점에서만** 적응을 봤다.
+#    "손실률이 변할 때 정책이 따라가는가"라는 주장은 운용점 하나가 아니라
+#    운용점들에서 성립해야 하는데, 자가 한 점에 못박혀 있으면 그 주장을
+#    시험할 수가 없다 - 통과해도 "이 cert·이 RTT 에서는"이라는 단서가 붙는다.
+#
+#    새로 더한 두 자리:
+#      큰cert     16000. 9000 은 갈리는 구간(7,200~12,000)의 가운데라
+#                 **m 이 실제로 바뀌는** 자리다. 16000 은 그 구간 위,
+#                 즉 신용이 더 크게 묶이는 쪽이다(p18 이 같은 값을 쓴다).
+#      RTT200     장거리. RTT 가 커지면 왕복 하나의 값이 커지므로 δ·m 의
+#                 교환비가 달라진다. 우리 연구의 헤드라인이 "왕복 하나를
+#                 지운다"이므로 RTT 축을 한 번도 안 흔들어 본 것은 구멍이다.
+#
+#    (이름, netem rate, 정책 uplink, cert, RTT)
 CONDS = [
-    ("2Mbps", 2.0, POL.UPLINK_CONSTRAINED_MBPS),
-    ("무제한", 0.0, POL.UPLINK_UNSHAPED),
+    ("2Mbps",   2.0, POL.UPLINK_CONSTRAINED_MBPS, 9000,  50.0),
+    ("무제한",   0.0, POL.UPLINK_UNSHAPED,         9000,  50.0),
+    ("큰cert",  2.0, POL.UPLINK_CONSTRAINED_MBPS, 16000, 50.0),
+    ("RTT200",  2.0, POL.UPLINK_CONSTRAINED_MBPS, 9000,  200.0),
 ]
 
 
@@ -145,7 +162,7 @@ def mean(v):
     return (sum(v) / len(v)) if v else None
 
 
-def run_interleaved(cond_name, rate, up_policy, jr):
+def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
     """구간 안에서 팔을 인터리브하고 자리를 회전한다(라틴 방격)."""
     # 🩸 2026-08-26 - **연결 간격을 대역에 맞춘다.** gap 8 ms 로 연결을 붙여
     #    돌리면 앞 연결의 *뒤따르는* 패리티가 다음 연결의 첫 비행 뒤에 줄을
@@ -162,7 +179,8 @@ def run_interleaved(cond_name, rate, up_policy, jr):
     #    했다 - 큐를 비우고 재니 2 Mbps 최선은 m3(71.00) 이었고 m2 는 73.13
     #    이었다. 무제한은 큐가 안 쌓이므로 8 ms 그대로 둔다(실행 시간).
     gap_ms = 50 if rate > 0 else 8
-    key = "%s|latin|n%d|c%d|g%d" % (cond_name, N, CYCLES, gap_ms)
+    key = "%s|latin|n%d|c%d|g%d|cert%d|rtt%g" % (
+        cond_name, N, CYCLES, gap_ms, cert, rtt)
     if jr.has(key):
         return jr.get(key)
     try:
@@ -174,7 +192,7 @@ def run_interleaved(cond_name, rate, up_policy, jr):
     # C1: PADFEC_FEEDBACK=1 이면 서버·클라 양쪽에 -feedback 을 준다.
     # 끄고 켠 결과를 나란히 둬야 "피드백이 적응률을 고쳤다"고 말할 수 있다.
     FB = ["-feedback"] if os.environ.get("PADFEC_FEEDBACK") == "1" else []
-    p, sp = B.start_server(CERT, fec="on", extra=FB)
+    p, sp = B.start_server(cert, fec="on", extra=FB)
     try:
         # 🩸 회전 카운터는 **손실률마다 따로** 센다. 하나로 세면 손실률이
         #    2 개일 때 같은 손실률의 회전이 0,2,0,2 로 건너뛰어 방격이 닫히지
@@ -182,7 +200,7 @@ def run_interleaved(cond_name, rate, up_policy, jr):
         rot = {}
         for cyc in range(CYCLES):
             for loss, n_conn in SCHEDULE:
-                B.set_netem(RTT_MS / 2.0, loss_c2s=loss, rate_up_mbit=rate)
+                B.set_netem(rtt / 2.0, loss_c2s=loss, rate_up_mbit=rate)
                 r = rot.get(loss, 0) % len(ARMS)
                 rot[loss] = rot.get(loss, 0) + 1
                 order = ARMS[r:] + ARMS[:r]
@@ -217,7 +235,7 @@ def run_interleaved(cond_name, rate, up_policy, jr):
     finally:
         B.stop_server(p)
     ss = B.read_server_stats(sp)
-    rec = {"cond": cond_name,
+    rec = {"cond": cond_name, "cert": cert, "rtt_ms": rtt,
            "arms": {a: {"n": len(v), "mean": mean(v), "p50": B.pctl(v, 0.5),
                         "p95": B.pctl(v, 0.95), "ms": v}
                     for a, v in acc.items()},
@@ -229,14 +247,15 @@ def run_interleaved(cond_name, rate, up_policy, jr):
     return rec
 
 
-def optimal_m(loss_pct, up):
+def optimal_m(loss_pct, up, cert=None, rtt=None):
     """모형이 말하는 이 구간의 최적 m. 정책 구현이 따라가야 할 목표값."""
     # 🩸 2026-08-25 - C 가 `1146` 으로 박혀 있었다(실측 1448, 그리고
     #    1146 은 어느 그룹의 값도 아니다). 여기서는 다행히 목표 m 이
     #    양쪽 다 1 이라 결론이 안 바뀌었지만, 모형은 k=1 로 돌고
     #    있었다. 측정 파일에서 읽는다 (padbed.measured_C 주석 참고).
-    d = POL.decide_v2(C=B.measured_C(GROUP), cert_bytes=CERT,
-                      rtt_ms=RTT_MS,
+    d = POL.decide_v2(C=B.measured_C(GROUP),
+                      cert_bytes=CERT if cert is None else cert,
+                      rtt_ms=RTT_MS if rtt is None else rtt,
                       p=loss_pct / 100.0, burst=1.0, s0_base=POL.S0_BASE_MLKEM,
                       c_pkt=POL.C_PKT_POLICY_DEFAULT, W=1280, max_steps=2,
                       m_max=POL.M_MAX_DEFAULT, uplink_mbps=up)
@@ -316,7 +335,11 @@ def adapt_stats(rec, up, alw):
     """
     out = {}
     for loss, _n in SCHEDULE:
-        want = optimal_m(loss, up)
+        # 🩸 2026-08-28 - cert·RTT 가 조건마다 달라졌으므로 **그 조건의 값**
+        #    으로 모형을 물어야 한다. 모듈 상수로 물으면 큰cert·RTT200 조건
+        #    에서 9000/50 의 답이 기록돼, 나중에 "모형과 실측이 갈린 자리"를
+        #    찾을 때 **있지도 않은 어긋남**을 쫓게 된다.
+        want = optimal_m(loss, up, rec.get("cert"), rec.get("rtt_ms"))
         ok_ms = set()
         if alw.get(loss):
             for a in alw[loss]["allowed"]:
@@ -397,11 +420,12 @@ def main():
           % (" <-> ".join("%g" % l for l, _ in SCHEDULE), CYCLES, N))
     print("=" * 104)
 
-    for cond_name, rate, up_policy in CONDS:
+    for cond_name, rate, up_policy, cert, rtt in CONDS:
         print()
-        print("### 조건 %s (netem rate %g, 정책 uplink %g)"
-              % (cond_name, rate, up_policy))
-        out["rows"].append(run_interleaved(cond_name, rate, up_policy, jr))
+        print("### 조건 %s (netem rate %g, 정책 uplink %g, cert %d, RTT %g)"
+              % (cond_name, rate, up_policy, cert, rtt))
+        out["rows"].append(
+            run_interleaved(cond_name, rate, up_policy, cert, rtt, jr))
 
     for rec in out["rows"]:
         am = rec["arms"]
