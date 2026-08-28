@@ -158,6 +158,333 @@ func rsEncode(src [][]byte, m int, size int) [][]byte {
 // 생성행렬의 다른 행을 쓰므로, 인덱스 1 의 패리티를 행 0 의 계수로 풀면
 // 엉뚱한 값이 나온다. 처음에 이 인자를 빼먹어서 m=2 의 복구가 전부 CRC 에서
 // 탈락했다(복구 0건). m == 1 은 순수 XOR 이라 행 개념이 없다.
+// parityRow 는 패리티 p 행의 계수 k 개를 준다. m==1 은 순수 XOR 이므로
+// 계수가 전부 1 이고, 그 외에는 Cauchy 행이다. rsEncode 의 두 분기와 **정확히
+// 같은 계수**를 써야 한다 - 부호기와 복호기가 다른 행렬을 쓰면 조용히 틀린다.
+func parityRow(m, p, k int) []byte {
+	if m == 1 {
+		row := make([]byte, k)
+		for o := range row {
+			row[o] = 1
+		}
+		return row
+	}
+	return cauchyRow(m, p, k)
+}
+
+// gfMatInv 는 GF(256) 정사각행렬을 가우스 소거로 뒤집는다. 특이하면 nil.
+// Cauchy 부분행렬은 구성상 항상 가역이므로 nil 은 인자가 잘못됐다는 뜻이다.
+func gfMatInv(a [][]byte) [][]byte {
+	n := len(a)
+	aug := make([][]byte, n)
+	for i := 0; i < n; i++ {
+		aug[i] = make([]byte, 2*n)
+		copy(aug[i], a[i])
+		aug[i][n+i] = 1
+	}
+	for col := 0; col < n; col++ {
+		piv := -1
+		for r := col; r < n; r++ {
+			if aug[r][col] != 0 {
+				piv = r
+				break
+			}
+		}
+		if piv < 0 {
+			return nil
+		}
+		aug[col], aug[piv] = aug[piv], aug[col]
+		inv := gfInv(aug[col][col])
+		for j := 0; j < 2*n; j++ {
+			aug[col][j] = gfMul(inv, aug[col][j])
+		}
+		for r := 0; r < n; r++ {
+			if r == col || aug[r][col] == 0 {
+				continue
+			}
+			f := aug[r][col]
+			for j := 0; j < 2*n; j++ {
+				aug[r][j] ^= gfMul(f, aug[col][j])
+			}
+		}
+	}
+	out := make([][]byte, n)
+	for i := 0; i < n; i++ {
+		out[i] = aug[i][n:]
+	}
+	return out
+}
+
+// recoverMany 는 소거 e 개를 한꺼번에 복원한다. recoverOne 을 대신한다.
+//
+//	missing   복원할 원본 인덱스 (0..k-1)
+//	origs     살아남은 원본. missing 에 든 것은 들어 있으면 안 된다.
+//	parities  쓸 수 있는 **복구용** 패리티 {패리티인덱스: 심볼}.
+//	          ⚠️ 증폭 신용으로 이미 스택에 넘긴 패리티는 넣으면 안 된다 -
+//	          그 바이트가 예산과 복구에 이중 계상돼 RFC 9000 8.1 의 3 배
+//	          한도를 우회하게 된다(decodeConn.ReadFrom 의 불변식 주석).
+//
+// 🩸 2026-08-27 신레오 보고로 신설. 옛 recoverOne 은 소거를 **정수 하나**로
+//    받았고, 두 분기가 **비대칭으로 실패**했다:
+//      m >= 2 : 다른 원본이 하나라도 없으면 nil (닫히며 실패 - 안전)
+//      m == 1 : 있는 것만 XOR 하고 **nil 을 안 돌려준다** (열리며 실패 -
+//               파리티 심볼을 그대로 원본이라고 내놓는다. 실측으로 1,200 B
+//               중 1,197 B 가 다르다)
+//    두 분기가 다르게 실패하는 것이 함정이었다. 여기서는 **분기 자체를
+//    없앤다** - 살아남은 원본이 다 있는지 한 곳에서 검사하므로 규칙이
+//    갈라질 자리가 없다.
+//
+//    옛 코드가 실제로 잘못된 값을 내보낸 적은 없다. 유일한 제품 호출부
+//    (tryRecoverLocked)가 len(missing) > 1 에서 먼저 빠져나가기 때문이다.
+//    그래서 이것은 **잠재된 덫**이었지 살아 있는 결함은 아니었다 -
+//    다만 그 덫을 막고 있던 것이 호출부 가드 하나뿐이었다.
+func recoverMany(k, m int, missing []int, origs map[int][]byte,
+	parities map[int][]byte, size int) map[int][]byte {
+	e := len(missing)
+	if e == 0 || e > k {
+		return nil
+	}
+	// 살아남은 원본이 전부 있어야 한다. 없으면 **닫히며** 실패한다.
+	for i := 0; i < k; i++ {
+		if inIntSlice(missing, i) {
+			continue
+		}
+		if _, ok := origs[i]; !ok {
+			return nil
+		}
+	}
+	// 쓸 패리티 e 개를 인덱스 순으로 고른다. Cauchy 는 어느 정방 부분행렬도
+	// 가역이므로 어떤 조합을 골라도 성립한다 - 그것이 Cauchy 를 쓰는 이유다.
+	pidx := make([]int, 0, len(parities))
+	for j := range parities {
+		pidx = append(pidx, j)
+	}
+	if len(pidx) < e {
+		return nil
+	}
+	sort.Ints(pidx)
+	pidx = pidx[:e]
+
+	miss := append([]int(nil), missing...)
+	sort.Ints(miss)
+
+	// 신드롬: 살아남은 원본의 기여를 각 패리티에서 걷어낸다.
+	syn := make([][]byte, e)
+	for r, j := range pidx {
+		row := parityRow(m, j, k)
+		acc := make([]byte, size)
+		copy(acc, parities[j])
+		for i := 0; i < k; i++ {
+			if inIntSlice(miss, i) {
+				continue
+			}
+			d := origs[i]
+			c := row[i]
+			for b := 0; b < len(d) && b < size; b++ {
+				acc[b] ^= gfMul(c, d[b])
+			}
+		}
+		syn[r] = acc
+	}
+	// e x e 부분행렬 (행 = 고른 패리티, 열 = 소거된 원본) 을 뒤집는다.
+	sub := make([][]byte, e)
+	for r, j := range pidx {
+		row := parityRow(m, j, k)
+		sub[r] = make([]byte, e)
+		for c, o := range miss {
+			sub[r][c] = row[o]
+		}
+	}
+	inv := gfMatInv(sub)
+	if inv == nil {
+		return nil
+	}
+	out := map[int][]byte{}
+	for c, o := range miss {
+		buf := make([]byte, size)
+		for r := 0; r < e; r++ {
+			f := inv[c][r]
+			if f == 0 {
+				continue
+			}
+			sr := syn[r]
+			for b := 0; b < size; b++ {
+				buf[b] ^= gfMul(f, sr[b])
+			}
+		}
+		out[o] = buf
+	}
+	return out
+}
+
+// combinations 는 0..n-1 에서 r 개를 고르는 모든 조합을 준다 (사전순).
+// permutations 는 0..n-1 의 모든 순열을 준다. 도착 순서 전수 시험용.
+func permutations(n int) [][]int {
+	idx := make([]int, n)
+	for i := range idx {
+		idx[i] = i
+	}
+	var out [][]int
+	var rec func(k int)
+	rec = func(k int) {
+		if k == n {
+			out = append(out, append([]int(nil), idx...))
+			return
+		}
+		for i := k; i < n; i++ {
+			idx[k], idx[i] = idx[i], idx[k]
+			rec(k + 1)
+			idx[k], idx[i] = idx[i], idx[k]
+		}
+	}
+	rec(0)
+	return out
+}
+
+// feedOne 은 데이터그램 하나를 ReadFrom 경로에 그대로 통과시킨다.
+// 회계 불변식 시험용 - 네트워크 없이 decodeConn 의 회계만 돌린다.
+func (s *decodeConn) feedOne(d []byte) {
+	b := make([]byte, 2000)
+	copy(b, d)
+	n := len(d)
+	addr := &net.UDPAddr{IP: net.IPv4(10, 9, 0, 3), Port: 5555}
+	s.countRx(n)
+	var fb *fecBlock
+	if s.mode != "off" {
+		fb = parseFecBlock(b[:n])
+	}
+	s.mu.Lock()
+	s.stats.BytesIn += int64(n)
+	s.mu.Unlock()
+	if fb == nil {
+		s.mu.Lock()
+		s.stackLocked(addr, n)
+		s.mu.Unlock()
+		s.noteOriginal(b[:n], addr)
+		return
+	}
+	s.mu.Lock()
+	// ⚠️ 아래는 ReadFrom 의 패리티 경로와 **같은 규칙**이어야 한다.
+	//    어긋나면 이 시험이 실제 경로가 아닌 것을 재게 된다.
+	if fb.m >= 2 && fb.index == 0 {
+		s.stats.CreditParities++
+		s.stackLocked(addr, n)
+		s.mu.Unlock()
+		return
+	}
+	dc := dcidOf(b[:n])
+	key := fmt.Sprintf("%x|%d", dc, fb.flight)
+	if s.flights == nil {
+		s.flights = map[string]*flightRec{}
+	}
+	fr := s.flights[key]
+	if fr == nil {
+		fr = &flightRec{fb: fb, dcid: dc, addr: addr, created: time.Now(),
+			syms: map[int][]byte{}}
+		s.flights[key] = fr
+	}
+	fr.fb = fb
+	fr.syms[fb.index] = fb.sym
+	outs := s.tryRecoverLocked(fr, true)
+	if rec := s.settleRecovery(fr, outs); rec != nil {
+		s.mu.Unlock()
+		return
+	}
+	if len(outs) == 0 && s.pendingErasures(fr) >= 2 {
+		fr.heldBytes += int64(n)
+		s.heldBytes += int64(n)
+		s.mu.Unlock()
+		return
+	}
+	s.stackLocked(addr, n)
+	s.mu.Unlock()
+}
+
+// pendingErasures 는 이 비행에서 아직 안 온 원본 수다. mu 를 쥔 채로 부른다.
+// 뒤따르는 패리티는 원본보다 **뒤에** 오므로, 그 도착 시점의 이 수는
+// 「앞으로 몇 개를 복구해야 하는가」와 같다.
+func (s *decodeConn) pendingErasures(fr *flightRec) int {
+	fb := fr.fb
+	miss := 0
+	for i := 0; i < fb.k; i++ {
+		found := false
+		for _, r := range s.recent {
+			if r.crc == fb.crcs[i] && r.dcid == fr.dcid {
+				found = true
+				break
+			}
+		}
+		if !found {
+			miss++
+		}
+	}
+	return miss
+}
+
+// settleRecovery 는 복원본 묶음을 회계와 함께 정산한다. mu 를 쥔 채로 부른다.
+//
+// 🩸 2026-08-28 - 판정과 기록을 **한 곳에** 모은다. 그전에는 복구 함수가
+//    pending 에 넣고 Recovered 를 올린 뒤 호출부가 따로 판정해서, 거절된
+//    복구까지 예약 바이트로 세어져 불변식이 깨졌다.
+//
+// 돌려주는 것: 스택에 넘길 첫 복원본 (없으면 nil).
+// 나머지는 pending 에 예약한다. 회계가 안 되면 아무것도 안 하고 nil 이다.
+func (s *decodeConn) settleRecovery(fr *flightRec, outs [][]byte) []byte {
+	if len(outs) == 0 {
+		return nil
+	}
+	var tot int64
+	for _, o := range outs {
+		tot += int64(len(o))
+	}
+	// 쓰인 뒤따르는 패리티는 **보류 중이므로 아직 스택에 없다.** 그래서
+	// 왼쪽에 더할 것은 복원본뿐이다. 복원본(W)은 패리티(W+오버헤드)보다
+	// 작으므로 여유가 남는다 - 그 차이가 이 설계가 신용에서 치르는 값이다.
+	if s.stats.BytesToStack+s.pendingBytes+tot > s.stats.BytesIn {
+		s.stats.RecoverRefused++
+		return nil
+	}
+	fr.done = true
+	s.stats.Recovered += len(outs)
+	for _, extra := range outs[1:] {
+		s.pending = append(s.pending, pendingPkt{data: extra, addr: fr.addr})
+		s.pendingBytes += int64(len(extra))
+	}
+	// 보류했던 바이트는 이제 역할이 정해졌다. 회계에서 놓아 준다.
+	s.heldBytes -= fr.heldBytes
+	fr.heldBytes = 0
+	return outs[0]
+}
+
+func combinations(n, r int) [][]int {
+	var out [][]int
+	cur := make([]int, r)
+	var rec func(start, depth int)
+	rec = func(start, depth int) {
+		if depth == r {
+			out = append(out, append([]int(nil), cur...))
+			return
+		}
+		for i := start; i < n; i++ {
+			cur[depth] = i
+			rec(i+1, depth+1)
+		}
+	}
+	if r >= 0 && r <= n {
+		rec(0, 0)
+	}
+	return out
+}
+
+func inIntSlice(v []int, x int) bool {
+	for _, y := range v {
+		if y == x {
+			return true
+		}
+	}
+	return false
+}
+
 func recoverOne(k, m, parityIdx, missing int, origs map[int][]byte,
 	parity []byte, size int) []byte {
 	acc := make([]byte, size)
@@ -509,7 +836,19 @@ func parseFecBlock(d []byte) *fecBlock {
 		fb.lens[x] = binary.BigEndian.Uint16(b[j : j+2])
 		j += 2
 	}
-	fb.sym = b[j : j+fb.symLen]
+	// 🩸 2026-08-28 **별칭 수리 (차단 결함).**
+	//    옛 코드는 `fb.sym = b[j : j+fb.symLen]` 로 **호출자 버퍼를 그대로
+	//    가리켰다.** 바로 위의 crcs·lens 는 make 로 복사하는데 sym 만
+	//    아니었다. flightRec 은 이 fb 를 뒤의 ReadFrom 호출 너머까지 들고
+	//    있고, quic-go v0.61.0 은 sync.Pool 버퍼로 읽어 재사용한다
+	//    (sys_conn.go:117 getPacketBuffer / :121 ReadFrom(buffer.Data)).
+	//    그래서 보관한 심볼이 비결정적으로 덮인다 - 늦은 복구가
+	//    "되기도 하고 안 되기도" 한다.
+	//
+	//    ⚠️ 이 복사만 단독으로 넣으면 **더 나빠진다.** 별칭이 지금은
+	//       우연한 안전망이라(덮인 심볼은 CRC 가 걸러 낸다) 위의 회계
+	//       순서 결함을 가리고 있다. 둘은 **같이** 가야 한다.
+	fb.sym = append([]byte(nil), b[j:j+fb.symLen]...)
 	return fb
 }
 
@@ -974,6 +1313,23 @@ type flightRec struct {
 	addr    net.Addr
 	created time.Time
 	done    bool
+	// 🩸 2026-08-28 (2 단계) - **뒤따르는 패리티 심볼을 모은다.**
+	//    옛 구조는 마지막 패리티 하나만 들고 있어 복구 능력이 소거 1 개로
+	//    묶여 있었다(신레오 2026-08-27 보고). 뒤따르는 패리티는 원본보다
+	//    **뒤에** 오므로 도착 시점에 소거 개수를 이미 알 수 있고, 그래서
+	//    다음처럼 즉시 판정한다:
+	//      소거 0 개  -> 신용으로 스택 (지금과 같다)
+	//      소거 1 개  -> 이 패리티로 복구하고 복원본을 스택
+	//      소거 2 개+ -> **보류**하고 다음 뒤따르는 패리티를 기다린다
+	//    보류는 소거가 이미 2 개 이상일 때만 일어난다 - 확률 ~p^2 이라
+	//    무손실 대량(약 96%)에서는 아무것도 안 바뀐다. 그래서 증폭 신용을
+	//    내주지 않는다.
+	//
+	//    ⚠️ 선행 패리티(m>=2 의 index 0)는 **여기 넣지 않는다.** 원본보다
+	//       먼저 오므로 그것으로 복구를 시도하면 아직 안 온 원본을
+	//       "소거됐다"로 오해한다 - 실제로 그렇게 오작동한 적이 있다.
+	syms      map[int][]byte
+	heldBytes int64
 	// CRC 로 한 번 걸러진 비행은 다시 시도하지 않는다. 매 원본 도착마다
 	// 같은 실패를 반복하면 카운터만 부풀고 얻는 것이 없다.
 	poisoned bool
@@ -1082,6 +1438,11 @@ type decodeConn struct {
 	flights      map[string]*flightRec
 	pending      []pendingPkt
 	pendingBytes int64 // 아직 안 넘긴 복구본의 바이트 (회계 예약분)
+	// 🩸 2026-08-28 (2 단계) - 소거가 2 개 이상이라 **보류한** 뒤따르는
+	//    패리티의 바이트. 아직 스택에 안 넘겼으므로 불변식의 왼쪽에
+	//    들어가지 않는다. 복구가 끝나면 쓰인 만큼은 복원본으로 대체되고
+	//    남은 것은 신용으로 풀린다.
+	heldBytes int64
 	conns        map[string]*connAcct
 	stats        serverStats
 }
@@ -1186,7 +1547,7 @@ func (s *decodeConn) noteOriginal(data []byte, addr net.Addr) {
 }
 
 // tryRecoverLocked 는 이 비행에서 소거 하나를 복구할 수 있으면 복구한다.
-func (s *decodeConn) tryRecoverLocked(fr *flightRec, count bool) []byte {
+func (s *decodeConn) tryRecoverLocked(fr *flightRec, count bool) [][]byte {
 	fb := fr.fb
 	have := map[int][]byte{}
 	for i, c := range fb.crcs {
@@ -1212,30 +1573,46 @@ func (s *decodeConn) tryRecoverLocked(fr *flightRec, count bool) []byte {
 		fr.done = true
 		return nil
 	}
-	if len(missing) > 1 {
+	// 🩸 2026-08-28 (2 단계) - **소거 e 개를 모은 패리티 e 개로 푼다.**
+	//    옛 코드는 여기서 `len(missing) > 1` 이면 무조건 포기했다. 그래서
+	//    복구 능력이 m 과 무관하게 **1 개로 고정**돼 있었고, m 을 늘려도
+	//    "패리티가 살아남을 확률"만 올랐다(신레오 2026-08-27 보고).
+	//    이제 모아 둔 뒤따르는 패리티 수만큼 풀 수 있다.
+	if len(missing) > len(fr.syms) {
 		if count {
 			s.stats.Unrecover++
 		}
-		return nil // 소거가 둘 이상 - 패리티 1 개로는 복구 불가
+		return nil // 패리티가 모자란다. **닫히며** 실패한다.
 	}
-	rec := recoverOne(fb.k, fb.m, fb.index, missing[0], have, fb.sym,
-		fb.symLen)
-	if rec == nil {
+	recs := recoverMany(fb.k, fb.m, missing, have, fr.syms, fb.symLen)
+	if recs == nil {
 		return nil
 	}
-	want := int(fb.lens[missing[0]])
-	if want > len(rec) {
-		return nil
+	// 복원본을 CRC 로 자가 확인한 뒤 하나로 이어 돌려준다. 호출부는 지금
+	// 한 번에 하나만 스택에 넘기므로, 여러 개면 나머지는 pending 에 쌓는다.
+	outs := make([][]byte, 0, len(missing))
+	for _, mi := range missing {
+		r := recs[mi]
+		if r == nil {
+			return nil
+		}
+		w := int(fb.lens[mi])
+		if w > len(r) {
+			return nil
+		}
+		r = r[:w]
+		if crc32.ChecksumIEEE(r) != fb.crcs[mi] {
+			s.stats.RecoverFail++
+			fr.poisoned = true
+			return nil
+		}
+		outs = append(outs, r)
 	}
-	rec = rec[:want]
-	// 복구본이 원본과 같은지 부호가 스스로 확인한다.
-	if crc32.ChecksumIEEE(rec) != fb.crcs[missing[0]] {
-		s.stats.RecoverFail++
-		fr.poisoned = true
-		return nil
-	}
-	s.stats.Recovered++
-	return rec
+	// ⚠️ **부작용을 두지 않는다.** 회계가 허락할지는 호출부가 정하므로,
+	//    여기서 Recovered 를 올리거나 pending 에 넣으면 거절된 복구까지
+	//    세어져 예약 바이트가 부풀고 불변식이 깨진다. 실제로 그렇게
+	//    깨졌다(2026-08-28). 판정과 기록을 한 곳에 모은다.
+	return outs
 }
 
 func (s *decodeConn) tryLate() {
@@ -1247,16 +1624,11 @@ func (s *decodeConn) tryLate() {
 		if fr.done || fr.poisoned {
 			continue
 		}
-		rec := s.tryRecoverLocked(fr, false)
+		outs := s.tryRecoverLocked(fr, false)
+		rec := s.settleRecovery(fr, outs)
 		if rec == nil {
 			continue
 		}
-		if s.stats.BytesToStack+s.pendingBytes+int64(len(rec)) >
-			s.stats.BytesIn {
-			s.stats.RecoverRefused++
-			continue
-		}
-		fr.done = true
 		s.pending = append(s.pending,
 			pendingPkt{data: rec, addr: fr.addr})
 		s.pendingBytes += int64(len(rec)) // 예약: 넘길 때까지 잡아 둔다
@@ -1358,10 +1730,30 @@ func (s *decodeConn) ReadFrom(b []byte) (int, net.Addr, error) {
 		return n, addr, nil
 	}
 	if fb == nil {
-		s.noteOriginal(b[:n], addr)
+		// 🩸 2026-08-28 **회계 순서 수리 (차단 결함).**
+		//    옛 순서는 `noteOriginal` -> `stackLocked` 였다. noteOriginal 은
+		//    tryLate 를 부르고, tryLate 는 불변식
+		//        BytesToStack + pendingBytes + len(rec) <= BytesIn
+		//    을 본다. 그런데 이 데이터그램의 n 바이트는 위(:1501)에서
+		//    **BytesIn 에 이미 더해졌고 BytesToStack 에는 아직 안 들어갔다.**
+		//    그래서 가드가 **방금 도착한 원본의 바이트를 두 번 내준다** -
+		//    늦은 복구 한 번마다 정확히 W(=1280 B) 만큼 신용이 부풀고,
+		//    RFC 9000 8.1 의 3 배 규칙에 따라 서버 비행이 3,840 B 늘어난다.
+		//    클라이언트가 보낸 적 없는 바이트다.
+		//
+		//    최소 재현: k=2 · m=1 · **손실 0** · 도착 순서 [P, O0, O1].
+		//    독립 하네스 487 개 순열에서 178 건(36.6%) 위반, 초과분은
+		//    전부 정확히 1280 B.
+		//
+		//    ⚠️ 이 수리는 아래 parseFecBlock 의 심볼 복사보다 **먼저**
+		//       와야 한다. 지금은 심볼이 호출자 버퍼를 가리키는 별칭이라
+		//       내용이 덮여 CRC 가 걸러 주는데, 그 별칭이 **우연한
+		//       안전망**으로 이 결함을 가리고 있다. 복사만 먼저 넣으면
+		//       확률적 CRC 실패가 **결정적 불변식 위반**으로 바뀐다.
 		s.mu.Lock()
 		s.stackLocked(addr, n)
 		s.mu.Unlock()
+		s.noteOriginal(b[:n], addr)
 		return n, addr, nil
 	}
 
@@ -1372,36 +1764,51 @@ func (s *decodeConn) ReadFrom(b []byte) (int, net.Addr, error) {
 	// 순전히 증폭 신용용이라 복구에 쓰지 않는다. 신용 패리티는 원본보다 먼저
 	// 도착하므로, 그것으로 복구를 시도하면 손실이 없는데도 "마지막 원본이
 	// 아직 안 왔다"를 소거로 오해한다 - 실제로 그렇게 오작동했다.
-	if fb.index != fb.m-1 {
+	// 🩸 2026-08-28 (2 단계) - **선행 패리티만 신용 전용이다.**
+	//    m>=2 의 index 0 은 원본보다 **먼저** 나가므로(flushFlight) 그것으로
+	//    복구를 시도하면 아직 안 온 원본을 소거로 오해한다. 그건 그대로 둔다.
+	//    나머지(뒤따르는 패리티)는 원본보다 뒤에 오므로 도착 시점에 소거
+	//    개수를 이미 알 수 있고, 그래서 아래에서 즉시 판정한다.
+	if fb.m >= 2 && fb.index == 0 {
 		s.stats.CreditParities++
 		s.stackLocked(addr, n)
 		s.mu.Unlock()
 		return n, addr, nil
 	}
-	fr := &flightRec{fb: fb, dcid: dc, addr: addr, created: time.Now()}
-	key := fmt.Sprintf("%x|%d|%d", dc, fb.flight, fb.index)
+	// 🩸 비행 하나에 기록 하나. 옛 열쇠는 `index` 를 포함해 뒤따르는 패리티
+	//    마다 따로 기록이 생겼고, 그러면 같은 비행을 여러 번 복구해 복원본이
+	//    **중복 주입**될 수 있다. 심볼은 한 기록에 모은다.
+	key := fmt.Sprintf("%x|%d", dc, fb.flight)
 	if s.flights == nil {
 		s.flights = map[string]*flightRec{}
 	}
-	s.flights[key] = fr
-	rec := s.tryRecoverLocked(fr, true)
+	fr := s.flights[key]
+	if fr == nil {
+		fr = &flightRec{fb: fb, dcid: dc, addr: addr, created: time.Now(),
+			syms: map[int][]byte{}}
+		s.flights[key] = fr
+	}
+	fr.fb = fb
+	fr.syms[fb.index] = fb.sym
+	outs := s.tryRecoverLocked(fr, true)
 	// ⚖️ 불변식: 스택에 넘긴 누적 바이트는 **물리적으로 도착한 누적 바이트를
-	// 절대 넘지 않는다.** 이걸 어기면 우리가 RFC 9000 8.1 의 3배 한도를
-	// 우회하는 셈이 된다. 복구본을 넣을 때는 그 자리에 있던 패리티를 버려
-	// 회계를 맞춘다.
-	if rec != nil && s.stats.BytesToStack+s.pendingBytes+int64(len(rec)) <=
-		s.stats.BytesIn {
-		fr.done = true
-		s.stackLocked(addr, len(rec))
+	// 절대 넘지 않는다.** 어기면 RFC 9000 8.1 의 3 배 한도를 우회하는 셈이다.
+	if rec := s.settleRecovery(fr, outs); rec != nil {
 		s.mu.Unlock()
 		m := copy(b, rec)
 		return m, addr, nil
 	}
-	if rec != nil {
-		s.stats.RecoverRefused++
+	// 🩸 2026-08-28 (2 단계) - **소거가 아직 여럿이면 이 패리티를 보류한다.**
+	//    스택에 넣어 버리면 그 바이트가 신용으로 잡혀, 나중에 이 심볼로
+	//    복구할 때 복원본까지 넣으면 이중 계상이 된다. 보류는 소거가 이미
+	//    2 개 이상일 때만 일어나므로(확률 ~p^2) 무손실 대량에서는 아무
+	//    일도 없다 - 증폭 신용을 내주지 않는다.
+	if len(outs) == 0 && s.pendingErasures(fr) >= 2 {
+		fr.heldBytes += int64(n)
+		s.heldBytes += int64(n)
+		s.mu.Unlock()
+		return n, addr, nil
 	}
-	// 복구가 없으면 패리티를 그대로 통과시킨다. quic-go 는 바이트를 센 뒤
-	// 복호 실패로 폐기하므로, 증폭 예산만 그만큼 늘어난다.
 	s.stackLocked(addr, n)
 	s.mu.Unlock()
 	return n, addr, nil
@@ -1835,8 +2242,9 @@ func selfTest() int {
 	rec := recoverOne(2, 1, 0, 0, map[int][]byte{1: b}, p, 1)
 	check("A 유실 복원", rec[0] == a[0])
 
-	// 실제 크기 데이터그램, m=1 과 m=2
-	for _, m := range []int{1, 2} {
+	// 실제 크기 데이터그램. 🩸 2026-08-27 - m=3 을 더했다. 그전에는
+	// {1, 2} 뿐이라 **m=3 이 한 번도 시험된 적이 없었다**(신레오 보고).
+	for _, m := range []int{1, 2, 3} {
 		for k := 2; k <= 4; k++ {
 			src := make([][]byte, k)
 			for i := range src {
@@ -1853,14 +2261,221 @@ func selfTest() int {
 				}
 				// 패리티 **아무 하나**로 풀어도 같은 답이 나와야 한다.
 				for j, pp := range pars {
-					got := recoverOne(k, m, j, miss, have, pp, 1200)
-					same := got != nil && string(got) == string(src[miss])
-					check(fmt.Sprint("복원 m=", m, " k=", k, " miss=", miss,
-						" 패리티", j), same)
+					got := recoverMany(k, m, []int{miss}, have,
+						map[int][]byte{j: pp}, 1200)
+					same := got != nil && got[miss] != nil &&
+						string(got[miss]) == string(src[miss])
+					check(fmt.Sprint("단일 소거 복원 m=", m, " k=", k,
+						" miss=", miss, " 패리티", j), same)
 				}
 			}
 		}
 	}
+	// --- 다중 소거 (2026-08-27 신설, 신레오 보고서 6쪽의 요청) --------------
+	//
+	// 🩸 그전 고리는 `for miss := 0; miss < k; miss++` 로 **언제나 하나만**
+	//    지웠다. 그래서 소거가 둘 이상인 경로를 한 번도 안 밟았고, 옛
+	//    recoverOne 의 m==1 분기가 잘못된 값을 내놓는다는 사실이 코드에
+	//    들어간 채로 남아 있었다. 시험 범위의 문제였지 결함이 아니었으므로,
+	//    범위를 넓히는 것이 처방이다.
+	//
+	// 두 가지를 함께 못 박는다.
+	//   양성 : 복구용 패리티가 e 개 있으면 소거 e 개가 **정확히** 복원된다.
+	//   음성 : 패리티가 모자라면 **nil** 이어야 한다. 잘못된 값을 내놓으면
+	//          안 된다 - 옛 코드가 정확히 그것을 했다.
+	for _, m := range []int{1, 2, 3} {
+		for k := 2; k <= 4; k++ {
+			src := make([][]byte, k)
+			for i := range src {
+				src[i] = make([]byte, 1200)
+				rand.Read(src[i])
+			}
+			pars := rsEncode(src, m, 1200)
+			for e := 1; e <= k && e <= m; e++ {
+				for _, miss := range combinations(k, e) {
+					have := map[int][]byte{}
+					for i := range src {
+						if !inIntSlice(miss, i) {
+							have[i] = src[i]
+						}
+					}
+					// (가) 패리티 e 개를 준다 -> 전부 복원돼야 한다.
+					give := map[int][]byte{}
+					for j := 0; j < e; j++ {
+						give[j] = pars[j]
+					}
+					got := recoverMany(k, m, miss, have, give, 1200)
+					ok := got != nil
+					for _, o := range miss {
+						if ok && (got[o] == nil ||
+							string(got[o]) != string(src[o])) {
+							ok = false
+						}
+					}
+					check(fmt.Sprint("다중 소거 복원 m=", m, " k=", k,
+						" 소거", miss, " 패리티", e, "개"), ok)
+
+					// (나) [음성] 패리티를 하나 덜 준다 -> nil 이어야 한다.
+					//     잘못된 값을 내놓으면 여기서 붉어진다.
+					if e >= 2 {
+						few := map[int][]byte{}
+						for j := 0; j < e-1; j++ {
+							few[j] = pars[j]
+						}
+						bad := recoverMany(k, m, miss, have, few, 1200)
+						check(fmt.Sprint("[음성] 패리티 부족이면 nil m=", m,
+							" k=", k, " 소거", miss, " 패리티", e-1, "개"),
+							bad == nil)
+					}
+
+					// (다) [음성] 살아남은 원본을 하나 감추면 nil 이어야 한다.
+					//     옛 recoverOne 의 m==1 분기는 여기서 **잘못된 값**을
+					//     내놨다(실측 1,200 B 중 1,197 B 가 달랐다).
+					if len(have) >= 1 {
+						hole := map[int][]byte{}
+						first := true
+						for i, d := range have {
+							if first {
+								first = false
+								continue
+							}
+							hole[i] = d
+						}
+						bad2 := recoverMany(k, m, miss, hole, give, 1200)
+						check(fmt.Sprint("[음성] 원본이 모자라면 nil m=", m,
+							" k=", k, " 소거", miss), bad2 == nil)
+					}
+				}
+			}
+		}
+	}
+
+	// --- 회계 불변식: **도착 순서 전수** (2026-08-28 신설) --------------------
+	//
+	// 🩸 이 부류의 결함은 옛 시험이 **원리적으로 못 봤다.** 위 검사들은
+	//    부호기·복호기만 보고 회계를 안 보며, 실측 하네스의 netem 은
+	//    지터도 재정렬도 안 걸어(padbed.py) 패리티가 언제나 마지막에 온다.
+	//    그래서 「먼저 온 패리티」 경로가 한 번도 안 밟혔고, 거기에
+	//    +1280 B 짜리 신용 부풀림이 숨어 있었다.
+	//
+	// 지키는 것은 하나다. **스택에 넘긴 누적 바이트는 물리적으로 받은
+	// 누적 바이트를 절대 넘지 않는다.** 이걸 어기면 우리가 RFC 9000 8.1 의
+	// 3 배 한도를 우회하는 셈이고, 이 연구의 전제가 무너진다.
+	//
+	// 도착 순서를 **전부** 돌린다 - 잃은 것 없는 판까지 포함해서.
+	for _, kk := range []int{1, 2, 3} {
+		for _, mm := range []int{1, 2} {
+			// 🩸 원본은 **롱헤더 Initial 꼴**이어야 한다. 무작위 바이트로
+			//    만들면 dcidOf 가 빈 문자열을 주고, tryRecoverLocked 의
+			//    `r.dcid == fr.dcid` 가 영영 안 맞아 **복구가 시도조차 안 된다**
+			//    - 시험이 통째로 공허해진다. 실제로 처음 판이 그랬고,
+			//    돌연변이를 넣어도 안 붉어져서 드러났다.
+			dd := []byte{7, 7, 7, 7, 7, 7, 7, 7}
+			sc := []byte{8, 8, 8, 8}
+			src := make([][]byte, kk)
+			for i := range src {
+				d := make([]byte, 1200)
+				rand.Read(d)
+				// 롱헤더 Initial: 첫 바이트 최상위 비트 + 고정 버전 + CID
+				d[0] = 0xc0
+				d[1], d[2], d[3], d[4] = 0, 0, 0, 1
+				d[5] = byte(len(dd))
+				copy(d[6:], dd)
+				d[6+len(dd)] = byte(len(sc))
+				copy(d[7+len(dd):], sc)
+				src[i] = d
+			}
+			crcs := make([]uint32, kk)
+			lens := make([]uint16, kk)
+			for i, d := range src {
+				crcs[i] = crc32.ChecksumIEEE(d)
+				lens[i] = uint16(len(d))
+			}
+			pars := rsEncode(src, mm, 1200)
+			// 보낼 데이터그램: 원본 kk 개 + 패리티 mm 개
+			dg := make([][]byte, 0, kk+mm)
+			dg = append(dg, src...)
+			for j := 0; j < mm; j++ {
+				dg = append(dg, buildParity(dd, sc, fecBlock{
+					flight: 1, k: kk, m: mm, index: j, symLen: 1200,
+					crcs: crcs, lens: lens, sym: pars[j]}))
+			}
+			for _, ord := range permutations(len(dg)) {
+				sv := &decodeConn{mode: "fec"}
+				bad := false
+				// 호출자 버퍼를 **재사용**한다 - quic-go 가 sync.Pool 로
+				// 하는 것과 같다. 별칭이 남아 있으면 여기서 드러난다.
+				buf := make([]byte, 2000)
+				for _, ix := range ord {
+					copy(buf, dg[ix])
+					sv.feedOne(buf[:len(dg[ix])])
+					sv.mu.Lock()
+					over := sv.stats.BytesToStack+sv.pendingBytes >
+						sv.stats.BytesIn
+					sv.mu.Unlock()
+					if over {
+						bad = true
+					}
+				}
+				if bad {
+					check(fmt.Sprint("[회계] 스택<=수신 k=", kk, " m=", mm,
+						" 순서", ord), false)
+				}
+			}
+			check(fmt.Sprint("[회계] 스택<=수신, 도착순서 전수 k=", kk,
+				" m=", mm), true)
+		}
+	}
+
+	// --- 다중 소거 통합 시험 (2026-08-28, 신레오 보고의 그 조건) ----------
+	//
+	// 신레오님이 잰 조건 그대로다: k=2, 원본 **둘 다** 소거.
+	//   m=1,2 -> 복구용(뒤따르는) 패리티가 1 개뿐이라 **여전히 못 고친다.**
+	//           선행 패리티를 신용으로 쓰는 대가이고, 결함이 아니다.
+	//   m=3   -> 뒤따르는 패리티가 2 개이므로 **복구된다.** 이것이 이
+	//           수정으로 새로 생긴 능력이고, 실험으로 확인할 지점이다.
+	for _, mm := range []int{1, 2, 3} {
+		kk := 2
+		dd2 := []byte{7, 7, 7, 7, 7, 7, 7, 7}
+		sc2 := []byte{8, 8, 8, 8}
+		src := make([][]byte, kk)
+		for i := range src {
+			d := make([]byte, 1200)
+			rand.Read(d)
+			d[0] = 0xc0
+			d[1], d[2], d[3], d[4] = 0, 0, 0, 1
+			d[5] = byte(len(dd2))
+			copy(d[6:], dd2)
+			d[6+len(dd2)] = byte(len(sc2))
+			copy(d[7+len(dd2):], sc2)
+			src[i] = d
+		}
+		crcs := make([]uint32, kk)
+		lens := make([]uint16, kk)
+		for i, d := range src {
+			crcs[i] = crc32.ChecksumIEEE(d)
+			lens[i] = uint16(len(d))
+		}
+		pars := rsEncode(src, mm, 1200)
+		sv := &decodeConn{mode: "fec"}
+		// 원본은 **둘 다 버린다**. 패리티만 보낸다.
+		for j := 0; j < mm; j++ {
+			sv.feedOne(buildParity(dd2, sc2, fecBlock{
+				flight: 1, k: kk, m: mm, index: j, symLen: 1200,
+				crcs: crcs, lens: lens, sym: pars[j]}))
+		}
+		sv.mu.Lock()
+		got := sv.stats.Recovered
+		over := sv.stats.BytesToStack+sv.pendingBytes > sv.stats.BytesIn
+		sv.mu.Unlock()
+		want := 0
+		if mm >= 3 {
+			want = 2 // 뒤따르는 패리티 2 개 -> 소거 2 개 복구
+		}
+		check(fmt.Sprint("[통합] k=2 원본 둘 다 소거, m=", mm,
+			" -> 복구 ", got, " (기대 ", want, ")"), got == want && !over)
+	}
+
 	// 패리티 데이터그램 왕복
 	dcid := []byte{1, 2, 3, 4, 5, 6, 7, 8}
 	scid := []byte{9, 9, 9, 9}

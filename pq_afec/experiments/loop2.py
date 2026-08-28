@@ -820,6 +820,22 @@ def run_stage(stage):
     env = dict(os.environ)
     env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONUNBUFFERED"] = "1"
+    # 🩸 2026-08-28 - **WSL 단계에 환경변수가 안 넘어가고 있었다.**
+    #    `wsl.exe` 는 부모의 환경을 그대로 물려주지 않는다. 넘길 이름을
+    #    `WSLENV` 에 적어야만 건너간다. 그래서 문서(할 일 목록 1-2)가 적어 둔
+    #        $env:PADFEC_P11_N=4000; python experiments/fixloop.py --detach
+    #    는 **정밀도 실행이 아니라 평범한 실행**이었다 - 측정 단계는 전부
+    #    WSL 안에서 돌고, 거기서 os.environ.get("PADFEC_P11_N") 이 언제나
+    #    None 이었기 때문이다. 확인:
+    #        PADFEC_P11_N=4000 wsl -d Ubuntu -- bash -lc 'echo ${PADFEC_P11_N}'
+    #          -> 빈 값
+    #        WSLENV=PADFEC_P11_N PADFEC_P11_N=4000 wsl ... -> 4000
+    #    이 저장소가 쓰는 이름을 전부 태워 보낸다. 없는 이름은 무시된다.
+    _pass = [k for k in env if k.startswith("PADFEC_")]
+    if _pass:
+        prev = env.get("WSLENV", "")
+        names = ":".join(sorted(_pass))
+        env["WSLENV"] = (prev + ":" + names) if prev else names
     try:
         # 🩸 2026-08-26 - `encoding` 을 안 주면 text=True 가 **부모의 로캘**
         #    (이 기계는 cp949)로 자식 출력을 푼다. 자식은 PYTHONIOENCODING=utf-8

@@ -132,6 +132,19 @@ func idxNearestF(xs []float64, v float64) int {
 // 돌려주는 것: 평탄화된 (k+1)x(m+1) 행렬. [a*(m+1)+b] = 원본 a 개·패리티
 // b 개가 도착할 확률. 표는 padfec/table.py 가 검증된 Python 모형에서
 // 생성한다 - Go 로 다시 구현하지 않는 이유는 그 파일 머리말에 적었다.
+// recoveryGroup 은 복구에 쓸 수 있는 **뒤따르는** 패리티 수다.
+// padfec/policy.py 의 recovery_group 과 같아야 한다.
+//   m=0 -> 0,  m=1 -> 1,  m>=2 -> m-1 (선행 P0 은 신용 전용)
+func recoveryGroup(m int) int {
+	if m <= 0 {
+		return 0
+	}
+	if m == 1 {
+		return 1
+	}
+	return m - 1
+}
+
 func jointLookup(k, m int, p, l float64) []float64 {
 	ki := idxNearest(pfailK, k)
 	mi := idxNearest(pfailM, m)
@@ -147,7 +160,7 @@ func jointLookup(k, m int, p, l float64) []float64 {
 				"padfec/table.py 의 K_VALS/M_VALS 를 늘리고 다시 심어라",
 			k, m, pfailK, pfailM))
 	}
-	row := jointTable3[ki][mi]
+	row := jointTable4[ki][mi]
 
 	// p 선형 보간. 두 끝점이 각각 합 1 이므로 볼록결합도 합이 1 이다.
 	lo := 0
@@ -178,7 +191,7 @@ func jointLookup(k, m int, p, l float64) []float64 {
 // padfec/table.py 의 fail_frac 이 만든 표를 읽는다. p 보간은 jointLookup 과
 // 같은 식이어야 한다 - 두 표가 다른 p 에서 읽히면 회계가 갈라진다.
 //
-// 왜 확률이 아니라 비율인가: 총 실패 질량은 flightOutcome 이 jointTable3 에서
+// 왜 확률이 아니라 비율인가: 총 실패 질량은 flightOutcome 이 jointTable4 에서
 // 이미 정확히 세므로, 비율만 곱하면 총합이 옛 값과 비트 단위로 같다.
 // 근거는 padfec/table.py fail_frac 주석.
 func failFracLookup(k, m int, p, l float64) (float64, float64, float64) {
@@ -311,39 +324,34 @@ type creditBranch struct {
 // creditBranches 는 송신 결정 시점의 신용 바이트를 (확률, 바이트) 가지로
 // 쪼갠다. **복구가 없는 상태에서만** 부른다. Python credit_branches 와 같은
 // 식이어야 하고, 가지를 만드는 **순서까지** 같아야 한다(부동소수 누적).
-func creditBranches(a, w, parity, bCredit, r, m int,
+// creditBranches 는 송신 결정 시점의 신용 바이트를 (확률, 바이트) 가지로
+// 쪼갠다. Python padfec.policy.credit_branches 와 **같은 식**이어야 한다.
+//
+// 🩸 2026-08-28 (2 단계) - **근사를 없앴다.** 그전 인자는 (bCredit, r) 이었고
+//    결합분포가 패리티를 개수로만 세는 탓에 선행 패리티가 왔는지를
+//    bCredit/(m-1) 로 **추측**했다(교환가능 가정). 셋째 축이 개수가 되면서
+//    선행 도착 여부를 정확히 알게 됐다 - 추측할 것이 없다.
+//
+//	leadArrived  선행 패리티(m>=2 의 자리 0)가 왔는가. 0 또는 1.
+//	nTrail       뒤따르는 패리티 중 몇 개가 도착했는가.
+func creditBranches(a, w, parity, leadArrived, nTrail int,
 	trailDelayMs float64) []creditBranch {
-	nNonrec := 0
-	if m >= 2 {
-		nNonrec = m - 1
-	}
-	pLead := 0.0
-	if nNonrec > 0 {
-		pLead = float64(bCredit) / float64(nNonrec)
+	base := a * w
+	if leadArrived > 0 {
+		base += parity
 	}
 	out := make([]creditBranch, 0, 4)
-	leads := [2]int{1, 0}
-	probs := [2]float64{pLead, 1.0 - pLead}
-	for li := 0; li < 2; li++ {
-		nLead, pL := leads[li], probs[li]
-		if pL <= 0.0 {
-			continue
-		}
-		nTrail := (bCredit - nLead) + r
-		base := a*w + nLead*parity
-		prev := 1.0
-		for i := 1; i <= nTrail; i++ {
-			qi := raceWinProb(float64(i) * trailDelayMs)
-			if prev-qi > 0.0 {
-				out = append(out, creditBranch{
-					wgt: pL * (prev - qi), bytes: base + (i-1)*parity})
-			}
-			prev = qi
-		}
-		if prev > 0.0 {
+	prev := 1.0
+	for i := 1; i <= nTrail; i++ {
+		qi := raceWinProb(float64(i) * trailDelayMs)
+		if prev-qi > 0.0 {
 			out = append(out, creditBranch{
-				wgt: pL * prev, bytes: base + nTrail*parity})
+				wgt: prev - qi, bytes: base + (i-1)*parity})
 		}
+		prev = qi
+	}
+	if prev > 0.0 {
+		out = append(out, creditBranch{wgt: prev, bytes: base + nTrail*parity})
 	}
 	return out
 }
@@ -353,10 +361,15 @@ func flightOutcome(k, m, w int, p, l float64,
 	parity := parityDatagramBytes(w, k)
 	pm := jointLookup(k, m, p, l)
 	cols := m + 1
+	// 🩸 2026-08-28 (2 단계) - 셋째 축이 불리언 r 에서 **개수 c** 가 됐다.
+	//    스트라이드가 2 -> g+1 로 바뀐다. 표 이름도 jointTable3 -> 4 로
+	//    바뀌었으므로 반쪽만 적용되면 컴파일이 깨져 드러난다.
+	g := recoveryGroup(m)
+	cw := g + 1
 	for a := 0; a <= k; a++ {
 		for b := 0; b < cols; b++ {
-			for r := 0; r < 2; r++ {
-				idx := (a*cols+b)*2 + r
+			for r := 0; r < cw; r++ {
+				idx := (a*cols+b)*cw + r
 				if idx >= len(pm) {
 					continue
 				}
@@ -368,7 +381,9 @@ func flightOutcome(k, m, w int, p, l float64,
 				// 🩸 2026-08-21 - MDS(`k-a > b`)가 아니라 **구현의 규칙**이다.
 				//    서버는 마지막으로 보낸 패리티(index m-1) 하나로 소거
 				//    하나만 복구한다. Python policy.recovers 와 같다.
-				rec := miss == 1 && r == 1
+				// 소거 e 개는 뒤따르는 패리티 e 개로 푼다.
+				// Python policy.recovers 와 같은 규칙이다.
+				rec := miss >= 1 && miss <= r
 				if miss > 0 && !rec {
 					// 🩸 2026-08-27 - 여기서는 **합계만** 센다.
 					// 세 가지로 가르는 판별자(마지막 원본의 도착
@@ -381,7 +396,12 @@ func flightOutcome(k, m, w int, p, l float64,
 				// 신용은 **서버 QUIC 스택이 실제로 센 바이트**다. 복구하면
 				// 패리티를 버리고 복구본(원본 크기 w)을 대신 넘기므로 그
 				// 만큼만 잡힌다. Python flight_outcome 과 같은 식이다.
-				bCredit := b - r
+				// 복구에 **쓰인** 패리티만 신용에서 빠진다.
+				used := 0
+				if rec {
+					used = miss
+				}
+				bCredit := b - used
 				if rec {
 					// 🩸 2026-08-26 - 복구가 일어난 상태에는 **경주가
 					// 없다.** 서버는 복구용 패리티(송신 순서상 마지막)를
@@ -391,7 +411,7 @@ func flightOutcome(k, m, w int, p, l float64,
 					// 패리티가 임계경로에 드는 **유일한** 가지다.
 					// Python flight_outcome 의 p_recovered 와 같다.
 					pRec += pr
-					arrived := a*w + bCredit*parity + w
+					arrived := a*w + bCredit*parity + miss*w
 					if binIndex(arrived) < nStar {
 						nExp += pr * 2.0
 					} else {
@@ -401,8 +421,9 @@ func flightOutcome(k, m, w int, p, l float64,
 				}
 				// 복구가 없는 상태 = 원본이 다 왔다. 뒤따르는 패리티의
 				// 신용은 마지막 원본을 처리하는 순간보다 먼저 닿아야 한다.
-				for _, br := range creditBranches(a, w, parity, bCredit,
-					r, m, trailDelayMs) {
+				// 복구가 없는 가지: 선행 도착 여부 = b - c.
+				for _, br := range creditBranches(a, w, parity, b-r, r,
+					trailDelayMs) {
 					if binIndex(br.bytes) < nStar {
 						nExp += pr * br.wgt * 2.0
 					} else {

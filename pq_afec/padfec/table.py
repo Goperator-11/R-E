@@ -68,7 +68,7 @@ def joint(k, m, p, L):
        개까지)를 가정한 채로 Go 에 심겨 있었다. 자세한 근거는
        padfec/policy.py joint_arrival_pmf3 주석.
     """
-    return policy.joint_arrival_pmf3(k, m, p, L)
+    return policy.joint_arrival_pmf3c(k, m, p, L)
 
 
 def _check_consistent():
@@ -90,11 +90,11 @@ def fail_frac(k, m, p, L):
 
     🩸 2026-08-27 신설. 실패의 대가는 **마지막 원본이 도착했는가**로 갈린다
        (padfec/policy.py last_original_pmf - RFC 9002 §6.1 과 p7 의 V2/V3/V9).
-       그 판별자는 결합 도착분포의 축(a, b, r)에 없으므로 jointTable3 만으로는
+       그 판별자는 결합 도착분포의 축(a, b, r)에 없으므로 jointTable4 만으로는
        Go 가 가를 수 없다.
 
     **표를 하나 더 싣되 확률이 아니라 비율을 싣는다.** 총 실패 질량은 Go 가
-    이미 jointTable3 에서 정확히 세고 있으므로, 비율만 보간해서 곱하면
+    이미 jointTable4 에서 정확히 세고 있으므로, 비율만 보간해서 곱하면
     (a) 총합이 옛 값과 **비트 단위로 같고** (b) 보간 오차가 세 가지 사이의
     배분에만 남는다. 확률 세 개를 따로 실으면 보간 뒤 합이 총 실패와 미세하게
     어긋나 회계가 두 군데로 갈라진다 - 이 저장소가 2026-08-20 감사 결함 1 에서
@@ -212,18 +212,18 @@ def emit_go(tab, jtab, ftab, out):
     # 별도 표에서 읽으면 기대 왕복 수와 다른 분포에서 나온다 - 그게 결함 1
     # 이었다. flightOutcome 이 jointTable 하나에서 둘 다 뽑는다.
     # Python 쪽 pfail() 은 v1 호환과 자체검증용으로 남겨 둔다.
-    w("// jointTable3[k인덱스][m인덱스][p인덱스][L인덱스] = 평탄화된 (k+1)x(m+1)x2\n")
+    w("// jointTable4[k인덱스][m인덱스][p인덱스][L인덱스] = 평탄화된 (k+1)x(m+1)x2\n")
     w("//   원소 [(a*(m+1)+b)*2 + r]\n")
     w("//     = 원본 a 개·패리티 b 개가 도착하고, 그중 **복구용 패리티**\n")
     w("//       (마지막으로 보낸 것, index m-1)의 도착 여부가 r 일 확률\n")
     w("//\n")
-    w("// 🩸 2026-08-21 - 이름을 jointTable -> jointTable3 으로 바꿨다. 배치가\n")
+    w("// 🩸 2026-08-21 - 이름을 jointTable -> jointTable4 으로 바꿨다. 배치가\n")
     w("//   달라졌는데 이름이 같으면 옛 pfail_table.go 가 남아 있을 때 Go 가\n")
     w("//   **조용히 잘못 읽는다.** 이름을 바꾸면 컴파일이 깨져 드러난다.\n")
     w("//   왜 r 이 필요한가: 서버(qamp.go)는 마지막 패리티 하나로 소거 하나만\n")
     w("//   복구하고, 복구하면 그 패리티를 버리고 복구본(원본 크기)을 스택에\n")
     w("//   넘긴다. '몇 개 왔나' 만으로는 복구 여부도 신용 바이트도 정할 수 없다.\n")
-    w("var jointTable3 = [][][][][]float64{\n")
+    w("var jointTable4 = [][][][][]float64{\n")
     for k in K_VALS:
         w("\t{ // k=%d\n" % k)
         for m in M_VALS:
@@ -236,8 +236,9 @@ def emit_go(tab, jtab, ftab, out):
                     # '글자 단위로 맞춘다'는 약속이 검증 불가가 된다.
                     # 파일이 커지는 대신 두 구현이 비트 단위로 같아진다.
                     mat = jtab[(k, m, pi, li)]
-                    flat = [mat[a_][b_][r_] for a_ in range(k + 1)
-                            for b_ in range(m + 1) for r_ in (0, 1)]
+                    gg = policy.recovery_group(k, m)
+                    flat = [mat[a_][b_][c_] for a_ in range(k + 1)
+                            for b_ in range(m + 1) for c_ in range(gg + 1)]
                     w("\t\t\t\t{%s}, // L=%g\n"
                       % (", ".join("%.17g" % v for v in flat), L))
                 w("\t\t\t},\n")
@@ -256,7 +257,7 @@ def emit_go(tab, jtab, ftab, out):
     w("//   마지막 원본 도착 -> 그 ACK 이 시간 임계를 무장 -> 9/8·RTT\n")
     w("//   마지막 원본 유실, 앞의 것은 도착 -> 구멍을 못 봄 -> PTO(표본 있음) = 3·RTT\n")
     w("//   아무것도 없음 -> ACK 도 표본도 없음 -> PTO(표본 없음) = 상수\n")
-    w("// 판별자가 jointTable3 의 축(a,b,r)에 없어서 표를 하나 더 싣는다.\n")
+    w("// 판별자가 jointTable4 의 축(a,b,r)에 없어서 표를 하나 더 싣는다.\n")
     w("// **확률이 아니라 비율**인 이유는 padfec/table.py 의 fail_frac 주석 참고.\n")
     w("var failFracTable = [][][][][]float64{\n")
     for k in K_VALS:

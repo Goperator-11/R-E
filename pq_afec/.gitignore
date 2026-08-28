@@ -9,3 +9,6 @@ experiments/pki/**/*.key
 # 빌드 산출물
 experiments/_build/
 /tmp/
+
+# 실행 중 잠금 - 프로세스 수명에 묶인 런타임 상태다
+experiments/state/fixloop.lock

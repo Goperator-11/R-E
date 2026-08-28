@@ -462,11 +462,12 @@ def p_fail_of(cand, p, burst):
     k, m = cand["k"], cand["m"]
     # 🩸 2026-08-21 - MDS 규칙 `(k-a) > b` 가 아니라 **구현의 규칙**을 쓴다.
     #    서버는 마지막 패리티 하나로 소거 하나만 복구한다(recovers 주석).
-    pm = joint_arrival_pmf3(k, m, p, burst)
-    return float(sum(pm[a_][b_][r_]
+    g = recovery_group(k, m)
+    pm = joint_arrival_pmf3c(k, m, p, burst)
+    return float(sum(pm[a_][b_][c_]
                      for a_ in range(k + 1) for b_ in range(m + 1)
-                     for r_ in (0, 1)
-                     if (k - a_) > 0 and not recovers(k, a_, r_)))
+                     for c_ in range(g + 1)
+                     if (k - a_) > 0 and not recovers(k, a_, c_)))
 
 
 def cost_of(cand, rtt_ms, p, burst, t_recover_ms=None, uplink_mbps=UPLINK_MBPS_DEFAULT):
@@ -761,6 +762,86 @@ def joint_arrival_pmf(k, m, p, burst):
             for a_ in range(k + 1)]
 
 
+def recovery_group(k, m):
+    """복구에 쓸 수 있는 **뒤따르는** 패리티 수 g.
+
+    🩸 2026-08-28 (2 단계). qamp.go 의 배치와 짝이다.
+        m = 0  -> 0   패리티가 없다
+        m = 1  -> 1   [원본..., P]  그 하나가 뒤따른다
+        m >= 2 -> m-1 [P0, 원본..., P1..]  선행 P0 은 **신용 전용**
+
+    선행 패리티를 복구에 안 쓰는 이유는 바이트 회계가 아니라 **시각**이다.
+    그것은 원본보다 먼저 오므로, 그것으로 복구를 시도하면 아직 도착하지
+    않은 원본을 「소거됐다」로 오해한다(qamp.go 의 같은 자리 주석).
+    """
+    if m <= 0:
+        return 0
+    return 1 if m == 1 else m - 1
+
+
+def joint_arrival_pmf3c(k, m, p, burst):
+    """P[a][b][c] - 원본 a 개·패리티 b 개 도착, c = **뒤따르는 패리티 중 몇 개**.
+
+    🩸 2026-08-28 (2 단계) - 셋째 축이 불리언에서 **개수**가 됐다.
+       그전에는 "복구용 패리티(마지막 하나)가 왔는가"만 봤고, 그래서 모형의
+       복구 능력이 m 과 무관하게 1 개로 묶여 있었다. 구현도 그랬으므로 둘은
+       일치했지만, 그 일치가 **부호가 할 수 있는 것보다 약한 자리**에 있었다
+       (신레오 2026-08-27 보고). 이제 뒤따르는 패리티 c 개로 소거 c 개까지
+       푼다 - Cauchy 는 어느 정방 부분행렬도 가역이라 조합을 안 가린다.
+
+    c 로 주변화하면 joint_arrival_pmf 와 정확히 같아야 한다(자체시험 20a).
+    g=1 인 (m<=2) 자리에서는 옛 joint_arrival_pmf3 과 **비트 단위로** 같다
+    (자체시험 20b) - 즉 이 변경은 m>=3 에서만 무언가를 바꾼다.
+    """
+    ge = GilbertElliott.for_prior(p, burst)
+    order = flight_order(k, m)
+    trans = ge.transition
+    loss = (ge.p_good, ge.p_bad)
+    pi = ge.stationary
+    g = recovery_group(k, m)
+
+    def _blank():
+        return [[[[0.0] * (g + 1) for _ in range(m + 1)]
+                 for _ in range(k + 1)] for _ in range(2)]
+
+    cur = _blank()
+    cur[0][0][0][0] = pi[0]
+    cur[1][0][0][0] = pi[1]
+
+    for ti, tok in enumerate(order):
+        # 선행 패리티(m>=2 의 자리 0)만 신용 전용이다.
+        lead = (tok == "P" and m >= 2 and ti == 0)
+        nxt = _blank()
+        for s_ in (0, 1):
+            l = loss[s_]
+            for a_ in range(k + 1):
+                for b_ in range(m + 1):
+                    for c_ in range(g + 1):
+                        wgt = cur[s_][a_][b_][c_]
+                        if wgt == 0.0:
+                            continue
+                        for s2 in (0, 1):
+                            t = trans[s_][s2]
+                            if t == 0.0:
+                                continue
+                            if l > 0.0:
+                                nxt[s2][a_][b_][c_] += wgt * l * t
+                            if l < 1.0:
+                                keep = wgt * (1.0 - l) * t
+                                if tok == "O":
+                                    nxt[s2][a_ + 1][b_][c_] += keep
+                                elif lead:
+                                    nxt[s2][a_][b_ + 1][c_] += keep
+                                else:
+                                    cc = min(g, c_ + 1)
+                                    nxt[s2][a_][b_ + 1][cc] += keep
+        cur = nxt
+
+    return [[[cur[0][a_][b_][c_] + cur[1][a_][b_][c_]
+              for c_ in range(g + 1)] for b_ in range(m + 1)]
+            for a_ in range(k + 1)]
+
+
 def joint_arrival_pmf3(k, m, p, burst):
     """P[a][b][r] - 원본 a 개·패리티 b 개 도착, r = **복구용 패리티가 도착했는가**.
 
@@ -895,11 +976,14 @@ def last_original_pmf(k, m, p, burst):
     trans = ge.transition
     loss = (ge.p_good, ge.p_bad)
     pi = ge.stationary
-    last = len(order) - 1
     last_o = last_original_index(k, m)
+    g = recovery_group(k, m)
 
+    # 🩸 2026-08-28 (2 단계) - 축이 (a, c, o) 다. c 는 **뒤따르는 패리티
+    #    개수**이고 옛 판의 불리언 r 을 대신한다. 복구 성립 여부가 c 로
+    #    갈리므로, 실패 질량을 세려면 이 축이 있어야 한다.
     def _blank():
-        return [[[[0.0, 0.0] for _ in (0, 1)] for _ in range(k + 1)]
+        return [[[[0.0, 0.0] for _ in range(g + 1)] for _ in range(k + 1)]
                 for _ in range(2)]
 
     cur = _blank()
@@ -907,13 +991,14 @@ def last_original_pmf(k, m, p, burst):
     cur[1][0][0][0] = pi[1]
 
     for ti, tok in enumerate(order):
+        lead = (tok == "P" and m >= 2 and ti == 0)
         nxt = _blank()
         for s_ in (0, 1):
             l = loss[s_]
             for a_ in range(k + 1):
-                for r_ in (0, 1):
+                for c_ in range(g + 1):
                     for o_ in (0, 1):
-                        wgt = cur[s_][a_][r_][o_]
+                        wgt = cur[s_][a_][c_][o_]
                         if wgt == 0.0:
                             continue
                         for s2 in (0, 1):
@@ -921,40 +1006,43 @@ def last_original_pmf(k, m, p, burst):
                             if t == 0.0:
                                 continue
                             if l > 0.0:
-                                nxt[s2][a_][r_][o_] += wgt * l * t
+                                nxt[s2][a_][c_][o_] += wgt * l * t
                             if l < 1.0:
                                 keep = wgt * (1.0 - l) * t
                                 if tok == "O":
                                     oo = 1 if ti == last_o else o_
-                                    nxt[s2][a_ + 1][r_][oo] += keep
+                                    nxt[s2][a_ + 1][c_][oo] += keep
+                                elif lead:
+                                    nxt[s2][a_][c_][o_] += keep
                                 else:
-                                    rr = 1 if ti == last else r_
-                                    nxt[s2][a_][rr][o_] += keep
+                                    cc = min(g, c_ + 1)
+                                    nxt[s2][a_][cc][o_] += keep
         cur = nxt
 
-    return [[[cur[0][a_][r_][o_] + cur[1][a_][r_][o_] for o_ in (0, 1)]
-             for r_ in (0, 1)] for a_ in range(k + 1)]
+    return [[[cur[0][a_][c_][o_] + cur[1][a_][c_][o_] for o_ in (0, 1)]
+             for c_ in range(g + 1)] for a_ in range(k + 1)]
 
 
 def fail_split(k, m, p, burst):
     """실패 질량을 세 가지로 나눈 (pto_noack, pto_sampled, ack).
 
-    합은 p_fail 과 정확히 같아야 한다(자체시험 19b). 이 함수만 새 분포를
-    쓰고, 나머지 회계는 joint_arrival_pmf3 그대로다 - 수리의 접촉면을
-    **실패 가지 하나로** 좁혀 둔다.
+    합은 p_fail 과 정확히 같아야 한다(자체시험 19a). 이 함수만 다른 축의
+    분포를 쓰고, 나머지 회계는 joint_arrival_pmf3c 그대로다 - 수리의
+    접촉면을 **실패 가지 하나로** 좁혀 둔다.
     """
     if p <= 0.0:
         return 0.0, 0.0, 0.0
+    g = recovery_group(k, m)
     pm = last_original_pmf(k, m, p, burst)
     noack = sampled = ack = 0.0
     for a_ in range(k + 1):
-        for r_ in (0, 1):
+        for c_ in range(g + 1):
             for o_ in (0, 1):
-                pr = pm[a_][r_][o_]
+                pr = pm[a_][c_][o_]
                 if pr <= 0.0:
                     continue
                 miss = k - a_
-                if miss <= 0 or recovers(k, a_, r_):
+                if miss <= 0 or recovers(k, a_, c_):
                     continue
                 if o_:
                     ack += pr
@@ -965,17 +1053,28 @@ def fail_split(k, m, p, burst):
     return noack, sampled, ack
 
 
-def recovers(k, a, recovery_parity_arrived):
+def recovers(k, a, recovery_parity_count):
     """이 도착 상태에서 서버가 실제로 복구하는가. qamp.go tryRecoverLocked 와 같다.
 
-    소거 0 개 -> 복구할 것이 없다(False, 그러나 실패도 아니다).
-    소거 1 개 -> 복구용 패리티가 왔을 때만 복구한다.
-    소거 2 개 이상 -> 패리티 1 개로는 불가. 언제나 실패다.
+    🩸 2026-08-28 (2 단계) - 셋째 인자가 불리언에서 **개수**가 됐다.
+       규칙: 소거 e 개는 **뒤따르는 패리티 e 개**로 푼다.
+
+           소거 0 개        복구할 것이 없다 (실패도 아니다)
+           1 <= e <= c      복구한다
+           e > c            패리티가 모자란다. 실패
+
+       그전 규칙은 `e == 1 and 마지막 패리티 도착` 이었다. 그것은 구현이
+       소거를 정수 하나로만 받았기 때문이고(recoverOne), 부호 자체의 한계가
+       아니었다 - Cauchy 는 어느 정방 부분행렬도 가역이다. 구현을
+       recoverMany 로 바꿨으므로 모형도 따라간다.
+
+       ⚠️ g = recovery_group(k, m) 이라 m<=2 에서는 g=1 이고, 그때 이 규칙은
+          옛 규칙과 **완전히 같다.** 즉 이 변경은 m>=3 에서만 무언가를 바꾼다.
     """
     miss = k - a
     if miss <= 0:
         return False
-    return miss == 1 and bool(recovery_parity_arrived)
+    return miss <= int(recovery_parity_count)
 
 
 def n_need_for_flight(server_flight, pkt=quantum.P_SERVER):
@@ -1071,54 +1170,43 @@ def race_win_prob(delay_ms):
     return 0.0
 
 
-def credit_branches(a, w, parity, b_credit, r, m, trail_delay_ms):
+def credit_branches(a, w, parity, lead_arrived, n_trail, trail_delay_ms):
     """송신 결정 시점의 신용 바이트를 (확률, 바이트) 가지로 쪼갠다.
 
     **복구가 없는 상태에서만** 부른다(복구가 일어나면 서버는 복구용 패리티를
     받은 뒤에야 원본을 다 갖게 되므로 경주 자체가 없다).
 
-    두 갈래를 편다.
-      1) 앞선 패리티(m>=2 의 index 0)가 왔는가. 결합분포는 패리티를 개수로만
-         세므로(복구용 여부 r 만 따로), 복구용이 아닌 m-1 개 중 b_credit 개가
-         왔을 때 그 특정한 하나가 왔을 확률은 b_credit/(m-1) 이다.
-      2) 뒤따르는 것들 중 몇 개가 결정 전에 닿았는가. i 번째 뒤따르는 패리티는
-         마지막 원본보다 i*d 늦으므로 P(i 개 이상 닿음) = q(i*d) 이고,
-         정확히 j 개일 확률은 q(j*d) - q((j+1)*d) 다(중첩이라 이렇게 갈린다).
+    인자
+        lead_arrived  선행 패리티(m>=2 의 자리 0)가 왔는가. 0 또는 1.
+        n_trail       **뒤따르는** 패리티 중 몇 개가 도착했는가.
+
+    🩸 2026-08-28 (2 단계) - **근사를 없앴다.** 그전 시그니처는 (b_credit, r)
+       이었고, 결합분포가 패리티를 개수로만 세는 탓에 선행 패리티가 왔는지를
+       `b_credit / (m-1)` 이라는 **교환가능 가정**으로 추측했다. 버스트 손실
+       에서는 그 가정이 틀리고(살아남는 것이 뒤쪽에 몰린다), 감사가 최악
+       0.058 왕복(RTT 50 에서 2.9 ms)으로 재 뒀다. 이제 셋째 축이 「뒤따르는
+       패리티 개수」라 선행 도착 여부를 **정확히** 안다 - 추측할 것이 없다.
+
+    남은 근사 하나는 적어 둔다: 도착한 뒤따르는 패리티가 **송신 순서상 앞의
+    n_trail 개**라고 본다. i 번째 뒤따르는 패리티는 마지막 원본보다 i*d 늦으
+    므로 P(i 개 이상 닿음) = q(i*d) 이고, 정확히 j 개일 확률은
+    q(j*d) - q((j+1)*d) 다. 어느 것이 살아남았는지까지 세려면 자리 축이 하나
+    더 필요한데, q 가 사실상 계단이라(d>=1.066 ms 면 0, d=0 이면 1) 정책이
+    밟는 자리에서는 답이 같다.
 
     trail_delay_ms = 0 이면 q 가 전부 1 이라 옛 식(도착한 패리티 전부를 신용에
     넣는 식)과 **글자 그대로 같은 값**이 나온다.
-
-    ⚠️ **알려진 근사 (2026-08-27 확인).** 뒤따르는 패리티를 **개수로만** 센다.
-       n_trail 개가 도착했으면 그것이 송신 순서상 **앞의 n_trail 개**라고 보고
-       i 번째에 지연 i·d 를 매긴다. 실제로는 어느 것이 살아남았는지가 정해져
-       있고(특히 버스트 손실에서는 살아남는 것이 뒤쪽에 몰린다), 마지막
-       복구용 패리티만 왔다면 그 지연은 1·d 가 아니라 (m−1)·d 다.
-       즉 이 근사는 신용을 **낙관 쪽으로** 민다.
-
-       크기를 쟀다 - 자리를 정확히 센 열거와 대조하면 최악이
-       k=1·m=3·p=0.3·L=1·40 Mbps 에서 기대 왕복 수 1.2416 vs 1.2997 로
-       **0.058 왕복**(RTT 50 에서 2.9 ms)이다. 격자 전수 대조에서 **선택이
-       바뀌는 점은 0 건**이다 - q(d) 가 사실상 계단이라(d>=1.066 ms 면 0,
-       d=0 이면 1) 정책이 실제로 밟는 자리에서는 i 가 몇이든 답이 같기
-       때문이다. 고치려면 DP 에 자리 축을 하나 더 얹어야 하는데(상태 수 2^m
-       배), 얻는 것이 없다. **고치지 않고 적어 둔다.**
     """
-    n_nonrec = m - 1 if m >= 2 else 0     # 앞선 것을 포함한 '복구용 아닌' 패리티
-    p_lead = (b_credit / float(n_nonrec)) if n_nonrec > 0 else 0.0
+    base = a * w + (1 if lead_arrived else 0) * parity
     out = []
-    for n_lead, p_l in ((1, p_lead), (0, 1.0 - p_lead)):
-        if p_l <= 0.0:
-            continue
-        n_trail = (b_credit - n_lead) + r
-        base = a * w + n_lead * parity
-        prev = 1.0
-        for i in range(1, n_trail + 1):
-            qi = race_win_prob(i * trail_delay_ms)
-            if prev - qi > 0.0:
-                out.append((p_l * (prev - qi), base + (i - 1) * parity))
-            prev = qi
-        if prev > 0.0:
-            out.append((p_l * prev, base + n_trail * parity))
+    prev = 1.0
+    for i in range(1, int(n_trail) + 1):
+        qi = race_win_prob(i * trail_delay_ms)
+        if prev - qi > 0.0:
+            out.append((prev - qi, base + (i - 1) * parity))
+        prev = qi
+    if prev > 0.0:
+        out.append((prev, base + int(n_trail) * parity))
     return out
 
 
@@ -1143,19 +1231,20 @@ def flight_outcome(k, m, w, p, burst, n_need, trail_delay_ms=0.0):
     식과 결과가 완전히 같다 — 헤드라인(1 바이트 절벽)은 영향받지 않는다.
     """
     parity = parity_datagram_bytes(w, k)
-    pm = joint_arrival_pmf3(k, m, p, burst)
+    g = recovery_group(k, m)
+    pm = joint_arrival_pmf3c(k, m, p, burst)
     n_sum = 0.0
     p_fail = 0.0
     p_two = 0.0
     p_rec = 0.0
     for a_ in range(k + 1):
         for b_ in range(m + 1):
-            for r_ in (0, 1):
-                pr = pm[a_][b_][r_]
+            for c_ in range(g + 1):
+                pr = pm[a_][b_][c_]
                 if pr <= 0.0:
                     continue
                 miss = k - a_
-                rec = recovers(k, a_, r_)
+                rec = recovers(k, a_, c_)
                 if miss > 0 and not rec:
                     p_fail += pr
                     # 실패의 대가는 **서버 QUIC 스택이 ACK 를 낼 수 있었는지**
@@ -1205,7 +1294,12 @@ def flight_outcome(k, m, w, p, burst, n_need, trail_delay_ms=0.0):
                 #      모형(옛) 2-RTT 4.75%  |  실측 꼬리 9.0%
                 #      옳은 회계: P(패리티 유실)=4.75% + P(원본 유실->복구)=4.75%
                 #                 = 9.5%  <- 두 경우 다 신용이 1,280 으로 떨어진다
-                b_credit = b_ - r_                 # 신용 전용 패리티 개수
+                # 🩸 2026-08-28 (2 단계) - 복구에 **쓰인** 패리티만 신용에서
+                #    빠진다. 소거 e 개를 풀면 뒤따르는 패리티 e 개가 복원본
+                #    (원본 크기 w)으로 바뀌고, 나머지는 신용 그대로다.
+                #    e 는 miss 와 같다(복구가 일어난 가지에서만 쓴다).
+                used = miss if rec else 0
+                b_credit = b_ - used               # 신용으로 남는 패리티 수
                 # 2026-08-21 - `server_flight > allowed(arrived)` 가
                 # 아니라 **칸 비교**다. 필요한 칸 n_need 는 연결마다
                 # 하나의 상수이고 도착 상태와 무관하다 - 서버는 자기가
@@ -1220,7 +1314,7 @@ def flight_outcome(k, m, w, p, burst, n_need, trail_delay_ms=0.0):
                     #    서버는 복구용 패리티(송신 순서상 마지막)를 받고 나서야
                     #    원본을 다 갖게 되므로 송신 결정이 모든 패킷보다 뒤에
                     #    온다. 즉 도착한 바이트가 전부 예산에 들어간 상태다.
-                    arrived = a_ * w + b_credit * parity + w
+                    arrived = a_ * w + b_credit * parity + miss * w
                     if quantum.bin_index(arrived) < n_need:
                         n_sum += pr * 2.0
                         p_two += pr
@@ -1230,8 +1324,13 @@ def flight_outcome(k, m, w, p, burst, n_need, trail_delay_ms=0.0):
                 # 복구가 없는 상태 = 원본이 다 왔다. 서버는 **마지막 원본**을
                 # 처리하면서 보낼지 정하므로, 뒤따르는 패리티의 신용은 그
                 # 결정보다 먼저 닿아야 한다(위 '경주' 절).
-                for wgt, arrived in credit_branches(a_, w, parity, b_credit,
-                                                    r_, m, trail_delay_ms):
+                # 복구가 없는 가지에서는 도착한 패리티가 전부 신용이다.
+                # credit_branches 는 「선행 패리티가 왔는가」와 「뒤따르는 것이
+                # 결정 전에 닿았는가」를 편다 - 셋째 인자는 뒤따르는 개수다.
+                _lead_arrived = b_ - c_            # 선행 패리티 도착 여부(0/1)
+                for wgt, arrived in credit_branches(a_, w, parity,
+                                                    _lead_arrived, c_,
+                                                    trail_delay_ms):
                     if quantum.bin_index(arrived) < n_need:
                         n_sum += pr * wgt * 2.0
                         p_two += pr * wgt
@@ -1765,11 +1864,11 @@ if __name__ == "__main__":
     # (p4·p16·p18)이 그대로 남는다. 옛 식을 여기 다시 적어 직접 댄다.
     def _old_flight_outcome(k, m, w, p_, burst_, n_need):
         parity = parity_datagram_bytes(w, k)
-        pm = joint_arrival_pmf3(k, m, p_, burst_)
+        pm = joint_arrival_pmf3c(k, m, p_, burst_)
         n_sum = 0.0
         for a_ in range(k + 1):
             for b_ in range(m + 1):
-                for r_ in (0, 1):
+                for r_ in range(recovery_group(k, m) + 1):
                     pr = pm[a_][b_][r_]
                     if pr <= 0.0:
                         continue
@@ -1777,9 +1876,14 @@ if __name__ == "__main__":
                     rec = recovers(k, a_, r_)
                     if miss > 0 and not rec:
                         continue
-                    arrived = a_ * w + (b_ - r_) * parity
-                    if r_:
-                        arrived += w if rec else parity
+                    # 🩸 2026-08-28 - 참조식이 **경주 항만** 격리하도록 맞춘다.
+                    #    이 검사의 주장은 「trail_delay=0 이면 경주가 아무것도
+                    #    안 바꾼다」이지 「복구 규칙이 안 바뀌었다」가 아니다.
+                    #    복구 규칙은 2 단계에서 의도적으로 바뀌었으므로
+                    #    (뒤따르는 패리티 c 개로 소거 c 개), 참조식도 같은
+                    #    규칙을 써야 두 식이 경주 하나만 두고 갈린다.
+                    used = miss if rec else 0
+                    arrived = (a_ * w + (b_ - used) * parity + used * w)
                     n_sum += pr * (2.0 if quantum.bin_index(arrived) < n_need
                                    else 1.0)
         return n_sum
@@ -1811,17 +1915,19 @@ if __name__ == "__main__":
             race_win_prob(2.0)))
 
     # 9d. credit_branches 가 확률분포인가 (질량 1, 바이트 단조)
+    # 🩸 2026-08-28 - 인자가 (선행 도착 0/1, 뒤따르는 개수) 로 바뀌었다.
     _bad = []
     for m in (0, 1, 2, 3):
-        for b_credit in range(0, max(m, 1)):
-            for r in (0, 1):
-                if b_credit + r > m:
-                    continue
+        g = recovery_group(2, m)
+        for lead in (0, 1):
+            if lead and m < 2:
+                continue
+            for n_trail in range(0, g + 1):
                 for d in (0.0, 0.3, 0.6, 1.5):
-                    br = credit_branches(2, 1280, 1332, b_credit, r, m, d)
+                    br = credit_branches(2, 1280, 1332, lead, n_trail, d)
                     tot = sum(x[0] for x in br)
                     if abs(tot - 1.0) > 1e-12 or any(x[0] < 0 for x in br):
-                        _bad.append((m, b_credit, r, d, tot))
+                        _bad.append((m, lead, n_trail, d, tot))
     _chk("9d. credit_branches is a distribution", not _bad, str(_bad[:3]))
 
     # 9e. ⭐ 실측 대조 - 2 Mbps 에서 m=1 이 m=2 보다 **비싸야** 한다
@@ -2158,6 +2264,70 @@ if __name__ == "__main__":
          _worst7 < 10.0,
          " | ".join("%s 모형 %.1f vs 실측 %.1f" % (n, mo, me)
                     for n, mo, me in _p7))
+
+    # --- 20. 다중 소거 복구 (2026-08-28, 2 단계) ---------------------------
+    #
+    # 신레오 2026-08-27 보고: 구현이 소거를 하나만 복구했다. 부호(Cauchy)는
+    # 어느 정방 부분행렬도 가역이라 e 개를 풀 수 있는데, recoverOne 이 소거를
+    # 정수 하나로만 받았기 때문이었다. 구현을 recoverMany 로 바꿨고 모형이
+    # 따라간다. 여기서 그 규칙을 못 박는다.
+
+    # 🩸 **안전판 1**: 새 분포를 c 로 주변화하면 옛 분포와 같아야 한다.
+    _w20 = 0.0
+    for _k in (1, 2, 3, 4):
+        for _m in (0, 1, 2, 3, 4):
+            for _p in (0.0, 0.02, 0.15, 0.3):
+                for _L in (1.0, 3.0):
+                    _a = joint_arrival_pmf3c(_k, _m, _p, _L)
+                    _b = joint_arrival_pmf(_k, _m, _p, _L)
+                    for _i in range(_k + 1):
+                        for _j in range(_m + 1):
+                            _w20 = max(_w20, abs(sum(_a[_i][_j]) - _b[_i][_j]))
+    _chk("20a. [안전판] 새 분포를 c 로 주변화 == joint_arrival_pmf",
+         _w20 < 1e-12, "최대 차이 %.3e" % _w20)
+
+    # 🩸 **안전판 2**: g=1 인 자리(m<=2)에서는 옛 분포와 **비트 단위로** 같다.
+    #    즉 이 변경은 m>=3 에서만 무언가를 바꾼다 - m<=2 로 얻은 기존 실측은
+    #    한 점도 흔들리지 않는다.
+    # m=0 은 패리티가 없어 축이 퇴화한다(g=0 vs 옛 판의 길이 2). 뺀다.
+    _w20b = 0.0
+    for _k in (1, 2, 3, 4):
+        for _m in (1, 2):
+            for _p in (0.0, 0.02, 0.15, 0.3):
+                for _L in (1.0, 3.0):
+                    _a = joint_arrival_pmf3c(_k, _m, _p, _L)
+                    _o = joint_arrival_pmf3(_k, _m, _p, _L)
+                    for _i in range(_k + 1):
+                        for _j in range(_m + 1):
+                            for _r in range(len(_o[_i][_j])):
+                                _w20b = max(_w20b,
+                                            abs(_a[_i][_j][_r]
+                                                - _o[_i][_j][_r]))
+    _chk("20b. [안전판] m<=2 는 옛 분포와 비트 단위로 같다 (기존 실측 불변)",
+         _w20b == 0.0, "최대 차이 %.3e" % _w20b)
+
+    # 🩸 이 수리가 **고치려던 것**: m=3 이 처음으로 m=2 보다 안전해진다.
+    #    그전에는 m=1·2·3 의 P_fail 이 **완전히 같았다**(복구가 1 개로 묶여
+    #    있었으므로). 그래서 정책이 m>=3 을 고를 보호 목적의 이유가 없었다 -
+    #    저장소의 미해결 질문 A-7 이 그것이다.
+    _f1 = p_fail_of({"k": 2, "m": 1}, 0.15, 1.0)
+    _f2 = p_fail_of({"k": 2, "m": 2}, 0.15, 1.0)
+    _f3 = p_fail_of({"k": 2, "m": 3}, 0.15, 1.0)
+    _chk("20c. m=3 이 m=2 보다 실제로 안전하다 (m<=2 는 여전히 같다)",
+         abs(_f1 - _f2) < 1e-15 and _f3 < _f2 * 0.5,
+         "k=2 p=0.15  m1 %.5f = m2 %.5f > m3 %.5f (%.1f 배)"
+         % (_f1, _f2, _f3, _f2 / _f3 if _f3 > 0 else float("inf")))
+
+    # 🩸 [부정] 복구 능력은 **뒤따르는 패리티 수**로 묶인다. 선행 패리티는
+    #    신용 전용이라 복구에 못 쓴다 - 그래서 m=2 는 소거 2 개를 못 고친다.
+    #    신레오님의 m=2 팔이 이 설계로도 여전히 실패하는 이유이고, 결함이
+    #    아니라 대가다. 이게 무너지면 신용 회계가 깨진 것이다.
+    _chk("20d. [부정] 소거 e 개는 뒤따르는 패리티 e 개가 있어야만 풀린다",
+         recovery_group(2, 2) == 1 and recovery_group(2, 3) == 2
+         and not recovers(2, 0, 1) and recovers(2, 0, 2),
+         "g(m=2)=%d g(m=3)=%d | 소거2·패리티1 -> %s, 소거2·패리티2 -> %s"
+         % (recovery_group(2, 2), recovery_group(2, 3),
+            recovers(2, 0, 1), recovers(2, 0, 2)))
 
     print("")
     print("%d checks, %d failed" % (_n[0], _fail[0]))
