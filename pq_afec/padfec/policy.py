@@ -1237,6 +1237,10 @@ def flight_outcome(k, m, w, p, burst, n_need, trail_delay_ms=0.0):
     p_fail = 0.0
     p_two = 0.0
     p_rec = 0.0
+    # 🩸 2026-08-28 (2 단계 감사) - 복구 가지의 임계경로에 실제로
+    #    드는 뒤따르는 패리티 바이트의 **기댓값**. 상수
+    #    trailing_parity_bytes(=parity*(m-1)) 를 대신한다.
+    trail_bytes = 0.0
     for a_ in range(k + 1):
         for b_ in range(m + 1):
             for c_ in range(g + 1):
@@ -1310,16 +1314,44 @@ def flight_outcome(k, m, w, p, burst, n_need, trail_delay_ms=0.0):
                     #    **뒤따르는 패리티가 임계경로에 드는 유일한 가지**다
                     #    (아래 trailing_parity_bytes 주석 참고).
                     p_rec += pr
-                    # 🩸 2026-08-26 - 복구가 일어난 상태에는 **경주가 없다.**
-                    #    서버는 복구용 패리티(송신 순서상 마지막)를 받고 나서야
-                    #    원본을 다 갖게 되므로 송신 결정이 모든 패킷보다 뒤에
-                    #    온다. 즉 도착한 바이트가 전부 예산에 들어간 상태다.
-                    arrived = a_ * w + b_credit * parity + miss * w
-                    if quantum.bin_index(arrived) < n_need:
-                        n_sum += pr * 2.0
-                        p_two += pr
-                    else:
-                        n_sum += pr
+                    # 🩸 2026-08-28 (2 단계 감사) - **복구 가지에도 경주가 있다.**
+                    #    옛 주석은 "서버는 복구용 패리티(송신 순서상 마지막)를
+                    #    받고 나서야 원본을 다 갖게 되므로 경주가 없다"고 적었다.
+                    #    2 단계 뒤로 그 문장은 거짓이다. 복구는 **miss 번째**
+                    #    뒤따르는 패리티에서 끝나고(qamp.go tryRecoverLocked ->
+                    #    settleRecovery 가 그 자리에서 복원본을 넘기고 반환한다),
+                    #    그 뒤에 오는 c_-miss 개는 **결정보다 늦게 닿는다.**
+                    #    옛 식은 그것들을 b_credit 에 전액 넣어 신용으로 셌다.
+                    #      k=2 m=3 p=0.02 n_need=11 trail_delay=5.324 에서
+                    #        옛: p_two_rtt 0.963074, n_rtt 1.963042
+                    #        옳: 1.0, 2.0        (상태 (a=1,b=3,c=2), 질량 0.0369)
+                    #      RTT 50 에서 J 가 1.845 ms 과소 - J_TIE_MS 의 184 배다.
+                    #    g=1 인 m<=2 는 c_==miss 라 초과분이 원리적으로 없다.
+                    #
+                    #    복구가 끝난 시점의 확실한 신용:
+                    #      원본 a_ 개 + 복원본 miss 개 = (a_+miss)*w = k*w
+                    #      + 선행 패리티(왔다면)
+                    #    남은 c_-miss 개는 credit_branches 로 편다. 지연 기준점은
+                    #    **복구 시점**이므로 j 번째는 j*d 다(credit_branches 가
+                    #    i*d 로 세므로 그대로 넘기면 된다).
+                    _lead_arrived = b_ - c_
+                    _late_trail = c_ - miss
+                    # 🩸 2026-08-28 (2 단계 감사) - **임계경로에 드는 것은
+                    #    쓰인 패리티뿐이다.** trailing_parity_bytes 는 상수로
+                    #    parity*(m-1) 을 청구하는데, 복구는 miss 번째에서
+                    #    끝나므로 그 뒤 것들의 직렬화는 핸드셰이크를 안 늦춘다.
+                    #    상태별로 세어 호출부에 넘긴다(tx_cost_ms 가 바이트에
+                    #    선형이라 기댓값을 누적해도 정확하다).
+                    trail_bytes += pr * parity * miss
+                    for wgt, arrived in credit_branches(a_ + miss, w, parity,
+                                                        _lead_arrived,
+                                                        _late_trail,
+                                                        trail_delay_ms):
+                        if quantum.bin_index(arrived) < n_need:
+                            n_sum += pr * wgt * 2.0
+                            p_two += pr * wgt
+                        else:
+                            n_sum += pr * wgt
                     continue
                 # 복구가 없는 상태 = 원본이 다 왔다. 서버는 **마지막 원본**을
                 # 처리하면서 보낼지 정하므로, 뒤따르는 패리티의 신용은 그
@@ -1357,6 +1389,9 @@ def flight_outcome(k, m, w, p, burst, n_need, trail_delay_ms=0.0):
         # 그 가지에서는 서버가 마지막 원본에서 결정하므로 뒤따르는 패리티를
         # 기다리지 않는다.
         "p_recovered": p_rec,
+        # 복구 가지에서 임계경로에 든 뒤따르는 패리티 바이트의
+        # 기댓값(질량 가중). cost_of_v2 가 tx_cost_ms 로 바꾼다.
+        "trail_bytes_expected": trail_bytes,
     }
 
 
@@ -1571,9 +1606,17 @@ def cost_of_v2(cand, W_base, rtt_ms, p, burst,
     #    0 이므로 **이 항은 통째로 사라지고 옛 식과 비트 단위로 같다**(자체시험
     #    17b). 그래서 무제한에서 이미 검증된 것들은 그대로 남는다 - 이게 이
     #    수리의 안전판이다. 맞춘 상수는 하나도 없다.
+    # 🩸 2026-08-28 (2 단계 감사) - 옛 식은
+    #        out["p_recovered"] * tx_cost_ms(trailing_parity_bytes(k, m, w), ...)
+    #    로 **뒤따르는 패리티 전부**(parity*(m-1))를 복구 가지의 대기시간으로
+    #    청구했다. 2 단계의 recovers 는 miss <= c 이므로 복원은 **miss 번째**
+    #    패리티에서 끝나고, 그 뒤 것들의 직렬화는 핸드셰이크를 안 늦춘다.
+    #      k=2 m=3 p=0.02 2 Mbps: 옛 0.42133 ms vs 옳은 0.21271 ms
+    #      (복구 질량의 99.0% 가 miss=1 이라 패리티 하나만 기다린다)
+    #    m<=2 는 m-1 == miss 라 값이 같다 - 그래서 자체시험 17a/17b 가
+    #    이 결함을 원리적으로 못 봤다.
     tx = (tx_cost_ms(tx_added, uplink_mbps)
-          + out["p_recovered"]
-          * tx_cost_ms(trailing_parity_bytes(k, m, w), uplink_mbps))
+          + tx_cost_ms(out["trail_bytes_expected"], uplink_mbps))
     return {
         "j_ms": n_exp * rtt_ms + stall + tx,
         "n_rtt_expected": n_exp,
@@ -2119,32 +2162,56 @@ if __name__ == "__main__":
             _o = flight_outcome(2, _m, 1280, _p, 1.0, 9,
                                 trail_delay_ms=trailing_parity_delay_ms(
                                     2, 1280, 0.0))
-            _extra = (_o["p_recovered"]
-                      * tx_cost_ms(trailing_parity_bytes(2, _m, 1280), 0.0))
+            _extra = tx_cost_ms(_o["trail_bytes_expected"], 0.0)
             _worst = max(_worst, abs(_extra))
     _chk("17a. [안전판] 무제한(대역 0)이면 새 항이 정확히 0 이다 (옛 식과 같다)",
          _worst == 0.0, "최대 추가항 %.3e ms" % _worst)
 
     # 🩸 [부정] 시험이 공허하지 않다 - 대역이 걸리면 항이 실제로 붙는다.
-    _e2 = (flight_outcome(2, 2, 1280, 0.15, 1.0, 9,
-                          trail_delay_ms=trailing_parity_delay_ms(2, 1280, 2.0))
-           ["p_recovered"] * tx_cost_ms(trailing_parity_bytes(2, 2, 1280), 2.0))
-    _e3 = (flight_outcome(2, 3, 1280, 0.15, 1.0, 9,
-                          trail_delay_ms=trailing_parity_delay_ms(2, 1280, 2.0))
-           ["p_recovered"] * tx_cost_ms(trailing_parity_bytes(2, 3, 1280), 2.0))
+    _e2 = tx_cost_ms(flight_outcome(
+        2, 2, 1280, 0.15, 1.0, 9,
+        trail_delay_ms=trailing_parity_delay_ms(2, 1280, 2.0)
+    )["trail_bytes_expected"], 2.0)
+    _e3 = tx_cost_ms(flight_outcome(
+        2, 3, 1280, 0.15, 1.0, 9,
+        trail_delay_ms=trailing_parity_delay_ms(2, 1280, 2.0)
+    )["trail_bytes_expected"], 2.0)
     _chk("17b. [부정] 2 Mbps 에서는 항이 붙고 m 이 클수록 크다 (공허하지 않다)",
          _e3 > _e2 > 0.1, "m2 %.3f ms < m3 %.3f ms" % (_e2, _e3))
 
-    # 🩸 이 수리가 **고치려던 것**: 대역이 걸린 자리에서 뒤따르는 패리티의
-    #    직렬화를 0 으로 세던 것을 뒤집는다. 자는 **구조**다 — 대역이 걸리면
-    #    패리티 하나가 실제 시간을 쓰므로, 저손실(복구가 드물어 P_fail 이
-    #    거의 안 내려가는 자리)에서는 m 을 늘린 값이 그 비용을 못 갚는다.
-    #    ⚠️ 실측을 자로 쓰지 않는다. 이 크기(1~2 ms)는 팔당 8,544~12,404 판이
-    #    있어야 판정되는데 지금 1,000 판이라 p17(+0.73)과 p18(−0.16)의 부호가
-    #    갈린다. 두 값 어느 쪽도 인용하지 않는다 — trailing_parity_bytes 참고.
-    _d2 = _J(3, 2.0, 0.02) - _J(2, 2.0, 0.02)
-    _chk("17c. 2 Mbps 저손실에서 m3 이 m2 보다 **비싸다** (직렬화가 값을 못 갚는다)",
-         _d2 > 0, "모형 m3-m2 = %+.3f ms" % _d2)
+    # 🩸 2026-08-28 (2 단계 감사) - **옛 17c 를 철회한다.**
+    #    옛 검사는 「2 Mbps 저손실에서 m3 이 m2 보다 비싸다」(_J 차 > 0)를
+    #    못 박고 있었다. 그 결론은 **결함의 산물**이었다 - 복구 가지의 대기
+    #    비용을 상수 parity*(m-1) 로 청구해서, m=3 이 실제로는 기다리지 않는
+    #    패리티까지 값을 물었다(p=0.02 에서 0.4213 vs 옳은 0.2127 ms).
+    #    고치니 부호가 뒤집힌다(-0.148 ms). 옛 결론을 시험으로 못 박아 둔
+    #    탓에 **결함이 자기를 지키고 있었다.**
+    #
+    #    그 자리를 대신할 것은 부호가 아니라 **구조**다: 복구 가지의 대기
+    #    비용은 쓰인 패리티 수에 비례해야지 m-1 에 비례해서는 안 된다.
+    #    m<=2 는 miss == m-1 == 1 이라 두 식이 같고(위 20b 와 같은 안전판),
+    #    m=3 에서만 갈라진다.
+    _cst2 = (flight_outcome(2, 2, 1280, 0.02, 1.0, 9,
+                            trail_delay_ms=trailing_parity_delay_ms(2, 1280, 2.0))
+             ["p_recovered"] * tx_cost_ms(trailing_parity_bytes(2, 2, 1280), 2.0))
+    _new2 = _e2_lo = tx_cost_ms(flight_outcome(
+        2, 2, 1280, 0.02, 1.0, 9,
+        trail_delay_ms=trailing_parity_delay_ms(2, 1280, 2.0)
+    )["trail_bytes_expected"], 2.0)
+    _cst3 = (flight_outcome(2, 3, 1280, 0.02, 1.0, 9,
+                            trail_delay_ms=trailing_parity_delay_ms(2, 1280, 2.0))
+             ["p_recovered"] * tx_cost_ms(trailing_parity_bytes(2, 3, 1280), 2.0))
+    _new3 = tx_cost_ms(flight_outcome(
+        2, 3, 1280, 0.02, 1.0, 9,
+        trail_delay_ms=trailing_parity_delay_ms(2, 1280, 2.0)
+    )["trail_bytes_expected"], 2.0)
+    _chk("17c. [안전판] m<=2 는 옛 상수식과 **비트 단위로 같다**",
+         abs(_cst2 - _new2) < 1e-12,
+         "m2 상수 %.8f vs 상태별 %.8f" % (_cst2, _new2))
+    _chk("17c2. m=3 은 옛 상수식이 **과대**였다 (안 기다리는 패리티까지 청구)",
+         _cst3 > _new3 * 1.5,
+         "m3 상수 %.5f vs 상태별 %.5f ms (과대 %.5f)"
+         % (_cst3, _new3, _cst3 - _new3))
 
     # 🩸 [부정] 무제한에서는 **부호가 반대**여야 한다. 이게 아니면 위 검사가
     #    대역이 아니라 다른 것을 재고 있다는 뜻이다. 17a 가 무제한에서 새 항이

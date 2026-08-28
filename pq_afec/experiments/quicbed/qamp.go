@@ -384,6 +384,14 @@ func (s *decodeConn) feedOne(d []byte) {
 		s.flights[key] = fr
 	}
 	fr.fb = fb
+	// 🩸 2026-08-28 (2 단계 감사) - ReadFrom 과 **같은 가드**다. 근거는 거기
+	//    주석에 적었다(결론이 난 비행을 다시 풀면 같은 원본을 또 복원한다).
+	//    두 경로가 갈라지면 자체시험이 재는 것과 실제로 도는 것이 달라진다.
+	if fr.done || fr.poisoned {
+		s.stackLocked(addr, n)
+		s.mu.Unlock()
+		return
+	}
 	fr.syms[fb.index] = fb.sym
 	outs := s.tryRecoverLocked(fr, true)
 	if rec := s.settleRecovery(fr, outs); rec != nil {
@@ -446,6 +454,15 @@ func (s *decodeConn) settleRecovery(fr *flightRec, outs [][]byte) []byte {
 	}
 	fr.done = true
 	s.stats.Recovered += len(outs)
+	// 사건 수는 **비행당 한 번**이어야 한다. fr.done 가드가 죽으면 여기가
+	// 두 번 이상 돌고, 그것을 자체시험이 [중복] 로 잡는다.
+	s.stats.RecoverEvents++
+	if fr.recCRC == nil {
+		fr.recCRC = map[uint32]bool{}
+	}
+	for _, o := range outs {
+		fr.recCRC[crc32.ChecksumIEEE(o)] = true
+	}
 	for _, extra := range outs[1:] {
 		s.pending = append(s.pending, pendingPkt{data: extra, addr: fr.addr})
 		s.pendingBytes += int64(len(extra))
@@ -1281,6 +1298,20 @@ type serverStats struct {
 	Originals    int   `json:"originals"`
 	Parities     int   `json:"parities"`
 	Recovered    int   `json:"recovered"`
+	// 🩸 2026-08-28 (2 단계 감사) - **비행당 복구가 한 번뿐인지 보는 계수.**
+	//    Recovered 는 복원한 **원본 개수**라 한 번에 여럿을 세므로,
+	//    "같은 비행을 두 번 풀었다"를 못 가른다. 그 결함이 실제로 있었다
+	//    (뒤따르는 패리티가 m-1 개로 늘면서 재진입이 열렸다). 사건 수를
+	//    따로 세면 fr.done 가드가 살아 있는지 시험 하나로 확인된다.
+	RecoverEvents int  `json:"recover_events"`
+	// 🩸 2026-08-28 (2 단계 감사) - **아직 안 온 원본을 소거로 오해한 복구.**
+	//    뒤따르는 패리티는 원본보다 뒤에 보내지만 망이 재정렬하면 먼저 닿을
+	//    수 있고, 그때 서버는 "안 왔다"와 "잃었다"를 구분할 수단이 없다.
+	//    복원본이 원본과 비트 단위로 같아 안전에는 문제가 없지만
+	//    (회계 불변식도 안 깨진다) **Recovered 지표는 부푼다** - p3·p13 이
+	//    그 값을 읽으므로 따로 세어 두지 않으면 조용히 섞인다.
+	//    netem 에 재정렬을 안 걸므로 지금 실측에서는 0 이어야 한다.
+	PrematureRecover int `json:"premature_recovered"`
 	RecoverFail  int   `json:"recover_crc_fail"`
 	LateRecover  int   `json:"late_recovered"`
 	RecoverRefused int `json:"recover_refused_by_accounting"`
@@ -1313,6 +1344,10 @@ type flightRec struct {
 	addr    net.Addr
 	created time.Time
 	done    bool
+	// 🩸 2026-08-28 (2 단계 감사) - 이 비행에서 **복원해 낸** 원본의 CRC.
+	//    나중에 진짜 원본이 도착하면(= 잃은 게 아니라 늦게 온 것이었다)
+	//    여기 걸려서 PrematureRecover 로 센다. flightTTL 에 같이 만료된다.
+	recCRC map[uint32]bool
 	// 🩸 2026-08-28 (2 단계) - **뒤따르는 패리티 심볼을 모은다.**
 	//    옛 구조는 마지막 패리티 하나만 들고 있어 복구 능력이 소거 1 개로
 	//    묶여 있었다(신레오 2026-08-27 보고). 뒤따르는 패리티는 원본보다
@@ -1539,9 +1574,25 @@ func (s *decodeConn) noteOriginal(data []byte, addr net.Addr) {
 	now := time.Now()
 	s.mu.Lock()
 	s.expireLocked(now)
-	s.recent = append(s.recent, recvItem{dcid: dcidOf(cp),
-		crc: crc32.ChecksumIEEE(cp), data: cp, addr: addr, t: now})
+	dc := dcidOf(cp)
+	cr := crc32.ChecksumIEEE(cp)
+	s.recent = append(s.recent, recvItem{dcid: dc,
+		crc: cr, data: cp, addr: addr, t: now})
 	s.stats.Originals++
+	// 🩸 2026-08-28 (2 단계 감사) - **잃은 게 아니라 늦게 온 것이었나.**
+	//    뒤따르는 패리티는 원본보다 뒤에 보내지만 망이 재정렬하면 먼저
+	//    닿을 수 있다. 그 순간 서버는 "안 왔다"와 "잃었다"를 구분할 수단이
+	//    없어 소거로 보고 복구해 버린다. 복원본이 원본과 비트 단위로 같아
+	//    안전에는 문제가 없고 회계 불변식도 안 깨지지만, **Recovered 가
+	//    부푼다.** p3·p13 이 그 값을 읽으므로 따로 센다.
+	//    (netem 에 재정렬을 안 거는 지금 실측에서는 0 이어야 한다 - 0 이
+	//     아니면 그 회차의 복구 계수를 그대로 믿으면 안 된다는 신호다.)
+	for _, fr := range s.flights {
+		if fr.dcid == dc && fr.recCRC[cr] {
+			s.stats.PrematureRecover++
+			break
+		}
+	}
 	s.mu.Unlock()
 	s.tryLate()
 }
@@ -1637,6 +1688,9 @@ func (s *decodeConn) tryLate() {
 }
 
 func (s *decodeConn) ReadFrom(b []byte) (int, net.Addr, error) {
+	// 🩸 2026-08-28 (2 단계 감사) - **보류한 패리티는 삼킨다.** 자세한 근거는
+	//    아래 보류 분기 주석에 있다. 여기로 되돌아와 다음 데이터그램을 읽는다.
+again:
 	s.mu.Lock()
 	if len(s.pending) > 0 {
 		p := s.pending[0]
@@ -1789,6 +1843,23 @@ func (s *decodeConn) ReadFrom(b []byte) (int, net.Addr, error) {
 		s.flights[key] = fr
 	}
 	fr.fb = fb
+	// 🩸 2026-08-28 (2 단계 감사) - **결론이 난 비행은 다시 풀지 않는다.**
+	//    tryLate 는 진작부터 `fr.done || fr.poisoned` 를 걸렀는데(위 tryLate)
+	//    이 경로만 안 걸렀다. 복원본은 noteOriginal 을 안 거치므로 s.recent 에
+	//    안 들어가고, tryRecoverLocked 는 missing 을 s.recent 로만 계산한다.
+	//    그래서 **이미 복원한 원본이 계속 「없다」고 보인다.**
+	//      k=2 m=3, O0 하나만 유실, 도착 [P0, O1, P1, P2]
+	//        P1 -> O0 복원, fr.done=true, Recovered=1
+	//        P2 -> missing 이 여전히 [0] -> **O0 을 또 복원** -> Recovered=2
+	//      소거 1 개에 복구 2 건, 같은 Initial 이 QUIC 스택에 두 번 올라간다.
+	//    2 단계 전에는 복구 경로에 오는 패리티가 마지막 하나뿐이라 재진입이
+	//    불가능했다. 뒤따르는 패리티를 m-1 개로 늘리면서 열린 길이다.
+	//    결론이 난 비행에 늦게 온 패리티는 그냥 **평범한 신용**이다.
+	if fr.done || fr.poisoned {
+		s.stackLocked(addr, n)
+		s.mu.Unlock()
+		return n, addr, nil
+	}
 	fr.syms[fb.index] = fb.sym
 	outs := s.tryRecoverLocked(fr, true)
 	// ⚖️ 불변식: 스택에 넘긴 누적 바이트는 **물리적으로 도착한 누적 바이트를
@@ -1800,14 +1871,30 @@ func (s *decodeConn) ReadFrom(b []byte) (int, net.Addr, error) {
 	}
 	// 🩸 2026-08-28 (2 단계) - **소거가 아직 여럿이면 이 패리티를 보류한다.**
 	//    스택에 넣어 버리면 그 바이트가 신용으로 잡혀, 나중에 이 심볼로
-	//    복구할 때 복원본까지 넣으면 이중 계상이 된다. 보류는 소거가 이미
-	//    2 개 이상일 때만 일어나므로(확률 ~p^2) 무손실 대량에서는 아무
-	//    일도 없다 - 증폭 신용을 내주지 않는다.
+	//    복구할 때 복원본까지 넣으면 이중 계상이 된다.
+	//
+	// 🩸 2026-08-28 (2 단계 감사) - **보류하면 데이터그램도 삼켜야 한다.**
+	//    옛 코드는 `return n, addr, nil` 로 패리티를 quic-go 에 그대로
+	//    올려보내면서 stackLocked 만 건너뛰었다. 그런데 설계요점 2 가 못박은
+	//    대로 **올려보낸 패리티는 quic-go 가 ReceivedBytes 로 세어 3 배 예산을
+	//    늘린다.** 즉 저쪽 예산은 커지는데 우리 회계(BytesToStack)는 0 으로
+	//    남고, 나중에 settleRecovery 가 그 심볼로 만든 복원본까지 스택에
+	//    넣으므로 **같은 수신 바이트가 두 번 신용이 된다.**
+	//      k=2 m=1, 손실 0, 도착 [P, O0, O1] (패리티 재정렬)
+	//        -> 실제 인계 4,846 B vs BytesIn 3,646 B = 1,200 B 초과
+	//        -> RFC 9000 8.1 로 서버 비행이 3,600 B 더 나간다
+	//      계기는 BytesToStack 3,600 <= 3,646 만 보므로 「정상」이라 보고한다.
+	//    의도는 "이 바이트에 신용을 안 준다"이므로, 맞는 것은 스택을 건너뛰는
+	//    게 아니라 **quic-go 에 아예 안 보여 주는 것**이다.
+	//
+	//    feedOne 은 데이터그램을 돌려주지 않으므로 처음부터 옳았다 - 그래서
+	//    자체시험의 도착순서 전수 검사가 이 차이를 **원리적으로 못 봤다.**
+	//    아래 [회계-ReadFrom] 검사를 새로 넣은 이유다.
 	if len(outs) == 0 && s.pendingErasures(fr) >= 2 {
 		fr.heldBytes += int64(n)
 		s.heldBytes += int64(n)
 		s.mu.Unlock()
-		return n, addr, nil
+		goto again // 삼킨다 - quic-go 는 이 바이트를 보지 못한다
 	}
 	s.stackLocked(addr, n)
 	s.mu.Unlock()
@@ -2223,6 +2310,30 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 // ------------------------------------------------------------------- 자체시험
 // 부호기·복호기가 맞는지 프로세스 안에서 먼저 확인한다. 네트워크를 붙이기
 // 전에 통과해야 하는 관문이다(인수인계 문서 6절: 새 코드는 작게 먼저).
+// scriptConn 은 미리 적어 둔 데이터그램을 차례로 내주는 가짜 PacketConn 이다.
+//
+// 🩸 2026-08-28 (2 단계 감사) - 이것이 없어서 **회계 시험이 전부 feedOne 으로만
+//
+//	돌고 있었다.** feedOne 은 데이터그램을 돌려주지 않으므로 "quic-go 에 무엇을
+//	올려보냈는가"라는 축이 아예 없고, 그 축에서만 보이는 결함(보류한 패리티를
+//	올려보내면서 스택에는 안 넣기)을 **원리적으로 못 봤다.** 실제로 그 결함이
+//	거기 숨어 있었다. 계기가 못 보는 축은 결함이 사는 곳이다.
+type scriptConn struct {
+	net.PacketConn
+	dgs  [][]byte
+	i    int
+	addr net.Addr
+}
+
+func (c *scriptConn) ReadFrom(b []byte) (int, net.Addr, error) {
+	if c.i >= len(c.dgs) {
+		return 0, nil, fmt.Errorf("대본 끝")
+	}
+	n := copy(b, c.dgs[c.i])
+	c.i++
+	return n, c.addr, nil
+}
+
 func selfTest() int {
 	gfInit()
 	fail := 0
@@ -2424,6 +2535,122 @@ func selfTest() int {
 			}
 			check(fmt.Sprint("[회계] 스택<=수신, 도착순서 전수 k=", kk,
 				" m=", mm), true)
+		}
+	}
+
+	// --- [회계-ReadFrom] 실제로 올려보낸 바이트 <= 도착한 바이트 -----------
+	//
+	// 🩸 2026-08-28 (2 단계 감사). 위 시험은 feedOne 으로 돌아서
+	//    **BytesToStack 이라는 우리 장부**만 본다. 진짜 물리 불변식은
+	//    「quic-go 에 인계한 누적 바이트 <= 도착한 누적 바이트」다 - 설계요점 2
+	//    대로 올려보낸 데이터그램은 저쪽에서 ReceivedBytes 로 세어져 3 배
+	//    예산을 늘리기 때문이다. 두 값이 갈라질 수 있고, 실제로 갈라져 있었다.
+	//    m=3 까지 돈다(2 단계가 새로 연 능력이고 결함도 거기서 열렸다).
+	for _, kk := range []int{1, 2} {
+		for _, mm := range []int{1, 2, 3} {
+			dd := []byte{9, 9, 9, 9, 9, 9, 9, 9}
+			sc := []byte{6, 6, 6, 6}
+			src := make([][]byte, kk)
+			for i := range src {
+				d := make([]byte, 1200)
+				rand.Read(d)
+				d[0] = 0xc0
+				d[1], d[2], d[3], d[4] = 0, 0, 0, 1
+				d[5] = byte(len(dd))
+				copy(d[6:], dd)
+				d[6+len(dd)] = byte(len(sc))
+				copy(d[7+len(dd):], sc)
+				src[i] = d
+			}
+			crcs := make([]uint32, kk)
+			lens := make([]uint16, kk)
+			for i, d := range src {
+				crcs[i] = crc32.ChecksumIEEE(d)
+				lens[i] = uint16(len(d))
+			}
+			pars := rsEncode(src, mm, 1200)
+			dg := make([][]byte, 0, kk+mm)
+			dg = append(dg, src...)
+			for j := 0; j < mm; j++ {
+				dg = append(dg, buildParity(dd, sc, fecBlock{
+					flight: 1, k: kk, m: mm, index: j, symLen: 1200,
+					crcs: crcs, lens: lens, sym: pars[j]}))
+			}
+			ua := &net.UDPAddr{IP: net.IPv4(10, 9, 0, 1), Port: 40000}
+			badOver, badDup, badPre := "", "", ""
+			for _, ord := range permutations(len(dg)) {
+				// 원본을 하나씩 빼 본다(-1 은 전부 도착). 소거 1 개는 m>=1
+				// 이면 풀리고, 그 뒤에 오는 뒤따르는 패리티가 재진입한다.
+				for drop := -1; drop < kk; drop++ {
+					send := make([][]byte, 0, len(dg))
+					for _, ix := range ord {
+						if drop >= 0 && ix == drop {
+							continue
+						}
+						send = append(send, dg[ix])
+					}
+					sv := &decodeConn{mode: "fec"}
+					sv.PacketConn = &scriptConn{dgs: send, addr: ua}
+					var handed int64
+					buf := make([]byte, 2000)
+					for {
+						n, _, err := sv.ReadFrom(buf)
+						if err != nil {
+							break
+						}
+						handed += int64(n)
+					}
+					sv.mu.Lock()
+					in := sv.stats.BytesIn
+					ev := sv.stats.RecoverEvents
+					pre := sv.stats.PrematureRecover
+					sv.mu.Unlock()
+					if handed > in && badOver == "" {
+						badOver = fmt.Sprint("순서", ord, " 소거", drop,
+							" 인계 ", handed, " > 도착 ", in)
+					}
+					// 🩸 두 현상을 **갈라서** 본다. 처음 판은 둘을 뭉쳐
+					//    `Recovered <= 실제 소거` 로 봤는데, 재정렬로 생기는
+					//    **미리 복구**(안 온 원본을 소거로 오해)까지 실패로
+					//    찍혀 멀쩡한 코드가 붉어졌다. 미리 복구는 안전 문제가
+					//    아니라 지표 문제이고, 아래 [미리복구] 로 따로 센다.
+					//
+					//    여기서 보는 것은 **같은 비행을 두 번 푸는 것**이다.
+					//    비행이 하나뿐인 시험이므로 사건 수는 0 또는 1 이어야
+					//    한다. fr.done 가드를 빼면 여기가 2 가 된다.
+					if ev > 1 && badDup == "" {
+						badDup = fmt.Sprint("순서", ord, " 소거", drop,
+							" 복구사건 ", ev, " (비행 하나에 두 번 이상)")
+					}
+					// 미리 복구는 **재정렬이 있을 때만** 생겨야 한다.
+					// 순서가 그대로면(=오름차순) 0 이어야 한다.
+					inOrder := true
+					for i := 1; i < len(ord); i++ {
+						if ord[i] < ord[i-1] {
+							inOrder = false
+						}
+					}
+					if inOrder && pre > 0 && badPre == "" {
+						badPre = fmt.Sprint("순서", ord, " 소거", drop,
+							" 미리복구 ", pre, " (재정렬이 없는데)")
+					}
+				}
+			}
+			check(fmt.Sprint("[회계-ReadFrom] 인계<=도착, 도착순서x소거 전수 k=",
+				kk, " m=", mm), badOver == "")
+			if badOver != "" {
+				fmt.Println("     ", badOver)
+			}
+			check(fmt.Sprint("[중복] 비행 하나에 복구 사건 <=1 k=", kk,
+				" m=", mm), badDup == "")
+			if badDup != "" {
+				fmt.Println("     ", badDup)
+			}
+			check(fmt.Sprint("[미리복구] 재정렬 없으면 0 k=", kk,
+				" m=", mm), badPre == "")
+			if badPre != "" {
+				fmt.Println("     ", badPre)
+			}
 		}
 	}
 

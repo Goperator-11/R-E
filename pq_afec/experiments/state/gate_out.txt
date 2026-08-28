@@ -1,0 +1,19 @@
+Go 격자점 178200 개  (/tmp/qamp)
+
+=== Python decide_v2 vs Go decide - (mode, delta, m, ips) 전부 ===
+  OK   178200 격자점 중 진짜 불일치 0 건
+       표 보간 근소차 342 건 - Python J 기준 최대 대가 0.020653 ms (한도 0.100 ms)
+       결정이 같은 점의 J 어긋남 - 최대 0.096425 ms (한도 0.100), 한도 초과 0 건 / 178200 점
+         p=0.007 rtt=10 up=0 | Go ['parity', 0, 3, 1200] | Py ['parity', 0, 1, 1200] | 대가 -0.009773 ms
+         p=0.007 rtt=50 up=0 | Go ['parity', 0, 3, 1200] | Py ['parity', 0, 1, 1200] | 대가 -0.009773 ms
+         p=0.007 rtt=100 up=0 | Go ['parity', 0, 3, 1200] | Py ['parity', 0, 1, 1200] | 대가 -0.009773 ms
+
+=== 지렛대가 실제로 선택되는가 (v2 이식의 목적) ===
+   parity   133634 건 (75.0%)
+   combo    31216 건 (17.5%)
+   none     11390 건 (6.4%)
+   pad       1960 건 (1.1%)
+   pad 을 고른 판의 delta: [(1, 720), (73, 180), (81, 720), (143, 180), (223, 160)]
+   그중 delta=1 (1 바이트로 칸 올리기): 720 건
+
+wrote /mnt/c/dev/pq_afec/experiments/results/gate_go_parity.json

@@ -71,30 +71,16 @@ func criticalPathBytes(k, m, w int) int {
 	return k * w
 }
 
-// trailingParityBytes 는 **복구 가지에서만** 임계경로에 드는, 뒤따르는
-// 패리티의 바이트다. Python padfec.policy.trailing_parity_bytes 와 같은 식.
-//
-// 🩸 2026-08-26 (2) **구조 수리** - criticalPathBytes 는 *첫 비행*의 임계경로
-// 로는 옳지만 J 는 **완료 시각**이다. 복구가 일어나는 가지에서는 서버가 복구용
-// 패리티(송신 순서상 마지막)까지 받아야 원본을 복원하므로 그 앞의 패리티들이
-// 통째로 임계경로에 든다. 그전에는 이 비용이 **정확히 0** 이라 m=2·3·4 의
-// t_tx 가 같았고, P_fail 은 안 오르므로 정책이 늘 m_max 를 골랐다.
-//
-// ⚠️ 인용 정정(2026-08-26 저녁): 이 수정을 **실측으로 정당화하지 않는다.**
-// 처음 인용하던 p17 한 판(+0.73/+1.86)은 p18 이 같은 자리에서 −0.16/−1.26 로
-// 뒤집었고, 판정하려면 팔당 8,544~12,404 판이 필요한데 지금 1,000 판이다.
-// 남길 근거는 식 자체다 - 맞춘 상수가 없고, 무제한에서 옛 식과 비트 단위로
-// 같다. 자세한 것은 padfec/policy.py 의 trailing_parity_bytes 에 한 곳으로.
-func trailingParityBytes(k, m, w int) int {
-	if m <= 0 {
-		return 0
-	}
-	n := 1
-	if m >= 2 {
-		n = m - 1
-	}
-	return parityDatagramBytes(w, k) * n
-}
+// 🩸 2026-08-28 (2 단계 감사) - **trailingParityBytes 를 지웠다.**
+//    상수 parity*(m-1) 로 복구 대기 비용을 청구하던 함수다. 2 단계의
+//    recovers 는 miss <= c 이므로 복원은 **miss 번째** 뒤따르는 패리티에서
+//    끝나고, 그 뒤 것들의 직렬화는 핸드셰이크를 안 늦춘다. 그런데 이 식은
+//    m=3 에서 안 기다리는 패리티까지 값을 물렸다(2 Mbps p=0.02 에서
+//    0.4213 vs 옳은 0.2127 ms). 지금은 flightOutcome 이 상태별로 세어
+//    trailBytes 로 돌려준다. **틀린 식을 남겨 두면 누군가 다시 부른다.**
+//    (Python 쪽 trailing_parity_bytes 는 자체시험 17c 가 "옛 상수식과
+//     m<=2 에서 비트 단위로 같다"를 못 박는 데 쓰므로 남아 있다.)
+
 
 // 🩸 pfailLookup 을 지웠다(2026-08-20 감사). P_fail 을 별도 표에서 읽으면
 // 기대 왕복 수와 **다른 분포**에서 나오게 된다 - 그것이 결함 1 의 정체였다.
@@ -398,8 +384,11 @@ func creditBranches(a, w, parity, leadArrived, nTrail int,
 	return out
 }
 
+// trailBytes 는 복구 가지에서 임계경로에 실제로 든 뒤따르는 패리티 바이트의
+// **기댓값**이다(질량 가중). 상수 trailingParityBytes 를 대신한다 -
+// 2026-08-28 감사, 근거는 아래 복구 가지 주석과 padfec/policy.py.
 func flightOutcome(k, m, w int, p, l float64,
-	nStar int, trailDelayMs float64) (nExp, pFail, pRec float64) {
+	nStar int, trailDelayMs float64) (nExp, pFail, pRec, trailBytes float64) {
 	parity := parityDatagramBytes(w, k)
 	pm := jointLookup(k, m, p, l)
 	cols := m + 1
@@ -443,21 +432,30 @@ func flightOutcome(k, m, w int, p, l float64,
 				if rec {
 					used = miss
 				}
-				bCredit := b - used
+				_ = used
 				if rec {
-					// 🩸 2026-08-26 - 복구가 일어난 상태에는 **경주가
-					// 없다.** 서버는 복구용 패리티(송신 순서상 마지막)를
-					// 받고 나서야 원본을 다 갖게 되므로, 송신 결정이 모든
-					// 패킷보다 뒤에 온다.
 					// 🩸 2026-08-26 (2) - 이 가지의 질량. 뒤따르는
 					// 패리티가 임계경로에 드는 **유일한** 가지다.
 					// Python flight_outcome 의 p_recovered 와 같다.
 					pRec += pr
-					arrived := a*w + bCredit*parity + miss*w
-					if binIndex(arrived) < nStar {
-						nExp += pr * 2.0
-					} else {
-						nExp += pr
+					// 🩸 2026-08-28 (2 단계 감사) - **복구 가지에도 경주가
+					// 있다.** 옛 주석은 "복구용 패리티(송신 순서상 마지막)를
+					// 받고 나서야"라고 적었는데, 2 단계 뒤로 복구는 **miss
+					// 번째** 뒤따르는 패리티에서 끝난다. 그 뒤 r-miss 개는
+					// 결정보다 늦게 닿으므로 신용에 전액 넣으면 안 된다.
+					// 근거·수치는 padfec/policy.py 의 같은 자리 주석에 있다.
+					// (g=1 인 m<=2 는 r==miss 라 초과분이 원리적으로 없다.)
+					//
+					// 임계경로에 드는 것도 **쓰인 패리티뿐**이다. 상수
+					// trailingParityBytes(=parity*(m-1)) 대신 상태별로 센다.
+					trailBytes += pr * float64(parity*miss)
+					for _, br := range creditBranches(a+miss, w, parity,
+						b-r, r-miss, trailDelayMs) {
+						if binIndex(br.bytes) < nStar {
+							nExp += pr * br.wgt * 2.0
+						} else {
+							nExp += pr * br.wgt
+						}
 					}
 					continue
 				}
@@ -475,7 +473,7 @@ func flightOutcome(k, m, w int, p, l float64,
 			}
 		}
 	}
-	return nExp, pFail, pRec
+	return nExp, pFail, pRec, trailBytes
 }
 
 
@@ -767,8 +765,10 @@ func evalCands(cs []cand, k, w int, serverFlight, rtt, p, burst, cPkt float64,
 		// 필요한 칸은 후보와 무관한 상수이고 위에서 한 번만 구한다.
 		// 🩸 2026-08-26 - 뒤따르는 패리티의 신용이 송신 결정 전에
 		// 닿는지가 대역에 달렸다. 그 지연을 여기서 재서 넘긴다.
-		n, pFailTot, pRec := flightOutcome(c.k, c.m, c.wEff, p, burst, nStar,
+		n, pFailTot, pRec, trailB := flightOutcome(
+			c.k, c.m, c.wEff, p, burst, nStar,
 			trailingParityDelayMs(c.k, c.wEff, uplinkMbps))
+		_ = pRec // 대기 비용은 이제 trailB(상태별)로 낸다
 		// 🩸 2026-08-27 - 실패 한 번의 대가가 **셋**으로 갈린다.
 		// 판별자는 「마지막 원본이 도착했는가」다(RFC 9002 §6.1: 뒤에
 		// 보낸 패킷이 ACK 돼야만 손실을 선언할 수 있는데, 우리 패리티는
@@ -803,8 +803,12 @@ func evalCands(cs []cand, k, w int, serverFlight, rtt, p, burst, cPkt float64,
 		tx := 0.0
 		if uplinkMbps > 0 {
 			tx = float64(txAdded) * 8.0 / (uplinkMbps * 1e6) * 1000.0
-			tx += pRec * (float64(trailingParityBytes(c.k, c.m, c.wEff)) *
-				8.0 / (uplinkMbps * 1e6) * 1000.0)
+			// 🩸 2026-08-28 (2 단계 감사) - 옛 식은 상수
+			// trailingParityBytes(=parity*(m-1)) 에 pRec 를 곱해
+			// **뒤따르는 패리티 전부**를 복구 대기시간으로 청구했다.
+			// 복구는 miss 번째에서 끝나므로 그 뒤 것들은 안 기다린다.
+			// (m<=2 는 miss == m-1 == 1 이라 값이 같다.)
+			tx += trailB * 8.0 / (uplinkMbps * 1e6) * 1000.0
 		}
 		// 🩸 2026-08-27 **구조 수리 — ACK 실패 가지에 왕복 수를 안
 		// 물리고 있었다.** T_recover 두 상수는 *기준선 대비 증분*으로
@@ -1315,7 +1319,17 @@ func policyGrid() {
 				//    격자를 좁히면 덮는 범위가 줄기 때문이다.
 				for _, s0base := range []float64{396.5, 1527.5, 382.45, 1472.0} {
 					for _, rtt := range []float64{10, 50, 100} {
-						for _, p := range []float64{0, 0.005, 0.007, 0.02, 0.035, 0.05, 0.15, 0.2} {
+						// 🩸 2026-08-28 (2 단계 감사) - **격자 밖 p 를 넣었다.**
+							//    옛 축에서 표의 마디가 아닌 값은 0.007 과
+							//    0.035 둘뿐이었고, 그 둘은 표에서 가장 좁은
+							//    구간 안에 있었다. 그래서 위쪽의 넓은 구간
+							//    (0.05~0.30)의 보간 오차가 이 관문에
+							//    **원리적으로 안 보였다** - 마디 위에서는
+							//    어떤 격자든 오차가 0 이다. 실제로 그 구간이
+							//    최악 0.656 ms 로 한도(0.100)를 넘고 있었다.
+							//    버스트 축에서 겪은 것과 같은 병이다.
+							for _, p := range []float64{0, 0.007, 0.015, 0.035,
+								0.0725, 0.09, 0.15, 0.1625, 0.2375, 0.2875} {
 							// 🩸 2026-08-28 - 예전에는 {1, 2, 3} 이었다. 셋 다
 							//    그때의 버스트 격자({1,2,3,5}) **위의 점**이라,
 							//    버스트 축의 보간(예전에는 최근접 스냅)이 이
