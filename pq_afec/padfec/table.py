@@ -149,6 +149,27 @@ def _check_consistent():
                 "padfec/table.py 의 U_VALS 좌표도 같이 고쳐야 한다."
                 % (_p, _L_of(_p, 1.0), _lo, _at, _hi))
 
+    # 🩸 2026-08-28 - **실행 경로가 안 바뀌었음을 못박는다.**
+    #    심은 항상 defaultAssumedBurst = 1.0 을 넘긴다. 새 좌표에서 그것은
+    #    u = 1.0*(1-p) < 1 이라 격자 최소(u=1)로 눌러붙고, u=1 마디는
+    #    L = 1/(1-p) 에서 계산된다. 둘 다 독립 손실 구간이므로 값이 같아야
+    #    한다 - 즉 **이 좌표 변경은 실제로 쓰이는 경로를 한 톨도 안 건드린다.**
+    #    그 약속이 깨지면 옛 실측과 새 실측을 견줄 수 없게 되므로 여기서 막는다.
+    #    (구현 사실에 기대는 게 아니라 시험한다: for_prior 가 `<=` 로 비교하고
+    #     _L_of 가 같은 식을 쓰므로 성립하지만, 어느 한쪽이 바뀌면 조용히 깨진다.)
+    for _p in P_VALS:
+        for _k in K_VALS:
+            for _m in M_VALS:
+                _run = pfail(_k, _m, _p, policy.DEFAULT_ASSUMED_BURST)
+                _node = pfail(_k, _m, _p, _L_of(_p, U_VALS[0]))
+                if _run != _node:
+                    raise SystemExit(
+                        "실행 경로가 바뀐다: k=%d m=%d p=%g 에서 "
+                        "burst=%g 의 값(%.17g)이 u=%g 마디의 값(%.17g)과 "
+                        "다르다. 이 좌표 변경은 실행 경로를 안 건드려야 한다."
+                        % (_k, _m, _p, policy.DEFAULT_ASSUMED_BURST,
+                           _run, U_VALS[0], _node))
+
 
 def fail_frac(k, m, p, L):
     """실패 질량을 세 가지로 나눈 **비율** (합 1, 실패가 0 이면 (1,0,0)).
