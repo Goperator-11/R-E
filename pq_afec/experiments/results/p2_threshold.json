@@ -51,13 +51,13 @@
    "threshold_hi": 8296,
    "note": "",
    "first_flight_bytes": 1280,
-   "ff_parity_bytes": 1327,
-   "parity_bytes": 2642.3,
-   "client_bytes_total": 2607,
-   "client_bytes_total_legacy": 3922.3,
+   "ff_parity_bytes": 1325,
+   "parity_bytes": 2641.7,
+   "client_bytes_total": 2605,
+   "client_bytes_total_legacy": 3921.7,
    "s0_est": {
     "allowed": 8960,
-    "budget": 7821,
+    "budget": 7815,
     "s0_lo": 664,
     "s0_hi": 721,
     "s0_mid": 692.5
@@ -132,13 +132,13 @@
    "threshold_hi": 10958,
    "note": "",
    "first_flight_bytes": 2560,
-   "ff_parity_bytes": 1331,
-   "parity_bytes": 1418.5,
-   "client_bytes_total": 3891,
-   "client_bytes_total_legacy": 3978.5,
+   "ff_parity_bytes": 1334,
+   "parity_bytes": 1508.7,
+   "client_bytes_total": 3894,
+   "client_bytes_total_legacy": 4068.7,
    "s0_est": {
     "allowed": 12800,
-    "budget": 11673,
+    "budget": 11682,
     "s0_lo": 1842,
     "s0_hi": 1899,
     "s0_mid": 1870.5
@@ -152,13 +152,13 @@
    "threshold_hi": 14640,
    "note": "",
    "first_flight_bytes": 2560,
-   "ff_parity_bytes": 2670,
-   "parity_bytes": 2842.0,
-   "client_bytes_total": 5230,
-   "client_bytes_total_legacy": 5402.0,
+   "ff_parity_bytes": 2662,
+   "parity_bytes": 2838.3,
+   "client_bytes_total": 5222,
+   "client_bytes_total_legacy": 5398.3,
    "s0_est": {
     "allowed": 16640,
-    "budget": 15690,
+    "budget": 15666,
     "s0_lo": 2000,
     "s0_hi": 2057,
     "s0_mid": 2028.5
@@ -264,9 +264,9 @@
    {
     "group": "x25519",
     "arm": "on1",
-    "d_client_bytes": 1327,
+    "d_client_bytes": 1325,
     "d_threshold": 4927.5,
-    "ratio": 3.7132629992464206
+    "ratio": 3.718867924528302
    },
    {
     "group": "x25519",
@@ -278,19 +278,19 @@
    {
     "group": "X25519MLKEM768",
     "arm": "on1",
-    "d_client_bytes": 1331,
+    "d_client_bytes": 1334,
     "d_threshold": 4984.0,
-    "ratio": 3.7445529676934637
+    "ratio": 3.7361319340329837
    },
    {
     "group": "X25519MLKEM768",
     "arm": "on2",
-    "d_client_bytes": 2670,
+    "d_client_bytes": 2662,
     "d_threshold": 8666.0,
-    "ratio": 3.245692883895131
+    "ratio": 3.2554470323065363
    }
   ],
-  "mean_ratio": 4.066032850177232,
+  "mean_ratio": 4.066726654180512,
   "slope_x25519": 5.89585798816568,
   "slope_X25519MLKEM768": 2.94792899408284
  },

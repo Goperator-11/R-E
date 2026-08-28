@@ -38,12 +38,12 @@
   {
    "check": "netem 이 v0 에 delay 25ms 로 걸림",
    "ok": true,
-   "detail": "qdisc netem 8003: root refcnt 29 limit 1000 delay 25ms seed 8220624671"
+   "detail": "qdisc netem 8001: root refcnt 29 limit 1000 delay 25ms seed 5071809402"
   },
   {
    "check": "netem 이 v1 에도 걸림 (양쪽 절반이라야 대칭 지연)",
    "ok": true,
-   "detail": "qdisc netem 8004: root refcnt 29 limit 1000 delay 25ms seed 9665470213"
+   "detail": "qdisc netem 8002: root refcnt 29 limit 1000 delay 25ms seed 1452864528"
   },
   {
    "check": "문서 단계 0: 서버 기동 + 클라이언트 5회 성공",
@@ -83,7 +83,7 @@
    ]
   },
   "key_share": {
-   "clienthello_bytes": 1448,
+   "clienthello_bytes": 1451,
    "key_shares": [
     {
      "group": 4588,
@@ -95,7 +95,7 @@
   "negotiated_group_ids": [
    4588
   ],
-  "interop_output": "=== 도구 버전 ===\nOpenSSL 3.5.5 27 Jan 2026 (Library: OpenSSL 3.5.5 27 Jan 2026)\n\n=== ML-KEM-768 키/암호문 크기 (FIPS 203) ===\n  OpenSSL ML-KEM-768 공개키 DER = 1206 B\n  기대: ASN.1 머리(약 20 B) + 캡슐화키 1184 B\n  캡슐화키 1184 B 포함 여부: 예\n\n=== OpenSSL 이 X25519MLKEM768 을 지원하는가 ===\n  { 2.16.840.1.101.3.4.4.1, id-alg-ml-kem-512, ML-KEM-512, MLKEM512 } @ default\n  { 2.16.840.1.101.3.4.4.2, id-alg-ml-kem-768, ML-KEM-768, MLKEM768 } @ default\n  { 2.16.840.1.101.3.4.4.3, id-alg-ml-kem-1024, ML-KEM-1024, MLKEM1024 } @ default\n\n=== 상호운용: OpenSSL 3.5 서버 <-> Go crypto/tls 클라이언트 ===\n{\"ok\":true,\"addr\":\"127.0.0.1:44443\",\"group\":\"X25519MLKEM768\",\"group_id\":4588,\"tls_version\":772,\"cipher\":4865,\"peer_certs\":1,\"elapsed_ms\":3.164}\n  (X25519MLKEM768) exit=0\n{\"ok\":true,\"addr\":\"127.0.0.1:44443\",\"group\":\"x25519\",\"group_id\":29,\"tls_version\":772,\"cipher\":4865,\"peer_certs\":1,\"elapsed_ms\":2.898}\n  (x25519) exit=0\n"
+  "interop_output": "=== 도구 버전 ===\nOpenSSL 3.5.5 27 Jan 2026 (Library: OpenSSL 3.5.5 27 Jan 2026)\n\n=== ML-KEM-768 키/암호문 크기 (FIPS 203) ===\n  OpenSSL ML-KEM-768 공개키 DER = 1206 B\n  기대: ASN.1 머리(약 20 B) + 캡슐화키 1184 B\n  캡슐화키 1184 B 포함 여부: 예\n\n=== OpenSSL 이 X25519MLKEM768 을 지원하는가 ===\n  { 2.16.840.1.101.3.4.4.1, id-alg-ml-kem-512, ML-KEM-512, MLKEM512 } @ default\n  { 2.16.840.1.101.3.4.4.2, id-alg-ml-kem-768, ML-KEM-768, MLKEM768 } @ default\n  { 2.16.840.1.101.3.4.4.3, id-alg-ml-kem-1024, ML-KEM-1024, MLKEM1024 } @ default\n\n=== 상호운용: OpenSSL 3.5 서버 <-> Go crypto/tls 클라이언트 ===\n{\"ok\":true,\"addr\":\"127.0.0.1:44443\",\"group\":\"X25519MLKEM768\",\"group_id\":4588,\"tls_version\":772,\"cipher\":4865,\"peer_certs\":1,\"elapsed_ms\":4.446}\n  (X25519MLKEM768) exit=0\n{\"ok\":true,\"addr\":\"127.0.0.1:44443\",\"group\":\"x25519\",\"group_id\":29,\"tls_version\":772,\"cipher\":4865,\"peer_certs\":1,\"elapsed_ms\":2.207}\n  (x25519) exit=0\n"
  },
  "passed": 14,
  "total": 14

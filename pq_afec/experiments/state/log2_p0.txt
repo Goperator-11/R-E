@@ -5,8 +5,8 @@
 [통과] veth v0 가 루트에 MTU 1500 으로 올라옴                        3: v0@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue st
 [통과] veth v1 이 peer 안에 MTU 1500 으로 올라옴                    2: v1@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue st
 [통과] v1 이 루트 네임스페이스에 남아 있지 않다 (같으면 커널이 loopback 으로 우회)    
-[통과] netem 이 v0 에 delay 25ms 로 걸림                         qdisc netem 8003: root refcnt 29 limit 1000 delay 25ms seed 8220624671
-[통과] netem 이 v1 에도 걸림 (양쪽 절반이라야 대칭 지연)                    qdisc netem 8004: root refcnt 29 limit 1000 delay 25ms seed 9665470213
+[통과] netem 이 v0 에 delay 25ms 로 걸림                         qdisc netem 8001: root refcnt 29 limit 1000 delay 25ms seed 5071809402
+[통과] netem 이 v1 에도 걸림 (양쪽 절반이라야 대칭 지연)                    qdisc netem 8002: root refcnt 29 limit 1000 delay 25ms seed 1452864528
 [통과] 문서 단계 0: 서버 기동 + 클라이언트 5회 성공                         성공 5/5, group_id [29]
 [통과] ClientHello key_share: X25519MLKEM768 = 1216 B (= 32 + ML-KEM-768 캡슐화키 1184, FIPS 203) 실측 {4588: 1216}
 [통과] QUIC 핸드셰이크에서 실제로 X25519MLKEM768(4588) 합의             [4588]
