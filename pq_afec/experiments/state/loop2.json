@@ -185,18 +185,18 @@
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p19.txt"
   },
   "p18": {
-   "status": "done",
-   "fingerprint": "6989f8a283e86c84",
-   "finished": "2026-08-27 21:26",
-   "seconds": 2728.9,
-   "error": "",
+   "status": "failed",
+   "fingerprint": "67894727af92e489",
+   "finished": "2026-08-29 15:14",
+   "seconds": 7937.8,
+   "error": "exit 1",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p18.txt"
   },
   "p20": {
    "status": "failed",
-   "fingerprint": "8fac67454c0b7e23",
-   "finished": "2026-08-27 22:22",
-   "seconds": 0.4,
+   "fingerprint": "520a493c45de0f2c",
+   "finished": "2026-08-29 15:14",
+   "seconds": 0.8,
    "error": "exit 1",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p20.txt"
   }
@@ -4401,6 +4401,22 @@
    "status": "done",
    "at": "2026-08-29 13:01",
    "seconds": 7428.6,
+   "stale_deps": []
+  },
+  {
+   "stage": "p18",
+   "ok": false,
+   "status": "failed",
+   "at": "2026-08-29 15:14",
+   "seconds": 7937.8,
+   "stale_deps": []
+  },
+  {
+   "stage": "p20",
+   "ok": false,
+   "status": "failed",
+   "at": "2026-08-29 15:14",
+   "seconds": 0.8,
    "stale_deps": []
   }
  ]

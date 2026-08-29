@@ -1,11 +1,11 @@
 {
- "at": "2026-08-27 22:22:20",
+ "at": "2026-08-29 15:14:15",
  "round": 1,
  "counts": {
-  "진짜결함": 2,
+  "진짜결함": 3,
   "로그깨짐": 0,
   "시간초과": 0,
-  "표본부족": 2,
+  "표본부족": 1,
   "도중에죽음": 0,
   "환경사고": 0,
   "안돌았음": 1,
@@ -21,7 +21,7 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 21:30",
+   "finished": "2026-08-28 12:44",
    "seconds": 0.3
   },
   {
@@ -32,8 +32,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:29",
-   "seconds": 0.2
+   "finished": "2026-08-28 12:44",
+   "seconds": 1.6
   },
   {
    "stage": "build",
@@ -43,8 +43,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:33",
-   "seconds": 0.9
+   "finished": "2026-08-28 12:44",
+   "seconds": 6.2
   },
   {
    "stage": "gate",
@@ -54,8 +54,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:36",
-   "seconds": 28.0
+   "finished": "2026-08-28 12:46",
+   "seconds": 124.5
   },
   {
    "stage": "p5",
@@ -65,8 +65,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:36",
-   "seconds": 10.3
+   "finished": "2026-08-28 12:46",
+   "seconds": 20.9
   },
   {
    "stage": "p0",
@@ -76,8 +76,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:36",
-   "seconds": 4.4
+   "finished": "2026-08-28 14:15",
+   "seconds": 4.6
   },
   {
    "stage": "p1",
@@ -87,8 +87,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:36",
-   "seconds": 0.2
+   "finished": "2026-08-28 14:15",
+   "seconds": 10.6
   },
   {
    "stage": "p2",
@@ -98,8 +98,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:36",
-   "seconds": 0.2
+   "finished": "2026-08-28 14:19",
+   "seconds": 248.1
   },
   {
    "stage": "p3",
@@ -109,19 +109,21 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:36",
-   "seconds": 0.2
+   "finished": "2026-08-29 03:21",
+   "seconds": 2953.1
   },
   {
    "stage": "p4",
    "title": "모형 대 실측 대조 - 정책 예측이 맞았는가",
-   "kind": "통과",
-   "why": "",
-   "fails": [],
-   "prescription": "",
-   "loop2": "done",
-   "finished": "2026-08-27 18:37",
-   "seconds": 2.5
+   "kind": "진짜결함",
+   "why": "실패 1 건 중 진짜 1 건 (3/4)",
+   "fails": [
+    "정책 예측이 실측 최선과 일치 (팔이 갈린 조건만)                         [0, 7] | 잡음이라 제외 3 조건"
+   ],
+   "prescription": "고쳐야 한다. 자를 늘리지 말고 무엇이 틀렸는지부터 찾아라.",
+   "loop2": "pending",
+   "finished": "2026-08-29 03:22",
+   "seconds": 17.4
   },
   {
    "stage": "p7",
@@ -131,8 +133,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:38",
-   "seconds": 62.6
+   "finished": "2026-08-29 03:23",
+   "seconds": 65.6
   },
   {
    "stage": "p8",
@@ -142,8 +144,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:38",
-   "seconds": 18.8
+   "finished": "2026-08-29 03:26",
+   "seconds": 216.0
   },
   {
    "stage": "p9",
@@ -153,8 +155,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:38",
-   "seconds": 0.5
+   "finished": "2026-08-29 03:28",
+   "seconds": 107.1
   },
   {
    "stage": "p10",
@@ -164,22 +166,19 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 18:44",
-   "seconds": 365.3
+   "finished": "2026-08-29 03:34",
+   "seconds": 373.3
   },
   {
    "stage": "p11",
    "title": "폐루프 후회 - auto 가 최선 고정 m 만큼 하는가",
-   "kind": "진짜결함",
-   "why": "실패 2 건 중 진짜 1 건 (7/9)",
-   "fails": [
-    "후회 추정의 95% 신뢰반폭이 1 ms 미만 (기준 2 ms 를 판정할 정밀도)         최대 반폭 1.58 ms | 조건별 ['0.14', '0.40', '0.94', '0.50', '0.49', '1.58']",
-    "수렴 후 auto 가 최선과 잡음 안에서 같은 m 을 골랐다                    4/5 | 임계아래/무손실: 전 팔이 최선과 1 ms 안 -> 판정 제외; 임계아래/손실2%: auto m=1 / 최선 m=1 / 허용"
-   ],
-   "prescription": "고쳐야 한다. 자를 늘리지 말고 무엇이 틀렸는지부터 찾아라.",
-   "loop2": "pending",
-   "finished": "2026-08-27 21:51",
-   "seconds": 1283.4
+   "kind": "통과",
+   "why": "",
+   "fails": [],
+   "prescription": "",
+   "loop2": "done",
+   "finished": "2026-08-29 05:51",
+   "seconds": 8203.1
   },
   {
    "stage": "p12",
@@ -189,8 +188,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 19:04",
-   "seconds": 0.3
+   "finished": "2026-08-29 05:53",
+   "seconds": 153.8
   },
   {
    "stage": "p13",
@@ -200,8 +199,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 19:06",
-   "seconds": 84.4
+   "finished": "2026-08-29 05:55",
+   "seconds": 85.1
   },
   {
    "stage": "p14",
@@ -211,8 +210,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 19:10",
-   "seconds": 245.7
+   "finished": "2026-08-29 05:59",
+   "seconds": 252.1
   },
   {
    "stage": "p16",
@@ -222,8 +221,8 @@
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 19:13",
-   "seconds": 196.6
+   "finished": "2026-08-29 06:02",
+   "seconds": 199.6
   },
   {
    "stage": "p17",
@@ -231,36 +230,36 @@
    "kind": "진짜결함",
    "why": "실패 1 건 중 진짜 1 건 (9/10)",
    "fails": [
-    "6. [부정] 이 운용점에 적응이 벌 것이 있다 (오라클 이득 > 탐색세 0.42 ms)                오라클 이득 0.000 ms | 손실2%: 최선 m3 허용 ['m2', 'm3'] | 손실15%: 최선 m3 허용 ['m3']"
+    "6. [부정] 이 운용점에 적응이 벌 것이 있다 (오라클 이득 > 탐색세 0.42 ms)                오라클 이득 0.039 ms | 손실2%: 최선 m2 허용 ['m2', 'm3'] | 손실15%: 최선 m3 허용 ['m3']"
    ],
    "prescription": "고쳐야 한다. 자를 늘리지 말고 무엇이 틀렸는지부터 찾아라.",
    "loop2": "pending",
-   "finished": "2026-08-27 22:22",
-   "seconds": 1825.5
+   "finished": "2026-08-29 10:58",
+   "seconds": 17709.4
   },
   {
    "stage": "p15",
    "title": "v2 정책 후회 - δ·m 결합 정책 vs 최선 고정 조합",
-   "kind": "표본부족",
-   "why": "실패 1 건이 전부 정밀도 (10/11)",
-   "fails": [
-    "후회 추정의 95% 신뢰반폭이 1 ms 미만 (기준 2 ms 를 판정할 정밀도)               최대 반폭 2.23 ms | 조건별 ['0.06', '0.99', '0.99', '0.07', '0.99', '2.23']"
-   ],
-   "prescription": "결함이 아니라 못 잰 것이다. --precise 로 N 을 늘려라. 기준(자)을 완화하지 마라.",
-   "loop2": "pending",
-   "finished": "2026-08-27 22:22",
-   "seconds": 0.8
-  },
-  {
-   "stage": "p18",
-   "title": "m_max 상한 - 고정팔 m=1..4 를 직접 재서 모형을 검증",
    "kind": "통과",
    "why": "",
    "fails": [],
    "prescription": "",
    "loop2": "done",
-   "finished": "2026-08-27 21:26",
-   "seconds": 2728.9
+   "finished": "2026-08-29 13:01",
+   "seconds": 7428.6
+  },
+  {
+   "stage": "p18",
+   "title": "m_max 상한 - 고정팔 m=1..4 를 직접 재서 모형을 검증",
+   "kind": "진짜결함",
+   "why": "실패 1 건 중 진짜 1 건 (10/11)",
+   "fails": [
+    "6. ⭐ 이득 크기가 모형 예측의 0.5~2 배 (판정 가능 4/5 조건)                    m_max2포기·무손실: 실측 +52.06 / 예측 +50.00 (104%) | 임계사이·버스트3: 실측 +31.01 / 예측 +13.51 (230%) | 임계위·무버스트: 실측 +10.59 / 예측 +10.48 (101%) | 임계위·2Mbps: 실측 +0.03 / 예측 +0.15 (판정 불능 - 실측이 잡음과 구별 안 됨) | 임계위·2Mbps·손실15: 실측 +10.22 / 예측 +7.54 (135%)"
+   ],
+   "prescription": "고쳐야 한다. 자를 늘리지 말고 무엇이 틀렸는지부터 찾아라.",
+   "loop2": "pending",
+   "finished": "2026-08-29 15:14",
+   "seconds": 7937.8
   },
   {
    "stage": "p20",
@@ -268,12 +267,12 @@
    "kind": "표본부족",
    "why": "실패 1 건이 전부 정밀도 (4/5)",
    "fails": [
-    "5. 표본이 모형의 주장 크기를 잡기에 충분하다                                 모자란 쌍 29 개 (분해능아래 4 개는 뺌) | 최악 p17|2Mbps|loss15 m2-m3 750<488682, p18|임계위·2Mbps·손실15|loss1"
+    "5. 표본이 모형의 주장 크기를 잡기에 충분하다                                 모자란 쌍 16 개 (분해능아래 4 개는 뺌) | 최악 p17|RTT200|loss2 m2-m3 2250<268390, p15|cert2955|loss2 m1-m"
    ],
    "prescription": "결함이 아니라 못 잰 것이다. --precise 로 N 을 늘려라. 기준(자)을 완화하지 마라.",
    "loop2": "pending",
-   "finished": "2026-08-27 22:22",
-   "seconds": 0.4
+   "finished": "2026-08-29 15:14",
+   "seconds": 0.8
   },
   {
    "stage": "p6",
