@@ -42,33 +42,33 @@
   },
   "p3": {
    "status": "done",
-   "fingerprint": "dcc1bad826babcc7",
-   "finished": "2026-08-28 09:36",
-   "seconds": 981.1,
+   "fingerprint": "10e53b75c20a4aa5",
+   "finished": "2026-08-29 03:21",
+   "seconds": 2953.1,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p3.txt"
   },
   "p7": {
    "status": "done",
-   "fingerprint": "7bc3ac9f41beff34",
-   "finished": "2026-08-28 09:37",
-   "seconds": 63.7,
+   "fingerprint": "0b7b01c06da52eb2",
+   "finished": "2026-08-29 03:23",
+   "seconds": 65.6,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p7.txt"
   },
   "p8": {
    "status": "done",
-   "fingerprint": "edcba6e42a30f3ad",
-   "finished": "2026-08-28 09:41",
-   "seconds": 219.4,
+   "fingerprint": "2d3dad54fcc6476a",
+   "finished": "2026-08-29 03:26",
+   "seconds": 216.0,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p8.txt"
   },
   "p4": {
    "status": "failed",
-   "fingerprint": "dd986d7c1657b389",
-   "finished": "2026-08-28 09:36",
-   "seconds": 5.2,
+   "fingerprint": "f942935319b8ea50",
+   "finished": "2026-08-29 03:22",
+   "seconds": 17.4,
    "error": "exit 1",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p4.txt"
   },
@@ -90,65 +90,65 @@
   },
   "p9": {
    "status": "done",
-   "fingerprint": "5c046b2f1f9019bc",
-   "finished": "2026-08-28 09:42",
-   "seconds": 102.7,
+   "fingerprint": "8a3fa8e163484740",
+   "finished": "2026-08-29 03:28",
+   "seconds": 107.1,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p9.txt"
   },
   "p10": {
-   "status": "failed",
-   "fingerprint": "20856512d672e971",
-   "finished": "2026-08-28 09:49",
-   "seconds": 371.4,
-   "error": "exit 1",
+   "status": "done",
+   "fingerprint": "0e4eb5f1fb5508b8",
+   "finished": "2026-08-29 03:34",
+   "seconds": 373.3,
+   "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p10.txt"
   },
   "p11": {
-   "status": "failed",
-   "fingerprint": "1c05e6933f05676c",
-   "finished": "2026-08-27 21:51",
-   "seconds": 1283.4,
-   "error": "exit 1",
+   "status": "done",
+   "fingerprint": "b1a4f30af4220b3b",
+   "finished": "2026-08-29 05:51",
+   "seconds": 8203.1,
+   "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p11.txt"
   },
   "p12": {
    "status": "done",
-   "fingerprint": "a435143c7547779c",
-   "finished": "2026-08-27 19:04",
-   "seconds": 0.3,
+   "fingerprint": "d2d8dcfd351c3793",
+   "finished": "2026-08-29 05:53",
+   "seconds": 153.8,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p12.txt"
   },
   "p13": {
    "status": "done",
-   "fingerprint": "e8041bd108e4788a",
-   "finished": "2026-08-27 19:06",
-   "seconds": 84.4,
+   "fingerprint": "75267454e926ff65",
+   "finished": "2026-08-29 05:55",
+   "seconds": 85.1,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p13.txt"
   },
   "p14": {
    "status": "done",
-   "fingerprint": "578e517a81eff299",
-   "finished": "2026-08-27 19:10",
-   "seconds": 245.7,
+   "fingerprint": "934dd50f06407169",
+   "finished": "2026-08-29 05:59",
+   "seconds": 252.1,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p14.txt"
   },
   "p15": {
-   "status": "failed",
-   "fingerprint": "cee88e21135452a5",
-   "finished": "2026-08-27 22:22",
-   "seconds": 0.8,
-   "error": "exit 1",
+   "status": "done",
+   "fingerprint": "55db212a53a47bd0",
+   "finished": "2026-08-29 13:01",
+   "seconds": 7428.6,
+   "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p15.txt"
   },
   "p16": {
    "status": "done",
-   "fingerprint": "ae322b8d3fe17101",
-   "finished": "2026-08-27 19:13",
-   "seconds": 196.6,
+   "fingerprint": "6d4dc3501166b52e",
+   "finished": "2026-08-29 06:02",
+   "seconds": 199.6,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p16.txt"
   },
@@ -170,9 +170,9 @@
   },
   "p17": {
    "status": "failed",
-   "fingerprint": "d2210a3db4557a26",
-   "finished": "2026-08-27 22:22",
-   "seconds": 1825.5,
+   "fingerprint": "2d71659d155d74ed",
+   "finished": "2026-08-29 10:58",
+   "seconds": 17709.4,
    "error": "exit 1",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p17.txt"
   },
@@ -4297,6 +4297,110 @@
    "status": "done",
    "at": "2026-08-28 14:19",
    "seconds": 248.1,
+   "stale_deps": []
+  },
+  {
+   "stage": "p3",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 03:21",
+   "seconds": 2953.1,
+   "stale_deps": []
+  },
+  {
+   "stage": "p4",
+   "ok": false,
+   "status": "failed",
+   "at": "2026-08-29 03:22",
+   "seconds": 17.4,
+   "stale_deps": []
+  },
+  {
+   "stage": "p7",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 03:23",
+   "seconds": 65.6,
+   "stale_deps": []
+  },
+  {
+   "stage": "p8",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 03:26",
+   "seconds": 216.0,
+   "stale_deps": []
+  },
+  {
+   "stage": "p9",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 03:28",
+   "seconds": 107.1,
+   "stale_deps": []
+  },
+  {
+   "stage": "p10",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 03:34",
+   "seconds": 373.3,
+   "stale_deps": []
+  },
+  {
+   "stage": "p11",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 05:51",
+   "seconds": 8203.1,
+   "stale_deps": []
+  },
+  {
+   "stage": "p12",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 05:53",
+   "seconds": 153.8,
+   "stale_deps": []
+  },
+  {
+   "stage": "p13",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 05:55",
+   "seconds": 85.1,
+   "stale_deps": []
+  },
+  {
+   "stage": "p14",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 05:59",
+   "seconds": 252.1,
+   "stale_deps": []
+  },
+  {
+   "stage": "p16",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 06:02",
+   "seconds": 199.6,
+   "stale_deps": []
+  },
+  {
+   "stage": "p17",
+   "ok": false,
+   "status": "failed",
+   "at": "2026-08-29 10:58",
+   "seconds": 17709.4,
+   "stale_deps": []
+  },
+  {
+   "stage": "p15",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 13:01",
+   "seconds": 7428.6,
    "stale_deps": []
   }
  ]

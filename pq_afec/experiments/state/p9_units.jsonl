@@ -82,3 +82,46 @@
 {"fp": "383a40c1b121", "key": "B|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 56.294}}
 {"fp": "383a40c1b121", "key": "B|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 56.26}}
 {"fp": "383a40c1b121", "key": "B|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 107.335}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 51.936, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.346, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 102.648, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 102.726, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c3312|n15", "val": {"cert": 3312, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 51.909, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c4218|n15", "val": {"cert": 4218, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 102.649, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c3765|n15", "val": {"cert": 3765, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 102.691, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c3538|n15", "val": {"cert": 3538, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 102.48, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c3425|n15", "val": {"cert": 3425, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 102.58, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c3368|n15", "val": {"cert": 3368, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 102.683, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|x25519|c3000|n15", "val": {"cert": 3000, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 52.068, "first_flight_bytes": 1280}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 51.856, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 103.338, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 102.864, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 51.881, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c6937|n15", "val": {"cert": 6937, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 102.768, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c6031|n15", "val": {"cert": 6031, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 102.924, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c5578|n15", "val": {"cert": 5578, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 52.121, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 52.31, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 52.373, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 103.024, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "A|X25519MLKEM768|c3000|n15", "val": {"cert": 3000, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 52.401, "first_flight_bytes": 2560}}
+{"fp": "84eb7c0f4278", "key": "B|x25519|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.06666666666666667, "p50": 55.262}}
+{"fp": "84eb7c0f4278", "key": "B|x25519|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 107.789}}
+{"fp": "84eb7c0f4278", "key": "B|x25519|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.107}}
+{"fp": "84eb7c0f4278", "key": "B|x25519|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.996}}
+{"fp": "84eb7c0f4278", "key": "B|x25519|c3312|n15", "val": {"cert": 3312, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.305}}
+{"fp": "84eb7c0f4278", "key": "B|x25519|c4218|n15", "val": {"cert": 4218, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.176}}
+{"fp": "84eb7c0f4278", "key": "B|x25519|c3765|n15", "val": {"cert": 3765, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.634}}
+{"fp": "84eb7c0f4278", "key": "B|x25519|c3538|n15", "val": {"cert": 3538, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.926}}
+{"fp": "84eb7c0f4278", "key": "B|x25519|c3425|n15", "val": {"cert": 3425, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.035}}
+{"fp": "84eb7c0f4278", "key": "B|x25519|c3368|n15", "val": {"cert": 3368, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.202}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.366}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.598}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.747}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.495}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c6937|n15", "val": {"cert": 6937, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.211}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c6031|n15", "val": {"cert": 6031, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.115}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c5578|n15", "val": {"cert": 5578, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.554}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.381}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.578}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 0.7333333333333333, "p50": 105.963}}
+{"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c5974|n40", "val": {"cert": 5974, "ok": 40, "n": 40, "two_rtt_rate": 0.9, "p50": 106.042}}
