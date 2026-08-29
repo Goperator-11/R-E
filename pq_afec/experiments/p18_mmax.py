@@ -53,7 +53,17 @@ GROUP = "X25519MLKEM768"
 K = 2
 
 N_DEFAULT = 250
-N = int(os.environ.get("PADFEC_P18_N") or N_DEFAULT)
+# 🩸 2026-08-29 - **N_PRECISE 를 정의한다.** 형제 단계(p3·p11·p15·p17)는 전부
+#    `--precise` 로 정밀도 판을 고를 수 있는데 여기만 없어서, 정밀도 실행을
+#    걸 때마다 사람이 `PADFEC_P18_N` 을 손으로 줘야 했다. 2026-08-28 에
+#    그걸 잊어서 **p18 이 기본값으로 돌 뻔했다** — 하필 m=1~4 를 직접 재는,
+#    다중 소거 복구(2 단계) 검증의 핵심 단계다.
+#    값 750 = 기본값의 3 배(p17 과 같은 비율). 2026-08-29 실행이 이 값으로
+#    돌아 검사 5(m=4 가 m=2 보다 빠른 것이 잡음과 구별된다)를 4/5 조건에서
+#    통과시켰다 - 그 아래는 못 판정한다는 뜻이므로 더 줄이면 안 된다.
+N_PRECISE = 750
+N = int(os.environ.get("PADFEC_P18_N")
+        or (N_PRECISE if "--precise" in sys.argv else N_DEFAULT))
 
 ARMS = [1, 2, 3, 4]          # 고정 m
 

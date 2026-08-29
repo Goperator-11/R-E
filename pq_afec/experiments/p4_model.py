@@ -265,14 +265,46 @@ def main():
             # 없는 비용을 청구하니 정책이 패리티를 과소 구매했다 -
             # 이 한 줄로 정책 일치가 5/12 -> 7/12 가 된다.
             # (p11·p15 에서 같은 결함을 이미 고쳤는데 p4 를 놓쳤다.)
+            # 🩸 2026-08-29 - **m_max 를 실측 팔에서 유도한다.** 그전에는
+            #    `m_max=policy.M_MAX_DEFAULT` 를 그대로 넘겼는데, 바로 위
+            #    주석이 δ 에 대해 말한 것과 **같은 이유로 틀렸다**:
+            #    "실측에 없는 선택지를 정책에 주면 비교가 성립하지 않는다."
+            #    p3 의 팔은 {off, on1, on2} 뿐인데 M_MAX_DEFAULT 가 2 → 3 이
+            #    된 2026-08-25 부터 정책이 **on3 를 고를 수 있게** 됐고,
+            #    그러면 아래 판정은 원리적으로 일치할 수가 없다.
+            #    실제로 2026-08-29 정밀도 실행에서 **10 조건 전부 on3 를
+            #    골라 0/7** 이 나왔다 - 모형 결함으로 오해하기 딱 좋은 모양이다
+            #    (내가 실제로 그렇게 의심했다). m_max=2 로 주면 12 조건 전부
+            #    on1 을 고르고 실측 허용집합이 전부 ['on1','on2'] 이라 **7/7**.
+            #
+            #    상수 2 를 박지 않는 이유: p3 가 나중에 on3 팔을 더하면
+            #    자동으로 따라가야 한다. 자는 **측정이 무엇을 담고 있는지**로
+            #    정해져야지 정책 상수로 정해지면 안 된다.
+            _m_avail = [int(a[2:]) for a in arms
+                        if a.startswith("on") and a[2:].isdigit()]
+            _m_max = max(_m_avail) if _m_avail else 0
             d = policy.decide_v2(C=Cmap[g], cert_bytes=p3["cert"],
                                  rtt_ms=p3["rtt_ms"], p=loss / 100.0,
                                  burst=burst, s0_base=s0_base[g],
                                  c_pkt=C_PKT, W=1280, max_steps=0,
-                                 m_max=policy.M_MAX_DEFAULT,
+                                 m_max=_m_max,
                                  uplink_mbps=policy.UPLINK_UNSHAPED)
             want = ("off" if d["choice"]["mode"] == "none"
                     else "on%d" % d["choice"]["m"])
+            # 🩸 그래도 정책이 실측에 없는 팔을 고르면 **「일치/불일치」가
+            #    아니라 「비교 불가」** 다. 조용히 불일치로 찍으면 사람이
+            #    모형을 의심하게 된다 - 2026-08-29 에 실제로 그랬다.
+            if want not in arms:
+                skipped.append({"group": g, "loss": loss, "burst": burst,
+                                "why": "정책이 고른 %s 가 실측 팔에 없다"
+                                       % want,
+                                "want": want, "arms": sorted(arms),
+                                "m_max_given": _m_max, "n_needed": None})
+                print("%-16s %-6s %-6.0f %-10s %-10s 비교 불가   "
+                      "실측 팔 %s (m_max=%d 로 줬는데도)"
+                      % (g, "%.1f%%" % loss, burst, want, "-",
+                         sorted(arms), _m_max))
+                continue
             # 🩸 2026-08-21 재설계 - 옛 판정은 두 군데 틀렸다.
             #   (a) 상위-2 간격 < 1 ms 면 조건을 통째로 뺐다. p11 에서
             #       고친 것과 같은 결함이다 - 정책이 동률 집합 **안**을

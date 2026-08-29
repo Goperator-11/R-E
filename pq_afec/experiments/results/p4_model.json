@@ -404,7 +404,7 @@
    "group": "x25519",
    "loss": 1.0,
    "burst": 1.0,
-   "policy": "on3",
+   "policy": "on1",
    "measured_best": "on2",
    "tie_set": [
     "on1",
@@ -415,13 +415,13 @@
     "on1": 51.685610000000004,
     "on2": 51.585789999999996
    },
-   "agree": false
+   "agree": true
   },
   {
    "group": "x25519",
    "loss": 2.0,
    "burst": 1.0,
-   "policy": "on3",
+   "policy": "on1",
    "measured_best": "on2",
    "tie_set": [
     "on1",
@@ -432,13 +432,13 @@
     "on1": 51.813815,
     "on2": 51.64481166666666
    },
-   "agree": false
+   "agree": true
   },
   {
    "group": "x25519",
    "loss": 5.0,
    "burst": 1.0,
-   "policy": "on3",
+   "policy": "on1",
    "measured_best": "on2",
    "tie_set": [
     "on1",
@@ -449,13 +449,13 @@
     "on1": 52.76745416666667,
     "on2": 52.01088166666666
    },
-   "agree": false
+   "agree": true
   },
   {
    "group": "X25519MLKEM768",
    "loss": 1.0,
    "burst": 1.0,
-   "policy": "on3",
+   "policy": "on1",
    "measured_best": "on2",
    "tie_set": [
     "on1",
@@ -466,13 +466,13 @@
     "on1": 52.356230833333335,
     "on2": 52.2407975
    },
-   "agree": false
+   "agree": true
   },
   {
    "group": "X25519MLKEM768",
    "loss": 2.0,
    "burst": 1.0,
-   "policy": "on3",
+   "policy": "on1",
    "measured_best": "on1",
    "tie_set": [
     "on1",
@@ -483,13 +483,13 @@
     "on1": 52.277413333333335,
     "on2": 52.43935166666667
    },
-   "agree": false
+   "agree": true
   },
   {
    "group": "X25519MLKEM768",
    "loss": 5.0,
    "burst": 1.0,
-   "policy": "on3",
+   "policy": "on1",
    "measured_best": "on1",
    "tie_set": [
     "on1",
@@ -500,13 +500,13 @@
     "on1": 53.20494166666667,
     "on2": 54.237514166666664
    },
-   "agree": false
+   "agree": true
   },
   {
    "group": "X25519MLKEM768",
    "loss": 5.0,
    "burst": 3.0,
-   "policy": "on3",
+   "policy": "on1",
    "measured_best": "on2",
    "tie_set": [
     "on1",
@@ -517,7 +517,7 @@
     "on1": 71.60129500000001,
     "on2": 62.101295833333324
    },
-   "agree": false
+   "agree": true
   }
  ],
  "s0": {
@@ -544,7 +544,7 @@
   "X25519MLKEM768": 0.21631749999999528
  },
  "policy_agreement": [
-  0,
+  7,
   7
  ],
  "policy_skipped": [
@@ -598,8 +598,8 @@
   },
   {
    "check": "정책 예측이 실측 최선과 일치 (팔이 갈린 조건만)",
-   "ok": false,
-   "detail": "[0, 7] | 잡음이라 제외 3 조건"
+   "ok": true,
+   "detail": "[7, 7] | 잡음이라 제외 3 조건"
   },
   {
    "check": "[부정] 판정할 조건이 실제로 남았다 (전부 제외되면 공허하다)",
@@ -607,6 +607,6 @@
    "detail": "판정 대상 7 조건 | 판정불능 조건의 필요 N [16596, 84950, 11801095] (중앙 84950) -> p3 --precise(N=1200) 면 0 조건 추가 판정"
   }
  ],
- "passed": 3,
+ "passed": 4,
  "total": 4
 }
