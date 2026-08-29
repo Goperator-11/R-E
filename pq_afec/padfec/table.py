@@ -59,8 +59,19 @@ M_VALS = [0, 1, 2, 3]
 #    20 점에서 최악 0.058 ms 로 한도 아래에 든다(18 점은 0.183 으로 초과).
 #    p=0.25 는 Jeffreys 추정 (손실+0.5)/(관측+1) 로 흔히 나오는 값이라
 #    생산에서 실제로 도달한다.
+# 🩸 2026-08-29 - **0.20 위를 한 번 더 반으로 접었다**(0.025 -> 0.0125 간격).
+#    반복 라운드 배율(roundMultTable)이 stall 에 곱해지면서 **기존 보간 오차를
+#    같이 키운다** - 배율이 p=0.2875 에서 1.49 이므로 J 어긋남도 1.49 배가 된다
+#    (관문 최대 0.096 -> 0.155 ms, 한도 0.100 초과 1,584/178,200 점).
+#    배율 자체의 보간 오차는 0.1% 로 무시할 수준이니 고칠 곳은 **밑에 깔린
+#    p 축**이다. 선형보간 오차는 구간 길이의 제곱에 비례하므로 반으로 접으면
+#    약 1/4 이 되어 1.49 배 증폭을 덮는다.
+#    처음에는 0.20 위만 접었더니 최악점이 **0.2875 -> 0.1625 로 옮겨갔다**
+#    (안 접은 [0.15, 0.175] 구간의 중점). 배율은 p 와 함께 자라므로 증폭도
+#    위쪽 전체에 걸린다 - 그래서 **0.15 위를 0.0125 로 균일하게** 맞춘다.
 P_VALS = [0.0, 0.002, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.065, 0.08,
-          0.10, 0.12, 0.135, 0.15, 0.175, 0.20, 0.225, 0.25, 0.275, 0.30]
+          0.10, 0.12, 0.135, 0.15, 0.1625, 0.175, 0.1875, 0.20, 0.2125,
+          0.225, 0.2375, 0.25, 0.2625, 0.275, 0.2875, 0.30]
 # 🩸 2026-08-28 - 버스트 축을 **정규화 좌표 u = L·(1-p) 로 바꿨다.**
 #    (그전에는 L_VALS = [1.0, 2.0, 3.0, 5.0] 이었다.)
 #
@@ -223,7 +234,7 @@ def fail_frac(k, m, p, L):
 
 def build():
     _check_consistent()
-    tab, jtab, ftab = {}, {}, {}
+    tab, jtab, ftab, rtab = {}, {}, {}, {}
     for k in K_VALS:
         for m in M_VALS:
             for pi, p in enumerate(P_VALS):
@@ -235,10 +246,34 @@ def build():
                     tab[(k, m, pi, li)] = pfail(k, m, p, L)
                     jtab[(k, m, pi, li)] = joint(k, m, p, L)
                     ftab[(k, m, pi, li)] = fail_frac(k, m, p, L)
-    return tab, jtab, ftab
+                    # 🆕 2026-08-29 - 반복 라운드 **배율**을 심는다.
+                    #    Go 는 상태를 이어받는 DP 를 못 돌린다(표만 읽는다).
+                    #    근거는 padfec/policy.py 의 expected_rounds 주석.
+                    #
+                    # 🩸 R 이 아니라 **배율 (R-1)/p_fail 을 그대로** 심는다.
+                    #    처음에는 R 을 심고 Go 가 `(R-1)/pFailTot` 으로 나눴는데,
+                    #    **보간한 R 을 (다른 표에서 보간한) p_fail 로 나누는**
+                    #    꼴이라 두 오차가 겹쳤다. 관문 J 어긋남이 0.096 -> 0.263 ms
+                    #    로 커져 한도(0.100)를 넘었다(178,200 점 중 10,164 점).
+                    #    배율을 한 값으로 심으면 보간 대상이 하나로 줄고
+                    #    나눗셈이 사라진다.
+                    # 🩸 분모는 **`p_fail_of`** 여야 한다. 위의 `pfail()` 은
+                    #    `p_unrecoverable` 을 쓰는 **MDS 가정**(패리티 m 개로
+                    #    소거 m 개 복구)이라 실제 구현(recovery_group: m>=2 에서
+                    #    m-1)과 다르다. 실제로 `pfail(k,m) == p_fail_of(k,m+1)`
+                    #    꼴로 한 칸 어긋난다(k=3 m=2 p=0.15 L=1: 0.0266 vs
+                    #    0.1095, 4.1 배). 처음에 이걸로 배율을 만들었더니 관문이
+                    #    **178,200 점 중 57,248 건 불일치**(J 어긋남 77.5 ms)를
+                    #    냈다. cost_of_v2 가 나누는 것은 flight_outcome 의
+                    #    p_fail 이고 그것은 p_fail_of 와 같다(1.1e-16).
+                    _R = policy.expected_rounds(k, m, p, L)
+                    _pf = policy.p_fail_of({"k": k, "m": m}, p, L)
+                    rtab[(k, m, pi, li)] = (
+                        ((_R - 1.0) / _pf) if _pf > 1e-15 else 1.0)
+    return tab, jtab, ftab, rtab
 
 
-def emit_go(tab, jtab, ftab, out):
+def emit_go(tab, jtab, ftab, rtab, out):
     w = out.write
     w("// 자동 생성 파일. 손대지 마라.\n")
     w("//   생성: python -m padfec.table experiments/quicbed/pfail_table.go\n")
@@ -360,6 +395,30 @@ def emit_go(tab, jtab, ftab, out):
         w("\t},\n")
     w("}\n\n")
 
+    # 🆕 2026-08-29 - 기대 라운드 수 표. Go 는 상태를 이어받는 DP 를 못 돌린다
+    #    (표만 읽는다). 유도는 padfec/policy.py 의 expected_rounds 에 있다.
+    NL = chr(10)
+    w("// roundMultTable[k][m][p][u] = 반복 라운드 **배율** (R-1)/p_fail." + NL)
+    w("// 재전송이 **또 실패**하는 경우를 세는 항이다. 옛 모형은 복구" + NL)
+    w("// 라운드를 정확히 한 번만 청구했고, 그 오차가 m 에 따라 달라서" + NL)
+    w("// m 끼리의 비교를 왜곡했다(p18 검사 6: 실측 +31.01 vs 예측 +13.51)." + NL)
+    w("// 유도는 padfec/policy.py 의 expected_rounds - 맞춘 상수가 없다." + NL)
+    w("// stall 항에 이 값을 곱한다. p=0 이면 1.0 (무손실 실측 불변)." + NL)
+    w("// R 이 아니라 배율을 심는 이유: 보간한 R 을 보간한 p_fail 로" + NL)
+    w("// 나누면 두 오차가 겹친다(관문 J 어긋남 0.096 -> 0.263 ms)." + NL)
+    w("var roundMultTable = [][][][]float64{" + NL)
+    for k in K_VALS:
+        w(chr(9) + "{ // k=%d" % k + NL)
+        for m in M_VALS:
+            w(chr(9) * 2 + "{ // m=%d" % m + NL)
+            for pi, p in enumerate(P_VALS):
+                vals = ", ".join("%.17g" % rtab[(k, m, pi, li)]
+                                 for li in range(len(U_VALS)))
+                w(chr(9) * 3 + "{%s}, // p=%g" % (vals, p) + NL)
+            w(chr(9) * 2 + "}," + NL)
+        w(chr(9) + "}," + NL)
+    w("}" + NL + NL)
+
     w("// RTT 표본이 있을 때의 첫 PTO 배율. RFC 9002 §5.3 + §6.2.1 에서\n")
     w("// **유도한** 값이지 맞춘 상수가 아니다 - 근거는 padfec/policy.py 의\n")
     w("// PTO_SAMPLED_RTT_MULT 주석에 있다.\n")
@@ -395,12 +454,13 @@ def main():
     if len(sys.argv) < 2:
         sys.stderr.write('사용: python -m padfec.table <출력경로>' + chr(10))
         return 2
-    tab, jtab, ftab = build()
+    tab, jtab, ftab, rtab = build()
     import io as _io
     with _io.open(sys.argv[1], 'w', encoding='utf-8', newline=chr(10)) as f:
-        emit_go(tab, jtab, ftab, f)
-    sys.stderr.write('wrote %s (pfail %d + joint %d + failfrac %d)'
-                     % (sys.argv[1], len(tab), len(jtab), len(ftab)) + chr(10))
+        emit_go(tab, jtab, ftab, rtab, f)
+    sys.stderr.write('wrote %s (pfail %d + joint %d + failfrac %d + rounds %d)'
+                     % (sys.argv[1], len(tab), len(jtab), len(ftab),
+                        len(rtab)) + chr(10))
     return 0
 
 

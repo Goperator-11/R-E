@@ -1,16 +1,16 @@
 {
- "grid_points": 178200,
+ "grid_points": 196020,
  "source": "/tmp/qamp",
  "mismatch": 0,
  "mismatches": [],
- "interp_near_misses": 342,
- "interp_worst_j_regret_ms": 0.020653338132440524,
+ "interp_near_misses": 390,
+ "interp_worst_j_regret_ms": 0.010279312321614498,
  "interp_tol_ms": 0.1,
  "picks": {
   "none": 11390,
-  "parity": 133634,
+  "parity": 148238,
   "pad": 1960,
-  "combo": 31216
+  "combo": 34432
  },
  "pad_deltas": {
   "81": 720,

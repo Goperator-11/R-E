@@ -1,1 +1,1 @@
-wrote experiments/quicbed/pfail_table.go (pfail 8000 + joint 8000 + failfrac 8000)
+wrote experiments/quicbed/pfail_table.go (pfail 10400 + joint 10400 + failfrac 10400 + rounds 10400)

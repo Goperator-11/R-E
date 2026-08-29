@@ -2,17 +2,17 @@
  "stages": {
   "gate": {
    "status": "done",
-   "fingerprint": "e3d43b188f1c9f7d",
-   "finished": "2026-08-28 12:46",
-   "seconds": 124.5,
+   "fingerprint": "8aa7789cf6e97626",
+   "finished": "2026-08-29 23:29",
+   "seconds": 459.6,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_gate.txt"
   },
   "build": {
    "status": "done",
-   "fingerprint": "556766e03d578c70",
-   "finished": "2026-08-28 12:44",
-   "seconds": 6.2,
+   "fingerprint": "d7e49538db98e7f2",
+   "finished": "2026-08-29 23:21",
+   "seconds": 4.7,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_build.txt"
   },
@@ -74,9 +74,9 @@
   },
   "p5": {
    "status": "done",
-   "fingerprint": "54884cc070bf2903",
-   "finished": "2026-08-28 12:46",
-   "seconds": 20.9,
+   "fingerprint": "7e56f54b6805fe34",
+   "finished": "2026-08-29 23:29",
+   "seconds": 14.9,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_p5.txt"
   },
@@ -154,17 +154,17 @@
   },
   "lint": {
    "status": "done",
-   "fingerprint": "d40d8463be46ab1c",
-   "finished": "2026-08-28 12:44",
-   "seconds": 0.3,
+   "fingerprint": "057b189d1cb7cd8d",
+   "finished": "2026-08-29 23:21",
+   "seconds": 0.2,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_lint.txt"
   },
   "table": {
    "status": "done",
-   "fingerprint": "0272c8420faf1bcb",
-   "finished": "2026-08-28 12:44",
-   "seconds": 1.6,
+   "fingerprint": "659f19af3ef6b00b",
+   "finished": "2026-08-29 23:21",
+   "seconds": 11.4,
    "error": "",
    "log": "C:\\dev\\pq_afec\\experiments\\state\\log2_table.txt"
   },
@@ -4417,6 +4417,46 @@
    "status": "failed",
    "at": "2026-08-29 15:14",
    "seconds": 0.8,
+   "stale_deps": []
+  },
+  {
+   "stage": "lint",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 23:21",
+   "seconds": 0.2,
+   "stale_deps": []
+  },
+  {
+   "stage": "table",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 23:21",
+   "seconds": 11.4,
+   "stale_deps": []
+  },
+  {
+   "stage": "build",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 23:21",
+   "seconds": 4.7,
+   "stale_deps": []
+  },
+  {
+   "stage": "gate",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 23:29",
+   "seconds": 459.6,
+   "stale_deps": []
+  },
+  {
+   "stage": "p5",
+   "ok": true,
+   "status": "done",
+   "at": "2026-08-29 23:29",
+   "seconds": 14.9,
    "stale_deps": []
   }
  ]

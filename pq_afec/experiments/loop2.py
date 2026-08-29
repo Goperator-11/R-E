@@ -193,10 +193,21 @@ def deps_py(*entries):
 # padfec/*.py 전부. 🩸 table.py 는 experiments/quicbed/pfail_table.go 의
 # **생성기**라 고치면 Go 가 조회하는 실패확률표가 통째로 바뀌는데도 감사
 # 전까지 빠져 있었다. 새 모듈(quantum.py 처럼)이 생겨도 자동으로 잡히게 훑는다.
+# 🩸 2026-08-29 - **`afec/` 가 빠져 있었다.** `padfec/policy.py` 는
+#    `from afec.channel import GilbertElliott` 로 **손실 모형의 심장**을
+#    가져다 쓰고(`padfec/codec.py` 는 `afec.rs` 의 GF(256) Cauchy RS 를
+#    쓴다), 그런데도 지문에 없어서 **afec/ 를 고쳐도 모든 단계가 done 으로
+#    남았다.** table.py 가 2026-08-25 감사 전까지 빠져 있던 것과 **같은 형태**
+#    의 구멍이다 - "이 파일을 고치면 결과가 바뀌는가"가 판단 기준이어야 하고,
+#    afec/channel.py 는 P_fail 전체를 좌우한다.
+#    (2026-08-21 의 for_prior 경계 수정이 바로 이 파일에서 일어났다. 그때
+#     지문이 안 바뀌었으니 그 회차 측정은 옛 채널로 잰 것이 섞여 있었을 수 있다.)
 ALGO = _sources("padfec", ".py",
                 ["padfec/__init__.py", "padfec/capacity.py",
                  "padfec/codec.py", "padfec/amplif.py", "padfec/policy.py",
-                 "padfec/table.py"])
+                 "padfec/table.py"]) + _sources(
+                     "afec", ".py",
+                     ["afec/__init__.py", "afec/channel.py", "afec/rs.py"])
 
 
 def _quicbed_go_sources():

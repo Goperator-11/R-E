@@ -258,6 +258,30 @@ func failFracLookup(k, m int, p, l float64) (float64, float64, float64) {
 	return f0 / sum, f1 / sum, f2 / sum
 }
 
+// roundMultLookup 은 반복 라운드 **배율** (R-1)/p_fail 을 표에서 읽는다.
+//
+// 🩸 2026-08-29 - 옛 stall 항은 복구 라운드를 **정확히 한 번만** 청구했다.
+// 재전송이 또 실패하는 경우가 통째로 빠져 있었고, 그 오차가 m 에 따라 달라
+// **m 끼리의 비교를 왜곡했다**(p18 검사 6: 버스트 3 에서 실측 이득 +31.01 vs
+// 예측 +13.51). 유도는 padfec/policy.py 의 expected_rounds - 상태를 이어받는
+// DP 라 Go 로 다시 짜지 않고 표로 심는다(이 파일의 설계 원칙).
+//
+// 보간은 jointLookup·failFracLookup 과 **같은 식**이어야 한다 - 세 표가 다른
+// 지점에서 읽히면 회계가 갈라진다.
+func roundMultLookup(k, m int, p, l float64) float64 {
+	ki := idxNearest(pfailK, k)
+	mi := idxNearest(pfailM, m)
+	if k != pfailK[ki] || m != pfailM[mi] {
+		panic(fmt.Sprintf("roundMultLookup: 표 범위 밖 (k=%d m=%d)", k, m))
+	}
+	row := roundMultTable[ki][mi]
+	plo, phi, t := axisLerp(pfailP, p)
+	llo, lhi, tl := axisLerp(pfailU, normBurst(p, l))
+	a00, a10 := row[plo][llo], row[phi][llo]
+	a01, a11 := row[plo][lhi], row[phi][lhi]
+	return a00*(1-t)*(1-tl) + a10*t*(1-tl) + a01*(1-t)*tl + a11*t*tl
+}
+
 // flightOutcome 은 기대 왕복 수와 복구 실패 확률을 **하나의 분포에서** 낸다.
 // padfec/policy.py 의 flight_outcome 과 같은 식이다.
 //
@@ -831,8 +855,18 @@ func evalCands(cs []cand, k, w int, serverFlight, rtt, p, burst, cPkt float64,
 		// 못 받은 것만 다시 보내므로 그 팔의 정상 왕복 수(nGivenOK)가 든다.
 		// Python cost_of_v2 와 **같은 식·같은 순서**여야 한다.
 		tPTOSampled := ptoSampledRttMult * rtt
-		j := n*rtt + pto*(rtt+tPTO) + ptoS*(nGivenOK*rtt+tPTOSampled) +
-			ack*(nGivenOK*rtt+tACK) + tx
+		// 🩸 2026-08-29 - **반복 라운드 배율.** 세 가지의 질량은 "한 번이라도
+		// 실패할 확률"이고 옛 식은 거기에 복구 한 번의 대가만 곱했다.
+		// R = 기대 라운드 수이므로 추가 라운드는 (R-1) 회, 실패 한 번당
+		// 평균 (R-1)/p_fail 회다. Python cost_of_v2 와 **같은 식**이다.
+		// p=0 이면 R=1 이라 배율 1.0 - 무손실 결과가 안 움직인다.
+		// 🩸 배율을 **한 값으로** 읽는다. 처음에는 R 을 읽고 여기서
+		// (R-1)/pFailTot 으로 나눴는데, **보간한 R 을 (다른 표에서 보간한)
+		// p_fail 로 나누는** 꼴이라 두 오차가 겹쳤다 - 관문 J 어긋남이
+		// 0.096 -> 0.263 ms 로 한도(0.100)를 넘었다(10,164/178,200 점).
+		mult := roundMultLookup(c.k, c.m, p, burst)
+		j := n*rtt + mult*(pto*(rtt+tPTO)+ptoS*(nGivenOK*rtt+tPTOSampled)+
+			ack*(nGivenOK*rtt+tACK)) + tx
 		out = append(out, scored{c: c, j: j, added: added})
 	}
 
@@ -1329,7 +1363,18 @@ func policyGrid() {
 							//    최악 0.656 ms 로 한도(0.100)를 넘고 있었다.
 							//    버스트 축에서 겪은 것과 같은 병이다.
 							for _, p := range []float64{0, 0.007, 0.015, 0.035,
-								0.0725, 0.09, 0.15, 0.1625, 0.2375, 0.2875} {
+								// 🩸 2026-08-29 - P_VALS 가 0.15 위를 0.0125 로
+								//    균일하게 접으면서 옛 시험점(0.1625·0.2375·
+								//    0.2875)이 **마디 위**가 됐다. 마디 위에서는
+								//    보간 오차가 정의상 0 이라 관문이 그 구간을
+								//    시험하지 못한다(버스트 축에서 겪은 바로 그
+								//    병이다). 새 마디의 중점으로 옮긴다:
+								//      0.156  = [0.15, 0.1625] 안
+								//      0.181  = [0.175, 0.1875] 안
+								//      0.244  = [0.2375, 0.25] 안
+								//      0.294  = [0.2875, 0.30] 안
+								0.0725, 0.09, 0.15, 0.156, 0.181, 0.244,
+								0.294} {
 							// 🩸 2026-08-28 - 예전에는 {1, 2, 3} 이었다. 셋 다
 							//    그때의 버스트 격자({1,2,3,5}) **위의 점**이라,
 							//    버스트 축의 보간(예전에는 최근접 스냅)이 이

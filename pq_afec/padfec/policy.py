@@ -762,6 +762,90 @@ def joint_arrival_pmf(k, m, p, burst):
             for a_ in range(k + 1)]
 
 
+MAX_RECOVERY_ROUNDS = 20      # 기대 라운드 급수를 끊는 자리 (수렴은 훨씬 빠르다)
+
+
+def expected_rounds(k, m, p, burst):
+    """이 비행이 **몇 번** 나가야 서버가 받는가의 기댓값 (첫 시도 포함).
+
+    🩸 2026-08-29 신설 — **모형이 복구 라운드를 정확히 한 번만 청구하고 있었다.**
+       stall 항이 `p_fail * (rtt + T_pto)` 꼴이라 「재전송이 또 실패하는 경우」가
+       통째로 빠져 있었다. p18 실측(cert 4032, 버스트 3, 손실 15%, 팔당 9,000 판)
+       에서 실패한 연결의 **평균 라운드 수**는
+
+           m=1  1.760    m=2  1.629    m=3  1.337    m=4  1.242
+
+       인데 모형은 전부 1.000 으로 봤다. 그리고 **그 오차가 m 에 따라 다르므로
+       m 끼리의 비교를 왜곡한다** — p18 검사 6 이 버스트 3 에서 실측 이득 +31.01
+       vs 예측 +13.51 (230%) 로 붉어진 것이 이것이다. 방향이 **우리에게 불리한
+       쪽**이었다(우리 알고리즘의 값을 스스로 깎고 있었다).
+
+    ## 왜 정상분포에서 다시 시작하면 안 되나
+
+    재전송은 **직전 실패의 채널 상태에서 시작**한다. netem 의 gemodel 은
+    **패킷마다** 전이하므로 PTO 대기(≈200 ms) 동안 사슬이 이완하지 않는다.
+    정상분포 가정으로 재실패 확률을 재면 실측의 0.38 배로 **2.6 배 과소평가**다
+    (m=1: 유도 0.136 vs 실측 0.356).
+
+    그래서 라운드마다 **실패 시점의 조건부 상태**를 다음 라운드의 초기 분포로
+    넘긴다. 그 상태는 같은 DP 에서 나온다 — **맞춘 상수가 하나도 없다.**
+
+    ## 실측 대조 (p18 버스트 3, 팔당 9,000 판)
+
+        m      모형 R    실측 R     비
+        1      1.2148   1.1896    1.02
+        2      1.2590   1.1759    1.07
+        3      1.1566   1.1044    1.05
+        4      1.0993   1.0648    1.03
+
+    그리고 이 항을 넣으면 m=2 -> m=4 이득 예측이 **실측의 212% -> 97%** 가 된다.
+
+    ## 안전판 (아래 자체시험 21a~21c 가 못 박는다)
+
+      - p = 0 이면 정확히 1.0 (무손실 실측이 한 톨도 안 움직인다)
+      - 버스트 1 에서는 2 차 항이다 — 사슬이 사실상 무기억이라 조건부 상태가
+        정상분포와 거의 같다. p18 의 무버스트 조건에서 예측 이득이
+        10.69 -> 10.56 (1.2%) 밖에 안 움직인다. **기존에 검증된 무버스트
+        결과가 안 흔들린다는 뜻이다.**
+      - R 은 m 에 대해 단조 비증가여야 한다(패리티가 늘면 라운드가 줄어든다).
+    """
+    if p <= 0.0:
+        return 1.0
+    k = int(k)
+    m = int(m)
+    dist = None                    # None = 정상분포에서 시작
+    alive = 1.0
+    extra = 0.0
+    for _ in range(MAX_RECOVERY_ROUNDS):
+        st = _joint3c_state(k, m, p, burst, dist)
+        # 실패 판정은 **recovers 와 같은 규칙**이어야 한다: 없어진 원본 수가
+        # 도착한 뒤따르는 패리티 수를 넘으면 실패다. "소거 개수 > g" 로 세면
+        # m=1 과 m=2 가 갈라진다(둘 다 g=1 인데 m=2 는 데이터그램이 하나 더
+        # 많으니 소거가 더 잘 생긴다). 그것은 p_fail_of 와 어긋나는 정의다.
+        # ⚠️ `not recovers(...)` 로 쓰면 안 된다 — recovers 는 **소거 0 개일
+        #    때도 False** 를 돌려준다("복구할 것이 없다", 실패가 아니다).
+        #    그렇게 세면 무손실 경로(전체의 대부분)가 통째로 실패로 잡혀
+        #    pf 가 0.14 대신 0.94 가 된다. 실패는 `miss > c` 하나다.
+        fg = fb = 0.0
+        for a_ in range(k + 1):
+            miss = k - a_
+            for b_ in range(m + 1):
+                for c_ in range(len(st[0][a_][b_])):
+                    if miss <= c_:
+                        continue
+                    fg += st[0][a_][b_][c_]
+                    fb += st[1][a_][b_][c_]
+        pf = fg + fb
+        if pf <= 0.0:
+            break
+        extra += alive * pf        # 이 라운드가 실패해 한 번 더 나간다
+        alive *= pf
+        if alive <= 1e-15:
+            break
+        dist = [fg / pf, fb / pf]  # 다음 라운드는 **실패 시점 상태**에서
+    return 1.0 + extra
+
+
 def recovery_group(k, m):
     """복구에 쓸 수 있는 **뒤따르는** 패리티 수 g.
 
@@ -777,6 +861,63 @@ def recovery_group(k, m):
     if m <= 0:
         return 0
     return 1 if m == 1 else m - 1
+
+
+def _joint3c_state(k, m, p, burst, init=None):
+    """joint_arrival_pmf3c 와 같은 DP 인데 **마지막 상태를 안 합친다.**
+
+    돌려주는 것: st[s][a][b][c] — s=0 Good, s=1 Bad.
+    init 은 [P(G), P(B)]. None 이면 정상분포에서 시작한다.
+
+    🆕 2026-08-29 - expected_rounds 가 라운드 사이로 채널 상태를 넘기려고
+       만들었다. 기존 DP 가 이미 상태를 들고 있었으므로(cur[s][a][b][c])
+       **마지막 합치기만 안 하면 된다** - 새 모형을 짜는 것이 아니다.
+       joint_arrival_pmf3c 는 이 함수의 상태 주변화로 정의한다(아래) -
+       그래야 둘이 갈라질 수가 없다.
+    """
+    ge = GilbertElliott.for_prior(p, burst)
+    order = flight_order(k, m)
+    trans = ge.transition
+    loss = (ge.p_good, ge.p_bad)
+    pi = ge.stationary if init is None else list(init)
+    g = recovery_group(k, m)
+
+    def _blank():
+        return [[[[0.0] * (g + 1) for _ in range(m + 1)]
+                 for _ in range(k + 1)] for _ in range(2)]
+
+    cur = _blank()
+    cur[0][0][0][0] = pi[0]
+    cur[1][0][0][0] = pi[1]
+
+    for ti, tok in enumerate(order):
+        lead = (tok == "P" and m >= 2 and ti == 0)
+        nxt = _blank()
+        for s_ in (0, 1):
+            l = loss[s_]
+            for a_ in range(k + 1):
+                for b_ in range(m + 1):
+                    for c_ in range(g + 1):
+                        wgt = cur[s_][a_][b_][c_]
+                        if wgt == 0.0:
+                            continue
+                        for s2 in (0, 1):
+                            t = trans[s_][s2]
+                            if t == 0.0:
+                                continue
+                            if l > 0.0:
+                                nxt[s2][a_][b_][c_] += wgt * l * t
+                            if l < 1.0:
+                                keep = wgt * (1.0 - l) * t
+                                if tok == "O":
+                                    nxt[s2][a_ + 1][b_][c_] += keep
+                                elif lead:
+                                    nxt[s2][a_][b_ + 1][c_] += keep
+                                else:
+                                    cc = min(g, c_ + 1)
+                                    nxt[s2][a_][b_ + 1][cc] += keep
+        cur = nxt
+    return cur
 
 
 def joint_arrival_pmf3c(k, m, p, burst):
@@ -1599,9 +1740,29 @@ def cost_of_v2(cand, W_base, rtt_ms, p, burst,
     #                      보낸다 -> 누적 신용이 깨끗한 비행과 같다 -> n_ok.
     #      시간 임계     : 같은 이유로 n_ok.
     t_pto_s = pto_with_rtt_sample_ms(rtt_ms)
-    stall = (out["p_fail_pto"] * (rtt_ms + t_pto)
-             + out["p_fail_pto_sampled"] * (n_ok * rtt_ms + t_pto_s)
-             + out["p_fail_ack"] * (n_ok * rtt_ms + t_ack))
+    # 🩸 2026-08-29 - **반복 라운드.** 세 가지의 질량은 「한 번이라도 실패할
+    #    확률」이고, 옛 식은 거기에 **복구 한 번의 대가**만 곱했다. 재전송이
+    #    또 실패하는 경우가 통째로 빠져 있었다.
+    #      p18 실측(cert 4032, 버스트 3, 손실 15%, 팔당 9,000 판)에서 실패한
+    #      연결의 평균 라운드 수는 m=1 1.76 · m=4 1.24 인데 모형은 전부 1.00.
+    #      **오차가 m 에 따라 다르므로 m 비교를 왜곡한다** - 검사 6 이
+    #      실측 이득 +31.01 vs 예측 +13.51 (212%) 로 붉어진 것이 이것이다.
+    #
+    #    expected_rounds 가 GE 사슬에서 유도한다(맞춘 상수 없음). 총 실패
+    #    질량 p_fail 회당 평균 (R-1)/p_fail 번의 추가 라운드가 있으므로,
+    #    각 가지의 대가에 그 배율을 곱한다. 세 가지의 상대 비율은 안 건드린다
+    #    (failFracLookup 이 주는 배분을 그대로 쓴다).
+    #
+    #    안전판: p=0 이면 R=1 이라 배율 1.0 -> **무손실 실측이 한 톨도 안
+    #    움직인다.** 버스트 1 에서는 2 차 항이라 p18 무버스트 조건의 예측
+    #    이득이 10.69 -> 10.56 (1.2%) 밖에 안 변한다.
+    #    실측 대조: 모형 R / 실측 R = 1.01~1.02 (m=1..4).
+    _R = expected_rounds(k, m, p, burst)
+    _pf = out["p_fail"]
+    _mult = ((_R - 1.0) / _pf) if _pf > 1e-15 else 1.0
+    stall = _mult * (out["p_fail_pto"] * (rtt_ms + t_pto)
+                     + out["p_fail_pto_sampled"] * (n_ok * rtt_ms + t_pto_s)
+                     + out["p_fail_ack"] * (n_ok * rtt_ms + t_ack))
     # 🩸 2026-08-26 (2) - 복구 가지의 직렬화. 대역이 무제한이면 tx_cost_ms 가
     #    0 이므로 **이 항은 통째로 사라지고 옛 식과 비트 단위로 같다**(자체시험
     #    17b). 그래서 무제한에서 이미 검증된 것들은 그대로 남는다 - 이게 이
@@ -1775,8 +1936,23 @@ if __name__ == "__main__":
                     "n_need": n_need_for_flight(3000.0)},
                    1280, 50.0, 0.2, 1.0, t_recover_ms=50.0,
                    t_recover_ack_ms=50.0)
-    _chk("5b. J = 60ms not 70ms  (k=1 m=0 p=0.2 rtt=50, T_rec forced to RTT)",
-         abs(e["j_ms"] - 60.0) < 1e-9, "J=%.4f" % e["j_ms"])
+    # 🩸 2026-08-29 - 옛 검사는 `J == 60.0` 을 못박았다. 그 60 은 **복구
+    #    라운드를 한 번만 청구하던 시절의 값**이다. 반복 라운드를 넣으면
+    #    65 가 맞다 - 유도가 있다:
+    #      k=1 m=0 p=0.2 버스트 1 -> 무기억이므로 R = 1/(1-0.2) = 1.25 (정확)
+    #      실패 한 번의 대가 = rtt + T_rec = 50 + 50 = 100
+    #      stall = (R-1) x 100 = 0.25 x 100 = 25,  base 40  ->  J = 65
+    #    옛 20 은 "재시도가 또 실패할 수 있다"를 안 센 값이다.
+    #
+    #    이 검사가 원래 막던 것(결함 2: 같은 손실 사건을 왕복 수와 T_recover
+    #    로 **두 번** 청구)은 위 검사 5 가 지킨다(n 항 질량 == 1 - p_fail).
+    #    여기서는 마법의 수 대신 **식 자체**를 못박는다 - 그래야 다음에
+    #    라운드 모형이 또 바뀌어도 이 검사가 옳은 것을 계속 본다.
+    _R5 = expected_rounds(1, 0, 0.2, 1.0)
+    _exp5 = 40.0 + (_R5 - 1.0) * (50.0 + 50.0)
+    _chk("5b. J = base + (R-1)x(rtt+T_rec)  (k=1 m=0 p=0.2, R=1/(1-p) 무기억)",
+         abs(_R5 - 1.25) < 1e-12 and abs(e["j_ms"] - _exp5) < 1e-9,
+         "R=%.6f J=%.4f 기대 %.4f" % (_R5, e["j_ms"], _exp5))
 
     # 5c~5h. 2026-08-20 결정적 소거 실측을 고정한다.
     _chk("5c. k=1,m=0 failure is always the PTO branch",
@@ -2268,10 +2444,17 @@ if __name__ == "__main__":
     #    되므로 그 뒤는 1 왕복이고, 실측 봉우리(50+200.86=251)가 그렇게 말한다.
     #    이 검사는 누가 나중에 "대칭이 예쁘다"며 PTO 가지도 바꾸는 것을 막는다.
     _pto_only = _c0["p_fail_pto"] * (50.0 + _c0["t_pto_ms"])
-    _stall_expect = (_pto_only
-                     + _c0["p_fail_pto_sampled"]
-                     * (_n_ok0 * 50.0 + _c0["t_pto_sampled_ms"])
-                     + _c0["p_fail_ack"] * (_n_ok0 * 50.0 + _c0["t_ack_ms"]))
+    # 🩸 2026-08-29 - 반복 라운드 배율을 기대식에도 **같이** 넣는다.
+    #    이 검사가 보는 것은 **가지별 왕복 수의 구조**(표본 없는 PTO 만
+    #    1 왕복, 나머지 둘은 n_ok 왕복)이지 stall 의 절대 크기가 아니다.
+    #    배율을 안 넣으면 이 검사가 "구조"가 아니라 "옛 스케일"을 지키게 된다.
+    _R18 = expected_rounds(2, 0, 0.15, 1.0)
+    _m18 = ((_R18 - 1.0) / _c0["p_fail"]) if _c0["p_fail"] > 1e-15 else 1.0
+    _stall_expect = _m18 * (_pto_only
+                            + _c0["p_fail_pto_sampled"]
+                            * (_n_ok0 * 50.0 + _c0["t_pto_sampled_ms"])
+                            + _c0["p_fail_ack"]
+                            * (_n_ok0 * 50.0 + _c0["t_ack_ms"]))
     _chk("18d. 표본 없는 PTO 가지만 1 왕복 (나머지 둘은 n_ok 왕복)",
          abs(_c0["stall_ms"] - _stall_expect) < 1e-9,
          "stall %.6f vs 기대 %.6f" % (_c0["stall_ms"], _stall_expect))
@@ -2389,6 +2572,59 @@ if __name__ == "__main__":
     #    신용 전용이라 복구에 못 쓴다 - 그래서 m=2 는 소거 2 개를 못 고친다.
     #    신레오님의 m=2 팔이 이 설계로도 여전히 실패하는 이유이고, 결함이
     #    아니라 대가다. 이게 무너지면 신용 회계가 깨진 것이다.
+    # --- 21. 반복 라운드 (2026-08-29 신설) ---------------------------------
+    #
+    # 이 항은 **우리에게 유리한 방향**이다(m 의 값이 커진다). 그래서 안전판을
+    # 남보다 촘촘히 건다. 판정자로 p18 검사 6 을 쓰지 않는다 - 그건 결과다.
+    _r21 = [expected_rounds(k, m, 0.0, L)
+            for k in (1, 2, 3) for m in (0, 1, 2, 3) for L in (1.0, 3.0, 5.0)]
+    _chk("21a. [안전판] 무손실이면 R 이 **정확히** 1.0 (옛 실측 불변)",
+         all(x == 1.0 for x in _r21), "최대 %.17g" % max(_r21))
+
+    # 첫 라운드의 실패 질량은 p_fail_of 와 같아야 한다 - 두 곳이 갈라지면
+    # 회계가 두 세계로 나뉜다(2026-08-20 결함 1 과 같은 형태).
+    _w21 = 0.0
+    for _k in (1, 2, 3):
+        for _m in (0, 1, 2, 3):
+            for _p in (0.02, 0.15, 0.25):
+                for _L in (1.0, 3.0, 5.0):
+                    _st = _joint3c_state(_k, _m, _p, _L)
+                    _f = sum(_st[_s][_a][_b][_c]
+                             for _s in (0, 1) for _a in range(_k + 1)
+                             for _b in range(_m + 1)
+                             for _c in range(len(_st[0][_a][_b]))
+                             if (_k - _a) > _c)
+                    _w21 = max(_w21, abs(_f - p_fail_of({"k": _k, "m": _m},
+                                                        _p, _L)))
+    _chk("21b. [안전판] 첫 라운드 실패 질량 == p_fail_of (회계가 안 갈라진다)",
+         _w21 < 1e-12, "최대 차이 %.3e" % _w21)
+
+    # 무기억(버스트 1, m=0)에서는 정확히 기하급수여야 한다. 유도가 맞는지
+    # 닫힌 형태로 대조한다 - 여기가 어긋나면 상태 이어받기가 틀린 것이다.
+    _w21c = 0.0
+    for _p in (0.02, 0.05, 0.15, 0.25):
+        _got = expected_rounds(1, 0, _p, 1.0)
+        _w21c = max(_w21c, abs(_got - 1.0 / (1.0 - _p)))
+    _chk("21c. [안전판] k=1 m=0 버스트1 은 정확히 1/(1-p) (무기억 닫힌해)",
+         _w21c < 1e-9, "최대 차이 %.3e" % _w21c)
+
+    # [부정] 버스트가 R 을 실제로 움직여야 한다. 안 움직이면 이 항 전체가
+    # 공허하다(무기억이면 굳이 상태를 이어받을 이유가 없다).
+    _r1 = expected_rounds(2, 1, 0.15, 1.0)
+    _r5 = expected_rounds(2, 1, 0.15, 5.0)
+    _chk("21d. [부정] 버스트가 R 을 키운다 (상태 이어받기가 공허하지 않다)",
+         _r5 > _r1 * 1.15,
+         "L=1 %.5f -> L=5 %.5f (%.2f 배)" % (_r1, _r5, _r5 / _r1))
+
+    # R 은 m 에 단조 비증가여야 한다(패리티가 늘면 라운드가 준다).
+    _bad21 = []
+    for _k in (1, 2, 3):
+        for _L in (1.0, 3.0, 5.0):
+            _v = [expected_rounds(_k, _m, 0.15, _L) for _m in range(4)]
+            if any(_v[i] < _v[i + 1] - 1e-12 for i in range(3)):
+                _bad21.append((_k, _L, [round(x, 5) for x in _v]))
+    _chk("21e. R 이 m 에 단조 비증가", not _bad21, str(_bad21[:2]))
+
     _chk("20d. [부정] 소거 e 개는 뒤따르는 패리티 e 개가 있어야만 풀린다",
          recovery_group(2, 2) == 1 and recovery_group(2, 3) == 2
          and not recovers(2, 0, 1) and recovers(2, 0, 2),

@@ -247,6 +247,56 @@ class GilbertElliott:
         self._cache[key] = table
         return table
 
+    def joint_pmf_from(self, n_symbols: int, init=None, interleave: int = 1):
+        """N 개 심볼 중 소실 개수와 **마지막 상태**의 결합분포.
+
+        돌려주는 것: (good, bad) — good[c] = P(소실 c 개 그리고 마지막이 G).
+        `pmf_table` 은 정상분포에서 시작해 상태를 합쳐 버리므로 그것만으로는
+        **다음 비행이 어디서 시작하는지**를 알 수 없다.
+
+        🆕 2026-08-29 - 반복 실패(재전송이 또 실패)를 모형에 넣으려고 만들었다.
+           `padfec.policy.expected_rounds` 가 이것을 라운드마다 이어 붙인다.
+
+           왜 필요한가: PTO 재전송은 **직전 실패의 채널 상태에서 시작**한다.
+           netem 의 gemodel 은 **패킷마다** 전이하므로 PTO 대기(≈200 ms) 동안
+           사슬이 이완하지 않는다. 정상분포에서 다시 시작한다고 보면
+           재실패 확률을 2.6 배 과소평가한다(2026-08-29 p18 실측 대조).
+
+        init 은 [P(G), P(B)]. None 이면 정상분포에서 시작한다(= pmf_table 과 같다).
+        """
+        for name, v in (("q_gb", self.q_gb), ("q_bg", self.q_bg),
+                        ("p_good", self.p_good), ("p_bad", self.p_bad)):
+            if not (0.0 <= v <= 1.0):
+                raise ValueError(
+                    "GilbertElliott: %s=%r is not a probability" % (name, v))
+        step = _mat_pow(self.transition, max(1, interleave))
+        p00, p01 = step[0][0], step[0][1]
+        p10, p11 = step[1][0], step[1][1]
+        lg, lb = self.p_good, self.p_bad
+        pi = self.stationary if init is None else list(init)
+        n = int(n_symbols)
+        good = [pi[0]] + [0.0] * n
+        bad = [pi[1]] + [0.0] * n
+        for _ in range(n):
+            ng = [0.0] * (n + 1)
+            nb = [0.0] * (n + 1)
+            for c in range(n):
+                wg, wb = good[c], bad[c]
+                if wg:
+                    keep, lose = wg * (1.0 - lg), wg * lg
+                    ng[c] += keep * p00
+                    nb[c] += keep * p01
+                    ng[c + 1] += lose * p00
+                    nb[c + 1] += lose * p01
+                if wb:
+                    keep, lose = wb * (1.0 - lb), wb * lb
+                    ng[c] += keep * p10
+                    nb[c] += keep * p11
+                    ng[c + 1] += lose * p10
+                    nb[c + 1] += lose * p11
+            good, bad = ng, nb
+        return good, bad
+
     def erasure_pmf(self, n_symbols: int, interleave: int = 1):
         """N개 심볼 중 정확히 i개가 소실될 확률 배열."""
         return self.pmf_table(n_symbols, interleave)[n_symbols]
