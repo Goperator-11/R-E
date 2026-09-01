@@ -771,10 +771,24 @@ def stage_status(stage, st):
     rec = st["stages"].get(stage.id)
     if not rec:
         return "pending", "한 번도 안 돌았음"
+    # 🩸 2026-09-01 - 지문을 status **위로** 올린다. 구멍 3.
+    #    옛 코드로 난 실패도 **옛 결과다.** 지문 검사가 아래에 있으면
+    #    `status != "done"` 에서 먼저 반환돼 **성공한 단계에만** 걸린다.
+    #    그러면 지난번 failed 인 단계는 코드가 바뀌어도 영원히 "pending" 이고,
+    #    fixloop.classify() 의 stale 갈래에 **절대 못 온다**. 옛 실패가
+    #    「진짜결함 - 고쳐야 한다」로 지금 것처럼 보고된다.
+    #    실제 사고: p17(기록 08-29 10:58) · p18 · p20 이 그날 22:31~23:12 에
+    #    afec/channel.py · padfec/policy.py · padfec/table.py 가 바뀐 뒤에도
+    #    09-01 까지 「진짜결함」으로 보고됐다. 사람을 이미 없어졌을 수도 있는
+    #    결함으로 보낸다 - 이 저장소가 지문을 만든 이유가 정확히 그것이다.
+    #    스케줄링에는 영향이 없다(resolve/stale_upstream 은 != "done" 만 본다).
+    if rec.get("fingerprint") != stage.fingerprint():
+        return "stale", "코드가 바뀜 (지난번 %s)" % rec.get("status", "?")
     if rec.get("status") != "done":
         return "pending", "지난번 %s" % rec.get("status", "?")
-    if rec.get("fingerprint") != stage.fingerprint():
-        return "stale", "코드가 바뀜"
+    # ⚠️ outputs_present() 는 **여기 그대로 둔다.** 실패한 단계는 산출물이
+    #    없는 것이 정상이라, 위로 같이 올리면 전부 "산출물이 없어짐" 으로
+    #    오진한다. 세 검사의 상하 관계가 곧 정확성이다.
     if not stage.outputs_present():
         return "stale", "산출물이 없어짐"
     return "done", rec.get("finished", "")

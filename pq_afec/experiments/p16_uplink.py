@@ -142,18 +142,57 @@ def linfit(xs, ys):
 # 처방은 자를 넓히는 것이 **아니다**(그건 결과를 못 보게 만든다). p18 이
 # 이미 가진 관례를 옮긴다 - 차이가 잡음 안이면 **판정 불능**으로 표시하고
 # **필요 표본 N** 을 같이 적는다. 「수정 대기 목록」 A-3 후보 ②·D-5 가 이것이다.
+# 🩸 2026-09-01 - **잘못 놓인 자 여덟 번째. 자가 아니라 오차막대가 틀렸다.**
+#    옛 _se 는 `s/sqrt(n)` 이었다 - 판마다 독립이라는 가정이다. 원자료는
+#    독립이 아니다. 10 Mbps 조건의 lag-1 자기상관을 재보면
+#        base +0.383 · pad +0.358 · m1 +0.511 · m2 +0.534
+#    라 **불확실성을 약 2 배 과소평가**했다(배치평균 SE / 독립 SE = 1.66~2.43).
+#    그 결과 검사 3 이 m2 를 「틀림」으로 찍었는데 **여유가 0.0225 ms 였다**
+#    (|잔차| - 반폭 = 0.2725 vs 자 0.25). 정직한 반폭(+-0.244)이면 0.138 로
+#    **판정불능** 이다 - 「틀렸다」가 아니라 「못 쟀다」였다.
+#    같은 조건의 앞선 두 판은 [맞음] 이었고 이 파일은 그사이 diff 0 이다.
+#
+#    ⚠️ **자(RULER_MS)는 한 글자도 안 건드린다.** 위 78~81 행이 경고한
+#    「넓히면 검사 4 의 반증이 공허해진다」를 배치반폭으로 직접 확인했다:
+#        옛 식 잔차 m1 -1.069 · m2 -1.444  vs  배치반폭 +-0.218 / +-0.244
+#        -> 둘 다 그대로 [틀림]. 검사 4 의 반증은 살아있다.
+#    넓어진 것은 자가 아니라 **오차막대**이고, 그건 자료가 원래 그만큼밖에
+#    말해 주지 않는다는 뜻이다.
+BATCH_MIN = 8          # 배치가 이보다 적으면 배치평균 자체를 못 믿는다
+
+
+def _batch_means(v):
+    """비겹침 배치평균. 배치 크기 b ~ sqrt(n) (표준 관례, 배치 수도 ~sqrt(n))."""
+    n = len(v)
+    b = max(1, int(math.sqrt(n)))
+    k = n // b
+    if k < BATCH_MIN:
+        return None
+    return [sum(v[i * b:(i + 1) * b]) / float(b) for i in range(k)]
+
+
 def _se(v):
+    """평균의 표준오차. **연속한 판은 독립이 아니라** 비겹침 배치평균으로 잰다."""
     if not v or len(v) < 2:
         return None
-    mu = sum(v) / len(v)
-    return math.sqrt(sum((x - mu) ** 2 for x in v) / (len(v) - 1) / len(v))
+    m = _batch_means(v)
+    if m is None:
+        m = list(v)        # 배치를 못 낼 만큼 짧을 때만. n=200~400 에선 안 탄다.
+    mu = sum(m) / len(m)
+    return math.sqrt(sum((x - mu) ** 2 for x in m) / (len(m) - 1) / len(m))
 
 
 def _sd(v):
+    """need_n 이 쓰는 「한 판의 유효 표준편차」.
+
+    배치평균 SE 에서 되돌린다. 이렇게 해야 **반폭과 필요표본이 같은 자료를
+    말한다** - 반폭만 정직해지고 필요표본이 옛 가정이면 "이만큼 더 재면
+    판정된다" 가 거짓말이 된다.
+    """
     if not v or len(v) < 2:
         return None
-    mu = sum(v) / len(v)
-    return math.sqrt(sum((x - mu) ** 2 for x in v) / (len(v) - 1))
+    se = _se(v)
+    return None if se is None else se * math.sqrt(len(v))
 
 
 def _z(alpha=0.05):
@@ -229,7 +268,11 @@ def main():
 
     def add(name, ok, detail):
         out["checks"].append({"check": name, "ok": bool(ok), "detail": detail})
-        print("[%s] %-56s %s" % ("통과" if ok else "실패", name, detail[:70]))
+        # 🩸 2026-09-01 - detail[:70] 이 정확히 70 자에서 잘라 **실패한 팔의
+        #    항을 떨어뜨렸다.** 검사 3 이 왜 실패했는지가 로그에 아예 안 남아
+        #    results/*.json 을 열어야만 보였다. 실패는 안 자른다.
+        print("[%s] %-56s %s"
+              % ("통과" if ok else "실패", name, detail if not ok else detail[:70]))
         sys.stdout.flush()
 
     print("=" * 100)

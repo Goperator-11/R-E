@@ -327,9 +327,16 @@ def classify(sid, rec, loop2_status, note, text, nbytes, round_rc=None):
                 [], "결함이 아니다. 다시 돌린다.")
 
     # --- 상류가 무효라 건너뛴 것
-    if (rec or {}).get("status") == "skipped" or "건너뜀" in err:
-        return ("안돌았음", "상류가 무효라 건너뛰었다 (%s)" % err, [],
-                "상류를 먼저 초록으로 만들어라.")
+    # 🩸 2026-09-01 - 이 조건은 **죽은 코드였다.** loop2 는 status 에
+    #    "skipped" 를 **절대 안 쓴다** (loop2.py:1073-1076 이 쓰는 값은
+    #    done / failed / stale_deps 셋뿐), err 도 "exit N" · "timeout Ns" ·
+    #    "상류 무효: …" 뿐이라 "건너뜀" 이 들어갈 자리가 없다. 그래서
+    #    **stale_deps 기록이 그대로 실패 갈래로 흘러 「진짜결함」으로
+    #    보고됐다** - loop2 가 「돌긴 돌았는데 상류가 무효라 못 믿는다」고
+    #    명시한 것을 결함으로 세는 꼴이다. history 에 실제 1 건 있다(p2, 08-21).
+    if (rec or {}).get("status") in ("skipped", "stale_deps") or "상류 무효" in err:
+        return ("안돌았음", "상류가 무효인 채로 돈 결과라 근거가 없다 (%s)" % err,
+                [], "상류를 먼저 초록으로 만들어라.")
 
     # --- 로그가 깨졌으면 **분류 자체를 못 한다.** 이걸 결함으로 세면
     #     "왜 실패했는지 모르는 것" 을 "무엇이 틀렸는지 안다" 로 둔갑시킨다.
@@ -422,7 +429,12 @@ def print_triage(rows):
             continue
         print("\n■ %s — %d 단계" % (kind, len(items)))
         for r in items:
-            print("  [%s] %s" % (r["stage"], r["title"][:60]))
+            # 🩸 2026-09-01 - `finished` 를 rows 에 담아 두고도(401 행) 화면에
+            #    한 번도 안 찍고 있었다. 그래서 **08-29 기록을 09-01 진단서에서
+            #    읽고도 아무도 낡은 줄 몰랐다.** 언제 잰 것인지는 무엇을
+            #    쟀는지만큼 중요하다.
+            print("  [%s] %s   (기록 %s)"
+                  % (r["stage"], r["title"][:52], r["finished"] or "없음"))
             print("        근거: %s" % r["why"])
             for s in r["fails"][:6]:
                 print("        · %s" % s[:110])
@@ -542,6 +554,33 @@ def selftest():
           c({"status": "done"}, "stale", "코드가 바뀜", L, 10), "안돌았음")
     check("기록 자체가 없으면 안돌았음",
           c(None, "pending", "한 번도 안 돌았음", "", 0), "안돌았음")
+
+    # 🩸 2026-09-01 - **지문 구멍.** 바로 위 두 시험은 classify() 만 부르므로
+    #    `loop2_status` 를 손으로 넣어 준다. 그래서 **그 값을 정하는 쪽이
+    #    틀렸을 때는 아무 말도 못 한다.** 실제로 loop2.stage_status() 가
+    #    status 를 지문보다 먼저 봐서, 지난번 failed 인 단계는 코드가 바뀌어도
+    #    "pending" 으로 남았고 위 stale 갈래에 영영 못 왔다. 옛 코드에서 난
+    #    실패가 지금 것처럼 「진짜결함」으로 보고됐다(08-29 의 p17·p18·p20).
+    #    → 자를 만드는 쪽을 직접 시험한다.
+    def _ss(rec_status, fp_ok):
+        sys.path.insert(0, HERE)
+        import loop2                               # noqa: E402
+        s = loop2.build_stages()[0]
+        st = {"stages": {s.id: {
+            "status": rec_status,
+            "fingerprint": s.fingerprint() if fp_ok else "옛지문",
+            "finished": "2026-08-29 10:58"}}}
+        return loop2.stage_status(s, st)[0]
+
+    check("지문이 어긋나면 지난번 failed 도 stale 이다",
+          _ss("failed", False), "stale")
+    check("[부정] 지문이 맞으면 failed 는 그대로 pending 이다",
+          _ss("failed", True), "pending")
+    check("지문이 어긋나면 stale_deps 도 stale 이다",
+          _ss("stale_deps", False), "stale")
+    check("stale_deps 는 실패가 아니라 안돌았음이다",
+          c({"status": "stale_deps", "error": "상류 무효: p1"},
+            "pending", "", L, len(L)), "안돌았음")
     check("정밀도만 실패하면 표본부족",
           c({"status": "failed", "error": "exit 1", "seconds": 900},
             "pending", "", L, len(L)), "표본부족")
