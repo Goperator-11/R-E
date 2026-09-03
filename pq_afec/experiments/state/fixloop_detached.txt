@@ -495,3 +495,12 @@
 
 진짜결함이 있다. 자동으로 못 고친다 - 판단이 필요하다.
 진단서: C:\dev\pq_afec\experiments\state\fixloop_triage.json
+
+2026-08-30 03:19:23  ==== 분리 실행 시작 ====
+[바퀴 1] C:\Users\scien\AppData\Local\Programs\Python\Python314\python.exe -u C:\dev\pq_afec\experiments\loop2.py --loop --keep-going
+
+2026-09-01 11:22:03  ==== 분리 실행 시작 ====
+[바퀴 1] C:\Users\scien\AppData\Local\Programs\Python\Python314\python.exe -u C:\dev\pq_afec\experiments\loop2.py --loop --keep-going --only p16 p15 p18
+
+2026-09-01 14:40:49  ==== 분리 실행 시작 ====
+[바퀴 1] C:\Users\scien\AppData\Local\Programs\Python\Python314\python.exe -u C:\dev\pq_afec\experiments\loop2.py --loop --keep-going --only p18

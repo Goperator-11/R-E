@@ -763,25 +763,102 @@ class TestInvariants(unittest.TestCase):
             self._assert_decision_bounds(d, cfg)
             ctrl.on_feedback(sampler.send(d.k + d.r), rtt_ms=40.0)
 
+    # (경로, 토큰) -> 허용 **개수**. 파일 통째 면제가 아니다 - 두 번째가
+    # 생기면 그 순간 걸린다.
+    _FOOTPRINT_ALLOW = {("padfec/table.py", "open("): 1}
+    # 위 예외를 단 파일은 "그 open 이 __main__ 가드 뒤에서만 도는가"를 따로 본다.
+    _FOOTPRINT_GENERATORS = ("padfec/table.py",)
+
     def test_library_footprint_is_pure(self):
-        """afec/ 라이브러리는 파일·네트워크·프로세스·스레드를 일절 안 만진다.
+        """afec/·padfec/ 라이브러리는 파일·네트워크·프로세스·스레드를 안 만진다.
 
         공유 서버에서 돌리기 위한 전제다: 알고리즘 코드는 순수 계산이고,
         파일 쓰기는 튜닝 스크립트가 자기 docs/ 폴더에 하는 것뿐이다.
         OS 수준 격리(run_confined.sh)는 그 위에 얹는 2차 방어선이다.
         여기서 걸리면 격리 전제가 깨진 것이니, 정말 필요해서 추가한
-        것이라면 run_confined.sh와 README의 격리 설명도 같이 고칠 것.
+        것이라면 run_confined.sh 의 격리 설명도 같이 고칠 것.
+
+        🩸 2026-09-03 - **대상이 `afec/` 하나였다.** `padfec/` 은 최초 커밋
+        (`6dbf9e8`)부터 있었고 지금은 그쪽이 본체(v2)인데 이 자가 한 번도
+        안 닿았다 - README 가 스스로 "afec 는 주역에서 내렸다"고 적는 바로
+        그 옛 패키지만 재고 있었던 셈이다. 넓혀 보니 실제로 걸리는 것은
+        `padfec/table.py` 의 `open(` **하나**뿐이고 그것은 정당하다(Go 확률표를
+        굽는 코드 생성기라 `__main__` 가드 뒤에서만 돈다). 즉 "격리 전제가
+        깨져 있었다" 가 아니라 **"자가 재지 않아 왔다"** 가 맞는 진단이다.
+
+        `glob` 도 `rglob` 으로 바꾼다. 지금 하위 패키지가 없어 실제 누락은
+        0 건이지만, `loop2.py` 가 이미 겪은 병("루프에 없는 파일이라 아무도
+        안 봤다")과 같은 부류다.
+
+        예외를 다는 것이 자를 무디게 하지 않는가 - **파일 통째 면제라면
+        그렇다.** 그래서 두 겹으로 좁힌다: 허용 **개수**를 못 박고(두 번째
+        `open(` 은 걸린다), 그 호출이 `import` 만으로 도달 가능한지를 AST 로
+        본다. 개수만 세면 `open(` 을 모듈 최상위로 옮기거나 최상위에서
+        `main()` 을 부르는 우회를 못 잡는다.
         """
+        import ast
         import pathlib
-        root = pathlib.Path(__file__).parent / "afec"
+        base = pathlib.Path(__file__).parent
         banned = ("open(", "socket", "subprocess", "threading",
                   "multiprocessing", "os.system", "shutil", "os.remove",
                   "os.unlink", "os.rename", "mkdir", "urllib", "Popen")
-        for f in sorted(root.glob("*.py")):
-            src = f.read_text(encoding="utf-8")
-            for tok in banned:
-                self.assertNotIn(tok, src,
-                                 f"{f.name}: '{tok}' 발견 - 격리 전제 위반")
+        seen = 0
+        for pkg in ("afec", "padfec"):
+            for f in sorted((base / pkg).rglob("*.py")):
+                if "__pycache__" in f.parts:
+                    continue
+                seen += 1
+                rel = "%s/%s" % (pkg, f.relative_to(base / pkg).as_posix())
+                src = f.read_text(encoding="utf-8")
+                for tok in banned:
+                    limit = self._FOOTPRINT_ALLOW.get((rel, tok), 0)
+                    n = src.count(tok)
+                    self.assertLessEqual(
+                        n, limit,
+                        f"{rel}: '{tok}' {n} 개 (허용 {limit}) - 격리 전제 위반")
+                if rel in self._FOOTPRINT_GENERATORS:
+                    self._assert_generator_is_guarded(rel, src, ast)
+        # 대상이 조용히 비면 이 자는 아무것도 안 재면서 통과한다.
+        self.assertGreaterEqual(seen, 14, "발자국 검사 대상이 너무 적다")
+
+    def _assert_generator_is_guarded(self, rel, src, ast):
+        """예외를 단 생성기 모듈이 **import 만으로는 아무것도 안 쓰는가**.
+
+        두 가지를 본다.
+          1. `open` 호출이 전부 함수 몸통 안에 있는가 (모듈 최상위 금지)
+          2. 모듈 최상위에서 **이 파일이 정의한 함수**를 부르지 않는가
+        2 가 없으면 `open(` 개수를 유지한 채 최상위에서 `main()` 한 줄만
+        불러도 `import` 시 파일이 써진다 - 1 만으로는 못 잡는 우회다.
+        (`sys.path.insert` 같은 남의 함수 호출까지 막지는 않는다. 그걸 막으면
+        이 파일의 정당한 import 경로 손질이 걸린다 - 자가 너무 넓어진다.)
+        """
+        tree = ast.parse(src)
+        fn_spans = []
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                fn_spans.append((node.lineno, getattr(node, "end_lineno",
+                                                     node.lineno)))
+        local_fns = {n.name for n in tree.body
+                     if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        for node in ast.walk(tree):
+            if (isinstance(node, ast.Call)
+                    and isinstance(node.func, ast.Name)
+                    and node.func.id == "open"):
+                inside = any(a <= node.lineno <= b for a, b in fn_spans)
+                self.assertTrue(inside, "%s:%d - open 이 모듈 최상위에 있다"
+                                % (rel, node.lineno))
+        for stmt in tree.body:
+            # 독스트링도 ast.Expr 이다. 잡을 것은 **이 파일이 정의한 함수의
+            # 최상위 호출**뿐이다.
+            if not (isinstance(stmt, ast.Expr)
+                    and isinstance(stmt.value, ast.Call)):
+                continue
+            fn = stmt.value.func
+            self.assertFalse(
+                isinstance(fn, ast.Name) and fn.id in local_fns,
+                "%s:%d - 최상위에서 %s() 를 부른다: import 만으로 실행된다"
+                % (rel, stmt.lineno,
+                   getattr(fn, "id", "?")))
 
     def test_cache_bounds_and_eviction(self):
         """캐시: 반출 가중치 경계, 용량 초과 시 축출."""

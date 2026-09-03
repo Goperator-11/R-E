@@ -166,17 +166,37 @@ def main(z_list=Z_LIST, do_long=True):
     if not do_long:
         return
     print("\n" + "=" * 90)
-    print("  최적 (w,z)의 긴 연결(400블록) 검증 - v0.1 기준선(z=2.5)과 비교")
+    # 🩸 2026-09-03 - 머리말이 "최적 **(w,z)**" 라고 적었지만 이 블록은 **w 를
+    #    한 번도 안 쓴다**(콜드 스타트만 돈다 - 캐시가 비어 있으니 반출 가중치가
+    #    걸릴 자리가 없다). 재는 범위대로 좁혀 적는다.
+    print("  최적 z 의 긴 연결(400블록) 검증 (콜드) - v0.1 기준선(z=2.5)과 비교")
     print("=" * 90)
     long_seeds = tuple(range(101, 113))
+    # 🩸 2026-09-03 - 분모(oracle)를 **z 가 실린 cfg** 로 만들고 있었다.
+    #    같은 파일 :91-93 과 tune_z.py:68-71 은 z-free 설정으로 만든다 -
+    #    한 파일 안에서 규약이 갈려 있었다.
+    #
+    #    지금 수치는 **한 자리도 안 바뀐다**(재확인 2026-09-03: 두 코드의 후회가
+    #    소수 6 자리까지 같다). `risk_z` 는 `LossEstimator` 생성자에서만 쓰이는데
+    #    (afec/controller.py:178) oracle 정책은 추정기를 아예 안 만들기 때문이다
+    #    (afec/sim.py:353). 즉 지금의 불변성은 **우연**이다 - `risk_z` 가 언젠가
+    #    `choose_redundancy` 의 입력이 되면 조용히 깨진다.
+    #    오라클은 정의상 「z 와 무관한 최적」이므로 그 규약을 코드 모양으로
+    #    박는다. 겸사겸사 z 루프 안에서 60 번 다시 돌던 계산도 사라진다.
+    oracle_cfg = FecConfig(rate_bps=50e6, delay_budget_ms=20.0)
+    oracle_ms = {}
+    for p in COLD_PROBS:
+        b = 4.0 if p > 0 else 1.0
+        oracle_ms[p] = {s: simulate_data("oracle", p, b, RTT, oracle_cfg,
+                                         n_blocks=400, seed=s).total_ms
+                        for s in long_seeds}
     for z in sorted({z_s, 2.5}):
         cfg = FecConfig(rate_bps=50e6, delay_budget_ms=20.0, risk_z=z)
         worst = 0.0
         row = f"  z={z:.1f}: "
         for p in COLD_PROBS:
             b = 4.0 if p > 0 else 1.0
-            oc = {s: simulate_data("oracle", p, b, RTT, cfg, n_blocks=400,
-                                   seed=s).total_ms for s in long_seeds}
+            oc = oracle_ms[p]
             rs = [simulate_data("adaptive", p, b, RTT, cfg, n_blocks=400,
                                 seed=s).total_ms / oc[s] - 1.0
                   for s in long_seeds]

@@ -106,135 +106,135 @@
    "loss": 1.0,
    "burst": 1.0,
    "arm": "off",
-   "predicted_ms": 52.076058599999996,
+   "predicted_ms": 52.1384135292317,
    "measured_ms": 54.653594166666664,
-   "diff_ms": -2.5775355666666684
+   "diff_ms": -2.515180637434966
   },
   {
    "group": "X25519MLKEM768",
    "loss": 1.0,
    "burst": 1.0,
    "arm": "on1",
-   "predicted_ms": 50.040645725999994,
+   "predicted_ms": 50.04066228356051,
    "measured_ms": 52.356230833333335,
-   "diff_ms": -2.315585107333341
+   "diff_ms": -2.315568549772827
   },
   {
    "group": "X25519MLKEM768",
    "loss": 1.0,
    "burst": 1.0,
    "arm": "on2",
-   "predicted_ms": 50.040645725999994,
+   "predicted_ms": 50.04066228356051,
    "measured_ms": 52.2407975,
-   "diff_ms": -2.2001517740000054
+   "diff_ms": -2.2001352164394916
   },
   {
    "group": "X25519MLKEM768",
    "loss": 2.0,
    "burst": 1.0,
    "arm": "off",
-   "predicted_ms": 54.1507544,
+   "predicted_ms": 54.40354269054561,
    "measured_ms": 56.29979916666667,
-   "diff_ms": -2.1490447666666768
+   "diff_ms": -1.89625647612106
   },
   {
    "group": "X25519MLKEM768",
    "loss": 2.0,
    "burst": 1.0,
    "arm": "on1",
-   "predicted_ms": 50.161752207999996,
+   "predicted_ms": 50.16201412552461,
    "measured_ms": 52.277413333333335,
-   "diff_ms": -2.1156611253333395
+   "diff_ms": -2.1153992078087285
   },
   {
    "group": "X25519MLKEM768",
    "loss": 2.0,
    "burst": 1.0,
    "arm": "on2",
-   "predicted_ms": 50.161752207999996,
+   "predicted_ms": 50.16201412552461,
    "measured_ms": 52.43935166666667,
-   "diff_ms": -2.2775994586666712
+   "diff_ms": -2.27733754114206
   },
   {
    "group": "X25519MLKEM768",
    "loss": 5.0,
    "burst": 1.0,
    "arm": "off",
-   "predicted_ms": 60.366665,
+   "predicted_ms": 62.013271468144026,
    "measured_ms": 63.990854166666665,
-   "diff_ms": -3.6241891666666675
+   "diff_ms": -1.9775826985226388
   },
   {
    "group": "X25519MLKEM768",
    "loss": 5.0,
    "burst": 1.0,
    "arm": "on1",
-   "predicted_ms": 50.995375749999994,
+   "predicted_ms": 51.0052922437673,
    "measured_ms": 53.20494166666667,
-   "diff_ms": -2.2095659166666763
+   "diff_ms": -2.1996494228993697
   },
   {
    "group": "X25519MLKEM768",
    "loss": 5.0,
    "burst": 1.0,
    "arm": "on2",
-   "predicted_ms": 50.99537574999999,
+   "predicted_ms": 51.00529224376729,
    "measured_ms": 54.237514166666664,
-   "diff_ms": -3.242138416666677
+   "diff_ms": -3.2322219228993703
   },
   {
    "group": "X25519MLKEM768",
    "loss": 2.0,
    "burst": 3.0,
    "arm": "off",
-   "predicted_ms": 54.06262666666667,
+   "predicted_ms": 59.03696907977781,
    "measured_ms": 62.875505833333335,
-   "diff_ms": -8.812879166666669
+   "diff_ms": -3.8385367535555233
   },
   {
    "group": "X25519MLKEM768",
    "loss": 2.0,
    "burst": 3.0,
    "arm": "on1",
-   "predicted_ms": 53.34741560090703,
+   "predicted_ms": 55.40333127535926,
    "measured_ms": 59.673809166666665,
-   "diff_ms": -6.326393565759638
+   "diff_ms": -4.270477891307408
   },
   {
    "group": "X25519MLKEM768",
    "loss": 2.0,
    "burst": 3.0,
    "arm": "on2",
-   "predicted_ms": 53.34741560090703,
+   "predicted_ms": 54.57170929796781,
    "measured_ms": 58.958950833333326,
-   "diff_ms": -5.611535232426299
+   "diff_ms": -4.3872415353655185
   },
   {
    "group": "X25519MLKEM768",
    "loss": 5.0,
    "burst": 3.0,
    "arm": "off",
-   "predicted_ms": 60.15656666666666,
+   "predicted_ms": 73.06729700085478,
    "measured_ms": 83.26808333333334,
-   "diff_ms": -23.111516666666674
+   "diff_ms": -10.200786332478557
   },
   {
    "group": "X25519MLKEM768",
    "loss": 5.0,
    "burst": 3.0,
    "arm": "on1",
-   "predicted_ms": 58.37886374269005,
+   "predicted_ms": 63.72102926835403,
    "measured_ms": 71.60129500000001,
-   "diff_ms": -13.222431257309957
+   "diff_ms": -7.880265731645977
   },
   {
    "group": "X25519MLKEM768",
    "loss": 5.0,
    "burst": 3.0,
    "arm": "on2",
-   "predicted_ms": 58.378863742690044,
+   "predicted_ms": 61.64776678967782,
    "measured_ms": 62.101295833333324,
-   "diff_ms": -3.722432090643281
+   "diff_ms": -0.4535290436555073
   },
   {
    "group": "x25519",
@@ -268,135 +268,135 @@
    "loss": 1.0,
    "burst": 1.0,
    "arm": "off",
-   "predicted_ms": 52.0086,
+   "predicted_ms": 52.03393939393941,
    "measured_ms": 52.594497499999996,
-   "diff_ms": -0.5858974999999944
+   "diff_ms": -0.5605581060605829
   },
   {
    "group": "x25519",
    "loss": 1.0,
    "burst": 1.0,
    "arm": "on1",
-   "predicted_ms": 50.020086,
+   "predicted_ms": 50.02008850885086,
    "measured_ms": 51.685610000000004,
-   "diff_ms": -1.665524000000005
+   "diff_ms": -1.6655214911491427
   },
   {
    "group": "x25519",
    "loss": 1.0,
    "burst": 1.0,
    "arm": "on2",
-   "predicted_ms": 50.020086,
+   "predicted_ms": 50.02008850885086,
    "measured_ms": 51.585789999999996,
-   "diff_ms": -1.5657039999999967
+   "diff_ms": -1.5657014911491345
   },
   {
    "group": "x25519",
    "loss": 2.0,
    "burst": 1.0,
    "arm": "off",
-   "predicted_ms": 54.0172,
+   "predicted_ms": 54.1195918367347,
    "measured_ms": 54.4575325,
-   "diff_ms": -0.4403324999999967
+   "diff_ms": -0.33794066326530015
   },
   {
    "group": "x25519",
    "loss": 2.0,
    "burst": 1.0,
    "arm": "on1",
-   "predicted_ms": 50.080344,
+   "predicted_ms": 50.08038415366145,
    "measured_ms": 51.813815,
-   "diff_ms": -1.7334710000000015
+   "diff_ms": -1.7334308463385497
   },
   {
    "group": "x25519",
    "loss": 2.0,
    "burst": 1.0,
    "arm": "on2",
-   "predicted_ms": 50.080344,
+   "predicted_ms": 50.08038415366145,
    "measured_ms": 51.64481166666666,
-   "diff_ms": -1.5644676666666655
+   "diff_ms": -1.5644275130052137
   },
   {
    "group": "x25519",
    "loss": 5.0,
    "burst": 1.0,
    "arm": "off",
-   "predicted_ms": 60.043,
+   "predicted_ms": 60.703157894736826,
    "measured_ms": 60.95180583333333,
-   "diff_ms": -0.9088058333333322
+   "diff_ms": -0.24864793859650547
   },
   {
    "group": "x25519",
    "loss": 5.0,
    "burst": 1.0,
    "arm": "on1",
-   "predicted_ms": 50.50215,
+   "predicted_ms": 50.503721804511265,
    "measured_ms": 52.76745416666667,
-   "diff_ms": -2.2653041666666667
+   "diff_ms": -2.2637323621554017
   },
   {
    "group": "x25519",
    "loss": 5.0,
    "burst": 1.0,
    "arm": "on2",
-   "predicted_ms": 50.50214999999999,
+   "predicted_ms": 50.50372180451126,
    "measured_ms": 52.01088166666666,
-   "diff_ms": -1.5087316666666695
+   "diff_ms": -1.5071598621554045
   },
   {
    "group": "x25519",
    "loss": 2.0,
    "burst": 3.0,
    "arm": "off",
-   "predicted_ms": 54.0172,
+   "predicted_ms": 64.04707355250383,
    "measured_ms": 59.128739783152625,
-   "diff_ms": -5.111539783152622
+   "diff_ms": 4.918333769351207
   },
   {
    "group": "x25519",
    "loss": 2.0,
    "burst": 3.0,
    "arm": "on1",
-   "predicted_ms": 52.67813333333333,
+   "predicted_ms": 55.35397278884031,
    "measured_ms": 56.51312916666667,
-   "diff_ms": -3.8349958333333447
+   "diff_ms": -1.1591563778263634
   },
   {
    "group": "x25519",
    "loss": 2.0,
    "burst": 3.0,
    "arm": "on2",
-   "predicted_ms": 52.67813333333333,
+   "predicted_ms": 54.09670297796924,
    "measured_ms": 55.686800000000005,
-   "diff_ms": -3.0086666666666773
+   "diff_ms": -1.5900970220307684
   },
   {
    "group": "x25519",
    "loss": 5.0,
    "burst": 3.0,
    "arm": "off",
-   "predicted_ms": 60.043,
+   "predicted_ms": 85.11768388125961,
    "measured_ms": 71.1861325,
-   "diff_ms": -11.1431325
+   "diff_ms": 13.93155138125961
   },
   {
    "group": "x25519",
    "loss": 5.0,
    "burst": 3.0,
    "arm": "on1",
-   "predicted_ms": 56.69533333333332,
+   "predicted_ms": 63.38493197210083,
    "measured_ms": 60.51652416666666,
-   "diff_ms": -3.8211908333333398
+   "diff_ms": 2.868407805434167
   },
   {
    "group": "x25519",
    "loss": 5.0,
    "burst": 3.0,
    "arm": "on2",
-   "predicted_ms": 56.695333333333316,
+   "predicted_ms": 60.28237511564104,
    "measured_ms": 60.56501416666667,
-   "diff_ms": -3.869680833333355
+   "diff_ms": -0.28263905102563314
   }
  ],
  "policy_check": [
@@ -506,7 +506,7 @@
    "group": "X25519MLKEM768",
    "loss": 5.0,
    "burst": 3.0,
-   "policy": "on1",
+   "policy": "on2",
    "measured_best": "on2",
    "tie_set": [
     "on1",
@@ -533,7 +533,7 @@
   7,
   8
  ],
- "hct_mae_ms": 3.834504510961812,
+ "hct_mae_ms": 2.762598138199592,
  "multiple_comparison": {
   "k": 10,
   "alpha": 0.005,
@@ -594,7 +594,7 @@
   {
    "check": "HCT 해석해의 평균절대오차 < 5 ms",
    "ok": true,
-   "detail": "MAE 3.83 ms"
+   "detail": "MAE 2.76 ms"
   },
   {
    "check": "정책 예측이 실측 최선과 일치 (팔이 갈린 조건만)",

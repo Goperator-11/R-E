@@ -39,6 +39,7 @@ Output: experiments/results/gate_go_parity.json
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -105,6 +106,88 @@ J_DIFF_TOL_MS = float(__import__("os").environ.get("PADFEC_GATE_JTOL")
 H = capacity.DEFAULT_H
 
 
+QUICBED = os.path.join(HERE, "quicbed")
+
+
+def go_src_fingerprint():
+    """quicbed 소스의 지문. `quicbed/build.sh` 가 뜨는 것과 **같은 식**이다.
+
+    파일마다 `"<이름> <sha256>\\n"` 을 만들어 이어 붙이고 그 전체를 다시
+    sha256 한다. 대상은 quicbed 의 `*.go` 전부 + `build.sh` 이고, 목록은
+    훑어서 만든다 - `loop2.py` 의 `_sources` 와 같은 범위이고 같은 이유다
+    (사람이 두 곳을 같이 고쳐야 하는 구조가 애초에 사고의 원인이었다).
+
+    원본 바이트를 그대로 잰다(CRLF 를 안 벗긴다). 벗긴 뒤에 재면 bash 의
+    `sed 's/\\r$//'` 과 여기의 정규화가 미묘하게 갈릴 수 있는데, 원본이 같으면
+    벗긴 것도 같으므로 원본을 재는 쪽이 엄격하면서 단순하다.
+    """
+    names = sorted([n for n in os.listdir(QUICBED) if n.endswith(".go")]
+                   + (["build.sh"]
+                      if os.path.exists(os.path.join(QUICBED, "build.sh"))
+                      else []))
+    h = hashlib.sha256()
+    for n in names:
+        with open(os.path.join(QUICBED, n), "rb") as f:
+            inner = hashlib.sha256(f.read()).hexdigest()
+        h.update(("%s %s\n" % (n, inner)).encode())
+    return h.hexdigest()
+
+
+def built_fingerprint(win):
+    """빌드된 바이너리 옆에 적힌 지문. 없으면 None."""
+    if win:
+        r = subprocess.run(
+            ["wsl.exe", "-d", "Ubuntu", "--", "bash", "-lc",
+             'cat "$HOME/quicbed/bin/qamp.srcsha" 2>/dev/null'],
+            capture_output=True, text=True, timeout=60)
+        got = r.stdout.strip()
+        return got or None
+    import padbed as B                            # noqa: E402
+    p = B.require_bin() + ".srcsha"
+    if not os.path.exists(p):
+        return None
+    with open(p, encoding="utf-8") as f:
+        return f.read().strip() or None
+
+
+def check_build_is_current(win):
+    """🩸 2026-09-03 - **바이너리가 소스보다 낡았는지 먼저 본다.**
+
+    이 관문은 빌드를 안 한다. 그런데 `padbed.require_bin()` 은 `/tmp/qamp` 가
+    **있기만 하면** 낡았는지 안 묻고, `README` 가 안내하는 「관문만 따로」
+    실행에는 빌드 단계가 아예 없다(`loop2.py` 로 돌면 `BED` 지문이 잡아 준다 -
+    무방비인 것은 단독 실행 경로뿐이다).
+
+    실제로 이 구멍에 사람이 빠졌다. 2026-08-29 `fcdd7a0` 이 반복 라운드 항과
+    P_VALS 를 바꿨는데 Go 를 다시 안 빌드하고 관문을 돌리면:
+
+        격자점 178,200 · 진짜 불일치 5,016 건 · J 최대 46.09 ms
+        (최악점 k=3 cert=12000 rtt=100 p=0.2875 L=4 up=10)
+
+    이 나온다. 다시 빌드하면 196,020 점에 불일치 0 건이다. 즉 **관문은 조용히
+    통과한 게 아니라 붉어졌다** - 문제는 그 실패가 「진짜 불일치」라고 적혀
+    있어서 **모형 결함으로 읽힌다**는 것이다. 멀쩡한 모형을 뜯게 만든다.
+    열 수 검사(13 개)로는 못 잡는다 - 그 변경은 열 수를 안 건드렸다.
+
+    조용히 초록이 되는 경우도 하나 있다. **격자만 넓히고 표는 안 바꾼** 세대
+    차이라면 옛 바이너리가 더 적은 점을 내고 그 점들은 다 맞는다. 그러면
+    「불일치 0 건」이 뜨는데 실제로는 덮는 범위가 줄어 있다. `grid_points` 가
+    결과에 적히기는 하지만 아무도 그 수를 기대치와 대조하지 않았다.
+    """
+    want = go_src_fingerprint()
+    got = built_fingerprint(win)
+    if got == want:
+        return want, got
+    print("  FAIL  빌드된 Go 가 저장소 소스와 다르다 (또는 지문이 없다)")
+    print("        소스 지문   %s" % want)
+    print("        바이너리    %s" % (got or "없음 - 옛 build.sh 로 빌드됐다"))
+    print()
+    print("        이 상태로 나오는 불일치는 **이식 결함이 아니라 낡은")
+    print("        바이너리**다. 모형을 뜯기 전에 먼저 다시 빌드해라:")
+    print("            wsl -d Ubuntu -- bash experiments/quicbed/build.sh")
+    return want, got
+
+
 def go_rows(dump=None):
     """Go 정책의 격자 결정을 읽어 온다.
 
@@ -145,6 +228,15 @@ def main():
     dump = None
     if "--dump" in sys.argv:
         dump = sys.argv[sys.argv.index("--dump") + 1]
+    if dump:
+        # --dump 는 부정 시험용이다(일부러 낡거나 틀린 출력을 먹인다).
+        # 지문 대조를 걸면 그 시험 자체가 안 돈다.
+        src_sha = built_sha = None
+        src_ok = True
+        print("(--dump 실행 - 빌드 지문 대조를 건너뛴다)")
+    else:
+        src_sha, built_sha = check_build_is_current(os.name == "nt")
+        src_ok = (src_sha == built_sha)
     lines, src = go_rows(dump)
     lines = [ln for ln in lines if ln.strip()]
     print("Go 격자점 %d 개  (%s)" % (len(lines), src))
@@ -303,17 +395,36 @@ def main():
         os.makedirs(RESULTS, exist_ok=True)
         with open(OUT, "w", encoding="utf-8") as f:
             json.dump({"grid_points": len(lines), "source": src,
+                       # 🩸 2026-09-03 - 아래 넷이 결과에 안 남고 stdout 에만
+                       #    찍혔다. 2026-08-27 에 「결정이 같은 점의 J 어긋남」
+                       #    이라는 눈을 새로 달아 놓고, 정작 그 눈이 본 것을
+                       #    파일에 안 적은 것이다. 이 파일 머리말이 꾸짖는
+                       #    바로 그 병("다음 사람에게는 문장만 남는다")이다.
+                       #    지금 여유가 0.095/0.100 으로 5% 뿐이라 더욱
+                       #    남겨야 한다 - 다음에 좁아지는 것을 이 수로만
+                       #    알 수 있다.
+                       "worst_j_diff_ms": worst_j,
+                       "j_diff_over_tol": len(j_over),
+                       "j_diff_tol_ms": J_DIFF_TOL_MS,
+                       "j_diff_points": len(jdiff),
+                       # 🩸 2026-09-03 - 어느 소스에서 빌드된 바이너리를 잰
+                       #    것인지 같이 남긴다. 이게 없으면 「불일치 0 건」이
+                       #    어느 세대의 0 건인지 나중에 알 길이 없다.
+                       "go_src_sha256": src_sha,
+                       "go_built_sha256": built_sha,
+                       "go_build_current": bool(src_ok),
                        "mismatch": len(bad), "mismatches": bad[:50],
                        "interp_near_misses": len(near),
                        "interp_worst_j_regret_ms": worst_interp,
                        "interp_tol_ms": INTERP_TOL_MS,
                        "picks": picks, "pad_deltas": deltas,
                        "uplinks": sorted(uplinks),
-                       "ok": bool(ok and pad_ok and up_ok and combo_ok)}, f,
+                       "ok": bool(ok and pad_ok and up_ok and combo_ok
+                                  and src_ok)}, f,
                       ensure_ascii=False, indent=1)
         print()
         print("wrote %s" % OUT)
-    return 0 if (ok and pad_ok and up_ok and combo_ok) else 1
+    return 0 if (ok and pad_ok and up_ok and combo_ok and src_ok) else 1
 
 
 if __name__ == "__main__":

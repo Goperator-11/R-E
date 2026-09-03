@@ -105,11 +105,21 @@ def require_bin():
     에서는 한 번 복사해 두면 끝이지만 우리는 매번 확인해야 한다.
     이걸 안 챙겨서 timeout: failed to execute process 로 한 번 헛돌았다.
     """
-    if not os.path.exists(QAMP):
-        src = os.path.join(BIN, "qamp")
-        if os.path.exists(src):
+    # 🩸 2026-09-03 - 여기가 `/tmp/qamp` 가 **있기만 하면** 그대로 썼다.
+    #    낡았는지는 안 물었다. 그래서 build.sh 를 다시 돌린 뒤에도 /tmp 에
+    #    옛 바이너리가 남아 있으면 측정이 그걸로 돌 수 있었다. 빌드본이 더
+    #    새것이거나 크기가 다르면 덮어쓴다. 지문 파일도 같이 옮긴다 -
+    #    관문이 그걸 읽어 소스와 대조한다(gate_go_parity.check_build_is_current).
+    src = os.path.join(BIN, "qamp")
+    if os.path.exists(src):
+        stale = (not os.path.exists(QAMP)
+                 or os.path.getmtime(src) > os.path.getmtime(QAMP)
+                 or os.path.getsize(src) != os.path.getsize(QAMP))
+        if stale:
             shutil.copy2(src, QAMP)
             os.chmod(QAMP, 0o755)
+        if os.path.exists(src + ".srcsha"):
+            shutil.copy2(src + ".srcsha", QAMP + ".srcsha")
     if not os.path.exists(QAMP):
         sys.stderr.write("%s 가 없다: quicbed/build.sh 를 먼저 실행" % QAMP)
         sys.stderr.write(chr(10))

@@ -1,15 +1,15 @@
-x25519           ips=기본    k=1  와이어=1280 B  CRYPTO=261  PADDING=971  h=48  ok=10/10
-x25519           ips=1200  k=1  와이어=1200 B  CRYPTO=264  PADDING=891  h=45  ok=10/10
-x25519           ips=1350  k=1  와이어=1350 B  CRYPTO=266  PADDING=1037  h=47  ok=10/10
-x25519           ips=1450  k=1  와이어=1450 B  CRYPTO=268  PADDING=1130  h=52  ok=10/10
-secp256r1        ips=기본    k=1  와이어=1280 B  CRYPTO=293  PADDING=938  h=49  ok=10/10
-secp256r1        ips=1200  k=1  와이어=1200 B  CRYPTO=296  PADDING=859  h=45  ok=10/10
-secp256r1        ips=1350  k=1  와이어=1350 B  CRYPTO=301  PADDING=1000  h=49  ok=10/10
-secp256r1        ips=1450  k=1  와이어=1450 B  CRYPTO=306  PADDING=1097  h=47  ok=10/10
-X25519MLKEM768   ips=기본    k=2  와이어=2560 B  CRYPTO=1448  PADDING=1005  h=54  ok=10/10
-X25519MLKEM768   ips=1200  k=2  와이어=2400 B  CRYPTO=1453  PADDING=858  h=44  ok=10/10
-X25519MLKEM768   ips=1350  k=2  와이어=2700 B  CRYPTO=1449  PADDING=1140  h=56  ok=10/10
-X25519MLKEM768   ips=1450  k=2  와이어=2900 B  CRYPTO=1457  PADDING=1339  h=52  ok=10/10
+건너뜀(기록됨): x25519|ips0
+건너뜀(기록됨): x25519|ips1200
+건너뜀(기록됨): x25519|ips1350
+건너뜀(기록됨): x25519|ips1450
+건너뜀(기록됨): secp256r1|ips0
+건너뜀(기록됨): secp256r1|ips1200
+건너뜀(기록됨): secp256r1|ips1350
+건너뜀(기록됨): secp256r1|ips1450
+건너뜀(기록됨): X25519MLKEM768|ips0
+건너뜀(기록됨): X25519MLKEM768|ips1200
+건너뜀(기록됨): X25519MLKEM768|ips1350
+건너뜀(기록됨): X25519MLKEM768|ips1450
 
 ================================================================================================
 용량 정리 대조   C <= (k-1)(W - h - f)   [f = 16]
