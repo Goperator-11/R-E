@@ -40,6 +40,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
 import padbed as B                               # noqa: E402
+import blockstat as BST                          # noqa: E402
 from padfec import policy as POL                 # noqa: E402
 
 RTT_MS = 50.0
@@ -75,8 +76,11 @@ UPLINK_MBPS = 0.0
 #    그 값을 "수렴 후 후회"라고 불렀다. 그 조건이 곧 헤드라인 실패(+3.08 ms)였다.
 #    라운드를 무손실과 같게 8 로 맞추고, **수렴했는지를 검사로 확인한다**
 #    (아래 "수렴 판정"). 안 했으면 실패로 드러난다.
-ROUNDS_CLEAN = 8
-ROUNDS_LOSSY = 8
+# 🩸 2026-09-07 - 8 -> 10. 고정팔 넷과 auto 를 교대로 도는 라틴 회전이 닫히려면
+#    라운드 수가 팔 수(5)의 배수여야 각 팔이 각 자리를 같은 횟수로 겪는다.
+#    수렴 검사(마지막 세 라운드의 최빈 선택)는 그대로다.
+ROUNDS_CLEAN = 10
+ROUNDS_LOSSY = 10
 
 # 고정팔: (이름, fec, m, ips)
 FIXED = [("m0", "off", 0, 0), ("m1", "on", 1, 0), ("m2", "on", 2, 0),
@@ -116,95 +120,128 @@ def added_bytes(row):
     return max(0, ff - K * 1280)
 
 
-def run_fixed(cert, loss, name, fec, m, ips, jr):
-    key = "fix|%d|%.1f|%s|n%d" % (cert, loss, name, N)
-    if jr.has(key):
-        return jr.get(key)
-    B.set_netem(RTT_MS / 2.0, loss_c2s=loss)
-    p, sp = B.start_server(cert, fec=("on" if fec == "on" else "off"))
-    rows, cs, err = B.run_client(GROUP, N, fec=fec, m=max(m, 1), ips=ips,
-                                 gap_ms=8, timeout_s=10, expect_k=K,
-                                 uplink_mbps=UPLINK_MBPS)
-    B.stop_server(p)
-    ss = B.read_server_stats(sp)
-    ok = [r["ms"] for r in rows if r.get("ok")]
-    rec = {"arm": name, "cert": cert, "loss": loss, "n": len(rows),
-           "ok": len(ok), "mean": mean(ok), "p50": B.pctl(ok, 0.5),
-           "p95": B.pctl(ok, 0.95),
-           "tail": (sum(1 for x in ok if x > 1.5 * RTT_MS) / float(len(ok))
-                    if ok else None),
-           "added_bytes_mean": mean([added_bytes(r) for r in rows]),
-           "srv_recovered": ss.get("recovered"),
-           "srv_crc_fail": ss.get("recover_crc_fail"),
-           # 🩸 2026-08-21 - 연결별 원자료를 버리지 않는다(신뢰구간용).
-           "ms": ok,
-           "srv_stats_present": bool(ss),
-           "err": err}
-    if len(rows) == N and bool(ss) and (ss.get("recover_crc_fail") or 0) == 0:
-        jr.record(key, rec)
-    return rec
+# 🩸 2026-09-07 - **고정팔과 auto 라운드를 교대로 잰다.** 그전에는 조건마다
+#    m0 -> m1 -> m2 -> pad 를 팔당 N 판씩 통째로 돌린 뒤 auto 를 8 라운드
+#    돌렸다. p11 과 같은 병이다 - 기계의 단조 표류가 팔 이름에 얹혀 후회로
+#    계상된다(인계 §4b-4b 가 p15 의 보고 반폭을 1.25 배 과소평가로 판정했다).
+#    설계: 조건마다 서버 하나(fec=on), 라운드 r 마다 [auto 라운드 r(N 판),
+#    m0·m1·m2·pad 각 N/ROUNDS 판] 을 r 만큼 회전한 순서로. ROUNDS=10 이면
+#    다섯 팔이 각 자리를 정확히 두 번 겪는다(균형). auto 의 캐시는 조건 시작에
+#    한 번만 비우고 라운드를 넘어 이어진다(수렴을 잰다). 고정팔 표본은 그대로
+#    N 이고 auto 는 10N 이다(옛 8N). 표준오차는 배치평균(blockstat.batch_se).
+#    저널 단위는 조건이다.
+ROUNDS_ORDER = ["auto"] + [f[0] for f in FIXED]
 
 
-def run_auto(cert, loss, rounds, jr):
-    key = "auto|%d|%.1f|r%d|n%d" % (cert, loss, rounds, N)
+def run_condition(cert, loss, rounds, jr):
+    """조건 하나 - 고정팔 넷과 auto 라운드를 교대로. ({팔: rec}, auto rec)."""
+    key = "latin|%d|%.1f|r%d|n%d" % (cert, loss, rounds, N)
     if jr.has(key):
-        return jr.get(key)
+        v = jr.get(key)
+        return v["fixed"], v["auto"]
+    n_blk = N // rounds
     B.set_netem(RTT_MS / 2.0, loss_c2s=loss)
     try:
         os.unlink(CACHE)
     except OSError:
         pass
-    p, sp = B.start_server(cert, fec="on")
+    fx_rows = {f[0]: [] for f in FIXED}
+    fx_blocks = {f[0]: [] for f in FIXED}
+    fx_err = {f[0]: "" for f in FIXED}
+    fixed_by = {f[0]: f for f in FIXED}
     hist = []
+    p, sp = B.start_server(cert, fec="on")
     try:
         for rnd in range(1, rounds + 1):
-            rows, cs, err = B.run_client(
-                GROUP, N, fec="auto", m=1, gap_ms=8, timeout_s=10,
-                expect_k=K, extra=["-cache", CACHE, "-probe-every", "20"],
-                uplink_mbps=UPLINK_MBPS)
-            ok = [r["ms"] for r in rows if r.get("ok")]
-            # 2026-08-21 - 마지막 행만 보면 안 된다. 그 판이 **탐색**이면
-            # m_why 가 "탐색 ..." 이라 p= 가 없어 p_est 가 None 이 된다
-            # (임계아래/무손실 8 라운드가 전부 None 이었다). 뒤에서부터
-            # p= 를 담은 첫 행을 찾는다.
-            why = ""
-            mp = None
-            for _r in reversed(rows):
-                _w = _r.get("m_why", "") or ""
-                _m = re.search(r"p=([0-9.]+)", _w)
-                if _m:
-                    why, mp = _w, _m
-                    break
-            if not why and rows:
-                why = rows[-1].get("m_why", "") or ""
-            hist.append({
-                "round": rnd, "n": len(rows), "mean": mean(ok),
-                "p50": B.pctl(ok, 0.5), "p95": B.pctl(ok, 0.95),
-                "tail": (sum(1 for x in ok if x > 1.5 * RTT_MS)
-                         / float(len(ok)) if ok else None),
-                "ips_used": dict(Counter(r.get("ips_used") for r in rows)),
-                "m_used": dict(Counter(r.get("m_used") for r in rows)),
-                "added_bytes_mean": mean([added_bytes(r) for r in rows]),
-                "p_est": float(mp.group(1)) if mp else None,
-                "ms": ok,
-                # 🩸 2026-08-21 (0-c) - p11 과 같은 처방. 행 단위로
-                #    남겨야 탐색세를 사후에 나눌 수 있다.
-                "ms_rows": [r["ms"] if r.get("ok") else None
-                            for r in rows],
-                "probe_rows": [(r.get("m_why") or "")
-                               .startswith("탐색") for r in rows],
-                "why_last": why, "err": err})
+            r = (rnd - 1) % len(ROUNDS_ORDER)
+            order = ROUNDS_ORDER[r:] + ROUNDS_ORDER[:r]
+            for pos, aname in enumerate(order):
+                if aname == "auto":
+                    rows, cs, err = B.run_client(
+                        GROUP, N, fec="auto", m=1, gap_ms=8, timeout_s=10,
+                        expect_k=K,
+                        extra=["-cache", CACHE, "-probe-every", "20"],
+                        uplink_mbps=UPLINK_MBPS)
+                    ok = [x["ms"] for x in rows if x.get("ok")]
+                    # 2026-08-21 - 마지막 행만 보면 안 된다. 그 판이 **탐색**
+                    # 이면 m_why 에 p= 가 없다. 뒤에서부터 p= 를 담은 행을 찾는다.
+                    why = ""
+                    mp = None
+                    for _r in reversed(rows):
+                        _w = _r.get("m_why", "") or ""
+                        _m = re.search(r"p=([0-9.]+)", _w)
+                        if _m:
+                            why, mp = _w, _m
+                            break
+                    if not why and rows:
+                        why = rows[-1].get("m_why", "") or ""
+                    hist.append({
+                        "round": rnd, "pos": pos, "n": len(rows),
+                        "mean": mean(ok),
+                        "p50": B.pctl(ok, 0.5), "p95": B.pctl(ok, 0.95),
+                        "tail": (sum(1 for x in ok if x > 1.5 * RTT_MS)
+                                 / float(len(ok)) if ok else None),
+                        "ips_used": dict(Counter(x.get("ips_used")
+                                                 for x in rows)),
+                        "m_used": dict(Counter(x.get("m_used") for x in rows)),
+                        "added_bytes_mean": mean([added_bytes(x)
+                                                  for x in rows]),
+                        "p_est": float(mp.group(1)) if mp else None,
+                        "ms": ok,
+                        "ms_rows": [x["ms"] if x.get("ok") else None
+                                    for x in rows],
+                        "probe_rows": [(x.get("m_why") or "")
+                                       .startswith("탐색") for x in rows],
+                        "why_last": why, "err": err})
+                    continue
+                _n, fec, m, ips = fixed_by[aname]
+                rows, cs, err = B.run_client(
+                    GROUP, n_blk, fec=fec, m=max(m, 1), ips=ips,
+                    gap_ms=8, timeout_s=10, expect_k=K,
+                    uplink_mbps=UPLINK_MBPS)
+                if err:
+                    fx_err[aname] = err
+                fx_rows[aname].extend(rows)
+                ok = [x["ms"] for x in rows if x.get("ok")]
+                fx_blocks[aname].append({"round": rnd, "pos": pos,
+                                         "n": len(rows), "ok": len(ok),
+                                         "mean": mean(ok), "ms": ok})
+            print("   라운드 %2d/%d  auto %.2f  %s"
+                  % (rnd, rounds, hist[-1]["mean"] or -1,
+                     "  ".join("%s(자리%d) %.2f"
+                               % (a, fx_blocks[a][-1]["pos"],
+                                  fx_blocks[a][-1]["mean"] or -1)
+                               for a in order if a != "auto")), flush=True)
     finally:
         B.stop_server(p)
     ss = B.read_server_stats(sp)
-    rec = {"cert": cert, "loss": loss, "rounds": hist,
-           "final": hist[-1] if hist else None,
-           "srv_stats_present": bool(ss),
-           "srv_crc_fail": ss.get("recover_crc_fail")}
-    if (hist and all(h["n"] == N for h in hist) and bool(ss)
-            and (ss.get("recover_crc_fail") or 0) == 0):
-        jr.record(key, rec)
-    return rec
+    fixed = {}
+    for aname, fec, m, ips in FIXED:
+        rows = fx_rows[aname]
+        ok = [x["ms"] for x in rows if x.get("ok")]
+        fixed[aname] = {
+            "arm": aname, "cert": cert, "loss": loss, "n": len(rows),
+            "ok": len(ok), "mean": mean(ok), "p50": B.pctl(ok, 0.5),
+            "p95": B.pctl(ok, 0.95),
+            "tail": (sum(1 for x in ok if x > 1.5 * RTT_MS) / float(len(ok))
+                     if ok else None),
+            "added_bytes_mean": mean([added_bytes(x) for x in rows]),
+            "blocks": fx_blocks[aname],
+            # 서버가 조건당 하나 - 조건 합이다.
+            "srv_recovered": ss.get("recovered"),
+            "srv_crc_fail": ss.get("recover_crc_fail"),
+            "ms": ok,
+            "srv_stats_present": bool(ss),
+            "err": fx_err[aname]}
+    au = {"cert": cert, "loss": loss, "rounds": hist,
+          "final": hist[-1] if hist else None,
+          "srv_stats_present": bool(ss),
+          "srv_crc_fail": ss.get("recover_crc_fail")}
+    complete = (all(len(fx_rows[f[0]]) == n_blk * rounds for f in FIXED)
+                and hist and all(h["n"] == N for h in hist))
+    if complete and bool(ss) and (ss.get("recover_crc_fail") or 0) == 0:
+        jr.record(key, {"fixed": fixed, "auto": au})
+    return fixed, au
 
 
 def main():
@@ -221,8 +258,9 @@ def main():
                            "experiments/padbed.py"], ROOT)
     jr = Journal(os.path.join(B.STATE, "p15_units.jsonl"), fp)
 
-    out = {"rtt_ms": RTT_MS, "n": N, "group": GROUP, "rows": [], "auto": [],
-           "regret": [], "checks": []}
+    out = {"rtt_ms": RTT_MS, "n": N, "group": GROUP,
+           "interleaved": True,
+           "rows": [], "auto": [], "regret": [], "checks": []}
 
     def add(name, ok, detail):
         out["checks"].append({"check": name, "ok": bool(ok), "detail": detail})
@@ -231,22 +269,22 @@ def main():
 
     print("=" * 104)
     print("v2 정책(auto) 대 고정 {m0, m1, m2, pad(δ=1)} - 조건마다 고정팔 n=%d, "
-          "auto 라운드 n=%d" % (N, N))
+          "auto 라운드 n=%d (교대 측정)" % (N, N))
     print("=" * 104)
 
     for name, cert, loss in CONDS:
-        arms = {}
+        rounds = ROUNDS_CLEAN if loss == 0.0 else ROUNDS_LOSSY
+        print("### %s (cert %d, 손실 %g%%) - %d 라운드 교대"
+              % (name, cert, loss, rounds), flush=True)
+        arms, au = run_condition(cert, loss, rounds, jr)
         for aname, fec, m, ips in FIXED:
-            r = run_fixed(cert, loss, aname, fec, m, ips, jr)
-            arms[aname] = r
+            r = arms[aname]
             out["rows"].append(r)
             print("%-16s %-5s 평균 %-8.2f p95 %-8.2f 꼬리 %5.1f%% 복구 %-5s "
                   "추가B %s"
                   % (name, aname, r["mean"] or -1, r["p95"] or -1,
                      100 * (r["tail"] or 0), r["srv_recovered"],
                      round(r["added_bytes_mean"] or 0, 1)), flush=True)
-        rounds = ROUNDS_CLEAN if loss == 0.0 else ROUNDS_LOSSY
-        au = run_auto(cert, loss, rounds, jr)
         au["cond"] = name
         out["auto"].append(au)
         fin = au["final"]
@@ -264,8 +302,22 @@ def main():
             print("    -> !! 측정 실패로 이 조건이 빠졌다: %s" % name,
                   flush=True)
             continue
-        best = min(fixed_means, key=lambda a: fixed_means[a])
-        reg = fin["mean"] - fixed_means[best]
+        # 🩸 2026-09-07 감사 - 헤드라인의 창을 맞춘다. auto 의 마지막 라운드는
+        #    조건의 **끝**에 있는데 고정팔 평균을 조건 전체(라운드 1~10)로 잡으면
+        #    단조 표류의 절반이 여전히 후회로 들어온다 - 교대 측정으로 고치려던
+        #    바로 그것이다. 고정팔도 **뒤 절반 라운드**의 블록만 쓴다(p11 의
+        #    rows[half:] 와 같은 뜻). 전 구간 값은 regret_full_ms 로 남긴다.
+        def _late_ms(a):
+            return [t for b_ in (arms[a].get("blocks") or [])
+                    if b_["round"] > rounds // 2 for t in (b_.get("ms") or [])]
+        fixed_means_late = {a: mean(_late_ms(a)) for a in fixed_means
+                            if _late_ms(a)}
+        if not fixed_means_late:
+            fixed_means_late = dict(fixed_means)
+        best = min(fixed_means_late, key=lambda a: fixed_means_late[a])
+        best_full = min(fixed_means, key=lambda a: fixed_means[a])
+        reg = fin["mean"] - fixed_means_late[best]
+        reg_full = fin["mean"] - fixed_means[best_full]
 
         # 🩸 2026-08-21 (0-c) - 탐색세 분리 (p11 과 같은 항등식).
         #    마지막 라운드는 전부 수렴 후이므로 라운드 전체로 나눈다.
@@ -296,15 +348,32 @@ def main():
             bh = min(sel, key=lambda a: sel[a])
             reg_hold = fin["mean"] - ev[bh]
 
+        # 🩸 2026-09-07 - 배치평균 SE (p11·p16 과 같은 자). 인계 §4b-4b 가 이
+        #    단계의 보고 반폭을 1.25 배 과소평가로 판정했다.
+        _se_methods = []
+
         def _se(v):
-            if not v or len(v) < 2:
-                return None
-            mu = sum(v) / len(v)
-            var = sum((x - mu) ** 2 for x in v) / (len(v) - 1)
-            return (var / len(v)) ** 0.5
+            se, method, kb = BST.batch_se_info(v)
+            _se_methods.append((method, kb))
+            return se
+
+        # 짝지은 후회 (정보). 교대 측정이라 라운드 r 의 auto 와 같은 라운드의
+        # 최선 고정팔 블록을 짝지을 수 있다 - 라운드 간 표류가 상쇄된다.
+        # 수렴 후 = 뒤쪽 절반 라운드. 헤드라인(regret_ms)의 정의는 그대로 둔다.
+        _late_r = [h for h in au["rounds"] if h["round"] > rounds // 2]
+        _bb = {b["round"]: b["mean"] for b in arms[best].get("blocks") or []}
+        _pd = [h["mean"] - _bb[h["round"]] for h in _late_r
+               if h["mean"] is not None and _bb.get(h["round"]) is not None]
+        reg_paired = mean(_pd)
+        reg_paired_half = None
+        if len(_pd) >= 2:
+            _mu = sum(_pd) / len(_pd)
+            _var = sum((x - _mu) ** 2 for x in _pd) / (len(_pd) - 1)
+            reg_paired_half = BST.t_crit(len(_pd) - 1) * (_var / len(_pd)) ** 0.5
 
         sa = _se(fin.get("ms") or [])
-        sf = _se(arms[best].get("ms") or [])
+        sf = _se(_late_ms(best) or arms[best].get("ms") or [])
+        _methods = sorted(set(m for m, _k in _se_methods if m))
         se_reg = ((sa ** 2 + sf ** 2) ** 0.5
                   if sa is not None and sf is not None else None)
 
@@ -343,21 +412,30 @@ def main():
 
         out["regret"].append({
             "cond": name, "cert": cert, "loss": loss,
-            "best_fixed": best, "best_fixed_mean": fixed_means[best],
+            "best_fixed": best, "best_fixed_mean": fixed_means_late[best],
+            "best_fixed_full": best_full,
+            "best_fixed_mean_full": fixed_means[best_full],
+            "fixed_means_late": fixed_means_late,
             "auto_final_mean": fin["mean"], "regret_ms": reg,
+            "regret_full_ms": reg_full,
+            "se_method": ("batch" if _methods == ["batch"]
+                          else "+".join(_methods) or None),
             "regret_holdout_ms": reg_hold,
             "probe_rounds_final": n_probe_fin,
             "probe_tax_ms": probe_tax,
             "regret_sel_ms": reg_sel,
             "se_regret_ms": se_reg,
             "ci95_half_ms": (1.96 * se_reg) if se_reg is not None else None,
+            "regret_paired_late_ms": reg_paired,
+            "regret_paired_late_ci95_half_ms": reg_paired_half,
+            "paired_rounds": len(_pd),
             "converged": conv_ok, "converge_why": conv_why,
             "fixed_means": fixed_means,
             "auto_added_bytes": fin["added_bytes_mean"],
             "best_added_bytes": arms[best]["added_bytes_mean"]})
-        print("    -> 최선 고정팔 %s (%.2f ms), auto 수렴후 %.2f ms, "
-              "후회 %+.2f ms (홀드아웃 %s, ±%s ms) | 수렴 %s (%s)"
-              % (best, fixed_means[best], fin["mean"], reg,
+        print("    -> 최선 고정팔 %s (수렴후창 %.2f ms), auto 수렴후 %.2f ms, "
+              "후회 %+.2f ms (전구간창 %+.2f, 홀드아웃 %s, ±%s ms) | 수렴 %s (%s)"
+              % (best, fixed_means_late[best], fin["mean"], reg, reg_full,
                  ("%+.2f" % reg_hold) if reg_hold is not None else "-",
                  ("%.2f" % (1.96 * se_reg)) if se_reg is not None else "-",
                  "예" if conv_ok else "**아니오**", conv_why),
@@ -461,16 +539,21 @@ def main():
         add("pad(δ=1) 고정팔이 맨몸보다 1 왕복 빠르다 (임계사이/무손실)",
             d >= 0.8 * RTT_MS, "%.2f ms = %.3f RTT" % (d, d / RTT_MS))
 
-    crc = sum(r.get("srv_crc_fail") or 0 for r in out["rows"]) + sum(
-        a.get("srv_crc_fail") or 0 for a in out["auto"])
-    add("모든 팔에서 복구 CRC 실패 0", crc == 0, "총 %d 건" % crc)
+    # 서버가 조건당 하나라 고정팔·auto 에 같은 수가 복사돼 있다 - 조건별 한 번.
+    crc = sum(a.get("srv_crc_fail") or 0 for a in out["auto"])
+    add("모든 팔에서 복구 CRC 실패 0", crc == 0, "총 %d 건 (조건별 합)" % crc)
+    _bad_se = [r["cond"] for r in out["regret"] if r.get("se_method") != "batch"]
+    add("모든 조건의 반폭이 배치평균(독립 가정 아님)으로 나왔다",
+        out["regret"] and not _bad_se,
+        "iid 로 되돌아간 조건: %s" % (_bad_se or "없음"))
 
     npass = sum(1 for c in out["checks"] if c["ok"])
     out["passed"] = npass
     out["total"] = len(out["checks"])
     print("-" * 104)
     print("%d / %d 통과" % (npass, len(out["checks"])))
-    print("saved:", B.save("p15_v2policy.json", out))
+    _fname = ("smoke_" if N < N_DEFAULT else "") + "p15_v2policy.json"
+    print("saved:", B.save(_fname, out))
     return 0 if npass == len(out["checks"]) else 1
 
 

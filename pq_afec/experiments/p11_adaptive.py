@@ -19,6 +19,10 @@
 볼 수밖에 없다. 전체 구간과 **수렴 후 구간(후반 절반)** 을 나눠 재면 그
 비용이 얼마인지 보인다.
 
+🩸 2026-09-07 - **팔을 교대로 잰다** (run_condition 주석). 순차 측정에서는
+   기계 표류가 후회로 계상됐다(08-30 정밀 실행 1.17 ms 중 대부분). 저널 단위가
+   팔에서 조건으로 바뀌었고, 표준오차는 배치평균(blockstat)으로 잰다.
+
 Output: experiments/results/p11_adaptive.json
 """
 from __future__ import annotations
@@ -34,6 +38,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
 import padbed as B                               # noqa: E402
+import blockstat as BST                          # noqa: E402
 from padfec import policy as POL                 # noqa: E402
 from _journal import Journal, code_fingerprint   # noqa: E402
 
@@ -98,79 +103,112 @@ def tail_rate(v, thresh):
     return (sum(1 for x in v if x > thresh) / float(len(v))) if v else None
 
 
-def run_arm(cert, loss, arm, jr):
-    """arm: 'm0' | 'm1' | 'm2' | 'auto'"""
-    key = "%d|%.1f|%s|n%d" % (cert, loss, arm, N)
+# 🩸 2026-09-07 - **팔을 교대로 잰다.** 그전에는 조건마다 m0 -> m1 -> m2 -> m3 ->
+#    auto 순서로 팔당 N 판을 통째로 돌렸다. 그러면 기계의 단조 표류가 팔 이름에
+#    그대로 얹힌다. 08-30 정밀 실행(N=4000)에서 같은 조건의 팔 평균이 첫 팔
+#    51.34 -> 마지막 팔 52.51 ms 로 흘렀고 그 1.17 ms 가 통째로 「후회」로
+#    계상됐다 - 같은 코드·같은 N 의 08-29 실행(0.629 ± 0.429)과 신뢰구간이
+#    안 겹쳤다(1.173 ± 0.049). 오차막대는 팔 **안** 표본분산만 담으므로 정의상
+#    그것을 못 본다. 처방은 표본을 늘리는 것이 아니라 팔을 교대로 도는 것이다
+#    (README 「한계」·인계 §5 가 09-03 에 적어 둔 처방). p17 의 라틴 방격과 같은
+#    원리다.
+#
+#    설계: 조건마다 서버 하나(fec=on - p17·p18 과 같다), BLOCKS 개 블록, 블록마다
+#    다섯 팔을 회전한 순서로 N/BLOCKS 판씩. BLOCKS=10 이면 각 팔이 각 자리를
+#    정확히 두 번 겪는다(균형). auto 의 캐시는 조건 시작에 한 번만 비우고
+#    블록을 넘어 이어진다(콜드스타트 -> 수렴을 그대로 잰다). 「수렴 후」= 각
+#    팔의 후반 절반 = 뒤쪽 5 블록이라, auto 와 고정팔의 수렴 후 창이 **같은
+#    시간대**를 덮는다. 표준오차는 배치평균(blockstat.batch_se)으로 잰다 -
+#    연속한 판은 독립이 아니다(p16 09-01 실측).
+#    저널 단위는 팔이 아니라 조건이다 - 교대 측정은 팔 하나만 다시 잴 수 없다.
+BLOCKS = 10
+# 🩸 2026-09-07 감사 - N 이 BLOCKS 로 안 나뉘면 실제 팔당 판 수는 (N//BLOCKS)*BLOCKS
+#    인데 키·out["n"]·필요표본은 N 을 썼다. 한 곳에서 맞춘다.
+N_REQ = N
+N = (N // BLOCKS) * BLOCKS
+if N != N_REQ:
+    print("   N=%d 은 블록 %d 로 안 나뉜다 - 팔당 %d 판으로 맞춘다"
+          % (N_REQ, BLOCKS, N), flush=True)
+
+
+def run_condition(cert, loss, jr):
+    """조건 하나의 다섯 팔을 교대로 잰다. {팔: rec}."""
+    key = "%d|%.1f|latin|n%d|b%d" % (cert, loss, N, BLOCKS)
     if jr.has(key):
         return jr.get(key)
-
+    n_blk = N // BLOCKS
     B.set_netem(RTT_MS / 2.0, loss_c2s=loss)
-    extra = []
-    if arm == "auto":
-        # 조건마다 캐시를 비운다 - 콜드스타트부터 정직하게 잰다
-        try:
-            os.unlink(CACHE)
-        except OSError:
-            pass
-        fec, m = "auto", 1
-        extra = ["-cache", CACHE]
-    else:
-        m = int(arm[1:])
-        fec = "off" if m == 0 else "on"
-
-    p, sp = B.start_server(cert, fec=("on" if fec != "off" else "off"))
-    rows, cs, err = B.run_client(GROUP, N, fec=fec, m=max(m, 1), gap_ms=8,
-                                 timeout_s=10, expect_k=K, extra=extra,
-                                 # 🩸 2026-08-21 - 정책에 **이 실행의 실제
-                                 # 업링크**를 알려 준다. 그전에는 Go 가
-                                 # 10 Mbps 를 리터럴로 박고 있었는데 이
-                                 # 테스트베드는 대역을 안 건다(p16 실측).
-                                 uplink_mbps=UPLINK_MBPS)
-    B.stop_server(p)
+    try:
+        os.unlink(CACHE)          # 조건마다 한 번 - 콜드스타트부터 정직하게
+    except OSError:
+        pass
+    rows_by = {a: [] for a in ALL_ARMS}
+    blocks_by = {a: [] for a in ALL_ARMS}
+    err_by = {a: "" for a in ALL_ARMS}
+    p, sp = B.start_server(cert, fec="on")
+    try:
+        for b in range(BLOCKS):
+            r = b % len(ALL_ARMS)
+            order = ALL_ARMS[r:] + ALL_ARMS[:r]
+            for pos, arm in enumerate(order):
+                if arm == "auto":
+                    fec, m, extra = "auto", 1, ["-cache", CACHE]
+                else:
+                    m = int(arm[1:])
+                    fec, extra = ("off" if m == 0 else "on"), []
+                rows, cs, e = B.run_client(
+                    GROUP, n_blk, fec=fec, m=max(m, 1), gap_ms=8,
+                    timeout_s=10, expect_k=K, extra=extra,
+                    # 🩸 2026-08-21 - 정책에 **이 실행의 실제 업링크**를 알려
+                    #    준다. 그전에는 Go 가 10 Mbps 를 리터럴로 박고 있었다.
+                    uplink_mbps=UPLINK_MBPS)
+                if e:
+                    err_by[arm] = e
+                rows_by[arm].extend(rows)
+                ok = [x["ms"] for x in rows if x.get("ok")]
+                blocks_by[arm].append({"block": b, "pos": pos, "n": len(rows),
+                                       "ok": len(ok), "mean": mean(ok)})
+            print("   블록 %2d/%d  %s"
+                  % (b + 1, BLOCKS,
+                     "  ".join("%s(자리%d) %.2f"
+                               % (a, blocks_by[a][-1]["pos"],
+                                  blocks_by[a][-1]["mean"] or -1)
+                               for a in order)), flush=True)
+    finally:
+        B.stop_server(p)
     ss = B.read_server_stats(sp)
-    ok = [r["ms"] for r in rows if r.get("ok")]
-    # 🩸 두 통계가 서로 다른 창을 쓰면 안 된다. HCT 는 성공한 판만 모은
-    #    ok 의 후반, m 일치는 전체 행의 후반을 쓰고 있었다 - 실패가 있으면
-    #    두 창이 어긋난다. **행 인덱스 기준 한 창**으로 통일한다.
-    half_rows = len(rows) // 2
-    late_rows = rows[half_rows:]
-    ok_late = [r["ms"] for r in late_rows if r.get("ok")]
-    rec = {"arm": arm, "cert": cert, "loss": loss,
-           "n": len(rows), "ok": len(ok),
-           "mean": mean(ok), "mean_late": mean(ok_late),
-           "p50": B.pctl(ok, 0.5), "p95": B.pctl(ok, 0.95),
-           "tail": tail_rate(ok, 1.5 * RTT_MS),
-           "tail_late": tail_rate(ok_late, 1.5 * RTT_MS),
-           "m_used": [r.get("m_used") for r in rows],
-           # 🩸 2026-08-21 (0-c) - 탐색세를 사후에 나눌 수 있도록 행
-           #    단위로 남긴다. m_why 를 앞 3 개만 저장하던 것이 문제의
-           #    뿌리였다 - 어느 행이 탐색인지 사후에 알 수 없었다.
-           #    ms_rows 는 행 인덱스에 정렬돼 있다(실패 행은 None).
-           "ms_rows": [r["ms"] if r.get("ok") else None
-                       for r in rows],
-           "probe_rows": [(r.get("m_why") or "").startswith("탐색")
-                          for r in rows],
-           # 🩸 2026-08-21 - 연결별 원자료를 **버리지 않는다.** 그전에는
-           #    평균만 남겨서 신뢰구간을 사후에 계산할 수도, "같은 코드인데
-           #    헤드라인이 3.08 -> 1.19 로 바뀌었다"를 추적할 수도 없었다.
-           "ms": ok,
-           "ms_late": ok_late,
-           # 정책이 **왜** 그것을 골랐는지. 프롬프트가 "m_why 를 보라"고
-           # 했는데 저장 자체가 안 되고 있었다. 앞 3 개만(길다).
-           "m_why": [r.get("m_why") for r in rows[:3]],
-           "srv_recovered": ss.get("recovered"),
-           "srv_crc_fail": ss.get("recover_crc_fail"),
-           # 🩸 서버 통계가 통째로 없을 수도 있다(read_server_stats 는 2 초
-           #    안에 파일이 안 생기면 {} 를 준다). 그러면 crc_fail 이 None
-           #    이라 `None or 0 == 0` 으로 **모든 검사를 통과**하고, 그 상태가
-           #    저널에 영구 기록된다. 사실을 필드로 남긴다.
-           "srv_stats_present": bool(ss),
-           "err": err}
-    # 저널에 남길 자격: 표본이 다 찼고, 서버 통계가 실제로 있고, CRC 실패가 0.
-    if (len(rows) == N and bool(ss)
-            and (ss.get("recover_crc_fail") or 0) == 0):
-        jr.record(key, rec)
-    return rec
+    out = {}
+    for arm in ALL_ARMS:
+        rows = rows_by[arm]
+        ok = [r["ms"] for r in rows if r.get("ok")]
+        # 🩸 두 통계가 서로 다른 창을 쓰면 안 된다. **행 인덱스 기준 한 창**.
+        half_rows = len(rows) // 2
+        late_rows = rows[half_rows:]
+        ok_late = [r["ms"] for r in late_rows if r.get("ok")]
+        out[arm] = {
+            "arm": arm, "cert": cert, "loss": loss,
+            "n": len(rows), "ok": len(ok),
+            "mean": mean(ok), "mean_late": mean(ok_late),
+            "p50": B.pctl(ok, 0.5), "p95": B.pctl(ok, 0.95),
+            "tail": tail_rate(ok, 1.5 * RTT_MS),
+            "tail_late": tail_rate(ok_late, 1.5 * RTT_MS),
+            "m_used": [r.get("m_used") for r in rows],
+            # 행 단위 원자료 - 탐색세 분리(0-c)·신뢰구간·사후 추적에 쓴다.
+            "ms_rows": [r["ms"] if r.get("ok") else None for r in rows],
+            "probe_rows": [(r.get("m_why") or "").startswith("탐색")
+                           for r in rows],
+            "ms": ok, "ms_late": ok_late,
+            "m_why": [r.get("m_why") for r in rows[:3]],
+            "blocks": blocks_by[arm],
+            # 서버가 조건당 하나이므로 아래 둘은 **조건 합**이다.
+            "srv_recovered": ss.get("recovered"),
+            "srv_crc_fail": ss.get("recover_crc_fail"),
+            "srv_stats_present": bool(ss),
+            "err": err_by[arm]}
+    complete = all(len(rows_by[a]) == n_blk * BLOCKS for a in ALL_ARMS)
+    if complete and bool(ss) and (ss.get("recover_crc_fail") or 0) == 0:
+        jr.record(key, out)
+    return out
 
 
 def main():
@@ -186,8 +224,9 @@ def main():
                            "experiments/padbed.py"], ROOT)
     jr = Journal(os.path.join(B.STATE, "p11_units.jsonl"), fp)
 
-    out = {"rtt_ms": RTT_MS, "n": N, "group": GROUP, "rows": [],
-           "regret": [], "checks": []}
+    out = {"rtt_ms": RTT_MS, "n": N, "n_requested": N_REQ, "group": GROUP,
+           "blocks": BLOCKS, "interleaved": True,
+           "rows": [], "regret": [], "checks": []}
 
     def add(name, ok, detail):
         out["checks"].append({"check": name, "ok": bool(ok), "detail": detail})
@@ -195,16 +234,16 @@ def main():
         sys.stdout.flush()
 
     print("=" * 104)
-    print("폐루프(auto) 대 고정 m - 조건마다 n=%d" % N)
+    print("폐루프(auto) 대 고정 m - 조건마다 팔당 n=%d, 블록 %d 교대" % (N, BLOCKS))
     print("=" * 104)
     print("%-18s %-6s %-9s %-9s %-9s %-9s %s"
-          % ("조건", "팔", "평균", "수렴후평균", "꼬리", "복구", "고른 m"))
+          % ("조건", "팔", "평균", "수렴후평균", "꼬리", "복구(조건합)", "고른 m"))
 
     for name, cert, loss in CONDS:
-        arms = {}
+        print("### %s (cert %d, 손실 %g%%)" % (name, cert, loss), flush=True)
+        arms = run_condition(cert, loss, jr)
         for arm in ALL_ARMS:
-            r = run_arm(cert, loss, arm, jr)
-            arms[arm] = r
+            r = arms[arm]
             out["rows"].append(r)
             ms = r["m_used"]
             if arm == "auto":
@@ -275,18 +314,22 @@ def main():
                 ev[a] = mean(v[h:])
         reg_hold = None
         best_hold = None
+        se_hold = None
         if sel and ev and arms["auto"]["mean_late"] is not None:
             best_hold = min(sel, key=lambda a: sel[a])
             reg_hold = arms["auto"]["mean_late"] - ev[best_hold]
 
         # 후회의 표준오차. auto 와 고정팔은 **서로 다른 손실 실현**을 본
         # 독립 표본이므로 분산이 더해진다.
+        # 🩸 2026-09-07 - s/sqrt(n) 이 아니라 배치평균 SE 다. 연속한 판은
+        #    독립이 아니라(부하·표류) 옛 식은 반폭을 과소평가했다(인계 §4b-4b:
+        #    p15 1.25 배, p16 2.43 배). blockstat.batch_se 는 p16·p15 와 같은 자다.
+        _se_methods = []
+
         def _se(v):
-            if not v or len(v) < 2:
-                return None
-            mu = sum(v) / len(v)
-            var = sum((x - mu) ** 2 for x in v) / (len(v) - 1)
-            return (var / len(v)) ** 0.5
+            se, method, kb = BST.batch_se_info(v)
+            _se_methods.append((method, kb))
+            return se
 
         se_auto = _se(arms["auto"].get("ms_late") or [])
         se_fix = _se(arms[best_late].get("ms_late") or [])
@@ -303,6 +346,15 @@ def main():
         se_reg_f = None
         if se_auto_f is not None and se_fix_f is not None:
             se_reg_f = (se_auto_f ** 2 + se_fix_f ** 2) ** 0.5
+        # 🩸 2026-09-07 감사 - 홀드아웃 후회의 반폭은 **그 표본**(auto 수렴 후 +
+        #    최선 홀드아웃 팔의 뒤 절반)에서 낸다. 그전에는 수렴 후 후회의 반폭을
+        #    빌려 썼다 - 다른 조건·다른 표본 크기의 자였다.
+        if best_hold is not None:
+            _v = arms[best_hold].get("ms") or []
+            _se_h = _se(_v[len(_v) // 2:])
+            if se_auto is not None and _se_h is not None:
+                se_hold = (se_auto ** 2 + _se_h ** 2) ** 0.5
+        _methods = sorted(set(m for m, _k in _se_methods if m))
 
         out["regret"].append({
             "cond": name, "cert": cert, "loss": loss,
@@ -320,6 +372,12 @@ def main():
             "ci95_half_ms": (1.96 * se_reg) if se_reg is not None else None,
             "ci95_half_full_ms": ((1.96 * se_reg_f)
                                   if se_reg_f is not None else None),
+            "ci95_half_holdout_ms": ((1.96 * se_hold)
+                                     if se_hold is not None else None),
+            "se_method": ("batch" if _methods == ["batch"]
+                          else "+".join(_methods) or None),
+            "se_batches_min": min((k for _m, k in _se_methods if k),
+                                  default=None),
             "fixed_means": fixed,
             "fixed_means_late": fixed_late})
         print("    -> 최선 고정팔 %s (%.2f ms), auto %.2f ms, "
@@ -439,7 +497,7 @@ def main():
            if _v_late == "판정불능" else "",
            ["%+.1f" % v for v in regs_late]))
     # 🆕 승자의 저주를 뺀 판. 고르기와 재기를 다른 표본으로 나눈다.
-    _h_hold = out.get("worst_regret_late_ci95_half_ms")
+    _h_hold = _ci_at("regret_holdout_ms", worst_hold, "ci95_half_holdout_ms")
     _v_hold = _verdict(worst_hold, _h_hold)
     add("최악 후회가 2 ms 밖이라고 **말할 수 있는** 조건이 없다 "
         "(수렴 후 · 승자의 저주 보정)",
@@ -518,15 +576,33 @@ def main():
             "%d/%d 조건에서 팔 선택이 실제로 손익을 가른다"
             % (tot, len(out["regret"])))
 
-    crc = sum(r["srv_crc_fail"] or 0 for r in out["rows"])
-    add("모든 팔에서 복구 CRC 실패 0", crc == 0, "총 %d 건" % crc)
+    # 서버가 조건당 하나라 팔마다 같은 수가 복사돼 있다 - 조건별로 한 번만 센다.
+    _seen = set()
+    crc = 0
+    for r in out["rows"]:
+        k_ = (r["cert"], r["loss"])
+        if k_ in _seen:
+            continue
+        _seen.add(k_)
+        crc += r["srv_crc_fail"] or 0
+    add("모든 팔에서 복구 CRC 실패 0", crc == 0, "총 %d 건 (조건별 합)" % crc)
+    # 🩸 2026-09-07 - 반폭이 배치평균으로 나왔는지 검사한다. 짧은 표본에서는
+    #    iid 로 되돌아가는데, 그 반폭은 독립 가정이라 09-01 실측 기준 1.7~2.4 배
+    #    과소평가다. 그 자로 통과한 정밀도 검사는 통과가 아니다.
+    _bad_se = [r["cond"] for r in out["regret"] if r.get("se_method") != "batch"]
+    add("모든 조건의 반폭이 배치평균(독립 가정 아님)으로 나왔다",
+        out["regret"] and not _bad_se,
+        "iid 로 되돌아간 조건: %s" % (_bad_se or "없음"))
 
     npass = sum(1 for c in out["checks"] if c["ok"])
     print("-" * 104)
     print("%d / %d 통과" % (npass, len(out["checks"])))
     out["passed"] = npass
     out["total"] = len(out["checks"])
-    print("saved:", B.save("p11_adaptive.json", out))
+    # 🩸 2026-09-07 - 기본 N 보다 작은 실행(스모크)은 정본 파일을 덮지 않는다.
+    #    N=20 스모크가 n=4000 실측 결과를 덮어쓴 사고에서 나온 가드다.
+    _fname = ("smoke_" if N < N_DEFAULT else "") + "p11_adaptive.json"
+    print("saved:", B.save(_fname, out))
     return 0 if npass == len(out["checks"]) else 1
 
 

@@ -261,16 +261,25 @@ def start_server(certsize, fec="off", stats_path=None, extra=()):
            "-mode", "server", "-addr", "%s:%d" % (RX_IP, SERVER_PORT),
            "-certsize", str(certsize), "-fec", fec, "-stats", stats_path]
     cmd += list(extra)
-    p = subprocess.Popen(cmd, stdout=subprocess.DEVNULL,
-                         stderr=subprocess.PIPE)
-    # READY 를 기다린다. 고정 sleep 은 느리거나 모자라거나 둘 중 하나다.
+    # 🩸 2026-09-07 감사 - stderr 를 파이프로 받으면 (a) READY 대기가 readline
+    #    에서 막혀 15 초 기한을 못 지키고 (b) READY 뒤로는 아무도 안 읽어 서버가
+    #    로그를 한 줄이라도 더 찍으면 64 KB 파이프가 차서 서버가 멈춘다(클라
+    #    시간초과로 보인다). 파일로 받고 파일을 기한 안에서 살핀다.
+    err_path = os.path.join(WORK, "srv_stderr.txt")
+    err_f = open(err_path, "wb")
+    p = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=err_f)
+    err_f.close()
     deadline = time.time() + 15
     while time.time() < deadline:
-        line = p.stderr.readline()
-        if not line:
+        try:
+            with open(err_path, "rb") as f:
+                if b"READY" in f.read():
+                    break
+        except OSError:
+            pass
+        if p.poll() is not None:
             break
-        if b"READY" in line:
-            break
+        time.sleep(0.05)
     return p, stats_path
 
 
@@ -360,7 +369,20 @@ def run_client(group, n, fec="off", m=1, ips=0, gap_ms=25, timeout_s=12,
             stats = {}
     stats["warmup_dropped"] = n_warm
     stats["cpu_list"] = CPU_LIST
-    return rows, stats, ""
+    # 🩸 2026-09-07 감사 - **반환코드를 본다.** 그전에는 qamp 가 panic 으로
+    #    죽어도, /tmp/qamp 가 없어 rc 127 이어도, 바깥 timeout(+120 초, 파이썬
+    #    timeout +180 보다 먼저 죽인다)이 rc 124 로 죽여도 err="" 로 돌아왔다.
+    #    행이 모자란 채 「깨끗한 실행」으로 보였고(08-26 배포판 함정의 「조용히
+    #    0 건」이 정확히 이것이다) p17 은 그 불완전한 단위를 저널에 남겼다.
+    #    행 수도 같이 본다.
+    err = ""
+    if r.returncode != 0:
+        tail = (r.stderr or "")[-300:].strip().replace("\n", " | ")
+        err = ("timeout(rc124)" if r.returncode == 124
+               else "exit %d: %s" % (r.returncode, tail))
+    elif len(rows) + n_warm != n:
+        err = "rows %d != n %d" % (len(rows) + n_warm, n)
+    return rows, stats, err
 
 
 def read_server_stats(path):

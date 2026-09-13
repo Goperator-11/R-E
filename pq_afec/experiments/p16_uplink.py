@@ -158,41 +158,54 @@ def linfit(xs, ys):
 #        -> 둘 다 그대로 [틀림]. 검사 4 의 반증은 살아있다.
 #    넓어진 것은 자가 아니라 **오차막대**이고, 그건 자료가 원래 그만큼밖에
 #    말해 주지 않는다는 뜻이다.
-BATCH_MIN = 8          # 배치가 이보다 적으면 배치평균 자체를 못 믿는다
+# 🩸 2026-09-07 - 배치평균 SE 를 blockstat.py 로 옮겼다. p11·p15 도 같은 자를
+#    쓰게 됐으므로(순차 측정 → 교대 측정 수리와 함께) 식을 한 곳에 둔다.
+import blockstat as BST  # noqa: E402
+
+BATCH_MIN = BST.BATCH_MIN
 
 
 def _batch_means(v):
-    """비겹침 배치평균. 배치 크기 b ~ sqrt(n) (표준 관례, 배치 수도 ~sqrt(n))."""
-    n = len(v)
-    b = max(1, int(math.sqrt(n)))
-    k = n // b
-    if k < BATCH_MIN:
-        return None
-    return [sum(v[i * b:(i + 1) * b]) / float(b) for i in range(k)]
+    return BST.batch_means(v)
 
 
 def _se(v):
     """평균의 표준오차. **연속한 판은 독립이 아니라** 비겹침 배치평균으로 잰다."""
-    if not v or len(v) < 2:
-        return None
-    m = _batch_means(v)
-    if m is None:
-        m = list(v)        # 배치를 못 낼 만큼 짧을 때만. n=200~400 에선 안 탄다.
-    mu = sum(m) / len(m)
-    return math.sqrt(sum((x - mu) ** 2 for x in m) / (len(m) - 1) / len(m))
+    return BST.batch_se(v)
 
 
 def _sd(v):
-    """need_n 이 쓰는 「한 판의 유효 표준편차」.
+    """need_n 이 쓰는 「한 판의 유효 표준편차」(반폭과 같은 자료를 말하게)."""
+    return BST.batch_sd(v)
 
-    배치평균 SE 에서 되돌린다. 이렇게 해야 **반폭과 필요표본이 같은 자료를
-    말한다** - 반폭만 정직해지고 필요표본이 옛 가정이면 "이만큼 더 재면
-    판정된다" 가 거짓말이 된다.
-    """
-    if not v or len(v) < 2:
-        return None
-    se = _se(v)
-    return None if se is None else se * math.sqrt(len(v))
+
+# 🩸 2026-09-01/09-07 - **부하 자국을 스스로 찍는다** (정보, 판정 아님).
+#    08-30 자료의 오염을 lag-1 자기상관으로 **사후에야** 알아냈다. 자(검사)로
+#    만들려다 09-01 의 깨끗한 판에 대 보니 성립하지 않았다: 조건마다 기저값이
+#    다르고(무제한 +0.20~+0.38, 10 Mbps +0.11~+0.18), 블록 경계가 lag-1 을
+#    부풀리며(이어붙임 +0.368 vs 블록 안 +0.245), SE 배율은 오염을 못 가른다.
+#    그래서 값을 남기는 것까지만 한다. 아래 기준선은 **09-01 깨끗한 판의
+#    블록 안 값**이다 - 다음에 오염이 한 번 더 나면 그때 두 판을 같은 자로
+#    비교해 검사로 승격한다.
+LOAD_TRACE_REF_0901 = {"무제한": {"base": 0.245, "m1": 0.088},
+                       "note": "09-01 깨끗한 판, 블록 안에서 잰 lag-1. "
+                               "10Mbps 는 이어붙임 기준 +0.11~+0.18 만 기록됨"}
+
+
+def load_trace(blocks):
+    """조건 하나의 블록들에서 팔·블록별 lag-1 자기상관과 SE 배율을 낸다."""
+    rows = []
+    for aname, bs in blocks.items():
+        for b in bs:
+            v = b.get("ms") or []
+            se_b = BST.batch_se(v)
+            se_i = (statistics.stdev(v) / math.sqrt(len(v))
+                    if len(v) >= 2 else None)
+            rows.append({"arm": aname, "pos": b.get("pos"), "n": len(v),
+                         "lag1": BST.lag1(v),
+                         "se_ratio_batch_over_iid":
+                             (se_b / se_i) if (se_b and se_i) else None})
+    return rows
 
 
 def _z(alpha=0.05):
@@ -333,6 +346,19 @@ def main():
                      ("%.1f%%" % (100 * (r["two_rtt_rate"] or 0))),
                      r["err"] or ""))
             sys.stdout.flush()
+
+        # 부하 자국 (정보). 블록 안에서 잰 lag-1 과 SE 배율.
+        _lt = load_trace(blocks)
+        out.setdefault("load_trace", {})[cname] = _lt
+        _worst_lag = max((x["lag1"] for x in _lt if x["lag1"] is not None),
+                         default=None)
+        print("    [정보] 부하 자국 %s: 최대 lag-1 %s | 팔별 %s | 09-01 깨끗한 판 %s"
+              % (cname,
+                 ("%+.3f" % _worst_lag) if _worst_lag is not None else "-",
+                 " ".join("%s%s%+.2f" % (x["arm"], x["pos"], x["lag1"])
+                          for x in _lt if x["lag1"] is not None),
+                 LOAD_TRACE_REF_0901.get(cname, "기준 없음")))
+        sys.stdout.flush()
 
         good = [r for r in rows if r["mean"] is not None]
         xs = [r["added_bytes"] for r in good]

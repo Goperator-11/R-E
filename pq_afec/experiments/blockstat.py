@@ -65,6 +65,77 @@ def _mean(v):
     return (sum(v) / len(v)) if v else None
 
 
+# ---------------------------------------------------------------------------
+# 🩸 2026-09-07 - **연속한 판은 독립이 아니다.** 한 팔의 연결 시계열은 부하·
+#    열·캐시로 자기상관이 있어 s/sqrt(n) 이 불확실성을 과소평가한다(p16 이
+#    09-01 에 실측: 배치평균 SE / 독립 SE = 1.66~2.43). p16 이 먼저 고쳤고
+#    p11·p15 가 같은 자를 쓰도록 여기로 옮긴다 - 같은 식을 세 곳에 두면 한
+#    곳만 고치는 사고가 난다. 배치 크기 b ~ sqrt(n) (표준 관례, 배치 수도
+#    ~sqrt(n)). 배치가 BATCH_MIN 보다 적으면 배치평균 자체를 못 믿으므로
+#    독립 가정으로 되돌아가되, 호출부가 그 사실을 알 수 있게 flag 를 준다.
+# ---------------------------------------------------------------------------
+BATCH_MIN = 8
+
+
+def batch_means(v):
+    """비겹침 배치평균. 배치가 BATCH_MIN 미만이면 None."""
+    n = len(v)
+    b = max(1, int(math.sqrt(n)))
+    k = n // b
+    if k < BATCH_MIN:
+        return None
+    return [sum(v[i * b:(i + 1) * b]) / float(b) for i in range(k)]
+
+
+def batch_se_info(v):
+    """(표준오차, 방법, 배치 수). 방법은 "batch" 또는 "iid".
+
+    2026-09-07 감사 - batch_se 가 짧은 표본에서 **말없이** 독립 가정으로
+    되돌아갔고, p11·p15 는 se_method 를 "batch_means" 로 무조건 적었다. n<64
+    면 배치가 8 개가 안 돼 iid 다. 호출부가 방법을 기록하고 검사할 수 있게
+    셋을 같이 준다.
+    """
+    if not v or len(v) < 2:
+        return None, None, 0
+    m = batch_means(v)
+    method = "batch"
+    if m is None:
+        m = list(v)
+        method = "iid"
+    mu = sum(m) / len(m)
+    se = math.sqrt(sum((x - mu) ** 2 for x in m) / (len(m) - 1) / len(m))
+    return se, method, len(m)
+
+
+def batch_se(v):
+    """평균의 표준오차 (배치평균 기준). 짧으면 독립 가정으로 되돌아간다 -
+    방법까지 알아야 하면 batch_se_info 를 쓴다."""
+    return batch_se_info(v)[0]
+
+
+def batch_sd(v):
+    """필요 표본 계산이 쓰는 「한 판의 유효 표준편차」 = batch_se * sqrt(n).
+    반폭과 필요 표본이 같은 자료를 말하게 하려는 것이다."""
+    if not v or len(v) < 2:
+        return None
+    se = batch_se(v)
+    return None if se is None else se * math.sqrt(len(v))
+
+
+def lag1(v):
+    """lag-1 자기상관. 부하 자국의 서명이다(09-01: 오염된 판 +0.36~+0.53,
+    깨끗한 판 +0.11~+0.18 - 이어붙여 잰 값). 판정에 쓰지 않고 정보로 찍는다."""
+    n = len(v)
+    if n < 3:
+        return None
+    mu = sum(v) / n
+    den = sum((x - mu) ** 2 for x in v)
+    if den <= 0:
+        return None
+    num = sum((v[i] - mu) * (v[i + 1] - mu) for i in range(n - 1))
+    return num / den
+
+
 def balance(cells):
     """설계 검사 (가). cells = [(팔, 자리), ...]
 

@@ -785,6 +785,13 @@ func evalCands(cs []cand, k, w int, serverFlight, rtt, p, burst, cPkt float64,
 			// quic-go 는 1452 B 로 깎아 보낸다.
 			continue
 		}
+		// 🩸 2026-09-07 감사 - 패리티 데이터그램(wEff+39+6k)이 UDP 페이로드
+		//    상한(MTU 1500 - 28 = 1472)을 넘으면 그 후보도 보낼 수 없다.
+		//    overMTU 는 wEff 만 봐서 wEff<=1452 인 결합 후보의 패리티
+		//    1497~1515 B 를 못 잡았다. Python decide_v2 와 같은 자리에서 뺀다.
+		if c.m > 0 && parityDatagramBytes(c.wEff, c.k) > typicalMTU-28 {
+			continue
+		}
 		// 2026-08-21 - `sf := serverFlight + steps*cPkt` 를 지웠다.
 		// 필요한 칸은 후보와 무관한 상수이고 위에서 한 번만 구한다.
 		// 🩸 2026-08-26 - 뒤따르는 패리티의 신용이 송신 결정 전에
@@ -1245,6 +1252,10 @@ func (c *destCache) decide(addr string, w, mMax, coldM, probeEvery int,
 	// 직접 확인한 결과 m_max=2 가 이미 상한이라 **선택은 안 바뀌지만**
 	// (cert 2955/4032/9000 에서 p=0.30~0.75 전부 같은 답), 조용한
 	// 절단을 남겨 두지는 않는다. 자료(m_why)에 그대로 찍는다.
+	// 2026-09-07 - m_max=3 에서도 다시 확인했다(격자 밖 144 점, k 1..3 ·
+	// cert 2955..9000 · p 0.31/0.4/0.5/0.75 · 버스트 1/3/8: Python 과 결정
+	// 불일치 0. J 는 표 끝 행을 읽으므로 p=0.75 에서 최대 1.5 초 어긋난다).
+	// 위 「m_max=2」는 그때의 상한이고 결론은 지금도 같다.
 	if pMax := pfailP[len(pfailP)-1]; p > pMax {
 		why += fmt.Sprintf(" | ⚠p표상한절단 %.4f->%.4f", p, pMax)
 	}

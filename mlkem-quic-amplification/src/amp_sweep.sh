@@ -17,7 +17,7 @@ for g in X25519 X25519MLKEM768; do
   ip netns exec peer /tmp/qamp -mode server -addr 10.9.0.2:44494 -group $g -certsize $cs >/dev/null 2>&1 &
   SRV=$!; sleep 1
   OUT=$(timeout 120 /tmp/qamp -mode client -addr 10.9.0.2:44494 -group $g -n 30 2>/dev/null)
-  P50=$(echo "$OUT" | grep "HCT=" | awk -F"HCT=" "{split(\$2,a,\"ms\"); print a[1]}" | sort -n | awk "{v[NR]=\$1} END {printf \"%.1f\", v[int(NR/2)]}")
+  P50=$(echo "$OUT" | grep "HCT=" | awk -F"HCT=" "{split(\$2,a,\"ms\"); print a[1]}" | sort -n | awk "{v[NR]=\$1} END {printf \"%.1f\", v[int((NR+1)/2)]}")
   AVG=$(echo "$OUT" | grep "평균:" | sed "s/[^0-9. ]//g")
   echo "$cs,$g,$P50,$AVG"
   kill $SRV 2>/dev/null; sleep 1

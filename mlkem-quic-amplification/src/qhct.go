@@ -194,14 +194,22 @@ func runClient(addr, group string, iters, warmup, timeoutMs int, csvPath, qlogDi
 		cancel()
 
 		if err != nil {
-			failN++
 			status := "fail"
 			if ctx.Err() == context.DeadlineExceeded || err == context.DeadlineExceeded {
-				tmoN++
 				status = "timeout"
 			}
-			if w != nil && !isWarm {
-				w.Write([]string{group, strconv.Itoa(i - warmup), "", status, "", err.Error()})
+			// 2026-09-08 코드 감사 - 워밍업 반복은 세지 않는다. failN·tmoN 이
+			// 워밍업까지 세면 failrate 의 분모(okN+failN)와 보고되는
+			// n(=len(samples), 워밍업 제외)이 서로 다른 집합이 된다.
+			// hct_v2.c 에서 고친 것과 같은 결함이다.
+			if !isWarm {
+				failN++
+				if status == "timeout" {
+					tmoN++
+				}
+				if w != nil {
+					w.Write([]string{group, strconv.Itoa(i - warmup), "", status, "", err.Error()})
+				}
 			}
 			continue
 		}
@@ -212,8 +220,8 @@ func runClient(addr, group string, iters, warmup, timeoutMs int, csvPath, qlogDi
 		}
 		conn.CloseWithError(0, "bye")
 
-		okN++
 		if !isWarm {
+			okN++
 			samples = append(samples, el)
 			if w != nil {
 				w.Write([]string{group, strconv.Itoa(i - warmup),

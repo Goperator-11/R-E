@@ -335,11 +335,17 @@ def main():
               "  ".join("m%d %.2f" % (m, obs[m]) for m in ARMS)))
         print("   %s 모형 %s" % (" " * len(rec["cond"]),
               "  ".join("m%d %.2f" % (m, mdl[m] or -1) for m in ARMS)))
+        # 🩸 2026-09-01/09-07 - 화면의 구간은 **판정에 쓴 반폭**(ci_half_used =
+        #    max(Welch, 라틴 방격))으로 찍는다. 옛 코드는 Welch 반폭만 찍어서
+        #    08-29 로그의 「+0.03 ± 0.60」이 실제 판정 반폭 0.89 와 달랐고,
+        #    그 수가 보고서로 옮겨질 뻔했다. Welch 값은 옆에 따로 적는다.
         print("   m=2 -> m=4 이득:  모형 %+.2f ms  vs  **실측 %+.2f ms**  "
-              "(구간 [%+.2f, %+.2f], 자리효과 %.2f)"
+              "(구간 [%+.2f, %+.2f] = ±%.2f 판정반폭, Welch ±%.2f, 자리효과 %.2f)"
               % (pred_gain or 0, obs_gain,
-                 obs_gain - (v["obs_gain_ci95_half"] or 0),
-                 obs_gain + (v["obs_gain_ci95_half"] or 0),
+                 obs_gain - (v["ci_half_used"] or 0),
+                 obs_gain + (v["ci_half_used"] or 0),
+                 v["ci_half_used"] or 0,
+                 v["obs_gain_ci95_half"] or 0,
                  v["pos_effect_ms"]))
         if not v["significant"]:
             print("   ⚠ 이 이득은 **0 과 구별되지 않는다**. 판정하려면 "
@@ -422,14 +428,16 @@ def main():
     ok5 = bool(dec) and all(v["obs_gain_m2_to_m4"] > 0 for v in dec)
     add("5. ⭐ m=4 가 m=2 보다 빠른 것이 **잡음과 구별된다** (판정 가능 %d/%d 조건)"
         % (len(dec), len(vs)), ok5,
+        # 🩸 2026-09-07 - detail 의 ± 도 **판정에 쓴 반폭**(ci_half_used)이다.
+        #    옛 detail 은 Welch 반폭을 찍어 판정과 다른 자를 보여 줬다.
         (" | ".join("%s: %+.2f ± %.2f 유의"
                     % (v["cond"], v["obs_gain_m2_to_m4"],
-                       v["obs_gain_ci95_half"] or 0) for v in dec)
+                       v["ci_half_used"] or 0) for v in dec)
          or "판정 가능한 조건이 하나도 없다 = 이 검사가 공허하다")
         + ("  || 판정 불능: " + "; ".join(
             "%s %+.2f ± %.2f (팔당 %s 판 필요, 지금 %d)"
             % (v["cond"], v["obs_gain_m2_to_m4"],
-               v["obs_gain_ci95_half"] or 0, v["n_needed_per_arm"],
+               v["ci_half_used"] or 0, v["n_needed_per_arm"],
                v["n_per_arm"]) for v in und) if und else ""))
 
     # 🩸 옛 검사 6 은 `실측 >= 0.5 x 예측` 한쪽만 봤다. 예측이 0 에
@@ -520,7 +528,8 @@ def main():
     out["passed"], out["total"] = npass, len(checks)
     print("-" * 100)
     print("%d / %d 통과" % (npass, len(checks)))
-    print("saved: %s" % B.save("p18_mmax.json", out))
+    _fname = ("smoke_" if N < N_DEFAULT else "") + "p18_mmax.json"
+    print("saved: %s" % B.save(_fname, out))
     return 0 if npass == len(checks) else 1
 
 

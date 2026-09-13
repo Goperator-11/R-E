@@ -273,7 +273,8 @@ def main():
            "total_units": len(results), "total_recovered": recovered,
            "recover_crc_fail": crc_fail,
            "checks": checks, "passed": npass, "total": len(checks)}
-    print("saved:", B.save("p3_effect.json", out))
+    _fname = ("smoke_" if N < N_DEFAULT else "") + "p3_effect.json"
+    print("saved:", B.save(_fname, out))
     return 0 if npass == len(checks) else 1
 
 

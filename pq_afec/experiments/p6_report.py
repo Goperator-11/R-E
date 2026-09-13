@@ -442,6 +442,64 @@ def ruler_facts(p11, p17):
             "finer": all(v > tol for _n, v in bars)}
 
 
+def sample_facts(p17, p18):
+    """「한계」절이 인용하는 표본 수와 m3-m2 부호를 **원자료에서** 뽑는다.
+
+    🩸 2026-09-07. 이 문장이 p6_report.py 에 손으로 박혀 있었다 -
+       *"팔당 8,544~12,404 판이 필요한데 지금은 1,000 판이다 ... 부호가
+       반대로 나온다(p17 +1.86 / p18 −1.26 ms)"*. 셋 다 낡았다: 지금 p18 은
+       조건당 500~8,999 판이고 스스로 계산한 필요 표본은 178 ~ 3,489,328 판,
+       그리고 08-30 자료에서는 p17 과 p18 의 m3-m2 부호가 **같다**(둘 다 m3 이
+       빠르다). 문서 머리가 *"숫자를 손으로 옮기지 않는다"* 인데 그 문장 하나가
+       예외였고, p18 이 p6 의 deps 에 없어서 아무도 무효화하지 못했다.
+       여기서는 값을 읽어 올 뿐 판정하지 않는다. 없으면 None 을 돌려 그 문장이
+       빠진다.
+    """
+    out = {}
+    vs = (p18 or {}).get("verdict") or []
+    und = [v for v in vs if not v.get("significant")
+           and isinstance(v.get("n_needed_per_arm"), (int, float))]
+    if vs:
+        out["p18_n_now"] = (min(v.get("n_per_arm") or 0 for v in vs),
+                            max(v.get("n_per_arm") or 0 for v in vs))
+        out["p18_n_undecided"] = len(und)
+        out["p18_n_conds"] = len(vs)
+        if und:
+            out["p18_n_needed"] = (min(v["n_needed_per_arm"] for v in und),
+                                   max(v["n_needed_per_arm"] for v in und))
+
+    def _p17_m3m2():
+        for g in (p17 or {}).get("gain") or []:
+            if g.get("cond") != "2Mbps":
+                continue
+            alw = g.get("allowed_by_loss") or {}
+            for l, rec in alw.items():
+                try:
+                    if abs(float(l) - 15.0) > 1e-9 or not rec:
+                        continue
+                except (TypeError, ValueError):
+                    continue
+                m = rec.get("means") or {}
+                if "m3" in m and "m2" in m:
+                    return m["m3"] - m["m2"]
+        return None
+
+    def _p18_m3m2():
+        for v in vs:
+            c = v.get("cond") or ""
+            if "2Mbps" in c and "15" in c:
+                o = v.get("obs") or {}
+                if "3" in o and "2" in o:
+                    return o["3"] - o["2"]
+        return None
+
+    a, b = _p17_m3m2(), _p18_m3m2()
+    if a is not None and b is not None:
+        out["m3m2_p17"], out["m3m2_p18"] = a, b
+        out["m3m2_same_sign"] = (a < 0) == (b < 0)
+    return out or None
+
+
 def regret_facts(p11):
     """p11 의 후회 검사 두 개를 짝지어 붙인다.
 
@@ -633,7 +691,7 @@ def s0_probe_facts(files):
 
 def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                    p10=None, p11=None, p12=None, e21=None, cliff=None,
-                   s0p=None, p17=None):
+                   s0p=None, p17=None, p18=None):
     cf = cap_facts(p1)
     af = amp_facts(p2, e21)
     s0f = s0_levels(p2)
@@ -1664,16 +1722,32 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
     #    아래로 내려가면 이 문단은 스스로 사라져야 한다.
     _rk = ruler_facts(p11, p17)
     if _rk and _rk["finer"]:
+        # 🩸 2026-09-07 - 뒷문장의 수(필요 표본 · p17/p18 부호)를 원자료에서
+        #    읽는다(sample_facts). 없으면 그 문장은 빠진다.
+        _sf = sample_facts(p17, p18) or {}
+        _tail = ""
+        if _sf.get("p18_n_needed"):
+            _tail += (" 실제로 갈리는 크기(m 하나 차이의 1~2 ms)를 판정하려면 "
+                      "p18 이 스스로 계산한 필요 표본이 판정 불능 조건 %d/%d 개에서 "
+                      "팔당 %s~%s 판인데 지금은 %s~%s 판이다."
+                      % (_sf["p18_n_undecided"], _sf["p18_n_conds"],
+                         fmt(_sf["p18_n_needed"][0], 0),
+                         fmt(_sf["p18_n_needed"][1], 0),
+                         fmt(_sf["p18_n_now"][0], 0),
+                         fmt(_sf["p18_n_now"][1], 0)))
+        if "m3m2_p17" in _sf:
+            _tail += (" 같은 자리(cert 9,000 · 2 Mbps · 손실 15%%)를 두 단계가 "
+                      "독립으로 재면 m3−m2 가 p17 %s / p18 %s ms 로 부호가 %s."
+                      % (sgn(_sf["m3m2_p17"], 2), sgn(_sf["m3m2_p18"], 2),
+                         "같다" if _sf["m3m2_same_sign"] else "반대다"))
         A("- **폐루프 검사(p11·p17)의 「허용집합」은 그 실험 자신의 오차막대보다 "
           "곱다.** 두 단계는 「최선 고정팔과 %s ms 안에 드는 팔」을 정답으로 삼는데, "
           "같은 판이 함께 찍은 정밀도는 %s 다. 정답지가 잡음에 뒤집히므로 "
           "**이 검사의 불일치는 정책 결함의 증거가 아니다** — 자를 넓혀 초록으로 "
-          "만들지 않고 한계로 남긴다. 실제로 갈리는 크기(m 하나 차이의 1~2 ms)를 "
-          "판정하려면 p18 이 스스로 계산한 대로 팔당 8,544~12,404 판이 필요한데 "
-          "지금은 1,000 판이다. 같은 자리를 두 단계가 독립으로 재면 부호가 "
-          "반대로 나온다(p17 +1.86 / p18 −1.26 ms)."
+          "만들지 않고 한계로 남긴다.%s"
           % (fmt(_rk["tol"], 0),
-             " · ".join("%s %s ms" % (n, fmt(v, 2)) for n, v in _rk["bars"])))
+             " · ".join("%s %s ms" % (n, fmt(v, 2)) for n, v in _rk["bars"]),
+             _tail))
     if p10 and p10.get("open_gaps"):
         A("- 설계했지만 구현하지 않은 항목이 %d 건 남아 있다(위 재고 표)."
           % p10["open_gaps"])
@@ -1954,6 +2028,9 @@ def main():
     # 🩸 p17 은 판정에 안 쓰고 **자기 정밀도(자리 효과)를 읽으려고만** 싣는다.
     #    없으면 ruler_facts 가 None 을 내고 해당 한계 문단이 빠진다.
     p17 = load("p17_adaptive_value.json")
+    # 🩸 2026-09-07 - p18 은 「한계」절의 필요 표본·m3-m2 부호를 읽으려고 싣는다
+    #    (sample_facts). 그전에는 그 수가 문장에 박혀 있었다.
+    p18 = load("p18_mmax.json")
     # p12 는 아직 만드는 중일 수 있다. load() 관례대로 없으면 None 이고,
     # 그때는 해당 절을 통째로 건너뛴다(조용히).
     p12 = load("p12_quantum.json")
@@ -1986,7 +2063,7 @@ def main():
 
     os.makedirs(DOCS, exist_ok=True)
     md = build_markdown(p1, p2, p3, p4, p5, p7, p8, p9, p10, p11, p12, e21,
-                        cliff, p17=p17)
+                        cliff, p17=p17, p18=p18)
     mdp = os.path.join(DOCS, "PADFEC 실측 보고서.md")
     with open(mdp, "w", encoding="utf-8") as f:
         f.write(md)

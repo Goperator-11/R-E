@@ -404,9 +404,19 @@ def load_p17():
     if not (os.path.exists(path) and os.path.exists(res)):
         return []
     meta = json.load(open(res, encoding="utf-8"))
-    rtt = meta["rtt_ms"]
-    cert = meta["cert"]
+    # 🩸 2026-09-01/09-07 - **조건별 cert·RTT·uplink 를 저널 줄에서 읽는다.**
+    #    옛 코드는 결과 파일 머리의 모듈 상수(cert 9000, RTT 50)를 모든 조건에
+    #    썼고, uplink 는 조건 이름으로 추측했다(`"2Mbps" in cond`). 08-28 에 p17
+    #    이 조건마다 cert·RTT 를 다르게 주기 시작한 뒤로 큰cert(16000)·RTT200
+    #    조건에서 세 값 중 둘이 틀려 있었다 - 이 단계는 「모형이 어느 무리에서
+    #    틀리는가」를 재므로 입력이 틀리면 모형이 맞는데도 틀린 것으로 나온다
+    #    (진단서가 최악으로 지목하던 `p17|RTT200|loss2` 가 정확히 그 자리다).
+    #    p17 은 이제 rec 에 cert·rtt_ms·up_policy·netem_rate_mbit 을 담는다.
+    #    옛 세대 저널에는 없으므로 그때만 추측하되, **추측했다고 찍는다.**
+    meta_rtt = meta["rtt_ms"]
+    meta_cert = meta["cert"]
     group = meta["group"]
+    conds_meta = {c["cond"]: c for c in (meta.get("conds") or [])}
     out = []
     # 2026-08-27 - **세대(fp)를 확인한다.** 이 jsonl 은 계기의 저널이라
     #    코드 지문이 다른 **여러 세대의 줄이 한 파일에 남아 있다** (앞
@@ -422,7 +432,18 @@ def load_p17():
             continue
         v = _r["val"]
         cond = v["cond"]
-        up = 2.0 if "2Mbps" in cond else 0.0
+        cm = conds_meta.get(cond) or {}
+        cert = v.get("cert", cm.get("cert", meta_cert))
+        rtt = v.get("rtt_ms", cm.get("rtt_ms", meta_rtt))
+        if v.get("up_policy") is not None:
+            up, up_guessed = float(v["up_policy"]), False
+        elif cm.get("up_policy") is not None:
+            up, up_guessed = float(cm["up_policy"]), False
+        else:
+            up, up_guessed = (2.0 if "2Mbps" in cond else 0.0), True
+        if up_guessed:
+            print("   [p17|%s] uplink 를 조건 이름으로 추측했다 (%g) - 옛 세대 "
+                  "저널이라 값이 없다" % (cond, up))
         segs = v.get("segments") or []
         for arm_name, a in v["arms"].items():
             if arm_name == "auto":

@@ -395,6 +395,9 @@ func (s *decodeConn) feedOne(d []byte) {
 	fr.syms[fb.index] = fb.sym
 	outs := s.tryRecoverLocked(fr, true)
 	if rec := s.settleRecovery(fr, outs); rec != nil {
+		// 2026-09-07 감사 - 복원본은 스택에 올라가는 바이트다. 장부에 적는다
+		// (ReadFrom 과 같은 수리. 근거는 거기 주석).
+		s.stackLocked(addr, len(rec))
 		s.mu.Unlock()
 		return
 	}
@@ -1054,7 +1057,11 @@ func (c *fecConn) ReadFrom(b []byte) (int, net.Addr, error) {
 		if err != nil || n <= 0 {
 			return n, addr, err
 		}
-		c.countRx(n)
+		// 🩸 2026-09-07 감사 - 서버 회신(C1 피드백, ~31 B)은 서버 비행 바이트가
+		//    아니다. 세면 -feedback 팔의 srv_bytes 만 +31 B 라 S 관측이 갈린다.
+		if parseFeedback(b[:n]) == nil {
+			c.countRx(n)
+		}
 		c.mu.Lock()
 		c.stats.RxCalls++
 		c.mu.Unlock()
@@ -1865,6 +1872,15 @@ again:
 	// ⚖️ 불변식: 스택에 넘긴 누적 바이트는 **물리적으로 도착한 누적 바이트를
 	// 절대 넘지 않는다.** 어기면 RFC 9000 8.1 의 3 배 한도를 우회하는 셈이다.
 	if rec := s.settleRecovery(fr, outs); rec != nil {
+		// 🩸 2026-09-07 감사 - **복원본을 장부에 안 적고 있었다.** settleRecovery
+		//    의 가드는 `BytesToStack + pendingBytes + len(rec) <= BytesIn` 으로
+		//    복원본(outs[0])이 곧 적힐 것으로 치는데, 여기서 quic-go 에 넘기면서
+		//    아무도 적지 않았다(뒤따르는 복원본 outs[1:] 은 pending 을 거치며
+		//    적힌다). 복구가 한 번 날 때마다 BytesToStack·ca.Stack·BeffStack 이
+		//    W 만큼 실제로 넘긴 바이트보다 작았고, 회계 자체시험은 `인계 <= 도착`
+		//    만 봐서 W 만큼 관대했다(스크래치 시험: k=2·m=1 에서 인계 2400 vs
+		//    장부 1200). 넘기는 바이트를 넘기기 전에 적는다.
+		s.stackLocked(addr, len(rec))
 		s.mu.Unlock()
 		m := copy(b, rec)
 		return m, addr, nil
@@ -2092,6 +2108,9 @@ type trial struct {
 	FFParityBytes int64 `json:"first_flight_parity_bytes"`
 	MUsed    int     `json:"m_used"`
 	IPSUsed  int     `json:"ips_used"`
+	// 2026-09-07 - quic-go 가 실제로 쓰는 값. -ips 가 1452 를 넘으면 조용히
+	// 1452 로 깎이는데 ips_used 는 요청값을 적어 와이어에 없던 W 가 남았다.
+	IPSEff   int     `json:"ips_eff"`
 	MWhy     string  `json:"m_why,omitempty"`
 	SrvBytes int64   `json:"server_bytes"`
 	LossEvt  bool    `json:"loss_event"`
@@ -2174,6 +2193,10 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			// 바이트가 흔들려 증폭 회계가 오염된다.
 			DisablePathMTUDiscovery: true,
 		}
+		ipsEff := trialIPS
+		if ipsEff > quicgoMaxIPS {
+			ipsEff = quicgoMaxIPS
+		}
 		if trialIPS > 0 {
 			qconf.InitialPacketSize = uint16(trialIPS)
 		}
@@ -2223,7 +2246,7 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			FFDgrams: st.FirstFlightDgrams, FFBytes: st.FirstFlightBytes,
 			FFParity:      st.FirstFlightParity,
 			FFParityBytes: st.FirstFlightParityBytes,
-			MUsed: trialM, IPSUsed: trialIPS,
+			MUsed: trialM, IPSUsed: trialIPS, IPSEff: ipsEff,
 			MWhy: why, SrvBytes: srvBytes, LossEvt: lossEvt}
 		if err != nil {
 			t.Err = err.Error()
@@ -2577,7 +2600,7 @@ func selfTest() int {
 					crcs: crcs, lens: lens, sym: pars[j]}))
 			}
 			ua := &net.UDPAddr{IP: net.IPv4(10, 9, 0, 1), Port: 40000}
-			badOver, badDup, badPre := "", "", ""
+			badOver, badDup, badPre, badLedger := "", "", "", ""
 			for _, ord := range permutations(len(dg)) {
 				// 원본을 하나씩 빼 본다(-1 은 전부 도착). 소거 1 개는 m>=1
 				// 이면 풀리고, 그 뒤에 오는 뒤따르는 패리티가 재진입한다.
@@ -2604,10 +2627,18 @@ func selfTest() int {
 					in := sv.stats.BytesIn
 					ev := sv.stats.RecoverEvents
 					pre := sv.stats.PrematureRecover
+					stk := sv.stats.BytesToStack
 					sv.mu.Unlock()
 					if handed > in && badOver == "" {
 						badOver = fmt.Sprint("순서", ord, " 소거", drop,
 							" 인계 ", handed, " > 도착 ", in)
+					}
+					// 2026-09-07 - 장부(BytesToStack)가 실제로 넘긴 바이트와 같아야
+					// 한다. 위 검사는 `인계 <= 도착` 만 봐서 장부가 W 만큼 모자라도
+					// 초록이었다(복원본 미기록 결함이 여기서 새어 나갔다).
+					if handed != stk && badLedger == "" {
+						badLedger = fmt.Sprint("순서", ord, " 소거", drop,
+							" 인계 ", handed, " != 장부 ", stk)
 					}
 					// 🩸 두 현상을 **갈라서** 본다. 처음 판은 둘을 뭉쳐
 					//    `Recovered <= 실제 소거` 로 봤는데, 재정렬로 생기는
@@ -2640,6 +2671,11 @@ func selfTest() int {
 				kk, " m=", mm), badOver == "")
 			if badOver != "" {
 				fmt.Println("     ", badOver)
+			}
+			check(fmt.Sprint("[회계-장부] 인계 == BytesToStack k=", kk,
+				" m=", mm), badLedger == "")
+			if badLedger != "" {
+				fmt.Println("     ", badLedger)
 			}
 			check(fmt.Sprint("[중복] 비행 하나에 복구 사건 <=1 k=", kk,
 				" m=", mm), badDup == "")

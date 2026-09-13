@@ -251,6 +251,37 @@ def main():
     add("4. 판정 헤드라인이 결과에 실제로 있다", not out["no_raw"],
         "빠진 것 %s" % (out["no_raw"][:3] or "없음"))
 
+    # --- 5. 모형 상수 vs 원자료 (2026-09-08 신설)
+    # policy.py 자체시험 19d 는 p7 의 세 모드(V2 마지막 원본 도착 / V3 마지막
+    # 원본 유실 / V9 아무것도 없음)의 증분을 **내장값**으로 대조한다 - padfec/
+    # 는 파일을 읽지 않는다는 격리 전제 때문이다(verify.py 발자국 시험). 원자료가
+    # 다시 나오면 그 내장값이 낡는데, 그것을 알아채는 자리가 여기다. 사례는
+    # **이름**으로 찾는다(자리로 찾으면 p7 이 사례를 끼워 넣는 순간 엉뚱한 줄).
+    try:
+        from padfec import policy as POL  # noqa: E402
+        p7p = os.path.join(res, "p7_verify.json")
+        with open(p7p, encoding="utf-8") as f:
+            d7 = json.load(f)
+        byname = {(c.get("case") or "").split(" ")[0]: c for c in d7["cases"]}
+        base = byname["V1"]["p50"]
+        rtt7 = float(d7.get("rtt_ms") or 50.0)
+        meas = {"V2": byname["V2"]["p50"] - base,
+                "V3": byname["V3"]["p50"] - base,
+                "V9": byname["V9"]["p50"] - base}
+        model = {"V2": POL.default_t_recover(rtt7, True),
+                 "V3": POL.pto_with_rtt_sample_ms(rtt7),
+                 "V9": POL.default_t_recover(rtt7, False)}
+        worst = max(abs(model[k] - meas[k]) for k in meas)
+        add("5. 모형 T_recover 상수가 p7 원자료(이름으로 찾음)를 10 ms 안에서 재현",
+            worst < 10.0,
+            " | ".join("%s 모형 %.1f vs 실측 %.1f" % (k, model[k], meas[k])
+                       for k in ("V2", "V3", "V9")) + " (최대 %.2f ms)" % worst)
+        out["t_recover_vs_p7"] = {"measured": meas, "model": model,
+                                  "worst_abs_ms": worst, "rtt_ms": rtt7}
+    except (OSError, KeyError, ValueError) as e:
+        add("5. 모형 T_recover 상수가 p7 원자료(이름으로 찾음)를 10 ms 안에서 재현",
+            False, "p7_verify.json 을 못 읽었다: %r" % (e,))
+
     npass = sum(1 for c in checks if c["ok"])
     out["passed"], out["total"] = npass, len(checks)
     print("-" * 100)

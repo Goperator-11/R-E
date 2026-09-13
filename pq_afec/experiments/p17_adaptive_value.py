@@ -43,6 +43,33 @@ p11·p15 는 조건마다 손실률을 **고정**해 두고 auto 와 최선 고�
    (남은 연구 방향: 적응의 값어치는 손실률이 아니라 **버스트성**이나
     **RTT 변동**에 있을 수 있다. 이 단계는 손실률만 흔든다.)
 
+🩸 2026-09-01 / 09-07 — **검사 6 을 다시 정의했다 (도현님 결정: 방향 (다)).**
+   볼트 정본(03 프로젝트/우리 학술)이 못 박은 결론은 「패리티가 왕복을 사는
+   자리에서는 손실 적응이 성립하지 않고 성립할 필요도 없다」이고, 08-29 실측이
+   판별 축을 손실률이 아니라 **cert(신용이 묶이는가)** 로 지목했다
+   (큰cert 16000 에서 최선 고정팔 m1, 나머지 셋 m3). 그런데 옛 검사 6 은
+   시간 기반 오라클 이득(반폭 없음)을 손실 스케줄 하나로 재서, 참을 말하면서
+   「실패」로 찍히고 있었다.
+
+   새 검사 6 은 **선택 기반**이고 주장마다 다른 자를 쓴다 (자가 자의적인 것이
+   아니라 재는 것이 다르다):
+     - 「왕복을 샀다」(m0 대비 최선 고정팔의 개선 ≥ 0.9 RTT) 인 조건에서는
+       두 손실 구간의 **실질 허용집합**(최선과 tol 1.0 ms 안)의 교집합이
+       비어 있지 않아야 한다 = 고정 m 하나로 **충분**하다 (효과 크기의 주장이라
+       고정 tol. 표본이 부족해도 안 헐거워진다).
+     - 「못 샀다」(≤ 0.7 RTT) 인 조건에서는 **통계 허용집합**(짝지은 사이클
+       블록 t 95% 로 최선보다 나쁘다고 말할 수 없는 팔)의 교집합이 비어야
+       한다 = 적응이 **필요**하다 (잡음이 아니라는 주장이라 통계 자).
+     - 그 사이(0.7~0.9)는 판정 불능으로 찍고 자를 억지로 하나로 만들지 않는다.
+   두 무리가 다 있어야 검사가 공허하지 않다. 검사 7·8(적중률·적응 지연)은
+   **적응이 필요한 조건**에서 판정한다 - 왕복을 산 자리에서는 고정 m 하나로도
+   99% 가 나와 아무 말도 안 한다. 오라클 이득(시간)은 짝지은 반폭과 함께
+   **정보로만** 찍는다 - 이 표본으로는 시간으로 못 가른다.
+
+   ⚠️ 08-30 저널에 새 검사를 대 보면(드라이런) 큰cert 에서 검사 7·8 이 붉다:
+   손실 15% 적중률 30.5%, 적응 지연 196/450. **적응이 값을 하는 유일한 자리에서
+   정책이 그 값을 못 거둔다.** 그 실패는 참이므로 초록칠하지 않는다.
+
 1 차 실행(2026-08-23, n=200)이 실제로 그것을 보였다:
 
     10Mbps  auto 60.304  최선 고정 m1 60.692   이득 **+0.388 ms**
@@ -70,18 +97,26 @@ p11·p15 는 조건마다 손실률을 **고정**해 두고 auto 와 최선 고�
 
 auto 의 목적지 캐시는 실행 내내 유지된다(그래야 적응을 잰다).
 
+드라이런
+--------
+  PADFEC_P17_DRYRUN=1  측정을 안 하고 **저널에 있는 조건만으로** 검사를 다시 돌린다.
+  PADFEC_P17_FP=<지문>  같이 주면 옛 세대 저널에 새 검사를 댈 수 있다.
+  ⛔ 드라이런은 결과 파일을 **안 쓴다.** 측정 없이 만든 판정이 results/ 에 남으면
+     p6 가 그것을 진짜 측정으로 읽는다. Windows 에서도 돈다(root·WSL 불필요).
+
 통과 기준
 ---------
   1. 모든 팔·구간이 측정됐다        2. 서버 통계가 실제로 있었다
-  3. 대역이 실제로 걸렸다 (저손실 구간에서 m2 가 m1 보다 비싸다)
+  3. 대역이 실제로 걸렸다 (같은 팔 m0 이 대역 조건에서 무제한보다 느리다)
   4. 손실 전환이 실제로 일어났다
   5. 고정팔들이 서로 갈린다 (안 갈리면 아래가 공허하다)
-  6. **자리 효과가 이득보다 작다** (아니면 판정 불능)
-  7. ⭐ 대역 있는 경로에서 auto 가 최선 고정팔을 이긴다
-  8. [부정] 무제한에서는 auto 가 최선 고정팔을 이기지 못한다
-     (적응이 값을 못 하는 자리 — 1 차 실측은 오히려 탐색세만큼 해로웠다)
-  9. 복구 CRC 실패 0
+  6. 왕복을 산 조건은 고정 m 하나로 충분하고, 못 산 조건은 적응이 필요하다
+  7. ⭐ 적응이 필요한 조건에서 auto 가 실측 허용집합 안의 m 을 과반 이상 고른다
+  8. 적응이 필요한 조건에서 적응 지연이 구간 길이의 절반 미만이다
+  9. [부정] 무제한에서는 적응이 벌 것이 없다 (오라클 이득 상한 <= 탐색세)
+ 10. 복구 CRC 실패 0
 """
+import math
 import os
 import sys
 
@@ -91,6 +126,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
 import padbed as B                               # noqa: E402
+import blockstat as BST                          # noqa: E402
 from padfec import policy as POL                 # noqa: E402
 from _journal import Journal, code_fingerprint   # noqa: E402
 
@@ -110,6 +146,9 @@ N_DEFAULT = 150
 N_PRECISE = 450
 N = int(os.environ.get("PADFEC_P17_N")
         or (N_PRECISE if "--precise" in sys.argv else N_DEFAULT))
+
+DRYRUN = os.environ.get("PADFEC_P17_DRYRUN") == "1"
+FP_OVERRIDE = os.environ.get("PADFEC_P17_FP") or None
 
 # (이름, fec, m)  auto 는 정책이 고른다
 # 🩸 2026-08-25 - m3 을 더했다. 새 운용점의 고손실 구간 목표가 m=3 인데
@@ -157,9 +196,32 @@ CONDS = [
     ("RTT200",  2.0, POL.UPLINK_CONSTRAINED_MBPS, 9000,  200.0),
 ]
 
+# p11 이 독립으로 잰 탐색세(0.42~0.51 ms). 오라클 이득이 이보다 작으면 어떤
+# 정책도 못 이긴다. 검사 9 와 오라클 이득 정보 표시가 이 값을 쓴다.
+PROBE_TAX_MS = 0.42
+# 실질 허용집합의 자(최선과 이 안이면 같은 팔로 친다). p11 과 같은 관례.
+TOL_MS = 1.0
+# 「왕복을 샀다」 판정. m0 대비 최선 고정팔의 개선을 RTT 로 나눈 비.
+BOUGHT_HI = 0.9      # 이 이상이면 샀다
+BOUGHT_LO = 0.7      # 이 이하면 못 샀다. 사이는 판정 불능
+
 
 def mean(v):
     return (sum(v) / len(v)) if v else None
+
+
+FEEDBACK = os.environ.get("PADFEC_FEEDBACK") == "1"
+
+
+def unit_key(cond_name, rate, cert, rtt):
+    """저널 키. 측정과 드라이런이 **같은 함수**로 키를 만들어야 한다.
+
+    2026-09-07 감사 - 키에 PADFEC_FEEDBACK 이 없어서 피드백 켠 실행이 끈
+    실행의 단위를 그대로 되읽었다(측정 없이 「피드백 결과」를 보고). 넣는다.
+    """
+    gap_ms = 50 if rate > 0 else 8
+    return "%s|latin|n%d|c%d|g%d|cert%d|rtt%g|fb%d" % (
+        cond_name, N, CYCLES, gap_ms, cert, rtt, int(FEEDBACK)), gap_ms
 
 
 def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
@@ -178,11 +240,16 @@ def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
     #    사라진다. 이 편향 때문에 "auto 가 m=3 을 과선택한다"는 오진을 한 번
     #    했다 - 큐를 비우고 재니 2 Mbps 최선은 m3(71.00) 이었고 m2 는 73.13
     #    이었다. 무제한은 큐가 안 쌓이므로 8 ms 그대로 둔다(실행 시간).
-    gap_ms = 50 if rate > 0 else 8
-    key = "%s|latin|n%d|c%d|g%d|cert%d|rtt%g" % (
-        cond_name, N, CYCLES, gap_ms, cert, rtt)
+    key, gap_ms = unit_key(cond_name, rate, cert, rtt)
     if jr.has(key):
         return jr.get(key)
+    if DRYRUN:
+        # 어느 N 의 단위가 있는지 보여 준다 - N 이 안 맞으면 「저널에 없음」만
+        # 찍혀 이유를 알 수 없었다(--precise / PADFEC_P17_N).
+        have = sorted(k for k in jr.keys() if k.startswith(cond_name + "|"))
+        print("   (드라이런: 키 %s 없음. 이 지문의 %s 단위: %s)"
+              % (key, cond_name, have or "없음"))
+        return None
     try:
         os.unlink(CACHE)
     except OSError:
@@ -191,7 +258,7 @@ def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
     seg, err = [], ""
     # C1: PADFEC_FEEDBACK=1 이면 서버·클라 양쪽에 -feedback 을 준다.
     # 끄고 켠 결과를 나란히 둬야 "피드백이 적응률을 고쳤다"고 말할 수 있다.
-    FB = ["-feedback"] if os.environ.get("PADFEC_FEEDBACK") == "1" else []
+    FB = ["-feedback"] if FEEDBACK else []
     p, sp = B.start_server(cert, fec="on", extra=FB)
     try:
         # 🩸 회전 카운터는 **손실률마다 따로** 센다. 하나로 세면 손실률이
@@ -235,15 +302,33 @@ def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
     finally:
         B.stop_server(p)
     ss = B.read_server_stats(sp)
+    # 🩸 2026-09-01 - 조건의 **입력 전부**를 저널에 남긴다(up_policy ·
+    #    netem_rate_mbit). p20 이 이 저널을 읽어 모형을 다시 부르는데,
+    #    그전에는 cert·RTT 를 모듈 상수로 읽고 uplink 는 **조건 이름으로
+    #    추측**했다("2Mbps" in cond). 큰cert·RTT200 조건에서 세 값 중 둘이
+    #    틀렸고, 모형이 맞는데도 틀린 것으로 나왔다. 값을 넘길 수 있으면
+    #    넘긴다 - 추측하는 코드는 그 자체가 냄새다.
     rec = {"cond": cond_name, "cert": cert, "rtt_ms": rtt,
+           "up_policy": up_policy, "netem_rate_mbit": rate,
+           "gap_ms": gap_ms, "feedback": FEEDBACK,
            "arms": {a: {"n": len(v), "mean": mean(v), "p50": B.pctl(v, 0.5),
                         "p95": B.pctl(v, 0.95), "ms": v}
                     for a, v in acc.items()},
            "segments": seg, "srv_recovered": ss.get("recovered"),
            "srv_crc_fail": ss.get("recover_crc_fail"),
            "srv_stats_present": bool(ss), "err": err}
-    if not err and bool(ss):
+    # 🩸 2026-09-07 감사 - **완전한 단위만 저널에 남긴다** (p11·p15 와 같은 가드).
+    #    그전에는 err 만 봤는데 run_client 가 반환코드를 안 봐서 잘린 단위가
+    #    err="" 로 왔고, 그것이 저널에 박히면 이후 모든 실행(드라이런 포함)이
+    #    측정 없이 그 불완전 단위를 되읽어 검사 1 이 영영 붉었다.
+    n_seg = CYCLES * len(SCHEDULE) * len(ARMS)
+    complete = (len(seg) == n_seg and all(s["n"] == N for s in seg)
+                and (ss.get("recover_crc_fail") or 0) == 0)
+    if not err and bool(ss) and complete:
         jr.record(key, rec)
+    else:
+        print("   (저널에 안 남긴다: err=%r 구간 %d/%d crc실패 %s)"
+              % (err, len(seg), n_seg, ss.get("recover_crc_fail")))
     return rec
 
 
@@ -262,31 +347,61 @@ def optimal_m(loss_pct, up, cert=None, rtt=None):
     return d["choice"]["m"]
 
 
-def allowed_by_loss(rec, tol=1.0):
-    """구간별 **실측** 허용집합 = {최선 고정팔과 tol ms 안에 드는 팔}.
+# --------------------------------------------------------------- 블록 통계
+#
+# 🩸 2026-09-01 - 이 단계의 자는 전부 **사이클 블록**을 단위로 잰다.
+#    한 사이클 안에서 다섯 팔이 연달아 돌므로(라틴 방격) 사이클 간 표류는
+#    같은 사이클의 두 팔 차이에서 상쇄된다. 연결 하나하나를 독립 표본으로
+#    치는 s/sqrt(n) 은 부하 자국·표류에서 불확실성을 2 배 넘게 과소평가한다
+#    (p16 이 09-01 에 실측). 그리고 팔별 분산을 따로 쓴다 - 손실 15% 에서
+#    m0 의 세그먼트 SD 가 7.263, m1 은 0.603 이라 등분산 가법모형(자리+팔
+#    잔차)은 **관여하지 않는 팔의 분산으로 판정을 오염**시킨다. 그래서
+#    「가법모형 잔차」자는 버렸고, 짝지은 사이클 차이만 쓴다.
 
-    🩸 2026-08-26. 여기가 이 단계의 자를 바꾸는 자리다. 옛 정답지는
-       `optimal_m()`, 즉 **모형의 argmin** 이었다. 두 가지가 동시에 잘못됐다.
+def block_means(rec, arm, loss):
+    """{사이클: 그 사이클·손실 구간에서 이 팔의 세그먼트 평균}."""
+    out = {}
+    for s in rec["segments"]:
+        if s["arm"] == arm and s["loss"] == loss and s["mean"] is not None:
+            out[s["cycle"]] = s["mean"]
+    return out
 
-       (1) 모형이 틀린 자리에서는 폐루프가 맞혀도 실패로 찍힌다. 2026-08-26
-           의 모형 수리 전에 이 단계가 정확히 그렇게 실패하고 있었다.
-       (2) 더 나쁜 것은 argmin 이 **이산 라벨**이라는 점이다. 수리된 모형을
-           설계 공간 전체(cert 3,000~30,000 · 업링크 0.25~10 Mbps · RTT
-           20~200 · 손실쌍 24 종)로 훑어 보면, 두 손실 구간의 최적 m 이
-           갈리는 자리에서도 **1·2 위의 차이가 0.29 ms** 다. 이 단계의
-           측정 분해능은 신뢰반폭 1~2 ms 이므로, 정답지가 잡음에 뒤집힌다.
-           즉 어떤 운용점을 골라도 적중률은 **못 재는 자**였다.
 
-       p11 이 2026-08-21 에 같은 문제를 이미 풀었다(허용집합 = 최선과 1 ms
-       안). 같은 관례를 쓴다 - 정답지를 모형에서 떼어 **실측**에 붙이고,
-       "최선과 잡음 안에서 같은 팔" 을 맞힌 것으로 센다.
+def paired_ci(rec, a, b, loss, alpha=0.05):
+    """팔 a - 팔 b 의 짝지은(사이클 블록) 차이와 t 반폭. (차이, 반폭, 블록수)"""
+    ma, mb = block_means(rec, a, loss), block_means(rec, b, loss)
+    cyc = sorted(set(ma) & set(mb))
+    d = [ma[c] - mb[c] for c in cyc]
+    if len(d) < 2:
+        return (mean(d), None, len(d))
+    mu = sum(d) / len(d)
+    var = sum((x - mu) ** 2 for x in d) / (len(d) - 1)
+    half = BST.t_crit(len(d) - 1, alpha) * math.sqrt(var / len(d))
+    return (mu, half, len(d))
+
+
+def fixed_arm_names():
+    return [a for a, _f, _m in ARMS if a != "auto"]
+
+
+def allowed_by_loss(rec, tol=TOL_MS, alpha=0.05):
+    """구간별 허용집합 둘.
+
+    실질 자(allowed): 최선 고정팔과 tol ms 안에 드는 팔 (효과 크기의 자).
+    통계 자(allowed_stat): 짝지은 t 95% 로 최선보다 **나쁘다고 말할 수 없는**
+      팔 (차이 - 반폭 <= 0). 잡음이 아니라는 주장의 자.
+
+    🩸 2026-08-26. 옛 정답지는 `optimal_m()`, 즉 **모형의 argmin** 이었다.
+       두 가지가 동시에 잘못됐다. (1) 모형이 틀린 자리에서는 폐루프가 맞혀도
+       실패로 찍힌다. (2) argmin 은 이산 라벨이라 1·2 위가 0.29 ms 차이여도
+       라벨은 갈린다 - 이 단계의 측정 분해능(반폭 1~2 ms)보다 곱다. p11 이
+       2026-08-21 에 같은 문제를 이미 풀었다(허용집합 = 최선과 1 ms 안).
+       정답지를 모형에서 떼어 **실측**에 붙인다.
     """
     out = {}
     for loss, _n in SCHEDULE:
         fixed = {}
-        for a, _f, _m in ARMS:
-            if a == "auto":
-                continue
+        for a in fixed_arm_names():
             v = [s["mean"] for s in rec["segments"]
                  if s["arm"] == a and s["loss"] == loss
                  and s["mean"] is not None]
@@ -295,34 +410,134 @@ def allowed_by_loss(rec, tol=1.0):
         if not fixed:
             out[loss] = None
             continue
-        b = min(fixed.values())
+        best = min(fixed, key=lambda a: fixed[a])
+        b = fixed[best]
+        margins = {}
+        stat = []
+        for a in fixed:
+            if a == best:
+                margins[a] = {"diff": 0.0, "half": 0.0}
+                stat.append(a)
+                continue
+            d, half, nb = paired_ci(rec, a, best, loss, alpha)
+            margins[a] = {"diff": d, "half": half, "blocks": nb}
+            if d is None:
+                continue
+            # 반폭이 없으면(블록 1 개) 통계 자는 말할 수 없다 -> 보수적으로 포함
+            if half is None or (d - half) <= 0:
+                stat.append(a)
         out[loss] = {"means": {a: round(v, 3) for a, v in fixed.items()},
-                     "best": min(fixed, key=lambda a: fixed[a]),
+                     "best": best,
                      "allowed": sorted(a for a, v in fixed.items()
-                                       if v - b < tol)}
+                                       if v - b < tol),
+                     "allowed_stat": sorted(stat),
+                     "margins": margins}
     return out
 
 
-def oracle_gain_ms(alw):
+def intersections(alw):
+    ls = [l for l, _n in SCHEDULE]
+    if any(alw.get(l) is None for l in ls):
+        return None, None
+    tol = set(alw[ls[0]]["allowed"])
+    st = set(alw[ls[0]]["allowed_stat"])
+    for l in ls[1:]:
+        tol &= set(alw[l]["allowed"])
+        st &= set(alw[l]["allowed_stat"])
+    return sorted(tol), sorted(st)
+
+
+def bought_rtt(rec, rtt):
+    """이 조건에서 패리티가 **왕복을 샀는가.** cert 는 대리변수고 진짜 기전은
+    이것이다. m0(패리티 없음) 대비 최선 고정팔의 개선을 RTT 로 나눈다.
+    0.9 이상이면 샀다, 0.7 이하면 못 샀다, 사이는 판정 불능(자를 억지로
+    하나로 안 만든다)."""
+    am = rec["arms"]
+    fixed = {a: am[a]["mean"] for a in fixed_arm_names()
+             if am.get(a) and am[a]["mean"] is not None}
+    if "m0" not in fixed or len(fixed) < 2:
+        return {"ratio": None, "label": "자료 없음", "best": None}
+    best = min(fixed, key=lambda a: fixed[a])
+    ratio = (fixed["m0"] - fixed[best]) / rtt
+    if ratio >= BOUGHT_HI:
+        lab = "샀다"
+    elif ratio <= BOUGHT_LO:
+        lab = "못 샀다"
+    else:
+        lab = "판정 불능"
+    return {"ratio": ratio, "label": lab, "best": best}
+
+
+def oracle_gain(rec, alw, alpha=0.05):
     """**적응이 벌 수 있는 것의 상한** — 구간마다 최선을 고르는 오라클이
     하나의 최선 고정팔보다 버는 ms (구간 가중치는 스케줄과 같은 50:50).
 
-    이 단계가 묻는 것("적응이 이기는가")의 분자가 바로 이 값이다. 이것이
-    탐색세(p11 실측 0.42~0.51 ms)보다 작으면 **어떤 정책도 못 이긴다** -
-    최적 m 라벨이 갈리는지 아닌지와 무관하게. 그래서 검사 6 의 자를
-    라벨에서 이 값으로 바꿨다.
+    짝지은 사이클 블록으로 반폭을 붙인다. 오라클 이득은 **관여하는 팔들의
+    차이**로만 정해지므로(전체 최선 고정팔 vs 구간별 최선), 팔 라벨을 전체
+    평균에서 정하고 사이클마다 같은 라벨로 이득을 계산해 그 분포로 t 반폭을
+    낸다. 사이클 간 표류가 상쇄되고 관여하지 않는 팔(m0)의 분산이 안 들어온다.
     """
     ls = [l for l, _n in SCHEDULE]
     if any(alw.get(l) is None for l in ls):
-        return None
+        return None, None, None
     arms = set(alw[ls[0]]["means"])
     for l in ls[1:]:
         arms &= set(alw[l]["means"])
     if not arms:
+        return None, None, None
+    fixed_best = min(arms, key=lambda a: sum(alw[l]["means"][a] for l in ls))
+    per_loss_best = {l: min(arms, key=lambda a: alw[l]["means"][a]) for l in ls}
+    gain = sum(alw[l]["means"][fixed_best] - alw[l]["means"][per_loss_best[l]]
+               for l in ls) / len(ls)
+    # 사이클별 이득 (같은 라벨)
+    cyc = None
+    bm = {}
+    for l in ls:
+        for a in (fixed_best, per_loss_best[l]):
+            bm[(l, a)] = block_means(rec, a, l)
+            cyc = set(bm[(l, a)]) if cyc is None else cyc & set(bm[(l, a)])
+    g = []
+    for c in sorted(cyc or []):
+        g.append(sum(bm[(l, fixed_best)][c] - bm[(l, per_loss_best[l])][c]
+                     for l in ls) / len(ls))
+    half = None
+    if len(g) >= 2:
+        mu = sum(g) / len(g)
+        var = sum((x - mu) ** 2 for x in g) / (len(g) - 1)
+        half = BST.t_crit(len(g) - 1, alpha) * math.sqrt(var / len(g))
+    return gain, half, {"fixed_best": fixed_best,
+                        "per_loss_best": {("%g" % l): per_loss_best[l]
+                                          for l in ls}}
+
+
+def oracle_verdict(gain, half, tax=PROBE_TAX_MS):
+    if gain is None:
+        return "자료 없음"
+    if half is None:
+        return "반폭 없음"
+    if gain + half <= tax:
+        return "값 없다"
+    if gain - half > tax:
+        return "값 있다"
+    return "판정 불능"
+
+
+def variance_inflation(rec, loss, a, b, alpha=0.05):
+    """판정을 가르는 대조(a-b)에서 **라틴 방격 가법모형(pooled)** 의 반폭이
+    짝지은 반폭보다 몇 배 부푸는가. 자 선택이 자의적이지 않다는 것을 자료로
+    매 실행 다시 보인다 - 09-01 에 큰cert 손실15 에서 m0 분산이 m1 의 145 배라
+    pooled 가 29.8 배 부풀었다. 정보로만 찍는다."""
+    rows = [{"arm": s["arm"], "pos": s["pos"], "block": s["cycle"],
+             "value": s["mean"]}
+            for s in rec["segments"] if s["loss"] == loss
+            and s["mean"] is not None]
+    an = BST.latin_anova(rows)
+    _d, half_pool = BST.contrast(an, a, b, alpha) if an.get("ok") \
+        else (None, None)
+    _d2, half_pair, _nb = paired_ci(rec, a, b, loss, alpha)
+    if not half_pool or not half_pair:
         return None
-    oracle = sum(min(alw[l]["means"][a] for a in arms) for l in ls) / len(ls)
-    fixed = min(sum(alw[l]["means"][a] for l in ls) / len(ls) for a in arms)
-    return fixed - oracle
+    return half_pool / half_pair
 
 
 def adapt_stats(rec, up, alw):
@@ -363,6 +578,7 @@ def adapt_stats(rec, up, alw):
             lags.append(lag)
         out[loss] = {"want_m_model": want,
                      "allowed": (alw.get(loss) or {}).get("allowed"),
+                     "allowed_stat": (alw.get(loss) or {}).get("allowed_stat"),
                      "best_measured": (alw.get(loss) or {}).get("best"),
                      "hit_rate": (hits / tot) if tot else None,
                      "n": tot, "lags": lags,
@@ -374,11 +590,11 @@ def adapt_stats(rec, up, alw):
 
 
 def position_effect(rec):
-    """자리(순서) 효과 — 팔에 무관하게 자리별 평균의 산포.
+    """자리(순서) 효과 — 팔에 무관하게 자리별 평균의 산포 (진단).
 
-    라틴 방격이라 각 자리에 네 팔이 정확히 한 번씩 오므로, 자리별 평균의
-    차이는 팔 효과가 상쇄된 **순수 순서 효과**다. 이것이 재려는 이득보다
-    크면 그 이득은 이 표본으로 주장할 수 없다.
+    라틴 방격이라 각 자리에 다섯 팔이 정확히 한 번씩 오므로, 자리별 평균의
+    차이는 팔 효과가 상쇄된 **순수 순서 효과**다. 방격이 균형이면 팔 효과
+    추정은 이것에 편향되지 않으므로 **판정에는 안 쓴다**(09-01 에 버린 자 ②).
     """
     worst = 0.0
     for loss, _n in SCHEDULE:
@@ -393,20 +609,30 @@ def position_effect(rec):
 
 
 def main():
-    B.harden()
-    B.require_root()
-    B.setup()
+    if not DRYRUN:
+        B.harden()
+        B.require_root()
+        B.setup()
+    else:
+        B.harden()
+        print("** 드라이런: 측정 안 함, 저널의 조건만 검사, 결과 파일 안 씀 **")
 
-    fp = code_fingerprint(["experiments/p17_adaptive_value.py",
-                           "experiments/quicbed/qamp.go",
-                           "experiments/quicbed/policy.go",
-                           "experiments/quicbed/pfail_table.go",
-                           "experiments/padbed.py"], ROOT)
+    fp = FP_OVERRIDE or code_fingerprint(
+        ["experiments/p17_adaptive_value.py",
+         "experiments/quicbed/qamp.go",
+         "experiments/quicbed/policy.go",
+         "experiments/quicbed/pfail_table.go",
+         "experiments/padbed.py"], ROOT)
     jr = Journal(os.path.join(B.STATE, "p17_units.jsonl"), fp)
 
     out = {"rtt_ms": RTT_MS, "group": GROUP, "cert": CERT, "n_per_seg": N,
-           "cycles": CYCLES, "schedule": SCHEDULE, "rows": [], "gain": [],
-           "checks": []}
+           "cycles": CYCLES, "schedule": SCHEDULE,
+           "conds": [{"cond": c[0], "netem_rate_mbit": c[1], "up_policy": c[2],
+                      "cert": c[3], "rtt_ms": c[4]} for c in CONDS],
+           "probe_tax_ms": PROBE_TAX_MS, "tol_ms": TOL_MS,
+           "bought_hi": BOUGHT_HI, "bought_lo": BOUGHT_LO,
+           "dryrun": DRYRUN, "journal_fp": fp, "feedback": FEEDBACK,
+           "rows": [], "gain": [], "checks": []}
     checks = out["checks"]
 
     def add(name, ok, detail):
@@ -424,8 +650,21 @@ def main():
         print()
         print("### 조건 %s (netem rate %g, 정책 uplink %g, cert %d, RTT %g)"
               % (cond_name, rate, up_policy, cert, rtt))
-        out["rows"].append(
-            run_interleaved(cond_name, rate, up_policy, cert, rtt, jr))
+        rec = run_interleaved(cond_name, rate, up_policy, cert, rtt, jr)
+        if rec is None:
+            print("   (드라이런: 저널에 없음 - 건너뜀)")
+            continue
+        # 옛 세대 저널에는 up_policy·netem_rate 가 없다. 조건표에서 채우되
+        # 채웠다는 사실을 남긴다(p20 이 같은 규칙을 쓴다).
+        filled = False
+        for k_, v_ in (("up_policy", up_policy), ("netem_rate_mbit", rate),
+                       ("cert", cert), ("rtt_ms", rtt)):
+            if k_ not in rec:
+                rec[k_] = v_
+                filled = True
+        if filled:
+            rec["inputs_filled_from_conds"] = True
+        out["rows"].append(rec)
 
     for rec in out["rows"]:
         am = rec["arms"]
@@ -434,31 +673,85 @@ def main():
         means = {a: am[a]["mean"] for a in am}
         # 🩸 2026-08-25 - 여기 팔 이름이 ("m0","m1","m2") 로 박혀 있었다.
         #    29 차에서 m3 을 더했는데 이 목록에 안 들어가서 **최선 고정팔
-        #    후보에서 m3 이 빠졌다.** 새 운용점의 고손실 구간 최적이
-        #    m=3 이므로, 그대로 뒀으면 후회가 실제보다 **좋게** 나왔다.
-        #    후회를 재는 자리에서 최선을 빼는 것은 결과를 좋게 만드는
-        #    방향의 오류라 특히 나쁘다. ARMS 에서 유도한다.
-        _fixed_names = [a for a, _f, _m in ARMS if a != "auto"]
-        fixed = {a: means[a] for a in _fixed_names if a in means}
+        #    후보에서 m3 이 빠졌다.** ARMS 에서 유도한다.
+        fixed = {a: means[a] for a in fixed_arm_names() if a in means}
         best = min(fixed, key=lambda a: fixed[a])
         alw = allowed_by_loss(rec)
+        tol_int, stat_int = intersections(alw)
+        bought = bought_rtt(rec, rec["rtt_ms"])
+        og, og_half, og_who = oracle_gain(rec, alw)
+        # 적응이 필요한가.
+        #   못 샀다: 통계 교집합이 비면 **필요**(잡음이 아니라고 말할 수 있다).
+        #            통계 교집합은 있는데 실질 교집합이 비면 **판정 불능**
+        #            (차이가 있어 보이지만 이 표본으로는 못 가른다 - 08-29 자료의
+        #             큰cert 가 그랬다. 재면 뒤집힐 수 있다).
+        #            실질 교집합까지 있으면 **불필요** = 주장과 어긋난다.
+        #   샀다:   실질 교집합이 있으면 불필요, 없으면 판정 불능(자가 실질이라
+        #            잡음으로 비었을 수 있다).
+        if bought["label"] == "못 샀다" and stat_int is not None:
+            if len(stat_int) == 0:
+                needed = True
+            elif tol_int:
+                needed = False
+            else:
+                needed = None
+        elif bought["label"] == "샀다" and tol_int is not None:
+            needed = False if tol_int else None
+        else:
+            needed = None
+        # 판정을 가르는 대조의 여유(차이 - 반폭). 0 에 가까우면 재면 뒤집힌다.
+        hi_l0 = SCHEDULE[-1][0]
+        margin_hi = None
+        if alw.get(hi_l0):
+            _b = alw[hi_l0]["best"]
+            _ms = [(a, v["diff"], v["half"]) for a, v in alw[hi_l0]["margins"].items()
+                   if a != _b and v.get("half") is not None]
+            if _ms:
+                margin_hi = min(((d - h), a) for a, d, h in _ms)
+        # 판정을 가르는 대조의 분산 부풀림(정보). 고손실 구간에서 최선 vs
+        # 저손실 구간 최선 (둘이 같으면 None).
+        hi_l = SCHEDULE[-1][0]
+        lo_l = SCHEDULE[0][0]
+        vi = None
+        if alw.get(hi_l) and alw.get(lo_l):
+            a_hi, a_lo = alw[hi_l]["best"], alw[lo_l]["best"]
+            if a_hi != a_lo:
+                vi = variance_inflation(rec, hi_l, a_lo, a_hi)
         out["gain"].append({
-            "cond": rec["cond"], "means": means, "best_fixed": best,
+            "cond": rec["cond"], "cert": rec["cert"], "rtt_ms": rec["rtt_ms"],
+            "up_policy": rec.get("up_policy"),
+            "netem_rate_mbit": rec.get("netem_rate_mbit"),
+            "means": means, "best_fixed": best,
             "best_fixed_mean": fixed[best], "auto_mean": means["auto"],
             "gain_ms": fixed[best] - means["auto"],
             "pos_effect_ms": position_effect(rec),
-            "allowed_by_loss": alw,
-            "oracle_gain_ms": oracle_gain_ms(alw),
-            "adapt": adapt_stats(rec, dict(
-                (c[0], c[2]) for c in CONDS)[rec["cond"]], alw),
+            "allowed_by_loss": {("%g" % l): v for l, v in alw.items()},
+            "intersection_tol": tol_int, "intersection_stat": stat_int,
+            "bought_rtt": bought,
+            "adapt_needed": needed,
+            "deciding_margin_ms": (margin_hi[0] if margin_hi else None),
+            "deciding_arm": (margin_hi[1] if margin_hi else None),
+            "oracle_gain_ms": og, "oracle_gain_ci95_half_ms": og_half,
+            "oracle_arms": og_who,
+            "oracle_verdict": oracle_verdict(og, og_half),
+            "variance_inflation_pooled_over_paired": vi,
+            "adapt": adapt_stats(rec, rec.get("up_policy"), alw),
             "fixed_spread_ms": max(fixed.values()) - min(fixed.values()),
             "n_auto": am["auto"]["n"]})
         g = out["gain"][-1]
         print()
-        print("   [%s] 최선 고정 %s %.3f | auto %.3f | **이득 %+.3f ms** "
-              "(자리효과 %.3f)"
+        print("   [%s] 최선 고정 %s %.3f | auto %.3f | 시간 이득 %+.3f ms "
+              "(자리효과 %.3f, 진단)"
               % (g["cond"], best, fixed[best], means["auto"],
                  g["gain_ms"], g["pos_effect_ms"]))
+        print("   %s 왕복 %s (%.2f RTT) | 실질 교집합 %s | 통계 교집합 %s | "
+              "적응 %s | 고손실 판별 여유 %s"
+              % (" " * len(g["cond"]), bought["label"],
+                 bought["ratio"] if bought["ratio"] is not None else -1,
+                 tol_int, stat_int,
+                 {True: "필요", False: "불필요", None: "판정 불능"}[needed],
+                 ("%+.3f ms (%s)" % (g["deciding_margin_ms"], g["deciding_arm"]))
+                 if g["deciding_margin_ms"] is not None else "-"))
 
     print()
     print("-" * 104)
@@ -482,26 +775,16 @@ def main():
              if s["arm"] == arm and s["loss"] == loss and s["mean"] is not None]
         return mean(v)
 
-    # 🩸 2026-08-25 - 조건 이름 "10Mbps" 가 박혀 있었다. 29 차에서
-    #    "2Mbps" 로 바꾸자 조용히 None 이 되어 "자료 없음"으로 실패했다.
-    #    이름이 아니라 **대역이 걸린 조건**(netem rate > 0)을 고른다.
-    # 🩸 2026-08-26 - 이 검사는 "m2 가 m1 보다 비싸다"로 적혀 있었다.
-    #    **모형의 주장을 자로 쓴 것**이고, 그 주장이 틀렸다. 대역이 걸리면
-    #    m=1 의 뒤따르는 패리티가 증폭 신용을 송신 결정 전에 못 올려서
-    #    왕복을 하나 더 쓴다(padfec/policy.py '경주' 절). 실측이 정확히
-    #    반대다 - 2 Mbps 손실 2% 에서 m1 121.31 / m2 70.36 이다. 즉 이
-    #    검사는 **대역이 제대로 걸릴수록 실패**하고 있었다.
-    #
-    #    재려던 것은 "netem 이 정말 대역을 거는가" 하나다. 그건 모형을
-    #    거치지 말고 **같은 팔을 두 조건에서** 비교하면 된다. 패리티가 없는
+    # 🩸 2026-08-26 - 재려는 것은 "netem 이 정말 대역을 거는가" 하나다.
+    #    모형을 거치지 말고 **같은 팔을 두 조건에서** 비교한다. 패리티가 없는
     #    m0 이 제일 깨끗하다 - 첫 비행이 원본 k 개뿐이라 예상 지연이
-    #    k·W/대역 으로 딱 떨어진다.
-    _shaped = next((c for c in CONDS if c[1] > 0), None)
+    #    k·W/대역 으로 딱 떨어진다. 대역 조건과 무제한 조건은 cert·RTT 가
+    #    같아야 비교가 성립한다 - 같은 (cert, RTT) 의 짝을 고른다.
     _free = next((c for c in CONDS if c[1] == 0), None)
+    _shaped = next((c for c in CONDS if c[1] > 0 and _free
+                    and c[3] == _free[3] and c[4] == _free[4]), None)
     sh0 = seg_mean(_shaped[0], "m0", lo) if _shaped else None
     fr0 = seg_mean(_free[0], "m0", lo) if _free else None
-    # 원본 k 개를 그 대역으로 밀어내는 데 드는 시간. 관측 차이가 이것의
-    # 절반은 돼야 "걸렸다"고 본다(측정 잡음 ~1-2 ms 보다 훨씬 크다).
     _ser = ((K * 1280 * 8.0) / (_shaped[1] * 1e6) * 1e3) if _shaped else 0.0
     add("3. 대역이 실제로 걸렸다 (같은 팔 m0 이 %s 에서 무제한보다 느리다)"
         % (_shaped[0] if _shaped else "대역 조건 없음"),
@@ -519,105 +802,131 @@ def main():
         slo and shi and mean(shi) > mean(slo),
         "저손실 %.2f vs 고손실 %.2f ms" % (mean(slo) or -1, mean(shi) or -1))
 
-    # 🩸 2026-08-25 - 여기도 조건 **이름**이 박혀 있었다. 이 한 줄이
-    #    검사 5·6·7·8·9 를 전부 먹이므로, 이름이 바뀌면 다섯 검사가
-    #    통째로 "자료 없음"으로 죽는다. 이름이 아니라 **성질**로 고른다:
-    #    대역이 걸린 조건(netem rate > 0) / 안 걸린 조건(rate == 0).
-    _shaped_name = next((c[0] for c in CONDS if c[1] > 0), None)
-    _free_name = next((c[0] for c in CONDS if c[1] == 0), None)
-    g10 = g.get(_shaped_name) if _shaped_name else None
-    gu = g.get(_free_name) if _free_name else None
+    # 🩸 2026-09-01 - 옛 코드는 `_shaped_name = next(...)` 로 **첫 대역 조건
+    #    하나**(2Mbps)만 검사 5~8 에 먹였다. 큰cert·RTT200 은 재고서 버려졌다.
+    #    이제 조건 전부를 본다.
     add("5. 고정팔들이 서로 갈린다 (안 갈리면 아래가 공허하다)",
-        g10 and g10["fixed_spread_ms"] > 0.5,
-        ("고정팔 산포 %.3f ms" % g10["fixed_spread_ms"]) if g10 else "자료 없음")
+        out["gain"] and all(x["fixed_spread_ms"] > 0.5 for x in out["gain"]),
+        " | ".join("%s 산포 %.3f ms" % (x["cond"], x["fixed_spread_ms"])
+                   for x in out["gain"]) or "자료 없음")
 
     # ================= 선택 기반 판정 (시간 기반은 아래에서 정보로만) =====
     #
-    # 🩸 2026-08-23 재설계. 시간(이득 ms)으로 판정하려면 팔당 46,398 연결이
-    #    필요하다 - 부트스트랩으로 직접 계산했고 현재의 39 배다. 고손실
-    #    구간의 PTO 분산이 원인이라 표본 말고는 방법이 없다.
-    #    그런데 이 단계가 묻는 것은 "정책이 채널 변화를 따라가는가"이고,
-    #    그것은 **선택**을 보면 잡음 없이 판정된다. 시간은 정보로 남긴다.
-    a10 = g10["adapt"] if g10 else {}
-    au = gu["adapt"] if gu else {}
-    lo_l, hi_l = SCHEDULE[0][0], SCHEDULE[1][0]
+    # 🩸 2026-09-01 검사 6 재정의 (머리말). 왕복을 산 조건은 고정 m 하나로
+    #    충분해야 하고(실질 자), 못 산 조건은 적응이 필요해야 한다(통계 자).
+    #    두 무리가 다 있어야 공허하지 않다.
+    claim_ok, claim_detail = [], []
+    n_bought = n_not = 0
+    for x in out["gain"]:
+        lab = x["bought_rtt"]["label"]
+        if lab == "샀다":
+            n_bought += 1
+            ok = bool(x["intersection_tol"])
+            claim_ok.append(ok)
+            claim_detail.append("%s 샀다(%.2f RTT)→실질교집합 %s%s"
+                                % (x["cond"], x["bought_rtt"]["ratio"],
+                                   x["intersection_tol"],
+                                   "" if ok else " <-- 고정 m 으로 부족"))
+        elif lab == "못 샀다":
+            if x["adapt_needed"] is None:
+                claim_detail.append(
+                    "%s 못 샀다(%.2f RTT)→통계교집합 %s 실질교집합 %s - 판정 불능"
+                    "(고손실 여유 %s)"
+                    % (x["cond"], x["bought_rtt"]["ratio"],
+                       x["intersection_stat"], x["intersection_tol"],
+                       ("%+.3f ms" % x["deciding_margin_ms"])
+                       if x["deciding_margin_ms"] is not None else "-"))
+                continue
+            n_not += 1
+            ok = bool(x["adapt_needed"])
+            claim_ok.append(ok)
+            claim_detail.append("%s 못 샀다(%.2f RTT)→통계교집합 %s(고손실 여유 %s)%s"
+                                % (x["cond"], x["bought_rtt"]["ratio"],
+                                   x["intersection_stat"],
+                                   ("%+.3f ms" % x["deciding_margin_ms"])
+                                   if x["deciding_margin_ms"] is not None else "-",
+                                   "" if ok else " <-- 고정 m 하나로 충분하다"))
+        else:
+            claim_detail.append("%s 왕복 %s(%.2f RTT) - 판정 제외"
+                                % (x["cond"], lab,
+                                   x["bought_rtt"]["ratio"] or -1))
+    add("6. 왕복을 산 조건은 고정 m 하나로 충분하고, 못 산 조건은 적응이 필요하다"
+        + ("" if (n_bought and n_not) else "  [공허: 한 무리뿐]"),
+        bool(claim_ok) and all(claim_ok) and n_bought > 0 and n_not > 0,
+        " | ".join(claim_detail) if claim_detail else "자료 없음")
 
-    # 🩸 2026-08-26 - 검사 6 의 자를 **라벨에서 ms 로** 바꿨다.
-    #    옛 자: "두 구간의 최적 m(모형 argmin)이 다르다".
-    #    두 군데가 틀렸다. (a) 정답을 모형에서 가져오므로 모형이 틀리면
-    #    자도 같이 틀린다. (b) 라벨이 갈리는 것과 **적응이 벌 것이 있는
-    #    것**은 다른 말이다 - 1·2 위가 0.29 ms 차이면 라벨은 갈려도 벌
-    #    것은 없다. 이 단계의 머리말이 적어 둔 조건 (a)(b) 를 그대로
-    #    수로 옮기면 그것이 곧 오라클 이득이다. 그래서 그걸 잰다.
-    #    탐색세는 p11 이 독립적으로 잰 0.42~0.51 ms 다. 그보다 작으면
-    #    어떤 정책도 못 이기므로 아래 검사 7·8 은 공허해진다.
-    og = g10.get("oracle_gain_ms") if g10 else None
-    alw10 = (g10 or {}).get("allowed_by_loss") or {}
-    add("6. [부정] 이 운용점에 적응이 벌 것이 있다 (오라클 이득 > 탐색세 0.42 ms)",
-        og is not None and og > 0.42,
-        ("오라클 이득 %.3f ms | %s"
-         % (og if og is not None else float("nan"),
-            " | ".join("손실%g%%: 최선 %s 허용 %s"
-                       % (l, (alw10.get(l) or {}).get("best"),
-                          (alw10.get(l) or {}).get("allowed"))
-                       for l, _n in SCHEDULE)))
-        if g10 else "자료 없음")
+    # 검사 7·8 은 **적응이 필요한 조건**에서 판정한다. 하나도 없으면 전 조건
+    # 으로 판정하되 공허 딱지를 단다 - 왕복을 산 자리에서는 고정 m 하나로도
+    # 99% 가 나와 「정책이 똑똑하다」의 증거가 아니다.
+    need = [x for x in out["gain"] if x["adapt_needed"] is True]
+    vac = not need
+    tgt = need if need else out["gain"]
 
-    worst_hit = min([a10[l]["hit_rate"] for l in a10
-                     if a10[l]["hit_rate"] is not None] or [0])
-    # 🩸 2026-08-27 - 검사 8 이 이미 갖고 있던 공허 표시를 **7 에도** 단다.
-    #    두 구간의 허용집합이 같으면 auto 는 **고정 m 하나**로도 두 구간을
-    #    다 맞힌다 - 그때 높은 적중률은 「적응한다」가 아니라 「적응할 게
-    #    없다」는 뜻이다. 검사 6 이 붉을 때(오라클 이득 <= 탐색세) 이 검사의
-    #    통과는 근거가 아니고, 그 사실이 판정 옆에 보여야 한다.
-    #    (자를 바꾸지는 않는다 - 그건 연구 설계 판단이라 사람이 정한다.)
-    _same7 = (a10 and a10[lo_l].get("allowed") == a10[hi_l].get("allowed"))
-    add("7. ⭐ auto 가 각 구간에서 실측 허용집합 안의 m 을 과반 이상 고른다"
-        + ("  [공허]" if _same7 else ""),
-        a10 and worst_hit > 0.5,
-        (("⚠️ 두 구간의 허용집합이 같다 - 고정 m 하나로도 통과한다. "
-          "이 통과는 적응의 근거가 아니다. " if _same7 else "")
-         + "최악 적중률 %.1f%% | %s"
-         % (100 * worst_hit,
-            "  ".join("손실%g%%: 허용 %s(최선 %s, 모형 m=%d) 적중 %.1f%% (n=%d)"
-                      % (l, a10[l]["allowed"], a10[l]["best_measured"],
-                         a10[l]["want_m_model"],
-                         100 * (a10[l]["hit_rate"] or 0), a10[l]["n"])
-                      for l in sorted(a10))))
-        if a10 else "자료 없음")
+    def worst_hit_of(x):
+        a = x["adapt"]
+        hs = [a[l]["hit_rate"] for l in a if a[l]["hit_rate"] is not None]
+        return min(hs) if hs else None
 
-    lags = [a10[l]["lag_med"] for l in a10 if a10[l]["lag_med"] is not None]
-    never = sum(a10[l]["never_adapted"] for l in a10) if a10 else 0
-    # 🩸 이 검사는 검사 6 위에 서 있다. 두 구간의 허용집합이 같으면 auto 가
-    #    무엇을 고르든 지연이 0 으로 나와 **통과가 아무 말도 안 한다**(헐거움).
-    #    자를 완화하지 않는 대신, 공허한지 아닌지를 detail 에 못 박는다.
-    _same = (a10 and a10[lo_l].get("allowed") == a10[hi_l].get("allowed"))
-    add("8. 적응 지연이 구간 길이의 절반 미만이다 (전환을 실제로 따라간다)",
-        a10 and lags and max(lags) < N / 2 and never == 0,
-        ("구간별 중앙 지연 %s 연결 (구간 %d) | 끝까지 적응 못 한 구간 %d%s"
-         % (lags, N, never,
-            "  ⚠️ 두 구간의 허용집합이 같다 - 이 통과는 공허하다"
-            if _same else "")) if a10 else "자료 없음")
+    hits = [(x["cond"], worst_hit_of(x)) for x in tgt]
+    worst_hit = min([h for _c, h in hits if h is not None] or [0])
+    add("7. ⭐ 적응이 필요한 조건에서 auto 가 실측 허용집합 안의 m 을 과반 이상 고른다"
+        + ("  [공허: 적응이 필요한 조건이 없다]" if vac else ""),
+        tgt and worst_hit > 0.5,
+        ("최악 적중률 %.1f%% | " % (100 * worst_hit)
+         + "  ".join("%s: %s" % (x["cond"], "  ".join(
+             "손실%g%%: 허용 %s(최선 %s, 모형 m=%d) 적중 %.1f%% (n=%d)"
+             % (l, x["adapt"][l]["allowed"], x["adapt"][l]["best_measured"],
+                x["adapt"][l]["want_m_model"],
+                100 * (x["adapt"][l]["hit_rate"] or 0), x["adapt"][l]["n"])
+             for l in sorted(x["adapt"]))) for x in tgt))
+        if tgt else "자료 없음")
 
-    # 검사 6 과 **같은 자**로 잰다(라벨이 아니라 ms). 무제한은 패리티가
-    # 공짜라 최대 m 이 늘 최적이고, 그래서 적응이 벌 것이 0 이어야 한다.
-    ogu = gu.get("oracle_gain_ms") if gu else None
-    alwu = (gu or {}).get("allowed_by_loss") or {}
-    add("9. [부정] 무제한에서는 적응이 벌 것이 없다 (오라클 이득 <= 탐색세)",
-        ogu is not None and ogu <= 0.42,
-        ("오라클 이득 %.3f ms | %s"
-         % (ogu if ogu is not None else float("nan"),
-            " | ".join("손실%g%%: 최선 %s 허용 %s"
-                       % (l, (alwu.get(l) or {}).get("best"),
-                          (alwu.get(l) or {}).get("allowed"))
-                       for l, _n in SCHEDULE)))
+    lag_rows = []
+    never = 0
+    for x in tgt:
+        a = x["adapt"]
+        lag_rows.append((x["cond"], [a[l]["lag_med"] for l in sorted(a)]))
+        never += sum(a[l]["never_adapted"] for l in a)
+    lags = [v for _c, vs in lag_rows for v in vs if v is not None]
+    add("8. 적응이 필요한 조건에서 적응 지연이 구간 길이의 절반 미만이다"
+        + ("  [공허: 적응이 필요한 조건이 없다]" if vac else ""),
+        tgt and lags and max(lags) < N / 2 and never == 0,
+        ("구간별 중앙 지연 %s (구간 %d) | 끝까지 적응 못 한 구간 %d"
+         % (lag_rows, N, never)) if tgt else "자료 없음")
+
+    # 검사 9: 무제한은 패리티가 공짜라 최대 m 이 늘 최적이고, 적응이 벌 것이
+    # 0 이어야 한다. 오라클 이득의 **상한**(이득 + 반폭)이 탐색세 이하여야 한다.
+    _free_name = _free[0] if _free else None
+    gu = g.get(_free_name) if _free_name else None
+    add("9. [부정] 무제한에서는 적응이 벌 것이 없다 (오라클 이득 상한 <= 탐색세 %.2f)"
+        % PROBE_TAX_MS,
+        gu and gu["oracle_gain_ms"] is not None
+        and gu["oracle_gain_ci95_half_ms"] is not None
+        and (gu["oracle_gain_ms"] + gu["oracle_gain_ci95_half_ms"])
+        <= PROBE_TAX_MS,
+        ("오라클 이득 %.3f ± %.3f ms -> %s | %s"
+         % (gu["oracle_gain_ms"] if gu["oracle_gain_ms"] is not None
+            else float("nan"),
+            gu["oracle_gain_ci95_half_ms"]
+            if gu["oracle_gain_ci95_half_ms"] is not None else float("nan"),
+            gu["oracle_verdict"],
+            " | ".join("손실%s: 최선 %s 허용 %s"
+                       % (l, v["best"], v["allowed"])
+                       for l, v in sorted(gu["allowed_by_loss"].items())
+                       if v)))
         if gu else "자료 없음")
 
-    # --- 시간 이득은 정보로만 (판정 안 함). 왜 판정 못 하는지 함께 적는다.
+    # --- 시간 이득은 정보로만 (판정 안 함). 반폭과 함께 적는다.
     for x in out["gain"]:
-        print("   [정보] %-8s 시간 이득 %+.3f ms | 자리효과 %.3f ms "
-              "-> 이 표본으로는 시간으로 판정 불가 (필요 N 약 4.6만/팔)"
-              % (x["cond"], x["gain_ms"], x["pos_effect_ms"]))
+        og, oh = x["oracle_gain_ms"], x["oracle_gain_ci95_half_ms"]
+        print("   [정보] %-8s 오라클 이득 %s ms -> %s | auto 시간 이득 %+.3f | "
+              "분산 부풀림(pooled/짝지은) %s"
+              % (x["cond"],
+                 ("%.3f ± %.3f" % (og, oh)) if (og is not None and oh is not None)
+                 else ("%.3f" % og if og is not None else "-"),
+                 x["oracle_verdict"], x["gain_ms"],
+                 ("%.1f배" % x["variance_inflation_pooled_over_paired"])
+                 if x["variance_inflation_pooled_over_paired"] else "-"))
 
     crc = sum(r["srv_crc_fail"] or 0 for r in out["rows"])
     add("10. 복구 CRC 실패 0", crc == 0, "총 %d 건" % crc)
@@ -626,7 +935,12 @@ def main():
     out["passed"], out["total"] = npass, len(checks)
     print("-" * 104)
     print("%d / %d 통과" % (npass, len(checks)))
-    print("saved: %s" % B.save("p17_adaptive_value.json", out))
+    if DRYRUN:
+        print("(드라이런: 결과 파일을 쓰지 않는다)")
+    else:
+        # 기본 N 보다 작은 실행(스모크)은 정본 파일을 덮지 않는다.
+        _fname = ("smoke_" if N < N_DEFAULT else "") + "p17_adaptive_value.json"
+        print("saved: %s" % B.save(_fname, out))
     return 0 if npass == len(checks) else 1
 
 

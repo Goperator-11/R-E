@@ -56,13 +56,13 @@ int main(int argc,char**argv){
   for(int i=0;i<total;i++){
     int w=(i<warmup);double t0=now_ms();
     int fd=socket(AF_INET,SOCK_STREAM,0);
-    if(fd<0){fail++;continue;}
+    if(fd<0){if(!w)fail++;continue;}  /* 2026-09-07: 워밍업은 ok/fail/tmo 에 안 센다 */
     int one=1;setsockopt(fd,IPPROTO_TCP,TCP_NODELAY,&one,sizeof one);
     int fl=fcntl(fd,F_GETFL,0);fcntl(fd,F_SETFL,fl|O_NONBLOCK);
 
     int cr=connect(fd,(struct sockaddr*)&addr,sizeof addr);
     if(cr!=0&&errno!=EINPROGRESS){
-      close(fd);fail++;
+      close(fd);if(!w)fail++;
       if(fp&&!w)fprintf(fp,"%s,%d,,,,tcp_fail,\n",group,i-warmup);
       continue;}
     if(cr!=0){
@@ -70,7 +70,7 @@ int main(int argc,char**argv){
       int pr=poll(&pfd,1,TMO);
       int soe=0;socklen_t sl=sizeof soe;
       if(pr<=0||getsockopt(fd,SOL_SOCKET,SO_ERROR,&soe,&sl)!=0||soe!=0){
-        close(fd);fail++;if(pr==0)tmo++;
+        close(fd);if(!w){fail++;if(pr==0)tmo++;}
         if(fp&&!w)fprintf(fp,"%s,%d,,,,%s,\n",group,i-warmup,pr==0?"tcp_timeout":"tcp_fail");
         continue;}}
     double t1=now_ms();
@@ -96,9 +96,9 @@ int main(int argc,char**argv){
       if(n)neg=n;
       if(!w){int k=i-warmup;all[k]=t2-t0;
         if(fp)fprintf(fp,"%s,%d,%.4f,%.4f,%.4f,ok,%s\n",group,k,t1-t0,t2-t1,t2-t0,n?n:"?");}
-      ok++;
+      if(!w)ok++;
     }else{
-      fail++;if(r==-2)tmo++;
+      if(!w){fail++;if(r==-2)tmo++;}
       if(fp&&!w)fprintf(fp,"%s,%d,%.4f,%.4f,,%s,\n",group,i-warmup,t1-t0,t2-t1,
                         r==-2?"tls_timeout":"tls_fail");}
     SSL_free(ssl);close(fd);
