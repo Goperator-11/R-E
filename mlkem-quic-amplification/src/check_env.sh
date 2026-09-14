@@ -61,9 +61,9 @@ if lsmod 2>/dev/null | grep -q sch_netem; then ok "sch_netem 모듈 적재됨"
 elif modinfo sch_netem >/dev/null 2>&1; then warn "sch_netem 모듈 있으나 미적재 (첫 tc 사용 시 자동 적재)"
 else ng "sch_netem 모듈 없음"; fi
 echo "  -- 버스트 손실(Gilbert-Elliott) 지원 여부 --"
-tc qdisc add dev lo root netem loss gemodel 1% 2>/dev/null \
-  && { ok "gemodel 지원 — 버스트 손실 모사 가능"; tc qdisc del dev lo root 2>/dev/null; } \
-  || warn "gemodel 테스트 실패 (root 권한 필요할 수 있음)"
+unshare -Urn sh -c 'ip link set lo up && tc qdisc add dev lo root netem loss gemodel 1% 50%' 2>/dev/null \
+  && ok "격리된 네임스페이스에서 gemodel 지원 확인" \
+  || warn "격리된 gemodel 시험 실패 (user namespace 또는 netem 사용 가능 여부 확인 필요)"
 
 hd "4. 권한 — tc는 root 또는 CAP_NET_ADMIN 필요"
 if [ "$(id -u)" -eq 0 ]; then ok "root로 실행 중"

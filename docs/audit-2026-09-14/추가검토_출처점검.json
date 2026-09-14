@@ -1,0 +1,1647 @@
+{
+  "checked_at": "2026-09-14T16:26:33.389317+09:00",
+  "run_started_local": "2026-09-14T14:09:40",
+  "runtime": "C:\\dev\\pq_afec",
+  "snapshot": "C:\\Users\\scien\\Documents\\Codex\\2026-09-14\\wlr\\work\\additional_audit\\provenance\\20260914_162633_389317",
+  "state_sha256": "786445e334807c1ca45d8a3a7f3a0ef7482bde129619f1de01a7cbe326f53e8e",
+  "runner_sha256": "972d279a4e60484c74bc9f9d355ec482db9738894b069ffd2799baaed34a2a02",
+  "source_manifest_sha256": "fcf12461ab1fdb967dc8dfd30b4bc32d27c8ff2179eeeb6faad850bdf97f1eda",
+  "state_changed_during_audit": false,
+  "counts": {
+    "current_run_runner_pass": 14,
+    "pending_or_historical": 11
+  },
+  "source_manifest_entries": 54,
+  "source_copy_checks": 162,
+  "source_copy_mismatches": 0,
+  "stages": [
+    {
+      "stage": "lint",
+      "runner_status": "done",
+      "finished": "2026-09-14 14:09",
+      "recorded_fingerprint": "8e83e6fc7b86db89",
+      "outputs": [],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "table",
+      "runner_status": "done",
+      "finished": "2026-09-14 14:10",
+      "recorded_fingerprint": "1ddb23be73b77158",
+      "outputs": [
+        {
+          "path": "experiments/quicbed/pfail_table.go",
+          "expected_sha256": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+          "sha256": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+          "bytes": 4085444,
+          "mtime_local": "2026-09-14T14:10:01.348687+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "build",
+      "runner_status": "done",
+      "finished": "2026-09-14 14:10",
+      "recorded_fingerprint": "e1d782b389efdcfb",
+      "outputs": [],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "gate",
+      "runner_status": "done",
+      "finished": "2026-09-14 14:21",
+      "recorded_fingerprint": "9173720a533e1272",
+      "outputs": [
+        {
+          "path": "experiments/results/gate_go_parity.json",
+          "expected_sha256": "75f0c7d945d46bc33c58a428ef363769713162ec1c30db9302de927cb4e55471",
+          "sha256": "75f0c7d945d46bc33c58a428ef363769713162ec1c30db9302de927cb4e55471",
+          "bytes": 726,
+          "mtime_local": "2026-09-14T14:21:18.741337+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p0",
+      "runner_status": "done",
+      "finished": "2026-09-14 14:21",
+      "recorded_fingerprint": "e6e21be9e6b00399",
+      "outputs": [
+        {
+          "path": "experiments/results/p0_env.json",
+          "expected_sha256": "4a71aeb28addbe200a7ec17fe3c39f2167d6f304fe390f8bf8058867956b3ea6",
+          "sha256": "4a71aeb28addbe200a7ec17fe3c39f2167d6f304fe390f8bf8058867956b3ea6",
+          "bytes": 3680,
+          "mtime_local": "2026-09-14T14:21:41.123880+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p1",
+      "runner_status": "done",
+      "finished": "2026-09-14 14:21",
+      "recorded_fingerprint": "1f8341eb9311ed70",
+      "outputs": [
+        {
+          "path": "experiments/results/p1_flight.json",
+          "expected_sha256": "e471207643fb1a375885ab9b1a30f2460136b914ccfc6e6d557980a088e0b415",
+          "sha256": "e471207643fb1a375885ab9b1a30f2460136b914ccfc6e6d557980a088e0b415",
+          "bytes": 10113,
+          "mtime_local": "2026-09-14T14:21:53.584756+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p2",
+      "runner_status": "done",
+      "finished": "2026-09-14 14:26",
+      "recorded_fingerprint": "bd1aaa5bb9397682",
+      "outputs": [
+        {
+          "path": "experiments/results/p2_threshold.json",
+          "expected_sha256": "8b7572e5cf8d1316308a615dc012b998ff235b3e3f22688fa0c7d8c8f4830a91",
+          "sha256": "8b7572e5cf8d1316308a615dc012b998ff235b3e3f22688fa0c7d8c8f4830a91",
+          "bytes": 7020,
+          "mtime_local": "2026-09-14T14:26:10.503342+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p3",
+      "runner_status": "done",
+      "finished": "2026-09-14 16:08",
+      "recorded_fingerprint": "8239c5e5257a3cfe",
+      "outputs": [
+        {
+          "path": "experiments/results/p3_effect.json",
+          "expected_sha256": "1fc015b6791f76f55792668a2a8f1028110736764ba79171652c6cdf6e5e6be9",
+          "sha256": "1fc015b6791f76f55792668a2a8f1028110736764ba79171652c6cdf6e5e6be9",
+          "bytes": 993438,
+          "mtime_local": "2026-09-14T16:08:18.224111+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p7",
+      "runner_status": "done",
+      "finished": "2026-09-14 16:10",
+      "recorded_fingerprint": "420087a57a869d74",
+      "outputs": [
+        {
+          "path": "experiments/results/p7_verify.json",
+          "expected_sha256": "a3c4945b7301f79fb0cdb0d1bf9a42b794a6fe54cc28f533c5c718b40f621c6b",
+          "sha256": "a3c4945b7301f79fb0cdb0d1bf9a42b794a6fe54cc28f533c5c718b40f621c6b",
+          "bytes": 12515,
+          "mtime_local": "2026-09-14T16:10:05.611941+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p8",
+      "runner_status": "done",
+      "finished": "2026-09-14 16:13",
+      "recorded_fingerprint": "8be53e5d661335e6",
+      "outputs": [
+        {
+          "path": "experiments/results/p8_stability.json",
+          "expected_sha256": "a2099af3ad0e4c82ce2711486e8d085ea8e0266c5e5e8b3612e7c5d99b72e51e",
+          "sha256": "a2099af3ad0e4c82ce2711486e8d085ea8e0266c5e5e8b3612e7c5d99b72e51e",
+          "bytes": 4992,
+          "mtime_local": "2026-09-14T16:13:53.437917+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p9",
+      "runner_status": "done",
+      "finished": "2026-09-14 16:15",
+      "recorded_fingerprint": "33777e1a1ce82b1c",
+      "outputs": [
+        {
+          "path": "experiments/results/p9_crossenv.json",
+          "expected_sha256": "2269d828b3c93e35bc00a5c7b687870297971d1dafc1553ac5f7680db6f4e37c",
+          "sha256": "2269d828b3c93e35bc00a5c7b687870297971d1dafc1553ac5f7680db6f4e37c",
+          "bytes": 994,
+          "mtime_local": "2026-09-14T16:15:41.053756+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p10",
+      "runner_status": "done",
+      "finished": "2026-09-14 16:22",
+      "recorded_fingerprint": "f416e701585dc677",
+      "outputs": [
+        {
+          "path": "experiments/results/p10_completeness.json",
+          "expected_sha256": "ea60234b3c31c03c638bc67e4755f3c3e5964be766a6415102dff8fac795d9d2",
+          "sha256": "ea60234b3c31c03c638bc67e4755f3c3e5964be766a6415102dff8fac795d9d2",
+          "bytes": 394482,
+          "mtime_local": "2026-09-14T16:22:05.298943+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p11",
+      "runner_status": "done",
+      "finished": "2026-09-08 15:07",
+      "recorded_fingerprint": "c25c9b5577b2e092",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    },
+    {
+      "stage": "p12",
+      "runner_status": "done",
+      "finished": "2026-09-08 15:10",
+      "recorded_fingerprint": "8730189d61fa3242",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    },
+    {
+      "stage": "p4",
+      "runner_status": "done",
+      "finished": "2026-09-14 16:08",
+      "recorded_fingerprint": "437c0f1e442b7e5a",
+      "outputs": [
+        {
+          "path": "experiments/results/p4_model.json",
+          "expected_sha256": "8f53e4797f21c13011f4c4e39b93a34cb4b1f45ec8ac519d4b12971f6487bbcd",
+          "sha256": "8f53e4797f21c13011f4c4e39b93a34cb4b1f45ec8ac519d4b12971f6487bbcd",
+          "bytes": 12742,
+          "mtime_local": "2026-09-14T16:08:54.384127+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p5",
+      "runner_status": "done",
+      "finished": "2026-09-14 14:21",
+      "recorded_fingerprint": "d707d8631f0da083",
+      "outputs": [
+        {
+          "path": "experiments/results/p5_audit.json",
+          "expected_sha256": "16675ba4e4085b7a95ee71d01c388cff8c7f7073662bf27f2062e5248b146a27",
+          "sha256": "16675ba4e4085b7a95ee71d01c388cff8c7f7073662bf27f2062e5248b146a27",
+          "bytes": 2053,
+          "mtime_local": "2026-09-14T14:21:36.216784+09:00"
+        }
+      ],
+      "issues": [],
+      "classification": "current_run_runner_pass"
+    },
+    {
+      "stage": "p13",
+      "runner_status": "done",
+      "finished": "2026-09-08 15:11",
+      "recorded_fingerprint": "ee8ef5f929f58c21",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    },
+    {
+      "stage": "p14",
+      "runner_status": "done",
+      "finished": "2026-09-08 15:15",
+      "recorded_fingerprint": "9a71987674fa136b",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    },
+    {
+      "stage": "p16",
+      "runner_status": "failed",
+      "finished": "2026-09-08 15:19",
+      "recorded_fingerprint": "5a1f807560bc797c",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    },
+    {
+      "stage": "p17",
+      "runner_status": "failed",
+      "finished": "2026-09-08 09:13",
+      "recorded_fingerprint": "65e8d993b5743a92",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    },
+    {
+      "stage": "p15",
+      "runner_status": "failed",
+      "finished": "2026-09-08 09:17",
+      "recorded_fingerprint": "263f704a75f0f480",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    },
+    {
+      "stage": "p18",
+      "runner_status": "stale_deps",
+      "finished": "2026-09-08 04:02",
+      "recorded_fingerprint": "a73790c7ad6c6d29",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    },
+    {
+      "stage": "p20",
+      "runner_status": "failed",
+      "finished": "2026-09-08 04:06",
+      "recorded_fingerprint": "552b1cfd9e066d17",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    },
+    {
+      "stage": "p6",
+      "runner_status": "done",
+      "finished": "2026-08-21 06:43",
+      "recorded_fingerprint": "86bf635eb8bb0aae",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    },
+    {
+      "stage": "p19",
+      "runner_status": "done",
+      "finished": "2026-08-26 11:06",
+      "recorded_fingerprint": "342907977b516e63",
+      "outputs": [],
+      "issues": [],
+      "classification": "pending_or_historical"
+    }
+  ],
+  "source_checks": [
+    {
+      "repo_path": "pq_afec/afec/controller.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\afec\\controller.py",
+      "expected_sha256": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "sha256": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/afec/controller.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\afec\\controller.py",
+      "expected_sha256": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "sha256": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/afec/controller.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\afec\\controller.py",
+      "expected_sha256": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "sha256": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/afec/rs.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\afec\\rs.py",
+      "expected_sha256": "c136aa3fce99b95376333102b2de52909bea36e14cadeb1e79f11aa8c133f4a3",
+      "sha256": "c136aa3fce99b95376333102b2de52909bea36e14cadeb1e79f11aa8c133f4a3",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/afec/rs.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\afec\\rs.py",
+      "expected_sha256": "c136aa3fce99b95376333102b2de52909bea36e14cadeb1e79f11aa8c133f4a3",
+      "sha256": "c136aa3fce99b95376333102b2de52909bea36e14cadeb1e79f11aa8c133f4a3",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/afec/rs.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\afec\\rs.py",
+      "expected_sha256": "c136aa3fce99b95376333102b2de52909bea36e14cadeb1e79f11aa8c133f4a3",
+      "sha256": "c136aa3fce99b95376333102b2de52909bea36e14cadeb1e79f11aa8c133f4a3",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/docs/PADFEC v2 명세.md",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\docs\\PADFEC v2 명세.md",
+      "expected_sha256": "2cc46d3fd7f115cd22e32f6f6cd2596aeb08fb03fa69bf27ab64abd8787daa34",
+      "sha256": "2cc46d3fd7f115cd22e32f6f6cd2596aeb08fb03fa69bf27ab64abd8787daa34",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/docs/PADFEC v2 명세.md",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\docs\\PADFEC v2 명세.md",
+      "expected_sha256": "2cc46d3fd7f115cd22e32f6f6cd2596aeb08fb03fa69bf27ab64abd8787daa34",
+      "sha256": "2cc46d3fd7f115cd22e32f6f6cd2596aeb08fb03fa69bf27ab64abd8787daa34",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/docs/PADFEC v2 명세.md",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\docs\\PADFEC v2 명세.md",
+      "expected_sha256": "2cc46d3fd7f115cd22e32f6f6cd2596aeb08fb03fa69bf27ab64abd8787daa34",
+      "sha256": "2cc46d3fd7f115cd22e32f6f6cd2596aeb08fb03fa69bf27ab64abd8787daa34",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/_journal.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\_journal.py",
+      "expected_sha256": "bb759f8da216ac2bac3e801ebc5b997a86e35abe5f65bef197a41bc482c688f3",
+      "sha256": "bb759f8da216ac2bac3e801ebc5b997a86e35abe5f65bef197a41bc482c688f3",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/_journal.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\_journal.py",
+      "expected_sha256": "bb759f8da216ac2bac3e801ebc5b997a86e35abe5f65bef197a41bc482c688f3",
+      "sha256": "bb759f8da216ac2bac3e801ebc5b997a86e35abe5f65bef197a41bc482c688f3",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/_journal.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\_journal.py",
+      "expected_sha256": "bb759f8da216ac2bac3e801ebc5b997a86e35abe5f65bef197a41bc482c688f3",
+      "sha256": "bb759f8da216ac2bac3e801ebc5b997a86e35abe5f65bef197a41bc482c688f3",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/_probe_cliff.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\_probe_cliff.py",
+      "expected_sha256": "c27341935ca354f623f937ee06b7548179b25ec7e51757d8b24255610e07bfb9",
+      "sha256": "c27341935ca354f623f937ee06b7548179b25ec7e51757d8b24255610e07bfb9",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/_probe_cliff.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\_probe_cliff.py",
+      "expected_sha256": "c27341935ca354f623f937ee06b7548179b25ec7e51757d8b24255610e07bfb9",
+      "sha256": "c27341935ca354f623f937ee06b7548179b25ec7e51757d8b24255610e07bfb9",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/_probe_cliff.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\_probe_cliff.py",
+      "expected_sha256": "c27341935ca354f623f937ee06b7548179b25ec7e51757d8b24255610e07bfb9",
+      "sha256": "c27341935ca354f623f937ee06b7548179b25ec7e51757d8b24255610e07bfb9",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/blockstat.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\blockstat.py",
+      "expected_sha256": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+      "sha256": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/blockstat.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\blockstat.py",
+      "expected_sha256": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+      "sha256": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/blockstat.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\blockstat.py",
+      "expected_sha256": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+      "sha256": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/fixloop.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\fixloop.py",
+      "expected_sha256": "0f36b883bf77aa16ac492f274b2e8405e8d5ed9b67530101fe7aa70462c3704a",
+      "sha256": "0f36b883bf77aa16ac492f274b2e8405e8d5ed9b67530101fe7aa70462c3704a",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/fixloop.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\fixloop.py",
+      "expected_sha256": "0f36b883bf77aa16ac492f274b2e8405e8d5ed9b67530101fe7aa70462c3704a",
+      "sha256": "0f36b883bf77aa16ac492f274b2e8405e8d5ed9b67530101fe7aa70462c3704a",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/fixloop.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\fixloop.py",
+      "expected_sha256": "0f36b883bf77aa16ac492f274b2e8405e8d5ed9b67530101fe7aa70462c3704a",
+      "sha256": "0f36b883bf77aa16ac492f274b2e8405e8d5ed9b67530101fe7aa70462c3704a",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/gate_go_parity.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\gate_go_parity.py",
+      "expected_sha256": "bba1497cf3c0051eb060a7dd1c3800bca88a75be5560de3f57a0fea8781e3c26",
+      "sha256": "bba1497cf3c0051eb060a7dd1c3800bca88a75be5560de3f57a0fea8781e3c26",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/gate_go_parity.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\gate_go_parity.py",
+      "expected_sha256": "bba1497cf3c0051eb060a7dd1c3800bca88a75be5560de3f57a0fea8781e3c26",
+      "sha256": "bba1497cf3c0051eb060a7dd1c3800bca88a75be5560de3f57a0fea8781e3c26",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/gate_go_parity.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\gate_go_parity.py",
+      "expected_sha256": "bba1497cf3c0051eb060a7dd1c3800bca88a75be5560de3f57a0fea8781e3c26",
+      "sha256": "bba1497cf3c0051eb060a7dd1c3800bca88a75be5560de3f57a0fea8781e3c26",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/loop2.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\loop2.py",
+      "expected_sha256": "972d279a4e60484c74bc9f9d355ec482db9738894b069ffd2799baaed34a2a02",
+      "sha256": "972d279a4e60484c74bc9f9d355ec482db9738894b069ffd2799baaed34a2a02",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/loop2.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\loop2.py",
+      "expected_sha256": "972d279a4e60484c74bc9f9d355ec482db9738894b069ffd2799baaed34a2a02",
+      "sha256": "972d279a4e60484c74bc9f9d355ec482db9738894b069ffd2799baaed34a2a02",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/loop2.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\loop2.py",
+      "expected_sha256": "972d279a4e60484c74bc9f9d355ec482db9738894b069ffd2799baaed34a2a02",
+      "sha256": "972d279a4e60484c74bc9f9d355ec482db9738894b069ffd2799baaed34a2a02",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p0_env.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p0_env.py",
+      "expected_sha256": "edebd2d4eb5f1e659cc939f0008feda87521a5e56c989441b0f2f2f3070949b8",
+      "sha256": "edebd2d4eb5f1e659cc939f0008feda87521a5e56c989441b0f2f2f3070949b8",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p0_env.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p0_env.py",
+      "expected_sha256": "edebd2d4eb5f1e659cc939f0008feda87521a5e56c989441b0f2f2f3070949b8",
+      "sha256": "edebd2d4eb5f1e659cc939f0008feda87521a5e56c989441b0f2f2f3070949b8",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p0_env.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p0_env.py",
+      "expected_sha256": "edebd2d4eb5f1e659cc939f0008feda87521a5e56c989441b0f2f2f3070949b8",
+      "sha256": "edebd2d4eb5f1e659cc939f0008feda87521a5e56c989441b0f2f2f3070949b8",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p11_adaptive.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p11_adaptive.py",
+      "expected_sha256": "dae7e4df2e6188de5b8b4273c4e70c8dd29b724884c05ae5b4deae2e0e48a864",
+      "sha256": "dae7e4df2e6188de5b8b4273c4e70c8dd29b724884c05ae5b4deae2e0e48a864",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p11_adaptive.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p11_adaptive.py",
+      "expected_sha256": "dae7e4df2e6188de5b8b4273c4e70c8dd29b724884c05ae5b4deae2e0e48a864",
+      "sha256": "dae7e4df2e6188de5b8b4273c4e70c8dd29b724884c05ae5b4deae2e0e48a864",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p11_adaptive.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p11_adaptive.py",
+      "expected_sha256": "dae7e4df2e6188de5b8b4273c4e70c8dd29b724884c05ae5b4deae2e0e48a864",
+      "sha256": "dae7e4df2e6188de5b8b4273c4e70c8dd29b724884c05ae5b4deae2e0e48a864",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p12_quantum.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p12_quantum.py",
+      "expected_sha256": "17361104582cb245c6c27fea2865091691e38d25b70fd2c128c955ed2013a1a8",
+      "sha256": "17361104582cb245c6c27fea2865091691e38d25b70fd2c128c955ed2013a1a8",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p12_quantum.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p12_quantum.py",
+      "expected_sha256": "17361104582cb245c6c27fea2865091691e38d25b70fd2c128c955ed2013a1a8",
+      "sha256": "17361104582cb245c6c27fea2865091691e38d25b70fd2c128c955ed2013a1a8",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p12_quantum.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p12_quantum.py",
+      "expected_sha256": "17361104582cb245c6c27fea2865091691e38d25b70fd2c128c955ed2013a1a8",
+      "sha256": "17361104582cb245c6c27fea2865091691e38d25b70fd2c128c955ed2013a1a8",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p15_v2policy.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p15_v2policy.py",
+      "expected_sha256": "6c74021413d55a2602f3254ff35241b7acdd3956d5bacfcb1c38d54453e69c47",
+      "sha256": "6c74021413d55a2602f3254ff35241b7acdd3956d5bacfcb1c38d54453e69c47",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p15_v2policy.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p15_v2policy.py",
+      "expected_sha256": "6c74021413d55a2602f3254ff35241b7acdd3956d5bacfcb1c38d54453e69c47",
+      "sha256": "6c74021413d55a2602f3254ff35241b7acdd3956d5bacfcb1c38d54453e69c47",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p15_v2policy.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p15_v2policy.py",
+      "expected_sha256": "6c74021413d55a2602f3254ff35241b7acdd3956d5bacfcb1c38d54453e69c47",
+      "sha256": "6c74021413d55a2602f3254ff35241b7acdd3956d5bacfcb1c38d54453e69c47",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p16_uplink.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p16_uplink.py",
+      "expected_sha256": "caf4c250a7468483e39da9d4e1642fdc0f4dde92d66e5d63044cf072c5346a3e",
+      "sha256": "caf4c250a7468483e39da9d4e1642fdc0f4dde92d66e5d63044cf072c5346a3e",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p16_uplink.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p16_uplink.py",
+      "expected_sha256": "caf4c250a7468483e39da9d4e1642fdc0f4dde92d66e5d63044cf072c5346a3e",
+      "sha256": "caf4c250a7468483e39da9d4e1642fdc0f4dde92d66e5d63044cf072c5346a3e",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p16_uplink.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p16_uplink.py",
+      "expected_sha256": "caf4c250a7468483e39da9d4e1642fdc0f4dde92d66e5d63044cf072c5346a3e",
+      "sha256": "caf4c250a7468483e39da9d4e1642fdc0f4dde92d66e5d63044cf072c5346a3e",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p18_mmax.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p18_mmax.py",
+      "expected_sha256": "48e419782712ac445ed472a3d15a4a032422a006f893de0cc42dde620f6366ec",
+      "sha256": "48e419782712ac445ed472a3d15a4a032422a006f893de0cc42dde620f6366ec",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p18_mmax.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p18_mmax.py",
+      "expected_sha256": "48e419782712ac445ed472a3d15a4a032422a006f893de0cc42dde620f6366ec",
+      "sha256": "48e419782712ac445ed472a3d15a4a032422a006f893de0cc42dde620f6366ec",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p18_mmax.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p18_mmax.py",
+      "expected_sha256": "48e419782712ac445ed472a3d15a4a032422a006f893de0cc42dde620f6366ec",
+      "sha256": "48e419782712ac445ed472a3d15a4a032422a006f893de0cc42dde620f6366ec",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p19_provenance.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p19_provenance.py",
+      "expected_sha256": "90836d0064fff5517027a96a059c22eb0730908aa1ff66593478f8dc9b884f8c",
+      "sha256": "90836d0064fff5517027a96a059c22eb0730908aa1ff66593478f8dc9b884f8c",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p19_provenance.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p19_provenance.py",
+      "expected_sha256": "90836d0064fff5517027a96a059c22eb0730908aa1ff66593478f8dc9b884f8c",
+      "sha256": "90836d0064fff5517027a96a059c22eb0730908aa1ff66593478f8dc9b884f8c",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p19_provenance.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p19_provenance.py",
+      "expected_sha256": "90836d0064fff5517027a96a059c22eb0730908aa1ff66593478f8dc9b884f8c",
+      "sha256": "90836d0064fff5517027a96a059c22eb0730908aa1ff66593478f8dc9b884f8c",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p20_residual.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p20_residual.py",
+      "expected_sha256": "240955e6db6cda4936c7e134e656419bdd49e320b5349b61153be3869476aafb",
+      "sha256": "240955e6db6cda4936c7e134e656419bdd49e320b5349b61153be3869476aafb",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p20_residual.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p20_residual.py",
+      "expected_sha256": "240955e6db6cda4936c7e134e656419bdd49e320b5349b61153be3869476aafb",
+      "sha256": "240955e6db6cda4936c7e134e656419bdd49e320b5349b61153be3869476aafb",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p20_residual.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p20_residual.py",
+      "expected_sha256": "240955e6db6cda4936c7e134e656419bdd49e320b5349b61153be3869476aafb",
+      "sha256": "240955e6db6cda4936c7e134e656419bdd49e320b5349b61153be3869476aafb",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p2_threshold.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p2_threshold.py",
+      "expected_sha256": "004c06d60e7ab7a86a1f556f2781cd12ae42f71fc65747f5e6d101f804b38dc9",
+      "sha256": "004c06d60e7ab7a86a1f556f2781cd12ae42f71fc65747f5e6d101f804b38dc9",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p2_threshold.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p2_threshold.py",
+      "expected_sha256": "004c06d60e7ab7a86a1f556f2781cd12ae42f71fc65747f5e6d101f804b38dc9",
+      "sha256": "004c06d60e7ab7a86a1f556f2781cd12ae42f71fc65747f5e6d101f804b38dc9",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p2_threshold.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p2_threshold.py",
+      "expected_sha256": "004c06d60e7ab7a86a1f556f2781cd12ae42f71fc65747f5e6d101f804b38dc9",
+      "sha256": "004c06d60e7ab7a86a1f556f2781cd12ae42f71fc65747f5e6d101f804b38dc9",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p4_model.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p4_model.py",
+      "expected_sha256": "123cc69003654bbc50c42cb17bfd9ae234e57f6a9bb951e0209880f6a019bfe4",
+      "sha256": "123cc69003654bbc50c42cb17bfd9ae234e57f6a9bb951e0209880f6a019bfe4",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p4_model.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p4_model.py",
+      "expected_sha256": "123cc69003654bbc50c42cb17bfd9ae234e57f6a9bb951e0209880f6a019bfe4",
+      "sha256": "123cc69003654bbc50c42cb17bfd9ae234e57f6a9bb951e0209880f6a019bfe4",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p4_model.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p4_model.py",
+      "expected_sha256": "123cc69003654bbc50c42cb17bfd9ae234e57f6a9bb951e0209880f6a019bfe4",
+      "sha256": "123cc69003654bbc50c42cb17bfd9ae234e57f6a9bb951e0209880f6a019bfe4",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p5_audit.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p5_audit.py",
+      "expected_sha256": "13d5568110a33b71e5b061fd51607309ccc00beea14b5cace8b9bb1b5a320ecd",
+      "sha256": "13d5568110a33b71e5b061fd51607309ccc00beea14b5cace8b9bb1b5a320ecd",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p5_audit.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p5_audit.py",
+      "expected_sha256": "13d5568110a33b71e5b061fd51607309ccc00beea14b5cace8b9bb1b5a320ecd",
+      "sha256": "13d5568110a33b71e5b061fd51607309ccc00beea14b5cace8b9bb1b5a320ecd",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p5_audit.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p5_audit.py",
+      "expected_sha256": "13d5568110a33b71e5b061fd51607309ccc00beea14b5cace8b9bb1b5a320ecd",
+      "sha256": "13d5568110a33b71e5b061fd51607309ccc00beea14b5cace8b9bb1b5a320ecd",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p6_report.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p6_report.py",
+      "expected_sha256": "624f39e972826e27b77b586448d012b1140613ab09be34bcbe4f4b751a7498c8",
+      "sha256": "624f39e972826e27b77b586448d012b1140613ab09be34bcbe4f4b751a7498c8",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p6_report.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p6_report.py",
+      "expected_sha256": "624f39e972826e27b77b586448d012b1140613ab09be34bcbe4f4b751a7498c8",
+      "sha256": "624f39e972826e27b77b586448d012b1140613ab09be34bcbe4f4b751a7498c8",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p6_report.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p6_report.py",
+      "expected_sha256": "624f39e972826e27b77b586448d012b1140613ab09be34bcbe4f4b751a7498c8",
+      "sha256": "624f39e972826e27b77b586448d012b1140613ab09be34bcbe4f4b751a7498c8",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p7_verify.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p7_verify.py",
+      "expected_sha256": "c7c7b12e0afeaac0bb81e15be317ba641e6932d5d867577e7fdc9144bac02160",
+      "sha256": "c7c7b12e0afeaac0bb81e15be317ba641e6932d5d867577e7fdc9144bac02160",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p7_verify.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p7_verify.py",
+      "expected_sha256": "c7c7b12e0afeaac0bb81e15be317ba641e6932d5d867577e7fdc9144bac02160",
+      "sha256": "c7c7b12e0afeaac0bb81e15be317ba641e6932d5d867577e7fdc9144bac02160",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p7_verify.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p7_verify.py",
+      "expected_sha256": "c7c7b12e0afeaac0bb81e15be317ba641e6932d5d867577e7fdc9144bac02160",
+      "sha256": "c7c7b12e0afeaac0bb81e15be317ba641e6932d5d867577e7fdc9144bac02160",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p9_crossenv.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\p9_crossenv.py",
+      "expected_sha256": "25aff4bb88f1bc7e2f5eb079b0ac6207b03d458a67afe150272211b3da495339",
+      "sha256": "25aff4bb88f1bc7e2f5eb079b0ac6207b03d458a67afe150272211b3da495339",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p9_crossenv.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\p9_crossenv.py",
+      "expected_sha256": "25aff4bb88f1bc7e2f5eb079b0ac6207b03d458a67afe150272211b3da495339",
+      "sha256": "25aff4bb88f1bc7e2f5eb079b0ac6207b03d458a67afe150272211b3da495339",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/p9_crossenv.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\p9_crossenv.py",
+      "expected_sha256": "25aff4bb88f1bc7e2f5eb079b0ac6207b03d458a67afe150272211b3da495339",
+      "sha256": "25aff4bb88f1bc7e2f5eb079b0ac6207b03d458a67afe150272211b3da495339",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/padbed.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\padbed.py",
+      "expected_sha256": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+      "sha256": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/padbed.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\padbed.py",
+      "expected_sha256": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+      "sha256": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/padbed.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\padbed.py",
+      "expected_sha256": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+      "sha256": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/build.sh",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\quicbed\\build.sh",
+      "expected_sha256": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+      "sha256": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/build.sh",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\quicbed\\build.sh",
+      "expected_sha256": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+      "sha256": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/build.sh",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\quicbed\\build.sh",
+      "expected_sha256": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+      "sha256": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/policy.go",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\quicbed\\policy.go",
+      "expected_sha256": "fb08ab5ef9ceae98e89f138a1c1b6f985d269d97efbe14b0de258a4cfcaeb3a2",
+      "sha256": "fb08ab5ef9ceae98e89f138a1c1b6f985d269d97efbe14b0de258a4cfcaeb3a2",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/policy.go",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\quicbed\\policy.go",
+      "expected_sha256": "fb08ab5ef9ceae98e89f138a1c1b6f985d269d97efbe14b0de258a4cfcaeb3a2",
+      "sha256": "fb08ab5ef9ceae98e89f138a1c1b6f985d269d97efbe14b0de258a4cfcaeb3a2",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/policy.go",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\quicbed\\policy.go",
+      "expected_sha256": "fb08ab5ef9ceae98e89f138a1c1b6f985d269d97efbe14b0de258a4cfcaeb3a2",
+      "sha256": "fb08ab5ef9ceae98e89f138a1c1b6f985d269d97efbe14b0de258a4cfcaeb3a2",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/qamp.go",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\quicbed\\qamp.go",
+      "expected_sha256": "1e374290e8a976d716ad84d1765608ea23f917224993db6af4def22ab35bf44d",
+      "sha256": "1e374290e8a976d716ad84d1765608ea23f917224993db6af4def22ab35bf44d",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/qamp.go",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\quicbed\\qamp.go",
+      "expected_sha256": "1e374290e8a976d716ad84d1765608ea23f917224993db6af4def22ab35bf44d",
+      "sha256": "1e374290e8a976d716ad84d1765608ea23f917224993db6af4def22ab35bf44d",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/qamp.go",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\quicbed\\qamp.go",
+      "expected_sha256": "1e374290e8a976d716ad84d1765608ea23f917224993db6af4def22ab35bf44d",
+      "sha256": "1e374290e8a976d716ad84d1765608ea23f917224993db6af4def22ab35bf44d",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/qamp_audit_test.go",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\quicbed\\qamp_audit_test.go",
+      "expected_sha256": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+      "sha256": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/qamp_audit_test.go",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\quicbed\\qamp_audit_test.go",
+      "expected_sha256": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+      "sha256": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/qamp_audit_test.go",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\quicbed\\qamp_audit_test.go",
+      "expected_sha256": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+      "sha256": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/shim.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\experiments\\quicbed\\shim.py",
+      "expected_sha256": "5e1f7f65fee575a0cfc4478d8a93c31822bd368ba41d09ff9fded7ecc4e7b954",
+      "sha256": "5e1f7f65fee575a0cfc4478d8a93c31822bd368ba41d09ff9fded7ecc4e7b954",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/shim.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\experiments\\quicbed\\shim.py",
+      "expected_sha256": "5e1f7f65fee575a0cfc4478d8a93c31822bd368ba41d09ff9fded7ecc4e7b954",
+      "sha256": "5e1f7f65fee575a0cfc4478d8a93c31822bd368ba41d09ff9fded7ecc4e7b954",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/experiments/quicbed/shim.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\experiments\\quicbed\\shim.py",
+      "expected_sha256": "5e1f7f65fee575a0cfc4478d8a93c31822bd368ba41d09ff9fded7ecc4e7b954",
+      "sha256": "5e1f7f65fee575a0cfc4478d8a93c31822bd368ba41d09ff9fded7ecc4e7b954",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/padfec/codec.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\padfec\\codec.py",
+      "expected_sha256": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+      "sha256": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/padfec/codec.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\padfec\\codec.py",
+      "expected_sha256": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+      "sha256": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/padfec/codec.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\padfec\\codec.py",
+      "expected_sha256": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+      "sha256": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/padfec/quantum.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\padfec\\quantum.py",
+      "expected_sha256": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "sha256": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/padfec/quantum.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\padfec\\quantum.py",
+      "expected_sha256": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "sha256": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/padfec/quantum.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\padfec\\quantum.py",
+      "expected_sha256": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "sha256": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/README.md",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\README.md",
+      "expected_sha256": "dbc1aede2baaf6c9293a366b5d515c31385d73cf5c998f24153c9a8100afbdec",
+      "sha256": "dbc1aede2baaf6c9293a366b5d515c31385d73cf5c998f24153c9a8100afbdec",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/README.md",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\README.md",
+      "expected_sha256": "dbc1aede2baaf6c9293a366b5d515c31385d73cf5c998f24153c9a8100afbdec",
+      "sha256": "dbc1aede2baaf6c9293a366b5d515c31385d73cf5c998f24153c9a8100afbdec",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/README.md",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\README.md",
+      "expected_sha256": "dbc1aede2baaf6c9293a366b5d515c31385d73cf5c998f24153c9a8100afbdec",
+      "sha256": "dbc1aede2baaf6c9293a366b5d515c31385d73cf5c998f24153c9a8100afbdec",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_core_regressions.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\tests\\test_core_regressions.py",
+      "expected_sha256": "288733d386b958ac9f830fea076baf86ff0539cfe0ce213539c9dbd2f274ac20",
+      "sha256": "288733d386b958ac9f830fea076baf86ff0539cfe0ce213539c9dbd2f274ac20",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_core_regressions.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\tests\\test_core_regressions.py",
+      "expected_sha256": "288733d386b958ac9f830fea076baf86ff0539cfe0ce213539c9dbd2f274ac20",
+      "sha256": "288733d386b958ac9f830fea076baf86ff0539cfe0ce213539c9dbd2f274ac20",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_core_regressions.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\tests\\test_core_regressions.py",
+      "expected_sha256": "288733d386b958ac9f830fea076baf86ff0539cfe0ce213539c9dbd2f274ac20",
+      "sha256": "288733d386b958ac9f830fea076baf86ff0539cfe0ce213539c9dbd2f274ac20",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_p7_regressions.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\tests\\test_p7_regressions.py",
+      "expected_sha256": "b3f8f847a175a7e98845c62d5b5be8770a8958ee4437a643e522e86b4c8e99a0",
+      "sha256": "b3f8f847a175a7e98845c62d5b5be8770a8958ee4437a643e522e86b4c8e99a0",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_p7_regressions.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\tests\\test_p7_regressions.py",
+      "expected_sha256": "b3f8f847a175a7e98845c62d5b5be8770a8958ee4437a643e522e86b4c8e99a0",
+      "sha256": "b3f8f847a175a7e98845c62d5b5be8770a8958ee4437a643e522e86b4c8e99a0",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_p7_regressions.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\tests\\test_p7_regressions.py",
+      "expected_sha256": "b3f8f847a175a7e98845c62d5b5be8770a8958ee4437a643e522e86b4c8e99a0",
+      "sha256": "b3f8f847a175a7e98845c62d5b5be8770a8958ee4437a643e522e86b4c8e99a0",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_pipeline_regressions.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\tests\\test_pipeline_regressions.py",
+      "expected_sha256": "330510329bffb436e1f495f853df483b4bc17299ba9cfc1117c79ee6fd7439bf",
+      "sha256": "330510329bffb436e1f495f853df483b4bc17299ba9cfc1117c79ee6fd7439bf",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_pipeline_regressions.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\tests\\test_pipeline_regressions.py",
+      "expected_sha256": "330510329bffb436e1f495f853df483b4bc17299ba9cfc1117c79ee6fd7439bf",
+      "sha256": "330510329bffb436e1f495f853df483b4bc17299ba9cfc1117c79ee6fd7439bf",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_pipeline_regressions.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\tests\\test_pipeline_regressions.py",
+      "expected_sha256": "330510329bffb436e1f495f853df483b4bc17299ba9cfc1117c79ee6fd7439bf",
+      "sha256": "330510329bffb436e1f495f853df483b4bc17299ba9cfc1117c79ee6fd7439bf",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_report_regressions.py",
+      "copy": "source",
+      "path": "C:\\dev\\pq_afec\\tests\\test_report_regressions.py",
+      "expected_sha256": "2f6abab921dff6624c3c5867564d25b5e6d2dc127016685b348b46ac86c1da62",
+      "sha256": "2f6abab921dff6624c3c5867564d25b5e6d2dc127016685b348b46ac86c1da62",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_report_regressions.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\pq_afec\\tests\\test_report_regressions.py",
+      "expected_sha256": "2f6abab921dff6624c3c5867564d25b5e6d2dc127016685b348b46ac86c1da62",
+      "sha256": "2f6abab921dff6624c3c5867564d25b5e6d2dc127016685b348b46ac86c1da62",
+      "matches": true
+    },
+    {
+      "repo_path": "pq_afec/tests/test_report_regressions.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\pq_afec\\tests\\test_report_regressions.py",
+      "expected_sha256": "2f6abab921dff6624c3c5867564d25b5e6d2dc127016685b348b46ac86c1da62",
+      "sha256": "2f6abab921dff6624c3c5867564d25b5e6d2dc127016685b348b46ac86c1da62",
+      "matches": true
+    },
+    {
+      "repo_path": ".gitattributes",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\.gitattributes",
+      "expected_sha256": "ba2ab4f751990d3cd037a227e70a8957afe04df24beb51d0cc922c1e51c84768",
+      "sha256": "ba2ab4f751990d3cd037a227e70a8957afe04df24beb51d0cc922c1e51c84768",
+      "matches": true
+    },
+    {
+      "repo_path": ".gitattributes",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\.gitattributes",
+      "expected_sha256": "ba2ab4f751990d3cd037a227e70a8957afe04df24beb51d0cc922c1e51c84768",
+      "sha256": "ba2ab4f751990d3cd037a227e70a8957afe04df24beb51d0cc922c1e51c84768",
+      "matches": true
+    },
+    {
+      "repo_path": ".gitattributes",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\.gitattributes",
+      "expected_sha256": "ba2ab4f751990d3cd037a227e70a8957afe04df24beb51d0cc922c1e51c84768",
+      "sha256": "ba2ab4f751990d3cd037a227e70a8957afe04df24beb51d0cc922c1e51c84768",
+      "matches": true
+    },
+    {
+      "repo_path": ".gitignore",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\.gitignore",
+      "expected_sha256": "599e8d09a18b6bac6f70ed12bf96f67e49c4d992ee2601bc173d92fbcb64b11d",
+      "sha256": "599e8d09a18b6bac6f70ed12bf96f67e49c4d992ee2601bc173d92fbcb64b11d",
+      "matches": true
+    },
+    {
+      "repo_path": ".gitignore",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\.gitignore",
+      "expected_sha256": "599e8d09a18b6bac6f70ed12bf96f67e49c4d992ee2601bc173d92fbcb64b11d",
+      "sha256": "599e8d09a18b6bac6f70ed12bf96f67e49c4d992ee2601bc173d92fbcb64b11d",
+      "matches": true
+    },
+    {
+      "repo_path": ".gitignore",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\.gitignore",
+      "expected_sha256": "599e8d09a18b6bac6f70ed12bf96f67e49c4d992ee2601bc173d92fbcb64b11d",
+      "sha256": "599e8d09a18b6bac6f70ed12bf96f67e49c4d992ee2601bc173d92fbcb64b11d",
+      "matches": true
+    },
+    {
+      "repo_path": "README.md",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\README.md",
+      "expected_sha256": "f7ec066cc2dd98f3da644b6673f1cc44c9d482455911b8c28ae420bd54b2bb26",
+      "sha256": "f7ec066cc2dd98f3da644b6673f1cc44c9d482455911b8c28ae420bd54b2bb26",
+      "matches": true
+    },
+    {
+      "repo_path": "README.md",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\README.md",
+      "expected_sha256": "f7ec066cc2dd98f3da644b6673f1cc44c9d482455911b8c28ae420bd54b2bb26",
+      "sha256": "f7ec066cc2dd98f3da644b6673f1cc44c9d482455911b8c28ae420bd54b2bb26",
+      "matches": true
+    },
+    {
+      "repo_path": "README.md",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\README.md",
+      "expected_sha256": "f7ec066cc2dd98f3da644b6673f1cc44c9d482455911b8c28ae420bd54b2bb26",
+      "sha256": "f7ec066cc2dd98f3da644b6673f1cc44c9d482455911b8c28ae420bd54b2bb26",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/README.md",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\README.md",
+      "expected_sha256": "1748e67d1bcc15b791980dc561cdd121575b6efecaedfda8f9c94b7b851b4cb7",
+      "sha256": "1748e67d1bcc15b791980dc561cdd121575b6efecaedfda8f9c94b7b851b4cb7",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/README.md",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\README.md",
+      "expected_sha256": "1748e67d1bcc15b791980dc561cdd121575b6efecaedfda8f9c94b7b851b4cb7",
+      "sha256": "1748e67d1bcc15b791980dc561cdd121575b6efecaedfda8f9c94b7b851b4cb7",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/README.md",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\README.md",
+      "expected_sha256": "1748e67d1bcc15b791980dc561cdd121575b6efecaedfda8f9c94b7b851b4cb7",
+      "sha256": "1748e67d1bcc15b791980dc561cdd121575b6efecaedfda8f9c94b7b851b4cb7",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/docs/2026-09-14_연구문서_정정안.md",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\docs\\2026-09-14_연구문서_정정안.md",
+      "expected_sha256": "cb9e0269f3cc0b994ea24796b865b6ceacaee143637d9473a8c3d1c658545f60",
+      "sha256": "cb9e0269f3cc0b994ea24796b865b6ceacaee143637d9473a8c3d1c658545f60",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/docs/2026-09-14_연구문서_정정안.md",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\docs\\2026-09-14_연구문서_정정안.md",
+      "expected_sha256": "cb9e0269f3cc0b994ea24796b865b6ceacaee143637d9473a8c3d1c658545f60",
+      "sha256": "cb9e0269f3cc0b994ea24796b865b6ceacaee143637d9473a8c3d1c658545f60",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/docs/2026-09-14_연구문서_정정안.md",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\docs\\2026-09-14_연구문서_정정안.md",
+      "expected_sha256": "cb9e0269f3cc0b994ea24796b865b6ceacaee143637d9473a8c3d1c658545f60",
+      "sha256": "cb9e0269f3cc0b994ea24796b865b6ceacaee143637d9473a8c3d1c658545f60",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/amp_sweep.sh",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\amp_sweep.sh",
+      "expected_sha256": "c97ff2d7dde05a45734d205f131163987db0925b66c2cfcd071870a7387b828e",
+      "sha256": "c97ff2d7dde05a45734d205f131163987db0925b66c2cfcd071870a7387b828e",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/amp_sweep.sh",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\amp_sweep.sh",
+      "expected_sha256": "c97ff2d7dde05a45734d205f131163987db0925b66c2cfcd071870a7387b828e",
+      "sha256": "c97ff2d7dde05a45734d205f131163987db0925b66c2cfcd071870a7387b828e",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/amp_sweep.sh",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\amp_sweep.sh",
+      "expected_sha256": "c97ff2d7dde05a45734d205f131163987db0925b66c2cfcd071870a7387b828e",
+      "sha256": "c97ff2d7dde05a45734d205f131163987db0925b66c2cfcd071870a7387b828e",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/check_env.sh",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\check_env.sh",
+      "expected_sha256": "060370308dd228324a33c7436d680aff81d7f554ec8e4bafc4962020462dee4d",
+      "sha256": "060370308dd228324a33c7436d680aff81d7f554ec8e4bafc4962020462dee4d",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/check_env.sh",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\check_env.sh",
+      "expected_sha256": "060370308dd228324a33c7436d680aff81d7f554ec8e4bafc4962020462dee4d",
+      "sha256": "060370308dd228324a33c7436d680aff81d7f554ec8e4bafc4962020462dee4d",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/check_env.sh",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\check_env.sh",
+      "expected_sha256": "060370308dd228324a33c7436d680aff81d7f554ec8e4bafc4962020462dee4d",
+      "sha256": "060370308dd228324a33c7436d680aff81d7f554ec8e4bafc4962020462dee4d",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/go.mod",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\go.mod",
+      "expected_sha256": "a304a9cca89886cae79ad3ee905eaf686756844b1459df299f8842f55f09fc61",
+      "sha256": "a304a9cca89886cae79ad3ee905eaf686756844b1459df299f8842f55f09fc61",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/go.mod",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\go.mod",
+      "expected_sha256": "a304a9cca89886cae79ad3ee905eaf686756844b1459df299f8842f55f09fc61",
+      "sha256": "a304a9cca89886cae79ad3ee905eaf686756844b1459df299f8842f55f09fc61",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/go.mod",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\go.mod",
+      "expected_sha256": "a304a9cca89886cae79ad3ee905eaf686756844b1459df299f8842f55f09fc61",
+      "sha256": "a304a9cca89886cae79ad3ee905eaf686756844b1459df299f8842f55f09fc61",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/go.sum",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\go.sum",
+      "expected_sha256": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+      "sha256": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/go.sum",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\go.sum",
+      "expected_sha256": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+      "sha256": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/go.sum",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\go.sum",
+      "expected_sha256": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+      "sha256": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/hct_v2.c",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\hct_v2.c",
+      "expected_sha256": "dd8843ce6ea99c18f04904d905bda92278d77020cd33e93a4f3aad223dac00ed",
+      "sha256": "dd8843ce6ea99c18f04904d905bda92278d77020cd33e93a4f3aad223dac00ed",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/hct_v2.c",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\hct_v2.c",
+      "expected_sha256": "dd8843ce6ea99c18f04904d905bda92278d77020cd33e93a4f3aad223dac00ed",
+      "sha256": "dd8843ce6ea99c18f04904d905bda92278d77020cd33e93a4f3aad223dac00ed",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/hct_v2.c",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\hct_v2.c",
+      "expected_sha256": "dd8843ce6ea99c18f04904d905bda92278d77020cd33e93a4f3aad223dac00ed",
+      "sha256": "dd8843ce6ea99c18f04904d905bda92278d77020cd33e93a4f3aad223dac00ed",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/patch1_certsize.py",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\patch1_certsize.py",
+      "expected_sha256": "2c44a47f0a1f5706760a3ac7d8230eb145b57b382dc6436c683f4032810daa9b",
+      "sha256": "2c44a47f0a1f5706760a3ac7d8230eb145b57b382dc6436c683f4032810daa9b",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/patch1_certsize.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\patch1_certsize.py",
+      "expected_sha256": "2c44a47f0a1f5706760a3ac7d8230eb145b57b382dc6436c683f4032810daa9b",
+      "sha256": "2c44a47f0a1f5706760a3ac7d8230eb145b57b382dc6436c683f4032810daa9b",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/patch1_certsize.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\patch1_certsize.py",
+      "expected_sha256": "2c44a47f0a1f5706760a3ac7d8230eb145b57b382dc6436c683f4032810daa9b",
+      "sha256": "2c44a47f0a1f5706760a3ac7d8230eb145b57b382dc6436c683f4032810daa9b",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/patch2_initpkt.py",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\patch2_initpkt.py",
+      "expected_sha256": "8839ce90cdd12b13ffd0514b4f1b1aa8c9e596360027c6cfb2e66a668c4ee912",
+      "sha256": "8839ce90cdd12b13ffd0514b4f1b1aa8c9e596360027c6cfb2e66a668c4ee912",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/patch2_initpkt.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\patch2_initpkt.py",
+      "expected_sha256": "8839ce90cdd12b13ffd0514b4f1b1aa8c9e596360027c6cfb2e66a668c4ee912",
+      "sha256": "8839ce90cdd12b13ffd0514b4f1b1aa8c9e596360027c6cfb2e66a668c4ee912",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/patch2_initpkt.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\patch2_initpkt.py",
+      "expected_sha256": "8839ce90cdd12b13ffd0514b4f1b1aa8c9e596360027c6cfb2e66a668c4ee912",
+      "sha256": "8839ce90cdd12b13ffd0514b4f1b1aa8c9e596360027c6cfb2e66a668c4ee912",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/qamp.go",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\qamp.go",
+      "expected_sha256": "13a57a260d6ac1b107828ef342aa4526b4bffef20c3974104da2a43c85695eeb",
+      "sha256": "13a57a260d6ac1b107828ef342aa4526b4bffef20c3974104da2a43c85695eeb",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/qamp.go",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\qamp.go",
+      "expected_sha256": "13a57a260d6ac1b107828ef342aa4526b4bffef20c3974104da2a43c85695eeb",
+      "sha256": "13a57a260d6ac1b107828ef342aa4526b4bffef20c3974104da2a43c85695eeb",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/qamp.go",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\qamp.go",
+      "expected_sha256": "13a57a260d6ac1b107828ef342aa4526b4bffef20c3974104da2a43c85695eeb",
+      "sha256": "13a57a260d6ac1b107828ef342aa4526b4bffef20c3974104da2a43c85695eeb",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/qhct.go",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\qhct.go",
+      "expected_sha256": "8a72aba4ce0cd4562ddb0fceddfa0b4b940bff2490d7068aa8a7386802a007b2",
+      "sha256": "8a72aba4ce0cd4562ddb0fceddfa0b4b940bff2490d7068aa8a7386802a007b2",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/qhct.go",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\qhct.go",
+      "expected_sha256": "8a72aba4ce0cd4562ddb0fceddfa0b4b940bff2490d7068aa8a7386802a007b2",
+      "sha256": "8a72aba4ce0cd4562ddb0fceddfa0b4b940bff2490d7068aa8a7386802a007b2",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/qhct.go",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\qhct.go",
+      "expected_sha256": "8a72aba4ce0cd4562ddb0fceddfa0b4b940bff2490d7068aa8a7386802a007b2",
+      "sha256": "8a72aba4ce0cd4562ddb0fceddfa0b4b940bff2490d7068aa8a7386802a007b2",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/qpkt.go",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\qpkt.go",
+      "expected_sha256": "038cbae1aa270fde1132c639aeef7087c78826c7bf9f70cb8ebe0b624f18457d",
+      "sha256": "038cbae1aa270fde1132c639aeef7087c78826c7bf9f70cb8ebe0b624f18457d",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/qpkt.go",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\qpkt.go",
+      "expected_sha256": "038cbae1aa270fde1132c639aeef7087c78826c7bf9f70cb8ebe0b624f18457d",
+      "sha256": "038cbae1aa270fde1132c639aeef7087c78826c7bf9f70cb8ebe0b624f18457d",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/qpkt.go",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\qpkt.go",
+      "expected_sha256": "038cbae1aa270fde1132c639aeef7087c78826c7bf9f70cb8ebe0b624f18457d",
+      "sha256": "038cbae1aa270fde1132c639aeef7087c78826c7bf9f70cb8ebe0b624f18457d",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/run_v3.sh",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\run_v3.sh",
+      "expected_sha256": "a4e0828d2d9f4db0184e066e879ee51a1a841eee569442fe8b7bf444a727fdc1",
+      "sha256": "a4e0828d2d9f4db0184e066e879ee51a1a841eee569442fe8b7bf444a727fdc1",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/run_v3.sh",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\run_v3.sh",
+      "expected_sha256": "a4e0828d2d9f4db0184e066e879ee51a1a841eee569442fe8b7bf444a727fdc1",
+      "sha256": "a4e0828d2d9f4db0184e066e879ee51a1a841eee569442fe8b7bf444a727fdc1",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/run_v3.sh",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\run_v3.sh",
+      "expected_sha256": "a4e0828d2d9f4db0184e066e879ee51a1a841eee569442fe8b7bf444a727fdc1",
+      "sha256": "a4e0828d2d9f4db0184e066e879ee51a1a841eee569442fe8b7bf444a727fdc1",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/summarize_amp.py",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\summarize_amp.py",
+      "expected_sha256": "4b4d987ab191b5afa7cfddb8efbb623c561e026fdeee83fe8c9c7152a46f399c",
+      "sha256": "4b4d987ab191b5afa7cfddb8efbb623c561e026fdeee83fe8c9c7152a46f399c",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/summarize_amp.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\summarize_amp.py",
+      "expected_sha256": "4b4d987ab191b5afa7cfddb8efbb623c561e026fdeee83fe8c9c7152a46f399c",
+      "sha256": "4b4d987ab191b5afa7cfddb8efbb623c561e026fdeee83fe8c9c7152a46f399c",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/summarize_amp.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\summarize_amp.py",
+      "expected_sha256": "4b4d987ab191b5afa7cfddb8efbb623c561e026fdeee83fe8c9c7152a46f399c",
+      "sha256": "4b4d987ab191b5afa7cfddb8efbb623c561e026fdeee83fe8c9c7152a46f399c",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/test_summarize_amp.py",
+      "copy": "source",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\test_summarize_amp.py",
+      "expected_sha256": "62fb0a1adef4be303b7f4b54b13d94c1d3e5adeb97e3176d1d97f88c421922da",
+      "sha256": "62fb0a1adef4be303b7f4b54b13d94c1d3e5adeb97e3176d1d97f88c421922da",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/test_summarize_amp.py",
+      "copy": "repository_1",
+      "path": "C:\\dev\\R-E\\mlkem-quic-amplification\\src\\test_summarize_amp.py",
+      "expected_sha256": "62fb0a1adef4be303b7f4b54b13d94c1d3e5adeb97e3176d1d97f88c421922da",
+      "sha256": "62fb0a1adef4be303b7f4b54b13d94c1d3e5adeb97e3176d1d97f88c421922da",
+      "matches": true
+    },
+    {
+      "repo_path": "mlkem-quic-amplification/src/test_summarize_amp.py",
+      "copy": "repository_2",
+      "path": "C:\\Users\\scien\\OneDrive\\문서\\GitHub\\R-E\\mlkem-quic-amplification\\src\\test_summarize_amp.py",
+      "expected_sha256": "62fb0a1adef4be303b7f4b54b13d94c1d3e5adeb97e3176d1d97f88c421922da",
+      "sha256": "62fb0a1adef4be303b7f4b54b13d94c1d3e5adeb97e3176d1d97f88c421922da",
+      "matches": true
+    }
+  ],
+  "limits": [
+    "Runner pass is not confirmation of every scientific hypothesis.",
+    "The audit reads recorded fingerprints; it does not recompute the running process environment.",
+    "Source comparison covers the supplied change manifest, not every dependency or binary.",
+    "Pending stages may retain old success records; these are excluded from the current run.",
+    "This snapshot neither starts nor stops experiments and performs no inferential reanalysis."
+  ],
+  "all_stages_current_runner_pass": false,
+  "issues_present": false
+}

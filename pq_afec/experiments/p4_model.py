@@ -454,8 +454,8 @@ def main():
     print("%d / %d 통과" % (npass, len(checks)))
 
     path = os.path.join(RESULTS, "p4_model.json")
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=1)
+    from _journal import save_result
+    save_result(path, out)
     print()
     print("saved:", path)
     return 0 if npass == len(checks) else 1

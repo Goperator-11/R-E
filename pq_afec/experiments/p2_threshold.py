@@ -81,7 +81,8 @@ def probe(group, arm_fec, m, cert, k, n, jr):
                round((cs.get("bytes_parity") or 0) / float(max(1, s["n"])), 1)),
            "srv_bytes_in": ss.get("bytes_in"),
            "srv_bytes_to_stack": ss.get("bytes_to_stack"),
-           "valid": s["ok"] == s["n"]}
+           "error": err,
+           "valid": not err and n > 0 and s["ok"] == s["n"] == n}
     if rec["valid"]:
         jr.record(key, rec)
     return rec
@@ -89,7 +90,8 @@ def probe(group, arm_fec, m, cert, k, n, jr):
 
 def is_two_rtt(rec):
     """2-RTT 인가. 성공한 시행이 없으면 판정 불가(None)를 돌려준다."""
-    if not rec.get("ok"):
+    if (not rec.get("ok") or rec.get("ok") != rec.get("n")
+            or rec.get("valid") is False or rec.get("error")):
         return None
     r = rec.get("two_rtt_rate")
     return None if r is None else r >= 0.5
@@ -114,13 +116,16 @@ def bisect_threshold(group, arm_fec, m, k, jr, log):
     while hi - lo > RESOLUTION:
         mid = (lo + hi) // 2
         r = probe(group, arm_fec, m, mid, k, N_PROBE, jr)
-        if not r["ok"]:
+        if is_two_rtt(r) is None:
             return {"lo": None, "hi": None,
                     "note": "cert %d 에서 핸드셰이크 실패 - 판정 불가" % mid}
         rate = r["two_rtt_rate"] or 0.0
         if 0.2 < rate < 0.8:
             # 흐릿한 경계는 표본을 키워 다시 본다
             r = probe(group, arm_fec, m, mid, k, N_CONFIRM, jr)
+            if is_two_rtt(r) is None:
+                return {"lo": None, "hi": None,
+                        "note": "cert %d 재확인 실패 - 판정 불가" % mid}
             rate = r["two_rtt_rate"] or 0.0
         if rate >= 0.5:
             hi = mid
@@ -206,9 +211,11 @@ def main():
                     s = B.summarize(rows, rtt_ms=RTT_MS)
                     r = {"cert": cert, "two_rtt_rate": s["two_rtt_rate"],
                          "first_flight_bytes": cs.get("first_flight_bytes"),
-                         "ok": s["ok"], "n": s["n"]}
-                    if s["ok"] == s["n"]:
-                        jr.record(kk, r)
+                         "ok": s["ok"], "n": s["n"], "error": _e,
+                         "valid": not _e and n > 0 and s["ok"] == s["n"] == n}
+                    if not r["valid"]:
+                        raise RuntimeError("IPS 임계 측정 불완전: %s" % r)
+                    jr.record(kk, r)
                     return r
                 base = pr(3000, N_PROBE)
                 while hi - lo > RESOLUTION:

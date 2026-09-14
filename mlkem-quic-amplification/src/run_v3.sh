@@ -22,12 +22,15 @@
 #      그대로다 - 서버 비행(인증서)은 손실을 안 겪는다는 뜻이므로 보고서에
 #      어느 쪽으로 쟀는지 적어야 한다.
 # ============================================================
-set -u
+set -euo pipefail
 QUICK="${1:-full}"
 NETEM_SIDES="${NETEM_SIDES:-one}"
+case "$QUICK" in quick|full) ;; *) echo "usage: $0 [quick|full]" >&2; exit 2;; esac
+case "$NETEM_SIDES" in one|both) ;; *) echo "NETEM_SIDES must be one or both" >&2; exit 2;; esac
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 PORT=45577
 OUT="$(pwd)/resultsB_$(date +%Y%m%d_%H%M%S)"
-BIN="$(pwd)/hct_v2"
+BIN="${BIN:-$SCRIPT_DIR/hct_v2}"
 CERT="$(pwd)/c.pem"; KEY="$(pwd)/k.pem"
 TMO=5000
 
@@ -40,14 +43,20 @@ else
 fi
 
 [ -x "$BIN" ] || { echo "오류: hct_v2 없음. 먼저 컴파일하세요."; exit 1; }
-[ -f "$CERT" ] || openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:P-256 \
+if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:P-256 \
   -keyout "$KEY" -out "$CERT" -days 30 -nodes -subj "/CN=localhost" 2>/dev/null
+fi
 mkdir -p "$OUT"
 echo "출력: $OUT"
 export OUT BIN CERT KEY PORT KEMS RTTS LOSSES MODELS ITERS WARMUP TMO NETEM_SIDES
 
 unshare -Urnm bash <<'INNER'
-set -u
+set -euo pipefail
+SRV=""
+cleanup() {
+  if [ -n "$SRV" ]; then kill "$SRV" 2>/dev/null || true; wait "$SRV" 2>/dev/null || true; fi
+}
+trap cleanup EXIT
 # --- veth 링크 구성 ---
 mount -t tmpfs none /run 2>/dev/null
 mkdir -p /run/netns
@@ -73,8 +82,8 @@ for model in $MODELS; do
   for loss in $LOSSES; do
     # netem: NETEM_SIDES=one 이면 v0 송신측에만(단방향, delay = 목표 RTT),
     # both 면 양쪽에 절반씩(명세 §4-2).
-    tc qdisc del dev v0 root 2>/dev/null
-    ip netns exec peer tc qdisc del dev v1 root 2>/dev/null
+    tc qdisc del dev v0 root 2>/dev/null || true
+    ip netns exec peer tc qdisc del dev v1 root 2>/dev/null || true
     spec=""
     if [ "$rtt" != "0" ]; then
       if [ "$NETEM_SIDES" = "both" ]; then
@@ -103,11 +112,13 @@ for model in $MODELS; do
 
       # 서버는 peer ns 안에서 기동
       ip netns exec peer openssl s_server -cert "$CERT" -key "$KEY" -tls1_3 \
-        -groups "$group" -accept 10.9.0.2:$PORT -quiet >/dev/null 2>&1 &
+        -groups "$group" -accept 10.9.0.2:$PORT -quiet >"$OUT/server_${model}_rtt${rtt}_loss${loss}_${group}.log" 2>&1 &
       SRV=$!; sleep 0.8
+      kill -0 "$SRV" 2>/dev/null || { echo "server failed: $group" >&2; exit 1; }
 
       csv="$OUT/raw_${model}_rtt${rtt}_loss${loss}_${group}.csv"
-      out=$("$BIN" 10.9.0.2 $PORT "$group" "$it" "$WARMUP" "$csv" "$TMO" 2>/dev/null)
+      out=$("$BIN" 10.9.0.2 "$PORT" "$group" "$it" "$WARMUP" "$csv" "$TMO" 2>"$csv.stderr.log")
+      printf '%s\n' "$out" > "$csv.summary.log"
       neg=$(echo "$out"|sed -n 's/.*negotiated=\([A-Za-z0-9_]*\).*/\1/p')
       n=$(echo  "$out"|head -1|sed -n 's/.*[[:space:]]n=\([0-9]*\)[[:space:]].*/\1/p')
       f=$(echo  "$out"|sed -n 's/.*fail=\([0-9]*\).*/\1/p')
@@ -118,15 +129,20 @@ for model in $MODELS; do
       p50=$(echo "$out"|sed -n 's/.*p50=\([0-9.]*\).*/\1/p')
       p95=$(echo "$out"|sed -n 's/.*p95=\([0-9.]*\).*/\1/p')
       p99=$(echo "$out"|sed -n 's/.*p99=\([0-9.]*\).*/\1/p')
-      [ "${neg^^}" != "${group^^}" ] && printf "!!협상불일치(%s) " "$neg"
+      [[ "$n" =~ ^[0-9]+$ && "$f" =~ ^[0-9]+$ && "$tm" =~ ^[0-9]+$ ]] || { echo "invalid measurement output" >&2; exit 1; }
+      [ "$((n+f))" -eq "$it" ] || { echo "measurement count mismatch" >&2; exit 1; }
+      if [ "$n" -gt 0 ] && [ "${neg^^}" != "${group^^}" ]; then
+        printf "협상불일치(%s), 중단\n" "$neg" >&2; exit 1
+      fi
       printf "p50=%-9s 실패=%-6s tmo=%s\n" "${p50:--}" "${fr:--}" "${tm:-0}"
       echo "$model,$rtt,$loss,$group,${n:-0},${f:-0},${tm:-0},${fr:-0},${mm:-},${sd:-},${p50:-},${p95:-},${p99:-},$NETEM_SIDES,$eff" >> "$SUM"
-      kill $SRV 2>/dev/null; wait $SRV 2>/dev/null
+      cleanup
+      SRV=""
     done
   done
  done
 done
-tc qdisc del dev v0 root 2>/dev/null
-ip netns exec peer tc qdisc del dev v1 root 2>/dev/null
+tc qdisc del dev v0 root 2>/dev/null || true
+ip netns exec peer tc qdisc del dev v1 root 2>/dev/null || true
 echo ""; echo "완료: $SUM"
 INNER

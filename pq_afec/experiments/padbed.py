@@ -35,11 +35,13 @@ MTU(1500), netem 형태를 전부 문서와 같게 맞췄다. 심(shim) 프로�
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import shutil
 import subprocess
 import sys
 import time
+from _journal import save_result
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -62,10 +64,12 @@ QAMP = "/tmp/qamp"          # 문서 5절: 경로 공백 회피를 위해 /tmp �
 # 안 도는 것보다 낫다 - 대신 무엇을 썼는지 env 에 남긴다).
 def _cpu_list():
     try:
-        ncpu = len(os.sched_getaffinity(0))
-    except AttributeError:
-        ncpu = os.cpu_count() or 1
-    return "0-%d" % (min(4, ncpu) - 1) if ncpu > 1 else "0"
+        cpus = sorted(os.sched_getaffinity(0))
+    except (AttributeError, OSError):
+        cpus = list(range(os.cpu_count() or 1))
+    if not cpus:
+        raise RuntimeError("사용할 수 있는 CPU가 없다")
+    return ",".join(str(cpu) for cpu in cpus[:4])
 
 
 CPU_LIST = _cpu_list()
@@ -112,14 +116,18 @@ def require_bin():
     #    관문이 그걸 읽어 소스와 대조한다(gate_go_parity.check_build_is_current).
     src = os.path.join(BIN, "qamp")
     if os.path.exists(src):
+        def digest(path):
+            with open(path, "rb") as f:
+                return hashlib.file_digest(f, "sha256").digest()
         stale = (not os.path.exists(QAMP)
-                 or os.path.getmtime(src) > os.path.getmtime(QAMP)
-                 or os.path.getsize(src) != os.path.getsize(QAMP))
+                 or digest(src) != digest(QAMP))
         if stale:
             shutil.copy2(src, QAMP)
             os.chmod(QAMP, 0o755)
         if os.path.exists(src + ".srcsha"):
             shutil.copy2(src + ".srcsha", QAMP + ".srcsha")
+        elif os.path.exists(QAMP + ".srcsha"):
+            os.remove(QAMP + ".srcsha")
     if not os.path.exists(QAMP):
         sys.stderr.write("%s 가 없다: quicbed/build.sh 를 먼저 실행" % QAMP)
         sys.stderr.write(chr(10))
@@ -269,17 +277,24 @@ def start_server(certsize, fec="off", stats_path=None, extra=()):
     err_f = open(err_path, "wb")
     p = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=err_f)
     err_f.close()
-    deadline = time.time() + 15
-    while time.time() < deadline:
+    deadline = time.monotonic() + 15
+    ready = False
+    while time.monotonic() < deadline:
         try:
             with open(err_path, "rb") as f:
                 if b"READY" in f.read():
+                    ready = True
                     break
         except OSError:
             pass
         if p.poll() is not None:
             break
         time.sleep(0.05)
+    if not ready or p.poll() is not None:
+        stop_server(p)
+        with open(err_path, "rb") as f:
+            diagnostic = f.read()[-1000:].decode("utf-8", "replace")
+        raise RuntimeError("서버 준비 실패: %s" % diagnostic)
     return p, stats_path
 
 
@@ -295,6 +310,7 @@ def stop_server(p):
     except Exception:
         try:
             p.kill()
+            p.wait(timeout=3)
         except Exception:
             pass
 
@@ -317,6 +333,8 @@ def run_client(group, n, fec="off", m=1, ips=0, gap_ms=25, timeout_s=12,
        **환경과 모형이 같은 수를 보게 하는 것**이 이 인자의 목적이다.
        set_netem(rate_up_mbit=X) 를 쓰면 여기에도 X 를 줘야 한다.
     """
+    if not isinstance(n, int) or n <= 0 or not 0 <= warmup < n:
+        raise ValueError("n must be positive and 0 <= warmup < n")
     qamp = require_bin()
     if stats_path is None:
         stats_path = os.path.join(WORK, "cli_stats.json")
@@ -358,9 +376,9 @@ def run_client(group, n, fec="off", m=1, ips=0, gap_ms=25, timeout_s=12,
             except Exception:
                 pass
     n_warm = 0
-    if warmup > 0 and len(rows) > warmup:
-        n_warm = warmup
-        rows = rows[warmup:]
+    if warmup > 0:
+        n_warm = min(warmup, len(rows))
+        rows = rows[n_warm:]
     stats = {}
     if os.path.exists(stats_path):
         try:
@@ -465,9 +483,4 @@ def measured_C(group):
 
 
 def save(name, obj):
-    path = os.path.join(RESULTS, name)
-    tmp = path + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=1)
-    os.replace(tmp, path)
-    return path
+    return save_result(os.path.join(RESULTS, name), obj)

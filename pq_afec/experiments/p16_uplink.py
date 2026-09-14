@@ -213,11 +213,8 @@ def _z(alpha=0.05):
 
 
 def diff_half(a, b, alpha=0.05):
-    """두 팔 평균차의 95% 반폭 (Welch)."""
-    sa, sb = _se(a), _se(b)
-    if sa is None or sb is None:
-        return None
-    return _z(alpha) * math.sqrt(sa * sa + sb * sb)
+    """두 팔 평균차의 반폭. 배치 수로 자유도를 계산한 Welch-t."""
+    return BST.batch_diff_half(a, b, alpha)
 
 
 def need_n(a, b, target, alpha=0.05, power=0.80):

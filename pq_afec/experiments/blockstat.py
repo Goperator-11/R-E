@@ -47,10 +47,9 @@ p17·p18 은 팔을 라틴 방격으로 돌린다. 각 팔이 각 자리를 정�
    자리 효과는 **버리지 않고 진단으로 남긴다** — F 검정으로 유의한지
    보고한다. 상쇄했다고 없던 일로 하지 않는다는 이 저장소의 규칙 그대로다.
 
-⚠️ 한계 — 이 분석은 **가법 모형**을 가정한다. 자리와 팔이 상호작용하면
-   (예: 대역이 걸린 조건에서 큰 m 만 앞 연결의 큐에 걸린다) 그 상호작용이
-   잔차로 들어가 SE 를 부풀린다. 부풀리는 쪽이라 결론을 관대하게 만들지
-   않으므로 보수적이다.
+한계: 이 분석은 가법 모형과 오차 독립성을 가정한다. 팔과 자리의 상호작용,
+   이분산 또는 시계열 상관이 있으면 표준오차의 정확성을 보장할 수 없다.
+   라틴 방격이라는 이유만으로 신뢰구간이 항상 보수적이라고 볼 수 없다.
 
 참고한 것: Fisher 의 라틴 방격 분산분석 (표준 실험계획법). 새로 지어낸
 절차가 아니라 **이미 검증된 절차를 이 자료에 맞게 쓴 것**이다.
@@ -59,6 +58,7 @@ from __future__ import annotations
 
 import math
 import statistics
+from functools import lru_cache
 
 
 def _mean(v):
@@ -122,6 +122,23 @@ def batch_sd(v):
     return None if se is None else se * math.sqrt(len(v))
 
 
+def batch_diff_half(a, b, alpha=0.05):
+    """Welch-t half-width using the number of batch means, not connections.
+
+    Independent batch means are an approximation. Residual cross-arm/time
+    correlation and selection of the best arm still need separate treatment.
+    """
+    sa, _ma, na = batch_se_info(a)
+    sb, _mb, nb = batch_se_info(b)
+    if sa is None or sb is None or min(na, nb) < 2:
+        return None
+    va, vb = sa*sa, sb*sb
+    if va + vb == 0:
+        return 0.0
+    df = (va + vb)**2 / (va*va/(na-1) + vb*vb/(nb-1))
+    return t_crit(df, alpha) * math.sqrt(va + vb)
+
+
 def lag1(v):
     """lag-1 자기상관. 부하 자국의 서명이다(09-01: 오염된 판 +0.36~+0.53,
     깨끗한 판 +0.11~+0.18 - 이어붙여 잰 값). 판정에 쓰지 않고 정보로 찍는다."""
@@ -141,6 +158,8 @@ def balance(cells):
 
     돌려주는 것: (균형인가, 설명). 각 팔이 각 자리를 같은 횟수로 겪어야 한다.
     """
+    if not cells:
+        return False, "관측 칸이 없다"
     arms = sorted({a for a, _ in cells})
     poss = sorted({p for _, p in cells})
     cnt = {}
@@ -167,7 +186,7 @@ def latin_anova(rows):
         mse            잔차평균제곱
         df_resid       잔차 자유도
         se_contrast    두 팔 차의 표준오차
-        pos_f, pos_p   자리 효과의 F 와 근사 p (진단용, 판정용이 아니다)
+        pos_f         자리 효과의 F (진단용). MSE=0이면 정의되지 않아 None.
         ok             계산이 성립했는가
     """
     arms = sorted({r["arm"] for r in rows})
@@ -179,6 +198,15 @@ def latin_anova(rows):
     vals = [r["value"] for r in rows if r["value"] is not None]
     if len(vals) != len(rows):
         return {"ok": False, "why": "빈 칸이 있다"}
+    if any(isinstance(v, bool) or not isinstance(v, (int, float))
+           or not math.isfinite(v) for v in vals):
+        return {"ok": False, "why": "유한한 수치가 아닌 칸이 있다"}
+    # The sum-of-squares subtraction below is valid only for orthogonal factors.
+    # Checking arm/position alone misses confounding with the cycle/block.
+    for left, right in (("arm", "pos"), ("arm", "block"), ("pos", "block")):
+        balanced, why = balance([(r[left], r[right]) for r in rows])
+        if not balanced:
+            return {"ok": False, "why": "%s/%s: %s" % (left, right, why)}
     grand = _mean(vals)
 
     def group_mean(key):
@@ -199,7 +227,9 @@ def latin_anova(rows):
     ss_pos = ss(pm, pg)
     ss_blk = ss(bm, bg)
     ss_res = ss_tot - ss_arm - ss_pos - ss_blk
-    # 부동소수로 아주 작은 음수가 나올 수 있다. 0 으로 눌러 둔다.
+    # Only rounding-sized negative residuals can be clamped.
+    if ss_res < -1e-10 * max(1.0, ss_tot):
+        return {"ok": False, "why": "잔차 제곱합이 음수다"}
     if ss_res < 0:
         ss_res = 0.0
     df_res = len(rows) - 1 - (t - 1) - (len(poss) - 1) - (len(blks) - 1)
@@ -210,7 +240,7 @@ def latin_anova(rows):
     se_c = math.sqrt(2.0 * mse / reps) if reps > 0 and mse >= 0 else None
     # 자리 효과의 F. 진단용이다 - 이것으로 합격/불합격을 가르지 않는다.
     ms_pos = ss_pos / max(1, len(poss) - 1)
-    pos_f = (ms_pos / mse) if mse > 0 else float("inf")
+    pos_f = (ms_pos / mse) if mse > 0 else None
     return {
         "ok": True,
         "arm_means": am,
@@ -226,37 +256,75 @@ def latin_anova(rows):
     }
 
 
+def _beta_fraction(a, b, x):
+    """Continued fraction for the regularized incomplete beta function."""
+    floor = 1e-300
+    c = 1.0
+    d = 1.0 - (a + b) * x / (a + 1.0)
+    d = 1.0 / (d if abs(d) > floor else floor)
+    h = d
+    for m in range(1, 10001):
+        aa = m * (b - m) * x / ((a + 2*m - 1) * (a + 2*m))
+        d = 1.0 + aa * d
+        c = 1.0 + aa / c
+        d = 1.0 / (d if abs(d) > floor else floor)
+        c = c if abs(c) > floor else floor
+        h *= d * c
+        aa = -(a + m) * (a + b + m) * x / ((a + 2*m) * (a + 2*m + 1))
+        d = 1.0 + aa * d
+        c = 1.0 + aa / c
+        d = 1.0 / (d if abs(d) > floor else floor)
+        c = c if abs(c) > floor else floor
+        change = d * c
+        h *= change
+        if abs(change - 1.0) < 1e-13:
+            return h
+    raise ArithmeticError("incomplete beta did not converge")
+
+
+def _regularized_beta(x, a, b):
+    if x <= 0.0:
+        return 0.0
+    if x >= 1.0:
+        return 1.0
+    factor = math.exp(math.lgamma(a+b) - math.lgamma(a) - math.lgamma(b)
+                      + a * math.log(x) + b * math.log1p(-x))
+    if x < (a+1.0) / (a+b+2.0):
+        return factor * _beta_fraction(a, b, x) / a
+    return 1.0 - factor * _beta_fraction(b, a, 1.0-x) / b
+
+
+@lru_cache(maxsize=512)
 def t_crit(df, alpha=0.05):
-    """양측 t 임계값.
+    """양측 Student t 임계값. 불완전 베타 함수를 역산하며 외부 패키지를 쓰지 않는다.
 
-    2026-08-27 수리 — **`alpha` 를 조용히 무시하고 있었다.**
-       옛 코드는 `T_TABLE.get(int(df))` 가 값을 주면 alpha 와 무관하게 그
-       값을 돌려줬는데, 그 표에는 **양측 95% 값만** 들어 있었다. p18 은
-       조건이 5 개라 Bonferroni 로 alpha = 0.05/5 = 0.01 을 넘기는데,
-       df=6 에서 참값은 3.707 이고 표는 2.447 을 준다 - **신뢰구간이 34%
-       좁아진다.** 좁은 구간은 「유의하다」를 더 자주 내주므로 **관대해지는
-       방향**이고, 이 저장소가 가장 싫어하는 종류의 오류다(자를 몰래
-       늘리는 것과 같다).
-
-    그래서 표를 alpha 별로 나눈다. 표에 없는 자유도는 **아래쪽(더 큰
-    임계값)** 으로 잡는다 - 자유도가 작을수록 임계값이 크므로 보수적이다.
-    아는 alpha 가 아니면 정규 근사에 소표본 보정을 얹되, 그 경우는 참값보다
-    작게 나올 수 있으므로 호출부가 알아야 한다(아래 KNOWN_ALPHAS).
+    양의 자유도(소수 포함)와 0 < alpha < 1을 받는다. 분포 식은
+    https://mooseframework.inl.gov/source/distributions/StudentT.html 참고.
+    표에 없는 alpha를 정규 근사로 바꾸던 이전 동작은 제거했다.
     """
-    a = round(float(alpha), 6)
-    tab = T_TABLE.get(a)
-    if tab is None:
-        z = statistics.NormalDist().inv_cdf(1.0 - alpha / 2.0)
-        return z * (1.0 + (z * z + 1.0) / (4.0 * max(1, df)))
-    d = int(df)
-    if d in tab:
-        return tab[d]
-    lower = [k for k in tab if k <= d]
-    if not lower:
-        return tab[min(tab)]
-    return tab[max(lower)]
+    df, alpha = float(df), float(alpha)
+    if not math.isfinite(df) or df <= 0 or not 0 < alpha < 1:
+        raise ValueError("df must be positive and finite; alpha must be between 0 and 1")
+    # P(|T_df| > t) = I_{df/(df+t*t)}(df/2, 1/2).
+    # The old unknown-alpha approximation gave 9.04 instead of 127.32
+    # at df=1, alpha=.005. Invert the distribution for every alpha.
+    lo, hi = 0.0, 1.0
+    while _regularized_beta(df / (df + hi*hi), df/2, 0.5) > alpha:
+        hi *= 2.0
+        if not math.isfinite(hi*hi):
+            raise ArithmeticError("t critical value exceeds numerical range")
+    for _ in range(100):
+        mid = (lo + hi) / 2.0
+        if _regularized_beta(df / (df + mid*mid), df/2, 0.5) > alpha:
+            lo = mid
+        else:
+            hi = mid
+        if hi - lo <= 1e-12 * max(1.0, hi):
+            break
+    return (lo + hi) / 2.0
 
 
+# 이전 공개 상수와의 호환을 위해 남긴 표이며 t_crit의 계산에는 쓰지 않는다.
 # 양측 t 임계값을 **alpha 별로** 담는다. 라틴 방격은 자유도가 작아
 # (4x4 방격이면 6) 정규 근사를 쓰면 구간이 눈에 띄게 좁아진다.
 #   0.05   단일 비교

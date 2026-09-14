@@ -3,21 +3,22 @@
 // 인수인계 문서(2026-08-18) 3-2/3-3 이 말하는 그 qamp.go 다. 문서가 지정한
 // 구조를 그대로 따른다.
 //
-//   countConn  net.PacketConn 을 감싸서 송수신 데이터그램의 개수와 크기를
-//              기록한다. WriteTo 와 ReadFrom 을 가로챈다.
-//              "FEC 인코딩을 끼워 넣을 지점이 바로 여기입니다."
-//   makeCert   인증서에 더미 확장을 넣어 목표 바이트 수로 부풀린다.
-//   runClient / runServer   quic.Transport 를 직접 만들어 쓴다.
+//	countConn  net.PacketConn 을 감싸서 송수신 데이터그램의 개수와 크기를
+//	           기록한다. WriteTo 와 ReadFrom 을 가로챈다.
+//	           "FEC 인코딩을 끼워 넣을 지점이 바로 여기입니다."
+//	makeCert   인증서에 더미 확장을 넣어 목표 바이트 수로 부풀린다.
+//	runClient / runServer   quic.Transport 를 직접 만들어 쓴다.
 //
 // 문서 3-4 가 못박은 전제: quic.DialAddr() 은 라이브러리가 소켓을 내부에서
 // 만들어 버려 손댈 수 없다. quic.Transport{Conn: 우리소켓} 이라야 WriteTo 를
 // 가로챌 수 있다.
 //
 // 문서 단계 1~3 을 구현한 부분
-//   fecConn    (클라이언트) 문서 단계 1 의 구조 - window/parity/k/enabled.
-//              비행을 모아 XOR 복구 심볼을 만들어 함께 내보낸다.
-//   decodeConn (서버)  문서 단계 3 - ReadFrom 을 가로채 빠진 데이터그램을
-//              복원하고 "방금 수신한 것처럼" 스택에 넘긴다.
+//
+//	fecConn    (클라이언트) 문서 단계 1 의 구조 - window/parity/k/enabled.
+//	           비행을 모아 XOR 복구 심볼을 만들어 함께 내보낸다.
+//	decodeConn (서버)  문서 단계 3 - ReadFrom 을 가로채 빠진 데이터그램을
+//	           복원하고 "방금 수신한 것처럼" 스택에 넘긴다.
 //
 // 문서 단계 2 의 세 방식 중 **A(별도 데이터그램)** 로 간다. B(패딩 자리
 // 교체)는 용량 부등식 C <= (k-1)(W-h-f) 때문에 실측한 모든 설정에서 성립하지
@@ -38,7 +39,6 @@
 //     대신 넘긴다. 그러지 않으면 도착하지도 않은 바이트가 증폭 예산에
 //     계상돼 3배 한도가 4.5배가 된다. 우리 쪽에 유리한 반올림을 하지 않기
 //     위한 규칙이며, 런타임에 불변식으로 강제한다.
-//
 package main
 
 import (
@@ -225,19 +225,20 @@ func gfMatInv(a [][]byte) [][]byte {
 //	          한도를 우회하게 된다(decodeConn.ReadFrom 의 불변식 주석).
 //
 // 🩸 2026-08-27 신레오 보고로 신설. 옛 recoverOne 은 소거를 **정수 하나**로
-//    받았고, 두 분기가 **비대칭으로 실패**했다:
-//      m >= 2 : 다른 원본이 하나라도 없으면 nil (닫히며 실패 - 안전)
-//      m == 1 : 있는 것만 XOR 하고 **nil 을 안 돌려준다** (열리며 실패 -
-//               파리티 심볼을 그대로 원본이라고 내놓는다. 실측으로 1,200 B
-//               중 1,197 B 가 다르다)
-//    두 분기가 다르게 실패하는 것이 함정이었다. 여기서는 **분기 자체를
-//    없앤다** - 살아남은 원본이 다 있는지 한 곳에서 검사하므로 규칙이
-//    갈라질 자리가 없다.
 //
-//    옛 코드가 실제로 잘못된 값을 내보낸 적은 없다. 유일한 제품 호출부
-//    (tryRecoverLocked)가 len(missing) > 1 에서 먼저 빠져나가기 때문이다.
-//    그래서 이것은 **잠재된 덫**이었지 살아 있는 결함은 아니었다 -
-//    다만 그 덫을 막고 있던 것이 호출부 가드 하나뿐이었다.
+//	받았고, 두 분기가 **비대칭으로 실패**했다:
+//	  m >= 2 : 다른 원본이 하나라도 없으면 nil (닫히며 실패 - 안전)
+//	  m == 1 : 있는 것만 XOR 하고 **nil 을 안 돌려준다** (열리며 실패 -
+//	           파리티 심볼을 그대로 원본이라고 내놓는다. 실측으로 1,200 B
+//	           중 1,197 B 가 다르다)
+//	두 분기가 다르게 실패하는 것이 함정이었다. 여기서는 **분기 자체를
+//	없앤다** - 살아남은 원본이 다 있는지 한 곳에서 검사하므로 규칙이
+//	갈라질 자리가 없다.
+//
+//	옛 코드가 실제로 잘못된 값을 내보낸 적은 없다. 유일한 제품 호출부
+//	(tryRecoverLocked)가 len(missing) > 1 에서 먼저 빠져나가기 때문이다.
+//	그래서 이것은 **잠재된 덫**이었지 살아 있는 결함은 아니었다 -
+//	다만 그 덫을 막고 있던 것이 호출부 가드 하나뿐이었다.
 func recoverMany(k, m int, missing []int, origs map[int][]byte,
 	parities map[int][]byte, size int) map[int][]byte {
 	e := len(missing)
@@ -435,8 +436,9 @@ func (s *decodeConn) pendingErasures(fr *flightRec) int {
 // settleRecovery 는 복원본 묶음을 회계와 함께 정산한다. mu 를 쥔 채로 부른다.
 //
 // 🩸 2026-08-28 - 판정과 기록을 **한 곳에** 모은다. 그전에는 복구 함수가
-//    pending 에 넣고 Recovered 를 올린 뒤 호출부가 따로 판정해서, 거절된
-//    복구까지 예약 바이트로 세어져 불변식이 깨졌다.
+//
+//	pending 에 넣고 Recovered 를 올린 뒤 호출부가 따로 판정해서, 거절된
+//	복구까지 예약 바이트로 세어져 불변식이 깨졌다.
 //
 // 돌려주는 것: 스택에 넘길 첫 복원본 (없으면 nil).
 // 나머지는 pending 에 예약한다. 회계가 안 되면 아무것도 안 하고 nil 이다.
@@ -685,14 +687,19 @@ func bytesIndex(h, nd []byte) int {
 	return -1
 }
 
-const fbVer = 1
+// Version 2 identifies received datagrams by CRC. Raw counts also include PTO
+// retransmissions, so they cannot measure loss in the original flight.
+const fbVer = 2
+const fbCRCCap = 64
 
 type fbRec struct {
-	flight uint16
-	k      uint8 // 서버가 이 비행에서 기대한 원본 수 (참고)
-	rxOrig uint8 // 실제로 받은 원본 데이터그램 수
-	rxPar  uint8 // 실제로 받은 패리티 데이터그램 수
-	recov  uint8 // 복구한 원본 수
+	flight    uint16
+	k         uint8 // 서버가 이 비행에서 기대한 원본 수 (참고)
+	rxOrig    uint8 // 실제로 받은 원본 데이터그램 수
+	rxPar     uint8 // 실제로 받은 패리티 데이터그램 수
+	recov     uint8 // 복구한 원본 수
+	crcs      []uint32
+	truncated bool // CRC storage filled; do not infer loss from this report
 }
 
 func buildFeedback(dcid, scid []byte, r fbRec) []byte {
@@ -701,6 +708,19 @@ func buildFeedback(dcid, scid []byte, r fbRec) []byte {
 	body = append(body, byte(fbVer))
 	body = binary.BigEndian.AppendUint16(body, r.flight)
 	body = append(body, r.k, r.rxOrig, r.rxPar, r.recov)
+	crcs := r.crcs
+	truncated := r.truncated || len(crcs) > fbCRCCap
+	if len(crcs) > fbCRCCap {
+		crcs = crcs[:fbCRCCap]
+	}
+	count := byte(len(crcs))
+	if truncated {
+		count |= 0x80
+	}
+	body = append(body, count)
+	for _, crc := range crcs {
+		body = binary.BigEndian.AppendUint32(body, crc)
+	}
 
 	out := make([]byte, 0, len(body)+64)
 	out = append(out, 0xC3) // 롱헤더 + fixed + Initial + pn len 4
@@ -735,10 +755,11 @@ func readVarint(b []byte) (uint64, int) {
 // hasHandshake 는 데이터그램 안에 Handshake 패킷이 있는지 본다.
 //
 // 🩸 2026-08-23 - 첫 판은 parseLongHdr 로 **첫 패킷만** 봤는데, 클라이언트는
-//    두 번째 비행에서 Initial(ACK)과 Handshake 를 **한 데이터그램에
-//    코얼레스**해 보낸다. 그래서 전부 typ 0 으로 분류돼 회신이 한 번도
-//    나가지 않았다(실측: hdr_initial 100, hdr_handshake **0**).
-//    코얼레스된 패킷을 길이 필드로 따라가며 전부 훑는다.
+//
+//	두 번째 비행에서 Initial(ACK)과 Handshake 를 **한 데이터그램에
+//	코얼레스**해 보낸다. 그래서 전부 typ 0 으로 분류돼 회신이 한 번도
+//	나가지 않았다(실측: hdr_initial 100, hdr_handshake **0**).
+//	코얼레스된 패킷을 길이 필드로 따라가며 전부 훑는다.
 func hasHandshake(d []byte) bool {
 	i := 0
 	for i < len(d) {
@@ -790,17 +811,59 @@ func parseFeedback(d []byte) *fbRec {
 	}
 	blen := int(d[i]&0x3F)<<8 | int(d[i+1])
 	i += 2
-	if i+blen > len(d) || blen < fecMagicLen+7 {
+	if i+blen > len(d) || blen < fecMagicLen+8 {
 		return nil
 	}
 	b := d[i : i+blen]
 	if string(b[:fecMagicLen]) != string(fbMagic) || b[4] != fbVer {
 		return nil
 	}
-	return &fbRec{
+	nc := int(b[11] & 0x7f)
+	if nc > fbCRCCap || blen != 12+4*nc {
+		return nil
+	}
+	r := &fbRec{
 		flight: binary.BigEndian.Uint16(b[5:7]),
 		k:      b[7], rxOrig: b[8], rxPar: b[9], recov: b[10],
+		truncated: b[11]&0x80 != 0,
 	}
+	for x := 0; x < nc; x++ {
+		j := 12 + 4*x
+		r.crcs = append(r.crcs, binary.BigEndian.Uint32(b[j:j+4]))
+	}
+	return r
+}
+
+func inCRC(values []uint32, crc uint32) bool {
+	for _, value := range values {
+		if value == crc {
+			return true
+		}
+	}
+	return false
+}
+
+// matchFirstFlight counts unique first-flight datagrams. Retransmitted QUIC
+// packets have new packet numbers and do not replace missing original CRCs.
+func matchFirstFlight(r *fbRec, origCRC, parCRC []uint32) (rxOrig, rxPar, retx int) {
+	if r == nil {
+		return
+	}
+	seen := map[uint32]bool{}
+	for _, crc := range r.crcs {
+		if seen[crc] {
+			continue
+		}
+		seen[crc] = true
+		if inCRC(origCRC, crc) {
+			rxOrig++
+		} else if inCRC(parCRC, crc) {
+			rxPar++
+		} else {
+			retx++
+		}
+	}
+	return
 }
 
 // parseFecBlock 은 데이터그램이 우리 패리티인지 보고, 맞으면 내용을 돌려준다.
@@ -839,7 +902,7 @@ func parseFecBlock(d []byte) *fecBlock {
 	j += 3
 	fb.symLen = int(binary.BigEndian.Uint16(b[j : j+2]))
 	j += 2
-	if fb.k < 1 || fb.k > 32 || fb.m < 1 || fb.m > 8 {
+	if fb.k < 1 || fb.k > 32 || fb.m < 1 || fb.m > 8 || fb.index >= fb.m || fb.symLen == 0 {
 		return nil
 	}
 	need := j + 4*fb.k + 2*fb.k + fb.symLen
@@ -855,6 +918,9 @@ func parseFecBlock(d []byte) *fecBlock {
 	for x := 0; x < fb.k; x++ {
 		fb.lens[x] = binary.BigEndian.Uint16(b[j : j+2])
 		j += 2
+		if int(fb.lens[x]) > fb.symLen {
+			return nil
+		}
 	}
 	// 🩸 2026-08-28 **별칭 수리 (차단 결함).**
 	//    옛 코드는 `fb.sym = b[j : j+fb.symLen]` 로 **호출자 버퍼를 그대로
@@ -917,13 +983,17 @@ type clientStats struct {
 	BytesParity  int64          `json:"bytes_parity"`
 	InitialDgram int            `json:"initial_datagrams"`
 	// C1 배선 확인용: 서버 회신을 몇 번 받았고 마지막 내용이 무엇인가.
-	FbRecv      int `json:"fb_recv"`
-	FbMagicSeen int `json:"fb_magic_seen"`
-	RxCalls     int `json:"rx_calls"` // fecConn.ReadFrom 이 실제로 불린 횟수
-	FbWaits     int `json:"fb_waits"` // waitFeedback 을 부른 횟수
-	FbRxOrig  int   `json:"fb_rx_orig"`
-	FbRxPar   int   `json:"fb_rx_parity"`
-	FbRecov   int   `json:"fb_recovered"`
+	FbRecv      int  `json:"fb_recv"`
+	FbMagicSeen int  `json:"fb_magic_seen"`
+	RxCalls     int  `json:"rx_calls"` // fecConn.ReadFrom 이 실제로 불린 횟수
+	FbWaits     int  `json:"fb_waits"` // waitFeedback 을 부른 횟수
+	FbRxOrig    int  `json:"fb_rx_orig"`
+	FbRxPar     int  `json:"fb_rx_parity"`
+	FbRxRetx    int  `json:"fb_rx_retx"`
+	FbRawOrig   int  `json:"fb_raw_orig"`
+	FbRawPar    int  `json:"fb_raw_parity"`
+	FbTruncated bool `json:"fb_truncated"`
+	FbRecov     int  `json:"fb_recovered"`
 	// 첫 비행만 따로. 이것이 증폭 예산을 정하는 양이고, 용량 정리의 k 다.
 	// 연결 전체의 Initial 을 세면 뒤따르는 ACK 용 Initial 이 섞여 k 가 흐려진다.
 	FirstFlightDgrams int   `json:"first_flight_datagrams"`
@@ -963,6 +1033,8 @@ type fecConn struct {
 	onFeedback func(fbRec)
 	fbLast     *fbRec
 	fbCount    int
+	ffOrigCRC  []uint32
+	ffParCRC   []uint32
 
 	mu       sync.Mutex
 	flight   [][]byte
@@ -1078,8 +1150,13 @@ func (c *fecConn) ReadFrom(b []byte) (int, net.Addr, error) {
 			c.fbLast = r
 			c.fbCount++
 			c.stats.FbRecv++
-			c.stats.FbRxOrig = int(r.rxOrig)
-			c.stats.FbRxPar = int(r.rxPar)
+			o, p, x := matchFirstFlight(r, c.ffOrigCRC, c.ffParCRC)
+			c.stats.FbRxOrig = o
+			c.stats.FbRxPar = p
+			c.stats.FbRxRetx = x
+			c.stats.FbRawOrig = int(r.rxOrig)
+			c.stats.FbRawPar = int(r.rxPar)
+			c.stats.FbTruncated = r.truncated
 			c.stats.FbRecov = int(r.recov)
 			cb := c.onFeedback
 			c.mu.Unlock()
@@ -1124,6 +1201,12 @@ func (c *fecConn) lastFeedback() *fbRec {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return c.fbLast
+}
+
+func (c *fecConn) matchFeedback(r *fbRec) (int, int, int) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return matchFirstFlight(r, c.ffOrigCRC, c.ffParCRC)
 }
 
 // flushFlight 는 모아 둔 비행을 순서까지 정해 내보낸다.
@@ -1171,6 +1254,11 @@ func (c *fecConn) flushFlight() {
 	}
 	c.stats.Flights++
 	isFirstFlight := c.stats.Flights == 1
+	if isFirstFlight {
+		for _, d := range fl {
+			c.ffOrigCRC = append(c.ffOrigCRC, crc32.ChecksumIEEE(d))
+		}
+	}
 	if c.stats.FlightSizes == nil {
 		c.stats.FlightSizes = map[string]int{}
 	}
@@ -1250,6 +1338,7 @@ func (c *fecConn) flushFlight() {
 			if isFirstFlight {
 				c.stats.FirstFlightParity++
 				c.stats.FirstFlightParityBytes += int64(len(pkt))
+				c.ffParCRC = append(c.ffParCRC, crc32.ChecksumIEEE(pkt))
 			}
 		} else {
 			c.stats.ParityFail++
@@ -1302,15 +1391,15 @@ func (c *fecConn) snapshot() clientStats {
 
 // ------------------------------------------------------------ 서버 쪽 FEC
 type serverStats struct {
-	Originals    int   `json:"originals"`
-	Parities     int   `json:"parities"`
-	Recovered    int   `json:"recovered"`
+	Originals int `json:"originals"`
+	Parities  int `json:"parities"`
+	Recovered int `json:"recovered"`
 	// 🩸 2026-08-28 (2 단계 감사) - **비행당 복구가 한 번뿐인지 보는 계수.**
 	//    Recovered 는 복원한 **원본 개수**라 한 번에 여럿을 세므로,
 	//    "같은 비행을 두 번 풀었다"를 못 가른다. 그 결함이 실제로 있었다
 	//    (뒤따르는 패리티가 m-1 개로 늘면서 재진입이 열렸다). 사건 수를
 	//    따로 세면 fr.done 가드가 살아 있는지 시험 하나로 확인된다.
-	RecoverEvents int  `json:"recover_events"`
+	RecoverEvents int `json:"recover_events"`
 	// 🩸 2026-08-28 (2 단계 감사) - **아직 안 온 원본을 소거로 오해한 복구.**
 	//    뒤따르는 패리티는 원본보다 뒤에 보내지만 망이 재정렬하면 먼저 닿을
 	//    수 있고, 그때 서버는 "안 왔다"와 "잃었다"를 구분할 수단이 없다.
@@ -1318,22 +1407,22 @@ type serverStats struct {
 	//    (회계 불변식도 안 깨진다) **Recovered 지표는 부푼다** - p3·p13 이
 	//    그 값을 읽으므로 따로 세어 두지 않으면 조용히 섞인다.
 	//    netem 에 재정렬을 안 걸므로 지금 실측에서는 0 이어야 한다.
-	PrematureRecover int `json:"premature_recovered"`
-	RecoverFail  int   `json:"recover_crc_fail"`
-	LateRecover  int   `json:"late_recovered"`
-	RecoverRefused int `json:"recover_refused_by_accounting"`
-	CreditParities int `json:"credit_parities"`
-	Unrecover    int   `json:"unrecoverable_seen"`
-	BytesIn      int64 `json:"bytes_in"`
-	BytesToStack int64 `json:"bytes_to_stack"`
-	ConnAcctDropped int `json:"conn_acct_dropped"` // connAcctCap 초과로 못 센 연결
+	PrematureRecover int   `json:"premature_recovered"`
+	RecoverFail      int   `json:"recover_crc_fail"`
+	LateRecover      int   `json:"late_recovered"`
+	RecoverRefused   int   `json:"recover_refused_by_accounting"`
+	CreditParities   int   `json:"credit_parities"`
+	Unrecover        int   `json:"unrecoverable_seen"`
+	BytesIn          int64 `json:"bytes_in"`
+	BytesToStack     int64 `json:"bytes_to_stack"`
+	ConnAcctDropped  int   `json:"conn_acct_dropped"` // connAcctCap 초과로 못 센 연결
 	// C1 진단: 롱헤더 타입별 수신 수와 회신 송신 수. 배선이 어디서 끊겼는지
 	// 추측하지 않고 자료로 보려고 둔다.
-	HdrInitial   int `json:"hdr_initial"`
-	HdrHandshake int `json:"hdr_handshake"`
-	HdrShort     int `json:"hdr_short"`
-	FbSentN      int `json:"fb_sent"`
-	FbWriteErr   int `json:"fb_write_err"`
+	HdrInitial     int `json:"hdr_initial"`
+	HdrHandshake   int `json:"hdr_handshake"`
+	HdrShort       int `json:"hdr_short"`
+	FbSentN        int `json:"fb_sent"`
+	FbWriteErr     int `json:"fb_write_err"`
 	HdrCoalescedHS int `json:"hdr_coalesced_hs"`
 }
 
@@ -1394,10 +1483,11 @@ type pendingPkt struct {
 // 주소가 곧 연결이다. DCID 는 서버가 Retry 없이도 바꿔 앉을 수 있어 안 쓴다.
 //
 // 두 종류의 바이트를 다 센다.
-//   phys  물리적으로 도착한 바이트 (원본/패리티 분리)
-//   stack QUIC 스택에 넘긴 바이트 - quic-go 의 증폭 예산이 실제로 세는 양.
-//         복구가 일어나면 패리티 대신 복구본이 넘어가므로 phys 와 갈린다.
-//         무손실 시행에서는 둘이 같다.
+//
+//	phys  물리적으로 도착한 바이트 (원본/패리티 분리)
+//	stack QUIC 스택에 넘긴 바이트 - quic-go 의 증폭 예산이 실제로 세는 양.
+//	      복구가 일어나면 패리티 대신 복구본이 넘어가므로 phys 와 갈린다.
+//	      무손실 시행에서는 둘이 같다.
 type connAcct struct {
 	FirstRxNs int64 `json:"first_rx_ns"`
 	FirstTxNs int64 `json:"first_tx_ns"`
@@ -1408,13 +1498,15 @@ type connAcct struct {
 	// 🩸 2026-08-23 (C1) - 위 둘은 **바이트**다. 피드백은 심볼 **개수**를
 	//    보내야 하므로 따로 센다. 첫 비행 몫만 세려고 Handshake 를 본
 	//    시점에 잠근다(FbSent).
-	RxOrigN   int  `json:"rx_orig_n"`
-	RxParityN int  `json:"rx_parity_n"`
-	RecovN    int  `json:"recov_n"`
-	FbSent    bool `json:"fb_sent"`
-	Stack     int64 `json:"stack_bytes"`
-	TxDgrams  int   `json:"tx_dgrams"`
-	TxBytes   int64 `json:"tx_bytes"`
+	RxOrigN        int      `json:"rx_orig_n"`
+	RxParityN      int      `json:"rx_parity_n"`
+	RxCRC          []uint32 `json:"rx_crc"`
+	RxCRCTruncated bool     `json:"rx_crc_truncated"`
+	RecovN         int      `json:"recov_n"`
+	FbSent         bool     `json:"fb_sent"`
+	Stack          int64    `json:"stack_bytes"`
+	TxDgrams       int      `json:"tx_dgrams"`
+	TxBytes        int64    `json:"tx_bytes"`
 	// 서버가 첫 데이터그램을 내보내는 순간의 스냅숏. 이것이 B_eff 다.
 	BeffStack  int64 `json:"beff_stack"`
 	BeffPhys   int64 `json:"beff_phys"`
@@ -1432,8 +1524,8 @@ type connAcct struct {
 	TxNs         []int64 `json:"tx_ns"`
 }
 
-const connAcctCap = 4096     // 폭주 방지. 넘으면 새 연결은 세지 않고 개수만 남긴다.
-const connTimelineCap = 40   // 서버 첫 비행(<=13 패킷) + 꼬리를 담고도 남는다.
+const connAcctCap = 4096   // 폭주 방지. 넘으면 새 연결은 세지 않고 개수만 남긴다.
+const connTimelineCap = 40 // 서버 첫 비행(<=13 패킷) + 꼬리를 담고도 남는다.
 
 // 🩸 연결마다 flight id 가 1 부터 다시 시작한다. 처음에는 비행 기록을
 // flight id 만으로 키잉했는데, 그러면 **서로 다른 연결의 비행이 같은 칸에
@@ -1485,8 +1577,8 @@ type decodeConn struct {
 	//    들어가지 않는다. 복구가 끝나면 쓰인 만큼은 복원본으로 대체되고
 	//    남은 것은 신용으로 풀린다.
 	heldBytes int64
-	conns        map[string]*connAcct
-	stats        serverStats
+	conns     map[string]*connAcct
+	stats     serverStats
 }
 
 // acctLocked 는 이 주소의 연결 회계를 준다. mu 를 쥔 채로만 부른다.
@@ -1762,6 +1854,18 @@ again:
 				ca.RxOrigN++
 			}
 		}
+		// Record physical arrivals before the decoder can replace a parity with
+		// a reconstructed original. Initial retransmissions remain identifiable.
+		if !ca.FbSent && hs.ok && hs.typ == 0 && !isHandshake {
+			crc := crc32.ChecksumIEEE(b[:n])
+			if !inCRC(ca.RxCRC, crc) {
+				if len(ca.RxCRC) < fbCRCCap {
+					ca.RxCRC = append(ca.RxCRC, crc)
+				} else {
+					ca.RxCRCTruncated = true
+				}
+			}
+		}
 		if s.feedback && (isHandshake || fbEarly) && !ca.FbSent {
 			ca.FbSent = true
 			s.stats.FbSentN++
@@ -1771,6 +1875,7 @@ again:
 				rxOrig: uint8(min8(ca.RxOrigN)),
 				rxPar:  uint8(min8(ca.RxParityN)),
 				recov:  uint8(min8(ca.RecovN)),
+				crcs:   ca.RxCRC, truncated: ca.RxCRCTruncated,
 			})
 		}
 	}
@@ -2093,27 +2198,27 @@ func runServer(addr string, certSize int, mode string, statsPath string,
 
 // ------------------------------------------------------------------ 클라이언트
 type trial struct {
-	I        int     `json:"i"`
-	Ms       float64 `json:"ms"`
-	OK       bool    `json:"ok"`
-	Group    string  `json:"group"`
-	Err      string  `json:"err,omitempty"`
-	KEM      uint16  `json:"kem_id"`
-	CipherID uint16  `json:"cipher_id"`
-	Dgrams   int     `json:"initial_datagrams"`
-	Parity   int     `json:"parity_sent"`
-	FFDgrams int     `json:"first_flight_datagrams"`
-	FFBytes  int64   `json:"first_flight_bytes"`
-	FFParity      int   `json:"first_flight_parity_dgrams"`
-	FFParityBytes int64 `json:"first_flight_parity_bytes"`
-	MUsed    int     `json:"m_used"`
-	IPSUsed  int     `json:"ips_used"`
+	I             int     `json:"i"`
+	Ms            float64 `json:"ms"`
+	OK            bool    `json:"ok"`
+	Group         string  `json:"group"`
+	Err           string  `json:"err,omitempty"`
+	KEM           uint16  `json:"kem_id"`
+	CipherID      uint16  `json:"cipher_id"`
+	Dgrams        int     `json:"initial_datagrams"`
+	Parity        int     `json:"parity_sent"`
+	FFDgrams      int     `json:"first_flight_datagrams"`
+	FFBytes       int64   `json:"first_flight_bytes"`
+	FFParity      int     `json:"first_flight_parity_dgrams"`
+	FFParityBytes int64   `json:"first_flight_parity_bytes"`
+	MUsed         int     `json:"m_used"`
+	IPSUsed       int     `json:"ips_used"`
 	// 2026-09-07 - quic-go 가 실제로 쓰는 값. -ips 가 1452 를 넘으면 조용히
 	// 1452 로 깎이는데 ips_used 는 요청값을 적어 와이어에 없던 W 가 남았다.
-	IPSEff   int     `json:"ips_eff"`
-	MWhy     string  `json:"m_why,omitempty"`
-	SrvBytes int64   `json:"server_bytes"`
-	LossEvt  bool    `json:"loss_event"`
+	IPSEff   int    `json:"ips_eff"`
+	MWhy     string `json:"m_why,omitempty"`
+	SrvBytes int64  `json:"server_bytes"`
+	LossEvt  bool   `json:"loss_event"`
 }
 
 func runClient(addr, group string, n int, timeout, gap time.Duration,
@@ -2166,12 +2271,12 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			os.Exit(1)
 		}
 		fc := &fecConn{countConn: countConn{PacketConn: udp}, mode: fmode,
-			m: maxInt(trialM, 1),
+			m:           maxInt(trialM, 1),
 			expectK:     expectK,
 			dropInitial: dropInitial, dropParity: dropParity,
 			corruptParity: corruptParity,
-			dumpPath:    dumpPath,
-			parityDelay: time.Duration(parityDelayUs) * time.Microsecond}
+			dumpPath:      dumpPath,
+			parityDelay:   time.Duration(parityDelayUs) * time.Microsecond}
 		tr := &quic.Transport{Conn: fc}
 
 		tlsConf := &tls.Config{
@@ -2246,7 +2351,7 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			FFDgrams: st.FirstFlightDgrams, FFBytes: st.FirstFlightBytes,
 			FFParity:      st.FirstFlightParity,
 			FFParityBytes: st.FirstFlightParityBytes,
-			MUsed: trialM, IPSUsed: trialIPS, IPSEff: ipsEff,
+			MUsed:         trialM, IPSUsed: trialIPS, IPSEff: ipsEff,
 			MWhy: why, SrvBytes: srvBytes, LossEvt: lossEvt}
 		if err != nil {
 			t.Err = err.Error()
@@ -2265,8 +2370,9 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 		if feedback {
 			nSent := st.FirstFlightDgrams + st.FirstFlightParity
 			if r := fc.lastFeedback(); r != nil {
-				nRecv := int(r.rxOrig) + int(r.rxPar)
-				if nSent > 0 && nRecv >= 0 && nRecv <= nSent {
+				o, p, _ := fc.matchFeedback(r)
+				nRecv := o + p
+				if !r.truncated && nSent > 0 && nRecv >= 0 && nRecv <= nSent {
 					cache.observeSymbols(addr, nSent, nSent-nRecv, hct)
 				}
 			} else if base := cache.minHCT(addr); nSent > 0 &&
@@ -2303,7 +2409,11 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			agg.FbRxOrig = st.FbRxOrig
 			agg.FbRxPar = st.FbRxPar
 			agg.FbRecov = st.FbRecov
+			agg.FbRawOrig = st.FbRawOrig
+			agg.FbRawPar = st.FbRawPar
+			agg.FbTruncated = st.FbTruncated
 		}
+		agg.FbRxRetx += st.FbRxRetx
 		agg.FirstFlightDgrams = st.FirstFlightDgrams
 		agg.FirstFlightBytes = st.FirstFlightBytes
 		agg.FirstFlightParity = st.FirstFlightParity

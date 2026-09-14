@@ -29,7 +29,9 @@ two_rtt 는 1.5RTT< t <=3RTT, pto 는 t>3RTT, tail 은 t>1.5RTT). 정의가 다�
   5. 원자료 길이가 보고된 n 과 일치 (표본이 조용히 잘리지 않았다)
 """
 import glob
+import argparse
 import json
+import math
 import os
 import sys
 
@@ -61,6 +63,9 @@ def close(a, b):
         return True
     if a is None or b is None:
         return False
+    if not all(isinstance(x, (int, float)) and not isinstance(x, bool)
+               and math.isfinite(x) for x in (a, b)):
+        return False
     return abs(a - b) <= TOL * max(1.0, abs(a), abs(b))
 
 
@@ -69,6 +74,9 @@ def close(a, b):
 def _basic(rec, v, prefix):
     out = [("%s.mean" % prefix, rec.get("mean"), mean(v)),
            ("%s.p50" % prefix, rec.get("p50"), pctl(v, 0.5))]
+    expected = rec.get("ok", rec.get("n"))
+    if expected is not None:
+        out.append(("%s.raw_success_count" % prefix, expected, len(v)))
     if "p95" in rec:
         out.append(("%s.p95" % prefix, rec.get("p95"), pctl(v, 0.95)))
     if "p99" in rec:
@@ -117,6 +125,7 @@ def check_p16(d):
 
 def check_p11(d):
     out = []
+    rtt = float(d.get("rtt_ms", RTT))
     for r in d.get("rows", []):
         v = r.get("ms")
         if not v:
@@ -124,7 +133,7 @@ def check_p11(d):
         tag = "%s|%s|loss%s" % (r.get("arm"), r.get("cert"), r.get("loss"))
         out += _basic(r, v, tag)
         out.append((tag + ".tail", r.get("tail"),
-                    sum(1 for x in v if x > 1.5 * RTT) / float(len(v))))
+                    sum(1 for x in v if x > 1.5 * rtt) / float(len(v))))
         lv = r.get("ms_late")
         if lv:
             out.append((tag + ".mean_late", r.get("mean_late"), mean(lv)))
@@ -160,6 +169,31 @@ def check_nested_arms(d):
     return out
 
 
+def missing_raw(d, filename):
+    """Require samples for every reported arm, including empty/missing arrays."""
+    if filename == "p3_effect.json":
+        records = [(r, "samples") for r in d.get("runs", [])]
+    elif filename in ("p17_adaptive_value.json", "p18_mmax.json"):
+        records = [(a, "ms") for r in d.get("rows", [])
+                   for a in (r.get("arms") or {}).values()]
+    elif filename in ("p14_dominance.json", "p16_uplink.json"):
+        records = [(r, "ms") for r in d.get("arms", [])]
+    else:
+        records = [(r, "ms") for r in d.get("rows", [])]
+        records += [(h, "ms") for a in d.get("auto", []) for h in a.get("rounds", [])]
+    problems = []
+    if not records:
+        problems.append("%s: 측정 팔 없음" % filename)
+    for index, (record, key) in enumerate(records):
+        values = record.get(key)
+        if not isinstance(values, list) or not values:
+            problems.append("%s: 팔 %d 원자료 없음" % (filename, index))
+        elif not all(isinstance(v, (int, float)) and not isinstance(v, bool)
+                     and math.isfinite(v) for v in values):
+            problems.append("%s: 팔 %d 유한하지 않은 원자료" % (filename, index))
+    return problems
+
+
 RULES = {
     "p3_effect.json": check_p3,
     "p14_dominance.json": check_p14,
@@ -179,11 +213,16 @@ HEADLINE = {
 }
 
 
-def main():
+def main(argv=None):
     B.harden()
-    res = os.path.join(ROOT, "experiments", "results")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--results-dir", default=B.RESULTS)
+    parser.add_argument("--output", help="감사 JSON을 별도 경로에 저장")
+    args = parser.parse_args(argv)
+    res = os.path.abspath(args.results_dir)
     out = {"tol": TOL, "items": 0, "mismatch": [], "no_raw": [],
-           "stale": [], "checks": []}
+           "stale": [], "checks": [], "mismatch_count": 0,
+           "provenance_limit": "수치 재계산과 수정 시각 검사이며 당시 실행 코드나 환경을 인증하지 않는다"}
     checks = out["checks"]
 
     def add(name, ok, detail):
@@ -204,12 +243,17 @@ def main():
             continue
         with open(p, encoding="utf-8") as f:
             d = json.load(f)
+        raw_problems = missing_raw(d, fn)
+        out["no_raw"].extend(raw_problems)
+        if any("유한하지 않은" in problem for problem in raw_problems):
+            continue
         pairs = rule(d)
         bad = 0
         for name, got, want in pairs:
             n_items += 1
             if not close(got, want):
                 bad += 1
+                out["mismatch_count"] += 1
                 if len(out["mismatch"]) < 20:
                     out["mismatch"].append(
                         {"file": fn, "field": name,
@@ -219,7 +263,7 @@ def main():
 
     # --- 3. 시각 정합: 결과가 알고리즘 소스보다 나중인가
     src = []
-    for pat in ("padfec/*.py", "experiments/quicbed/*.go"):
+    for pat in ("padfec/*.py", "afec/*.py", "experiments/*.py", "experiments/quicbed/*.go"):
         src += glob.glob(os.path.join(ROOT, pat))
     newest_src = max((os.path.getmtime(s) for s in src), default=0)
     for fn in RULES:
@@ -243,12 +287,12 @@ def main():
         n_items >= 100, "대조 항목 %d 개" % n_items)
     add("2. ⭐ 재계산한 값이 보고된 값과 일치 (상대오차 <= %g)" % TOL,
         not out["mismatch"],
-        "불일치 %d 건%s" % (len(out["mismatch"]),
+        "불일치 %d 건%s" % (out["mismatch_count"],
                           (" 예: %s" % out["mismatch"][0]) if out["mismatch"] else ""))
     add("3. ⭐ 결과 파일이 알고리즘 소스보다 나중에 만들어졌다",
         not out["stale"],
         "낡은 결과 %s" % (out["stale"] or "없음"))
-    add("4. 판정 헤드라인이 결과에 실제로 있다", not out["no_raw"],
+    add("4. 판정 헤드라인과 각 측정 팔의 원자료가 실제로 있다", not out["no_raw"],
         "빠진 것 %s" % (out["no_raw"][:3] or "없음"))
 
     # --- 5. 모형 상수 vs 원자료 (2026-09-08 신설)
@@ -286,7 +330,12 @@ def main():
     out["passed"], out["total"] = npass, len(checks)
     print("-" * 100)
     print("%d / %d 통과" % (npass, len(checks)))
-    print("saved: %s" % B.save("p19_provenance.json", out))
+    if args.output:
+        from _journal import save_result
+        saved = save_result(os.path.abspath(args.output), out)
+    else:
+        saved = B.save("p19_provenance.json", out)
+    print("saved: %s" % saved)
     return 0 if npass == len(checks) else 1
 
 

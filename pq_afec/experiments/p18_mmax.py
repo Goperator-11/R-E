@@ -180,7 +180,10 @@ def model_j(cert, L, p, up, m):
                       burst=L, s0_base=POL.S0_BASE_MLKEM,
                       c_pkt=POL.C_PKT_POLICY_DEFAULT, W=1280,
                       max_steps=2, m_max=max(m, 1), uplink_mbps=up)
-    cs = [c["j_ms"] for c in d["candidates"] if c["m"] == m]
+    # run_cond fixes IPS at 1280. Padding/combo candidates measure another arm.
+    cs = [c["j_ms"] for c in d["candidates"]
+          if c["m"] == m and c.get("delta_per_dgram", 0) == 0
+          and c.get("W_eff", 1280) == 1280]
     return min(cs) if cs else None
 
 
@@ -226,7 +229,10 @@ def run_cond(name, cert, L, loss, up, n_conn, jr):
                     for m, v in acc.items()},
            "segments": seg, "srv_crc_fail": ss.get("recover_crc_fail"),
            "srv_stats_present": bool(ss), "err": err}
-    if not err and bool(ss):
+    complete = (n_conn > 0 and len(seg) == len(ARMS) ** 2
+                and all(s["n"] == s["ok"] == n_conn for s in seg))
+    rec["complete"] = complete
+    if not err and complete and bool(ss) and ss.get("recover_crc_fail") == 0:
         jr.record(key, rec)
     return rec
 

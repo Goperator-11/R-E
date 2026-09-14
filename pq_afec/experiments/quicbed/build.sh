@@ -13,6 +13,7 @@ if [ -d "$HOME/goroot" ]; then
 fi
 export GOPATH="${GOPATH:-$HOME/gopath}"
 export GOCACHE="${GOCACHE:-$HOME/.cache/go-build}"
+export CGO_ENABLED=0
 command -v go >/dev/null || {
 	echo "go 를 못 찾겠다. Go 1.26.6 이상을 깔고 PATH 에 넣어라" >&2
 	echo "(이 기계는 setup.sh 가 \$HOME/goroot 에 풀어 둔 것을 쓴다)" >&2
@@ -74,11 +75,12 @@ CGO_ENABLED=0 go build -o "$WORK/bin/mlkemcheck" ./cmd/mlkemcheck
 #    지문은 **원본 바이트 그대로** 뜬다(CRLF 를 벗기지 않는다). 벗긴 뒤에 뜨면
 #    bash 의 `sed 's/\r$//'` 과 Python 쪽 정규화가 미묘하게 달라질 수 있는데,
 #    원본이 같으면 벗긴 것도 같으므로 원본을 재는 쪽이 엄격하면서 단순하다.
-#    목록은 quicbed 의 *.go 전부 + build.sh 다 - loop2.py 의 BED 와 같은
+#    목록은 quicbed 의 *.go 전부 + build.sh + go.mod + go.sum 이다.
+#    의존성 버전이 바뀌어도 바이너리를 다시 빌드해야 한다. loop2.py의 BED와 같은
 #    범위이고, 같은 이유다(파일이 늘거나 줄어도 사람이 목록을 안 고쳐도 된다).
 {
 	cd "$SRC"
-	for f in $(ls *.go build.sh 2>/dev/null | LC_ALL=C sort); do
+	for f in $(ls *.go build.sh go.mod go.sum 2>/dev/null | LC_ALL=C sort); do
 		printf '%s %s\n' "$f" "$(sha256sum "$f" | cut -d' ' -f1)"
 	done
 } | sha256sum | cut -d' ' -f1 > "$WORK/bin/qamp.srcsha"

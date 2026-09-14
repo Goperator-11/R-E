@@ -61,9 +61,11 @@ import datetime
 import hashlib
 import json
 import os
+import shlex
 import subprocess
 import sys
 import time
+from _journal import runtime_context, atomic_write_json as durable_write_json
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -73,7 +75,15 @@ os.makedirs(STATE_DIR, exist_ok=True)
 
 PY = sys.executable
 # 문서 5절과 같은 형태: unshare -Urnm (=--user --map-root-user --net --mount)
-UNSHARE = "cd /mnt/c/dev/pq_afec && unshare -Urnm python3 -u "
+def wsl_path(path):
+    path = os.path.abspath(path).replace("\\", "/")
+    if len(path) > 2 and path[1] == ":":
+        return "/mnt/" + path[0].lower() + path[2:]
+    return path
+
+
+WSL_ROOT = shlex.quote(wsl_path(ROOT))
+UNSHARE = "cd %s && unshare -Urnm python3 -u " % WSL_ROOT
 
 def _sources(subdir, suffix, core):
     """subdir 안의 suffix 파일을 전부 훑어 ROOT 기준 상대경로로 준다.
@@ -96,6 +106,19 @@ def _sources(subdir, suffix, core):
     except OSError:
         pass
     return sorted(set(found) | set(core))
+
+
+def python_sources():
+    """Python source files, excluding runtime archives and dependency trees."""
+    excluded = {".git", ".venv", "venv", "__pycache__", "_build", "state",
+                "results", "round1_backup", "node_modules"}
+    found = []
+    for directory, dirs, names in os.walk(ROOT):
+        dirs[:] = sorted(d for d in dirs if d not in excluded)
+        for name in names:
+            if name.endswith(".py"):
+                found.append(os.path.relpath(os.path.join(directory, name), ROOT).replace("\\", "/"))
+    return sorted(found)
 
 
 # 훑기 자체가 실패한 파일. 조용히 넘기면 지문이 소리 없이 약해지므로 남긴다.
@@ -230,7 +253,8 @@ def _quicbed_go_sources():
                      "experiments/quicbed/pfail_table.go"]) # cmd/qamp/pfail_table.go
 
 
-BED = sorted(set(["experiments/padbed.py", "experiments/quicbed/build.sh"]
+BED = sorted(set(["experiments/padbed.py", "experiments/quicbed/build.sh",
+                  "experiments/quicbed/go.mod", "experiments/quicbed/go.sum"]
                  + _quicbed_go_sources()))
 
 
@@ -277,6 +301,7 @@ class Stage(object):
 
     def fingerprint(self):
         h = hashlib.sha256()
+        h.update(json.dumps(runtime_context(), sort_keys=True).encode())
         h.update(self.runner.encode())
         h.update(json.dumps(self.cmd, ensure_ascii=False).encode())
         # 🩸 2026-08-20 2차 감사. deps 와 outputs 가 지문 밖에 있었다. 그래서
@@ -285,8 +310,9 @@ class Stage(object):
         #    그대로 남아, 새 그래프로는 한 번도 안 돌아 본 결과가 최신으로
         #    통했다. 실행기·명령줄과 똑같이 지문에 섞는다.
         h.update(json.dumps(sorted(self.deps), ensure_ascii=False).encode())
+        h.update(json.dumps(sorted(self.soft_deps), ensure_ascii=False).encode())
         h.update(json.dumps(sorted(self.outputs), ensure_ascii=False).encode())
-        for rel in sorted(self.scripts):
+        for rel in sorted(set(self.scripts) | {"experiments/loop2.py", "experiments/_journal.py"}):
             p = os.path.join(ROOT, rel)
             h.update(rel.encode())
             if os.path.exists(p):
@@ -297,7 +323,14 @@ class Stage(object):
         return h.hexdigest()[:16]
 
     def outputs_present(self):
-        return all(os.path.exists(os.path.join(ROOT, o)) for o in self.outputs)
+        return all(os.path.isfile(os.path.join(ROOT, o)) for o in self.outputs)
+
+    def output_hashes(self):
+        hashes = {}
+        for output in self.outputs:
+            with open(os.path.join(ROOT, output), "rb") as f:
+                hashes[output] = hashlib.sha256(f.read()).hexdigest()
+        return hashes
 
 
 def _cheap_first(stages, cheap=("p4", "p5")):
@@ -361,11 +394,8 @@ def build_stages():
     #    지문이 **전 소스**라, 어떤 파일이 깨져도 다음 실행에서 드러난다.
     S.append(Stage(
         "lint", "모든 .py 가 파싱되는가 (루프 밖 파일까지)",
-        "win", [PY, "-m", "compileall", "-q", "-x", "_build",
-                "experiments", "padfec"],
-        outputs=[], scripts=sorted(set(_sources("padfec", ".py", [])
-                                      + _sources("experiments", ".py",
-                                                 []))),
+        "win", [PY, "-m", "compileall", "-q"] + python_sources(),
+        outputs=[], scripts=python_sources(),
         timeout=300,
         note="파싱 안 되는 파일이 있으면 여기서 멈춘다"))
 
@@ -379,7 +409,7 @@ def build_stages():
 
     S.append(Stage(
         "build", "Go 테스트베드 빌드 (CGO_ENABLED=0, /tmp/qamp 로 복사)",
-        "wsl", "bash /mnt/c/dev/pq_afec/experiments/quicbed/build.sh",
+        "wsl", "cd %s && bash experiments/quicbed/build.sh" % WSL_ROOT,
         outputs=[], scripts=BED, deps=["table"], timeout=900))
 
     # 🩸 2026-08-20 v2 이식 마무리. 관문이 부호(rsEncode/recoverOne)만 봤다.
@@ -398,7 +428,7 @@ def build_stages():
         "gate", "관문 - 부호 자체시험 (Go) + 기준 구현 시험 (Python) "
                 "+ 정책 격자 대조",
         "wsl",
-        "cd /mnt/c/dev/pq_afec && "
+        "cd %s && " % WSL_ROOT +
         "[ -x /tmp/qamp ] || cp \"$HOME/quicbed/bin/qamp\" /tmp/qamp; "
         "/tmp/qamp -mode selftest && "
         "python3 -u experiments/gate_go_parity.py",
@@ -718,7 +748,9 @@ def build_stages():
     S.append(Stage(
         "p6", "보고서 + 바탕화면 한 장 요약",
         "win", [PY, "experiments/p6_report.py"],
-        outputs=["docs/PADFEC 실측 보고서.md"],
+        outputs=["docs/PADFEC 실측 보고서.md",
+                 "docs/ML-KEM QUIC 핸드셰이크 FEC 요약.pdf",
+                 "docs/PADFEC 보고서 출처.json"],
         scripts=ALGO + deps_py("p6_report.py"),
         # 🩸 2026-08-21 - p6_report.py 는 p11_adaptive.json 과
         #    p12_quantum.json 을 **읽는데** deps 에 없었다. 그래서 그
@@ -776,10 +808,7 @@ def build_stages():
 
 # ---------------------------------------------------------------------- state
 def atomic_write_json(path, obj):
-    tmp = path + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=1)
-    os.replace(tmp, path)
+    durable_write_json(path, obj)
 
 
 def load_state():
@@ -820,6 +849,8 @@ def stage_status(stage, st):
     #    오진한다. 세 검사의 상하 관계가 곧 정확성이다.
     if not stage.outputs_present():
         return "stale", "산출물이 없어짐"
+    if rec.get("output_hashes") != stage.output_hashes():
+        return "stale", "산출물 내용이 바뀌었거나 기록 지문이 없음"
     return "done", rec.get("finished", "")
 
 
@@ -916,6 +947,8 @@ def run_stage(stage):
         out = (p.stdout or "") + (p.stderr or "")
         ok = p.returncode == 0
         err = "" if ok else "exit %d" % p.returncode
+        if ok and not stage.outputs_present():
+            ok, err = False, "필수 산출물이 없다"
     except subprocess.TimeoutExpired as e:
         out = e.stdout if isinstance(e.stdout, str) else (
             (e.stdout or b"").decode("utf-8", "replace"))
@@ -1058,6 +1091,7 @@ def main():
 
     print("실행할 단계: %s" % ", ".join(order))
     skipped = []
+    failed = []
     for sid in order:
         s = by_id[sid]
         print()
@@ -1085,7 +1119,12 @@ def main():
             sys.stdout.flush()
             continue
 
+        run_fingerprint = s.fingerprint()
         ok, err, dt, out, log = run_stage(s)
+        if ok and s.fingerprint() != run_fingerprint:
+            ok, err = False, "실행 중 소스 또는 환경이 바뀜"
+        if not ok:
+            failed.append(s.id)
         tail = "\n".join(out.strip().splitlines()[-25:])
         if tail:
             print(tail)
@@ -1105,7 +1144,8 @@ def main():
             err = "상류 무효: " + ", ".join(bad)
         st["stages"][s.id] = {
             "status": status,
-            "fingerprint": s.fingerprint(),
+            "fingerprint": run_fingerprint,
+            "output_hashes": s.output_hashes() if ok else {},
             "finished": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
             "seconds": round(dt, 1), "error": err, "log": log,
         }
@@ -1139,7 +1179,7 @@ def main():
         print("-> exit 3 (건너뛴 단계가 있다 - 이 실행은 완전한 한 바퀴가 아니다)")
         return 3
     show_status(stages, load_state())
-    return 0
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

@@ -4,16 +4,16 @@
 // 고정 설정이었다. 닫으려면 정책이 필요로 하는 값을 클라이언트가 알아야
 // 하는데, **첫 접속 순간에는 둘 다 모른다.**
 //
-//     서버 비행 크기 S   -> 얼마나 큰 인증서인지 모른다
-//     경로 손실률 p      -> 이 경로가 얼마나 깨끗한지 모른다
+//	서버 비행 크기 S   -> 얼마나 큰 인증서인지 모른다
+//	경로 손실률 p      -> 이 경로가 얼마나 깨끗한지 모른다
 //
 // 그래서 목적지별로 관측해서 배운다. 전부 **클라이언트가 실제로 볼 수 있는
 // 것**만 쓴다. 추정이나 가정으로 채운 값은 하나도 없다.
 //
-//     S      핸드셰이크 동안 받은 바이트를 세면 그대로 나온다
-//     RTT    이 목적지의 **최소 HCT** 가 1-RTT 인 경우의 값이다
-//     p      quic-go 가 Initial 을 재전송했는지로 손실 사건을 센다
-//     실패비용 손실이 났던 연결의 HCT 에서 RTT 를 뺀 값 (관측값)
+//	S      핸드셰이크 동안 받은 바이트를 세면 그대로 나온다
+//	RTT    이 목적지의 **최소 HCT** 가 1-RTT 인 경우의 값이다
+//	p      quic-go 가 Initial 을 재전송했는지로 손실 사건을 센다
+//	실패비용 손실이 났던 연결의 HCT 에서 RTT 를 뺀 값 (관측값)
 //
 // 마지막 항목이 특히 중요하다. 원래 모형은 복구 실패 비용을 RFC 9002 의
 // 초기 PTO(약 999 ms)로 뒀는데, p7 의 결정적 소거 시험이 **실제로는 왕복
@@ -31,8 +31,8 @@ import (
 	"sync"
 )
 
-const serverPacketSize = 1280      // quic-go 가 한 번에 내보내는 패킷 크기
-const amplificationFactor = 3      // RFC 9000 8.1
+const serverPacketSize = 1280 // quic-go 가 한 번에 내보내는 패킷 크기
+const amplificationFactor = 3 // RFC 9000 8.1
 
 // allowedBytes 는 주소 검증 전 서버가 실제로 내보낼 수 있는 바이트다.
 //
@@ -49,7 +49,8 @@ func allowedBytes(clientBytes int) int {
 }
 
 // parityDatagramBytes 는 패리티 데이터그램 하나의 크기다.
-//   롱헤더+CID(약 26) + FEC 머리(13) + crc/len 목록(6k) + 심볼(W)
+//
+//	롱헤더+CID(약 26) + FEC 머리(13) + crc/len 목록(6k) + 심볼(W)
 //
 // 🩸 2026-08-20 p13 실측 수정. 예전 값 32 는 CID 를 과소평가했다 - 실측
 // 패리티(서버 연결별 회계 beff_parity)는 x25519 1323.5~1326.5 /
@@ -80,7 +81,6 @@ func criticalPathBytes(k, m, w int) int {
 //    trailBytes 로 돌려준다. **틀린 식을 남겨 두면 누군가 다시 부른다.**
 //    (Python 쪽 trailing_parity_bytes 는 자체시험 17c 가 "옛 상수식과
 //     m<=2 에서 비트 단위로 같다"를 못 박는 데 쓰므로 남아 있다.)
-
 
 // 🩸 pfailLookup 을 지웠다(2026-08-20 감사). P_fail 을 별도 표에서 읽으면
 // 기대 왕복 수와 **다른 분포**에서 나오게 된다 - 그것이 결함 1 의 정체였다.
@@ -119,6 +119,7 @@ func idxNearest(xs []int, v int) int {
 //
 //	idxNearestF 는 **지웠다.** 남겨 두면 누군가 다시 그걸 부른다
 //	(pfailLookup 을 지운 것과 같은 이유, 이 파일 99 행 참고).
+//
 // normBurst 는 평균 버스트 L 을 표의 축인 **정규화 버스트 u = L*(1-p)** 로
 // 바꾼다. 근거와 클램프는 padfec/table.py 의 U_VALS / _clamp_p 주석에 있다.
 //
@@ -173,7 +174,8 @@ func axisLerp(xs []float64, v float64) (int, int, float64) {
 // 생성한다 - Go 로 다시 구현하지 않는 이유는 그 파일 머리말에 적었다.
 // recoveryGroup 은 복구에 쓸 수 있는 **뒤따르는** 패리티 수다.
 // padfec/policy.py 의 recovery_group 과 같아야 한다.
-//   m=0 -> 0,  m=1 -> 1,  m>=2 -> m-1 (선행 P0 은 신용 전용)
+//
+//	m=0 -> 0,  m=1 -> 1,  m>=2 -> m-1 (선행 P0 은 신용 전용)
 func recoveryGroup(m int) int {
 	if m <= 0 {
 		return 0
@@ -380,12 +382,13 @@ type creditBranch struct {
 // 쪼갠다. Python padfec.policy.credit_branches 와 **같은 식**이어야 한다.
 //
 // 🩸 2026-08-28 (2 단계) - **근사를 없앴다.** 그전 인자는 (bCredit, r) 이었고
-//    결합분포가 패리티를 개수로만 세는 탓에 선행 패리티가 왔는지를
-//    bCredit/(m-1) 로 **추측**했다(교환가능 가정). 셋째 축이 개수가 되면서
-//    선행 도착 여부를 정확히 알게 됐다 - 추측할 것이 없다.
 //
-//	leadArrived  선행 패리티(m>=2 의 자리 0)가 왔는가. 0 또는 1.
-//	nTrail       뒤따르는 패리티 중 몇 개가 도착했는가.
+//	   결합분포가 패리티를 개수로만 세는 탓에 선행 패리티가 왔는지를
+//	   bCredit/(m-1) 로 **추측**했다(교환가능 가정). 셋째 축이 개수가 되면서
+//	   선행 도착 여부를 정확히 알게 됐다 - 추측할 것이 없다.
+//
+//		leadArrived  선행 패리티(m>=2 의 자리 0)가 왔는가. 0 또는 1.
+//		nTrail       뒤따르는 패리티 중 몇 개가 도착했는가.
 func creditBranches(a, w, parity, leadArrived, nTrail int,
 	trailDelayMs float64) []creditBranch {
 	base := a * w
@@ -500,7 +503,6 @@ func flightOutcome(k, m, w int, p, l float64,
 	return nExp, pFail, pRec, trailBytes
 }
 
-
 // ---------------------------------------------------------------------------
 // 양자 지렛대 (padfec/quantum.py 이식) — 2026-08-20
 //
@@ -597,15 +599,17 @@ func binNeeded(serverFlight float64, baseBin int, cPkt float64) int {
 func comboDeltas(k, m, w, ovh, nNeed, maxDelta int) []int {
 	need := ((nNeed-1)*serverPacketSize)/amplificationFactor + 1
 	set := map[int]bool{}
+	g := recoveryGroup(m)
 	for a := 0; a <= k; a++ {
 		for b := 0; b <= m; b++ {
 			if a+b == 0 {
 				continue
 			}
-			if (k - a) > b { // 복구 불가 상태는 신용을 사도 소용없다
+			used := k - a
+			if used > b || used > g { // 선행 패리티는 복구에 쓸 수 없다
 				continue
 			}
-			lack := need - (a+b)*w - b*ovh
+			lack := need - (a+b)*w - (b-used)*ovh
 			if lack <= 0 {
 				continue
 			}
@@ -964,14 +968,14 @@ type destStat struct {
 	// 계수로 바꾼다. 사후평균 (손실+0.5)/(관측+1) 은 Jeffreys 사전분포이고,
 	// 관측이 쌓일수록 좁아진다. 경로가 변할 수 있으니 매 관측마다 두 계수를
 	// 0.99 배로 줄여 유효 기억을 100 연결쯤으로 둔다.
-	LossCount    float64 `json:"loss_count"`
-	ObsCount     float64 `json:"obs_count"`
-	LossHCT      float64 `json:"loss_hct_ms"`   // 손실이 났을 때의 HCT (EWMA)
+	LossCount float64 `json:"loss_count"`
+	ObsCount  float64 `json:"obs_count"`
+	LossHCT   float64 `json:"loss_hct_ms"` // 손실이 났을 때의 HCT (EWMA)
 	// 무편향(m=0) 연결들만의 최소 HCT. 손실 분류의 기준선이다 - 아래
 	// observe 의 주석 참고. MinHCT(전체 최소)와 다르다: 임계 위 목적지에서
 	// FEC 로 1-RTT 를 사는 동안 탐색은 2-RTT 로 돌 수 있는데, 그때 전체
 	// 최소(52 ms)로 탐색(103 ms)을 분류하면 깨끗한 탐색이 전부 손실로 보인다.
-	ProbeMinHCT  float64 `json:"probe_min_hct_ms"`
+	ProbeMinHCT float64 `json:"probe_min_hct_ms"`
 	// 🆕 C1 (2026-08-23) - **심볼 단위** 관측. 서버 수신 회신이 있으면
 	// 연결마다 k+m 심볼의 도착 여부를 그대로 알 수 있다. 위 LossCount 는
 	// **연결 단위**(그 연결에 손실이 있었나)라 단위가 다르므로 섞으면 안 되고,
@@ -985,10 +989,10 @@ type destStat struct {
 	// C2(회신 없는 연결을 전멸로 본 것)가 위 통계에 얼마나 기여했는지.
 	// 판정에는 안 쓰고 **원인을 가르는 자료로만** 남긴다 - 낮은 손실에서
 	// p̂ 가 과대하면 여기부터 본다.
-	SymC2Conns  float64 `json:"sym_c2_conns"`
+	SymC2Conns   float64 `json:"sym_c2_conns"`
 	SymC2Symbols float64 `json:"sym_c2_symbols"`
 	Conns        int     `json:"conns"`
-	SinceProbe   int     `json:"since_probe"`   // 마지막 탐색 이후 연결 수
+	SinceProbe   int     `json:"since_probe"` // 마지막 탐색 이후 연결 수
 }
 
 type destCache struct {
@@ -1119,9 +1123,10 @@ func (c *destCache) observeSymbols(addr string, nSym, nLost int,
 // observeSymbolsWhy - c2 가 true 면 "회신 없음을 전멸로 본" 적립이다.
 //
 // 🩸 2026-08-23 - hctMs 를 함께 받아 MinHCT 를 갱신한다. 그전에는 MinHCT 가
-//    `observe()` 에서만 갱신됐는데 그것은 **auto 모드에서만** 불린다. 그래서
-//    고정팔로 도는 동안 기준선이 0 으로 남아 C2 판정(hct > 3*base)이 아예
-//    발동하지 못했다(실측: 회신 없는 연결 34 건인데 C2 적립 0).
+//
+//	`observe()` 에서만 갱신됐는데 그것은 **auto 모드에서만** 불린다. 그래서
+//	고정팔로 도는 동안 기준선이 0 으로 남아 C2 판정(hct > 3*base)이 아예
+//	발동하지 못했다(실측: 회신 없는 연결 34 건인데 C2 적립 0).
 func (c *destCache) observeSymbolsWhy(addr string, nSym, nLost int,
 	hctMs float64, c2 bool) {
 	if nSym <= 0 || nLost < 0 || nLost > nSym {
@@ -1365,27 +1370,27 @@ func policyGrid() {
 				for _, s0base := range []float64{396.5, 1527.5, 382.45, 1472.0} {
 					for _, rtt := range []float64{10, 50, 100} {
 						// 🩸 2026-08-28 (2 단계 감사) - **격자 밖 p 를 넣었다.**
-							//    옛 축에서 표의 마디가 아닌 값은 0.007 과
-							//    0.035 둘뿐이었고, 그 둘은 표에서 가장 좁은
-							//    구간 안에 있었다. 그래서 위쪽의 넓은 구간
-							//    (0.05~0.30)의 보간 오차가 이 관문에
-							//    **원리적으로 안 보였다** - 마디 위에서는
-							//    어떤 격자든 오차가 0 이다. 실제로 그 구간이
-							//    최악 0.656 ms 로 한도(0.100)를 넘고 있었다.
-							//    버스트 축에서 겪은 것과 같은 병이다.
-							for _, p := range []float64{0, 0.007, 0.015, 0.035,
-								// 🩸 2026-08-29 - P_VALS 가 0.15 위를 0.0125 로
-								//    균일하게 접으면서 옛 시험점(0.1625·0.2375·
-								//    0.2875)이 **마디 위**가 됐다. 마디 위에서는
-								//    보간 오차가 정의상 0 이라 관문이 그 구간을
-								//    시험하지 못한다(버스트 축에서 겪은 바로 그
-								//    병이다). 새 마디의 중점으로 옮긴다:
-								//      0.156  = [0.15, 0.1625] 안
-								//      0.181  = [0.175, 0.1875] 안
-								//      0.244  = [0.2375, 0.25] 안
-								//      0.294  = [0.2875, 0.30] 안
-								0.0725, 0.09, 0.15, 0.156, 0.181, 0.244,
-								0.294} {
+						//    옛 축에서 표의 마디가 아닌 값은 0.007 과
+						//    0.035 둘뿐이었고, 그 둘은 표에서 가장 좁은
+						//    구간 안에 있었다. 그래서 위쪽의 넓은 구간
+						//    (0.05~0.30)의 보간 오차가 이 관문에
+						//    **원리적으로 안 보였다** - 마디 위에서는
+						//    어떤 격자든 오차가 0 이다. 실제로 그 구간이
+						//    최악 0.656 ms 로 한도(0.100)를 넘고 있었다.
+						//    버스트 축에서 겪은 것과 같은 병이다.
+						for _, p := range []float64{0, 0.007, 0.015, 0.035,
+							// 🩸 2026-08-29 - P_VALS 가 0.15 위를 0.0125 로
+							//    균일하게 접으면서 옛 시험점(0.1625·0.2375·
+							//    0.2875)이 **마디 위**가 됐다. 마디 위에서는
+							//    보간 오차가 정의상 0 이라 관문이 그 구간을
+							//    시험하지 못한다(버스트 축에서 겪은 바로 그
+							//    병이다). 새 마디의 중점으로 옮긴다:
+							//      0.156  = [0.15, 0.1625] 안
+							//      0.181  = [0.175, 0.1875] 안
+							//      0.244  = [0.2375, 0.25] 안
+							//      0.294  = [0.2875, 0.30] 안
+							0.0725, 0.09, 0.15, 0.156, 0.181, 0.244,
+							0.294} {
 							// 🩸 2026-08-28 - 예전에는 {1, 2, 3} 이었다. 셋 다
 							//    그때의 버스트 격자({1,2,3,5}) **위의 점**이라,
 							//    버스트 축의 보간(예전에는 최근접 스냅)이 이

@@ -5,8 +5,10 @@
 //
 // 빌드:  go build -o qhct qhct.go
 // 서버:  ./qhct -mode server -addr 10.9.0.2:44433 -group X25519MLKEM768
-// 측정:  ./qhct -mode client -addr 10.9.0.2:44433 -group X25519MLKEM768 \
-//              -iters 500 -warmup 20 -csv out.csv -timeout 5000
+//
+//	측정:  ./qhct -mode client -addr 10.9.0.2:44433 -group X25519MLKEM768 \
+//	             -iters 500 -warmup 20 -csv out.csv -timeout 5000
+//
 // qlog:  -qlog ./qlogdir  (클라이언트/서버 어느 쪽이든)
 package main
 
@@ -19,6 +21,7 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/csv"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -29,11 +32,12 @@ import (
 	"path/filepath"
 	"sort"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/quic-go/quic-go"
-	"github.com/quic-go/quic-go/logging"
 	"github.com/quic-go/quic-go/qlog"
+	"github.com/quic-go/quic-go/qlogwriter"
 )
 
 const alpn = "rne-hct"
@@ -92,22 +96,26 @@ func pct(sorted []float64, p float64) float64 {
 	return sorted[lo]*(1-fr) + sorted[hi]*fr
 }
 
-func qlogTracer(dir, tag string) func(context.Context, logging.Perspective, quic.ConnectionID) *logging.ConnectionTracer {
+func qlogTracer(dir, tag string) func(context.Context, bool, quic.ConnectionID) qlogwriter.Trace {
 	if dir == "" {
 		return nil
 	}
-	os.MkdirAll(dir, 0755)
-	return func(_ context.Context, p logging.Perspective, cid quic.ConnectionID) *logging.ConnectionTracer {
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		log.Fatal(err)
+	}
+	return func(_ context.Context, isClient bool, cid quic.ConnectionID) qlogwriter.Trace {
 		role := "client"
-		if p == logging.PerspectiveServer {
+		if !isClient {
 			role = "server"
 		}
 		fn := filepath.Join(dir, fmt.Sprintf("%s_%s_%x.qlog", tag, role, cid.Bytes()))
 		fh, err := os.Create(fn)
 		if err != nil {
-			return nil
+			log.Fatal(err)
 		}
-		return qlog.NewConnectionTracer(fh, p, cid)
+		trace := qlogwriter.NewConnectionFileSeq(fh, isClient, cid, []string{qlog.EventSchema})
+		go trace.Run()
+		return trace
 	}
 }
 
@@ -117,16 +125,16 @@ func runServer(addr, group, qlogDir string) {
 		log.Fatal(err)
 	}
 	tlsConf := &tls.Config{
-		Certificates:     []tls.Certificate{genCert()},
-		NextProtos:       []string{alpn},
-		MinVersion:       tls.VersionTLS13,
-		CurvePreferences: []tls.CurveID{cid},
+		Certificates:           []tls.Certificate{genCert()},
+		NextProtos:             []string{alpn},
+		MinVersion:             tls.VersionTLS13,
+		CurvePreferences:       []tls.CurveID{cid},
 		SessionTicketsDisabled: true, // 세션 재개 차단 — 전체 핸드셰이크만 측정
 	}
 	qConf := &quic.Config{
-		Tracer:               qlogTracer(qlogDir, "srv"),
-		MaxIdleTimeout:       30 * time.Second,
-		Allow0RTT:            false,
+		Tracer:                  qlogTracer(qlogDir, "srv"),
+		MaxIdleTimeout:          30 * time.Second,
+		Allow0RTT:               false,
 		DisablePathMTUDiscovery: true,
 	}
 	ln, err := quic.ListenAddr(addr, tlsConf, qConf)
@@ -166,9 +174,16 @@ func runClient(addr, group string, iters, warmup, timeoutMs int, csvPath, qlogDi
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer fh.Close()
 		w = csv.NewWriter(fh)
-		defer w.Flush()
+		defer func() {
+			w.Flush()
+			if err := w.Error(); err != nil {
+				log.Fatal("CSV write: ", err)
+			}
+			if err := fh.Close(); err != nil {
+				log.Fatal("CSV close: ", err)
+			}
+		}()
 		w.Write([]string{"group", "iter", "hct_ms", "status", "negotiated_group", "err"})
 	}
 
@@ -191,11 +206,13 @@ func runClient(addr, group string, iters, warmup, timeoutMs int, csvPath, qlogDi
 		t0 := time.Now()
 		conn, err := quic.DialAddr(ctx, addr, tlsConf, qConf)
 		el := float64(time.Since(t0).Microseconds()) / 1000.0
+		contextErr := ctx.Err()
 		cancel()
 
 		if err != nil {
 			status := "fail"
-			if ctx.Err() == context.DeadlineExceeded || err == context.DeadlineExceeded {
+			var timeoutError net.Error
+			if contextErr == context.DeadlineExceeded || errors.Is(err, context.DeadlineExceeded) || (errors.As(err, &timeoutError) && timeoutError.Timeout()) {
 				status = "timeout"
 			}
 			// 2026-09-08 코드 감사 - 워밍업 반복은 세지 않는다. failN·tmoN 이
@@ -219,6 +236,9 @@ func runClient(addr, group string, iters, warmup, timeoutMs int, csvPath, qlogDi
 			negName = curveName(n)
 		}
 		conn.CloseWithError(0, "bye")
+		if st.TLS.CurveID != cid {
+			log.Fatalf("negotiated group mismatch: requested=%s actual=%s", group, negName)
+		}
 
 		if !isWarm {
 			okN++
@@ -272,26 +292,39 @@ func curveName(c tls.CurveID) string {
 	return fmt.Sprintf("id_%d", uint16(c))
 }
 
-
 // countingConn — UDP 데이터그램의 개수와 크기를 기록하는 래퍼.
 // tcpdump 없이, 권한 없이 패킷 수준 관찰이 가능하다.
 type countingConn struct {
 	net.PacketConn
+	mu   sync.Mutex
 	sent []int // 송신 데이터그램 크기 (바이트)
 	rcvd []int // 수신 데이터그램 크기
 }
 
 func (c *countingConn) WriteTo(b []byte, addr net.Addr) (int, error) {
-	c.sent = append(c.sent, len(b))
-	return c.PacketConn.WriteTo(b, addr)
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	n, err := c.PacketConn.WriteTo(b, addr)
+	if n > 0 {
+		c.sent = append(c.sent, n)
+	}
+	return n, err
 }
 
 func (c *countingConn) ReadFrom(b []byte) (int, net.Addr, error) {
 	n, addr, err := c.PacketConn.ReadFrom(b)
 	if err == nil {
+		c.mu.Lock()
 		c.rcvd = append(c.rcvd, n)
+		c.mu.Unlock()
 	}
 	return n, addr, err
+}
+
+func (c *countingConn) snapshot() ([]int, []int) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return append([]int(nil), c.sent...), append([]int(nil), c.rcvd...)
 }
 
 func sum(xs []int) int {
@@ -318,6 +351,7 @@ func runProbe(addr, group string, timeoutMs int) {
 	}
 	cc := &countingConn{PacketConn: pc}
 	tr := &quic.Transport{Conn: cc}
+	defer pc.Close()
 	defer tr.Close()
 
 	tlsConf := &tls.Config{
@@ -337,21 +371,21 @@ func runProbe(addr, group string, timeoutMs int) {
 	t0 := time.Now()
 	conn, err := tr.Dial(ctx, udpAddr, tlsConf, qConf)
 	el := float64(time.Since(t0).Microseconds()) / 1000.0
+	sent, received := cc.snapshot()
 	if err != nil {
 		fmt.Printf("group=%s  핸드셰이크 실패: %v\n", group, err)
-		fmt.Printf("  송신 %d개 %v\n", len(cc.sent), cc.sent)
+		fmt.Printf("  송신 %d개 %v\n", len(sent), sent)
 		return
 	}
 	neg := curveName(conn.ConnectionState().TLS.CurveID)
 	conn.CloseWithError(0, "bye")
-	time.Sleep(50 * time.Millisecond)
 
 	fmt.Printf("group=%-18s negotiated=%-18s HCT=%.3fms\n", group, neg, el)
-	fmt.Printf("  클라이언트 송신: %d개 데이터그램, 총 %d B  %v\n", len(cc.sent), sum(cc.sent), cc.sent)
-	fmt.Printf("  클라이언트 수신: %d개 데이터그램, 총 %d B  %v\n", len(cc.rcvd), sum(cc.rcvd), cc.rcvd)
-	if len(cc.sent) > 0 && len(cc.rcvd) > 0 {
-		fmt.Printf("  증폭비(수신/송신): %.2f  (RFC 9000 §8.1 한도 3.0)\n",
-			float64(sum(cc.rcvd))/float64(sum(cc.sent)))
+	fmt.Printf("  클라이언트 송신: %d개 데이터그램, 총 %d B  %v\n", len(sent), sum(sent), sent)
+	fmt.Printf("  클라이언트 수신: %d개 데이터그램, 총 %d B  %v\n", len(received), sum(received), received)
+	if len(sent) > 0 && len(received) > 0 {
+		fmt.Printf("  핸드셰이크 전체 수신/송신: %.2f (주소 검증 전 한도 판정에 사용 불가)\n",
+			float64(sum(received))/float64(sum(sent)))
 	}
 }
 
@@ -365,6 +399,9 @@ func main() {
 	csvPath := flag.String("csv", "", "원자료 CSV 경로")
 	qlogDir := flag.String("qlog", "", "qlog 출력 디렉터리 (비우면 비활성)")
 	flag.Parse()
+	if *iters <= 0 || *warmup < 0 || *timeout <= 0 {
+		log.Fatal("iters와 timeout은 양수, warmup은 음이 아닌 수여야 합니다")
+	}
 
 	switch *mode {
 	case "server":

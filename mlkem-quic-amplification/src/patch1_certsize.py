@@ -1,6 +1,7 @@
 # qamp.go 생성 패치 1 — 인증서 크기 조절 기능 추가 (qpkt.go 복사본에 적용)
 # 사용: cp qpkt.go qamp.go && python3 patch1_certsize.py
 import re
+raise SystemExit("Historical patch disabled: build the maintained qamp.go directly; certificate size and -initpkt are already integrated.")
 p='qamp.go'; s=open(p).read()
 
 # 1) asn1 임포트 추가

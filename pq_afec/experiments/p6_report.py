@@ -23,14 +23,18 @@
 
 산출물
   docs/PADFEC 실측 보고서.md
-  바탕화면/ML-KEM QUIC 핸드셰이크 FEC 요약.pdf  (A4, 조판에 따라 여러 쪽)
+  docs/ML-KEM QUIC 핸드셰이크 FEC 요약.pdf  (A4, 조판에 따라 여러 쪽)
 
 이 파일의 요약 PDF 를 "한 장"이라고 부르지 않는다 — 실제로는 A4 두 쪽이
 나온다. 쪽수를 세지 않고 이름만 "한 장"으로 두면 그것도 손으로 옮긴 수다.
 """
 from __future__ import annotations
 
+import argparse
+import hashlib
+import html as html_escape
 import json
+from datetime import datetime, timezone
 import os
 import subprocess
 import sys
@@ -719,8 +723,8 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         A("")
     A("## 0. 요약")
     A("")
-    A("인수인계 문서(2026-08-18)의 방향에 따라 알고리즘을 다시 만들고 "
-      "실험을 처음부터 끝까지 다시 돌렸다. 결론 넷.")
+    A("저장된 실험 결과를 정리했다. 이 보고서의 생성은 실험 재실행을 뜻하지 "
+      "않는다. 자료별 출처와 현재 코드 검증 여부는 앞의 출처 표에 기록한다.")
     A("")
     lim = (af or {}).get("at_limit") or []
     if lim:
@@ -733,12 +737,12 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         rlo, rhi = (af or {}).get("ratio_lo"), (af or {}).get("ratio_hi")
         ahi = (af or {}).get("arg_hi")
         if rlo is not None and rhi is not None and ahi is not None:
-            span = ("일반적으로 허용량은 `ceil(3B/P)·P` 라 3 배를 **초과**하며, "
+            span = ("이 테스트베드의 송신량 모형은 `ceil(3B/P)·P`로, 3 배를 초과할 수 있다. "
                     "훑은 %d개 설정에서 %.2f ~ %.2f 였다(최대: %s / Initial "
                     "%d B). " % (len((af or {}).get("sweep") or []), rlo, rhi,
                                  ahi["group"], ahi["ips"]))
         else:
-            span = ("일반적으로 허용량은 `ceil(3B/P)·P` 라 3 배를 **초과**한다"
+            span = ("이 테스트베드의 송신량 모형 `ceil(3B/P)·P`는 3 배를 초과할 수 있다"
                     "(p2 의 `ips_sweep` 에 임계가 없어 이 판에서는 초과 범위를 "
                     "싣지 못했다). ")
         A("1. **증폭 제한이 실제로 구속한다 — 다만 '정확히 3배'는 조건부다.** "
@@ -754,7 +758,7 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         A("1. **증폭 제한이 실제로 구속한다.** 허용량은 `ceil(3B/P)·P` 로 "
           "3 배를 초과한다(3 장). 바이트 타임라인(e21)이 없어 관측 정지 "
           "지점은 이 판에 싣지 못했다.")
-    A("2. **임계는 클라이언트가 보낸 바이트가 정한다.** 키 교환을 고정하고 "
+    A("2. **이 테스트베드의 임계는 서버가 받은 바이트의 영향을 받는다.** 키 교환을 고정하고 "
       "패딩만 늘려도 임계가 이동한다. 다만 이동은 연속이 아니라 **서버 패킷 "
       "경계로 계단**을 이룬다 — 팀 자료의 '교환비 1:3.8' 은 이 계단의 겉모습이다.")
     if cf:
@@ -770,10 +774,10 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
           "손실 단위가 데이터그램이라 용량 부등식 `C ≤ (k−1)(W−h−f)` 을 넘을 "
           "수 없다. (p1 의 `capacity_checks` 가 없어 이 판에는 수치를 "
           "싣지 못했다.)")
-    A("4. **그래도 FEC 는 값어치를 한다.** 패리티 데이터그램 하나를 더 "
-      "보내면 (a) 손실 시 재전송 없이 복구되어 꼬리가 사라지고 (b) 그 바이트가 "
-      "증폭 예산을 사들여 왕복 하나를 없앤다. 다만 **하나의 패리티로 둘을 "
-      "동시에 얻을 수는 없다** — 이유는 4장.")
+    A("4. 패리티 데이터그램은 손실 복구와 증폭 신용 확보에 쓰일 수 있다. "
+      "효과는 손실 위치와 도착 순서에 따라 달라진다. 복구에 사용한 바이트를 "
+      "추가 신용으로 다시 계산할 수 없으며, 복구 한도를 넘는 손실에는 재전송이 "
+      "필요하다. 회계와 배치는 4장에 적었다.")
     A("")
 
     # ------------------------------------------------------------ 1. 비행 구조
@@ -1700,11 +1704,12 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
     A("- 패리티 데이터그램은 유효한 DCID 를 가진 롱헤더 Initial 모양이라 "
       "서버가 연결에 귀속시켜 바이트를 센다. 이는 quic-go 의 동작(소스 확인)에 "
       "기댄 것으로, 다른 구현에서 같은지는 확인하지 않았다.")
-    A("- 증폭 예산을 늘리는 설계는 증폭 공격 방어를 **의도적으로 약화**시키는 "
-      "면이 있다. 클라이언트가 스스로 더 보내는 것이라 3 배 규칙의 취지는 "
-      "지켜지지만, 3 장이 보였듯 quic-go 는 패킷 경계 때문에 3 배를 넘겨 "
-      "보낸다(최대 %s). 우리 설계는 그 초과분 위에서 이득을 얻는다 — "
-      "배치 전에 반드시 따로 검토해야 한다."
+    A("- 클라이언트가 추가로 전송한 바이트가 서버에 도착하면 증폭 예산도 늘어난다. "
+      "이 자체는 RFC가 허용하는 예산 증가다. 다만 3 장의 quic-go 관측에는 "
+      "패킷 경계에서 3 배를 넘는 경우가 있다(최대 %s). 이 초과를 RFC의 "
+      "허용으로 해석하면 안 된다. p7의 커널 L2 계수기는 주소 검증 시점을 "
+      "식별하지 않아 RFC 준수를 입증하지 못한다. 엄격한 3 배 제한을 적용한 "
+      "서버에서도 정책의 이득이 유지되는지는 별도로 검증해야 한다."
       % (("%.2f 배" % af["ratio_hi"]) if (af or {}).get("sweep") else "미측정"))
     # 🩸 "수렴 후 기준을 못 맞춘다"는 **그 검사가 실패했을 때만** 쓴다.
     # 아무 검사나 하나 실패하면 찍던 옛 코드는 통과한 판에도 실패를 적었다.
@@ -1808,7 +1813,7 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         c1 = ('① 증폭 제한은 실제로 구속한다 — 서버는 수신 %s B 에 송신 '
               '<span class="k">%s B</span> 에서 멈췄다(비 %.2f). 단 그 비가 '
               '3.00 인 것은 <b>3B 가 서버 패킷 크기 %s B 의 배수</b>일 때뿐이고, '
-              '일반적으로 허용량 <code>ceil(3B/P)·P</code> 는 3 배를 '
+              '이 테스트베드의 송신량 모형 <code>ceil(3B/P)·P</code> 는 3 배를 '
               '<b class="b">초과</b>한다(%.2f~%.2f, RFC 9000 §8.1 위반). '
               % (com(o["rx"]), com(o["tx"]), o["ratio"],
                  com(af["P"]), af["ratio_lo"], af["ratio_hi"]))
@@ -1816,19 +1821,19 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         c1 = '① 증폭 제한은 실제로 구속하며 허용량은 패킷 경계로 양자화된다. '
     if cf:
         b = cf["min"]
-        c3 = ('③ <b>“패딩을 공짜로 쓰는” 무비용 FEC 는 성립하지 않는다</b> — '
+        c3 = ('③ 측정 설정에서는 데이터그램 수와 크기를 유지한 제자리 보호가 불가능하다. '
               '용량 부등식을 %d/%d 설정이 위반하고, 최소 초과분이 '
               '<span class="b">%.1f B</span>(%s / Initial %s B), 꼬리표를 '
               'f=0 으로 잡아도 %.1f B 다. '
               % (cf["n_violate"], cf["n"], b["excess"], b["group"], b["ips"],
                  cf["min_excess_f0"]))
     else:
-        c3 = '③ 무비용 FEC 는 용량 부등식 위반으로 성립하지 않는다. '
+        c3 = '③ 제자리 보호 가능성은 용량 부등식과 실제 패킷 배치로 판단해야 한다. '
     A('<div class="box"><b>결론</b> — ' + c1 +
-      '② 임계는 <b>클라이언트가 보낸 바이트</b>가 정하며 서버 패킷 경계로 계단을 이룬다. '
+      '② 이 테스트베드의 임계는 서버 수신 바이트와 패킷 경계의 영향을 받는다. '
       + c3 +
-      '④ 패리티 데이터그램 하나를 더 쓰면 <b>꼬리 제거 + 왕복 하나 절약</b>을 얻지만, '
-      '<b>하나로 둘을 동시에는 못 얻는다</b>.</div>')
+      '④ 패리티는 도착 순서와 손실 위치에 따라 복구 또는 증폭 신용에 기여한다. '
+      '복구에 쓴 바이트를 추가 신용으로 중복 계산할 수 없고, 복구 한도를 넘는 손실에는 재전송이 필요하다.</div>')
 
     # 1. 비행 구조
     A('<h2>1. 첫 비행 구조 (Initial 키로 복호해 실측)</h2>')
@@ -2012,7 +2017,123 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
     return ONEPAGER.replace("@@BODY@@", "\n".join(H))
 
 
-def main():
+def prose_style(text):
+    """Keep generated prose punctuation consistent with the project style."""
+    text = text.translate(str.maketrans({'—': ':', '–': '~', '“': '"', '”': '"'}))
+    for marker in ('⚠️', '⚠', '✅', '❌', '🩸', '⭐', '🆕', '🔴', '🟡', '🔵'):
+        text = text.replace(marker, '')
+    return text
+
+
+def source_manifest():
+    """Record input hashes and pipeline state without changing stored results."""
+    try:
+        import loop2
+        state_path = os.path.join(HERE, "state", "loop2.json")
+        with open(state_path, encoding="utf-8") as f:
+            state = json.load(f)
+        stages = loop2.build_stages()
+        needs_run = set(loop2.resolve(stages, state, []))
+        output_stages = {
+            os.path.basename(o): stage.id
+            for stage in stages for o in stage.outputs if o.endswith(".json")
+        }
+    except (OSError, ValueError, KeyError):
+        state, needs_run, output_stages = {}, set(), {}
+    names = ["p1_flight.json", "p2_threshold.json", "p3_effect.json",
+             "p4_model.json", "p5_audit.json", "p7_verify.json",
+             "p8_stability.json", "p9_crossenv.json", "p10_completeness.json",
+             "p11_adaptive.json", "p12_quantum.json", "p17_adaptive_value.json",
+             "p18_mmax.json", "e21_budget_trace.json"] + list(CLIFF_FILES)
+    rows = []
+    for name in names:
+        path = os.path.join(RESULTS, name)
+        stage = output_stages.get(name)
+        rec = state.get("stages", {}).get(stage, {})
+        row = {"file": name, "exists": os.path.isfile(path), "stage": stage,
+               "last_run_status": rec.get("status", "unknown"),
+               "last_run_finished": rec.get("finished"),
+               "current_code_validated": (stage is not None and stage not in needs_run
+                                           and rec.get("status") == "done"
+                                           and os.path.abspath(RESULTS) == os.path.abspath(
+                                               os.path.join(HERE, "results")))}
+        if row["exists"]:
+            with open(path, "rb") as f:
+                row["sha256"] = hashlib.sha256(f.read()).hexdigest()
+            row["modified_utc"] = datetime.fromtimestamp(
+                os.path.getmtime(path), timezone.utc).isoformat()
+        rows.append(row)
+    return {"generated_utc": datetime.now(timezone.utc).isoformat(),
+            "results_directory": os.path.abspath(RESULTS), "sources": rows}
+
+
+def manifest_markdown(manifest):
+    lines = ["## 자료 출처와 재검증 상태", "",
+             "이 문서는 저장된 결과를 다시 계산·조판한 것이다. 파일 수정 시각은 "
+             "실험 시각의 증명이 아니며, 파일별 SHA256은 함께 저장한 출처 JSON에 있다.", "",
+             "| 결과 파일 | 마지막 단계 상태 | 현재 코드에서 재검증 |",
+             "|---|---|---|"]
+    for row in manifest["sources"]:
+        status = row["last_run_status"] if row["exists"] else "파일 없음"
+        verified = "확인" if row["current_code_validated"] else "미확인"
+        lines.append("| `%s` | %s | %s |" % (row["file"], status, verified))
+    lines += ["", "`미확인`인 결과는 현재 코드의 성능이나 정확성을 입증하지 않는다. "
+              "아래의 통과·실패 표시는 해당 원자료에 저장된 당시 판정이다.", ""]
+    return "\n".join(lines)
+
+
+def render_pdf(chrome, html, out):
+    """Publish a valid PDF atomically, preserving any previous report on failure."""
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="padfec-report-", ignore_cleanup_errors=True) as tmpdir:
+        source = os.path.join(tmpdir, "report.html")
+        candidate = os.path.join(tmpdir, "report.pdf")
+        profile = os.path.join(tmpdir, "profile")
+        with open(source, "w", encoding="utf-8") as f:
+            f.write(html)
+        kwargs = {"creationflags": subprocess.CREATE_NO_WINDOW} if os.name == "nt" else {}
+        try:
+            r = subprocess.run(
+                [chrome, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
+                 "--user-data-dir=" + profile, "--print-to-pdf=" + candidate, source],
+                capture_output=True, text=True, timeout=180,
+                encoding="utf-8", errors="replace", **kwargs)
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            print("PDF 렌더 실행 실패:", exc)
+            return False
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            if os.path.isfile(candidate):
+                with open(candidate, "rb") as f:
+                    content = f.read()
+                if content.startswith(b"%PDF-") and b"%%EOF" in content[-1024:]:
+                    # Use a sibling temporary file for atomic replacement across volumes.
+                    with tempfile.NamedTemporaryFile(dir=os.path.dirname(os.path.abspath(out)),
+                                                      suffix=".pdf", delete=False) as f:
+                        ready = f.name
+                        f.write(content)
+                    try:
+                        os.replace(ready, out)
+                    finally:
+                        if os.path.exists(ready):
+                            os.remove(ready)
+                    return True
+            if r.returncode != 0:
+                break
+            time.sleep(0.5)
+        print("PDF 생성 실패 (exit %s): %s" % (r.returncode, (r.stderr or "")[-400:]))
+        return False
+
+
+def main(argv=None):
+    global RESULTS
+    parser = argparse.ArgumentParser(description="저장된 원자료에서 보고서 생성")
+    parser.add_argument("--output-dir", default=DOCS)
+    parser.add_argument("--results-dir", default=RESULTS)
+    parser.add_argument("--no-pdf", action="store_true", help="Markdown와 출처 JSON만 생성")
+    args = parser.parse_args(argv)
+    RESULTS = os.path.abspath(args.results_dir)
+    output_dir = os.path.abspath(args.output_dir)
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
@@ -2061,69 +2182,43 @@ def main():
     else:
         print("경계 절벽 자료 없음 - 해당 절은 건너뛴다")
 
-    os.makedirs(DOCS, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     md = build_markdown(p1, p2, p3, p4, p5, p7, p8, p9, p10, p11, p12, e21,
                         cliff, p17=p17, p18=p18)
-    mdp = os.path.join(DOCS, "PADFEC 실측 보고서.md")
+    manifest = source_manifest()
+    header, body = md.split("\n", 1)
+    md = prose_style(header + "\n\n" + manifest_markdown(manifest) + "\n" + body)
+    mdp = os.path.join(output_dir, "PADFEC 실측 보고서.md")
+    with open(os.path.join(output_dir, "PADFEC 보고서 출처.json"), "w", encoding="utf-8") as f:
+        json.dump(manifest, f, ensure_ascii=False, indent=2)
     with open(mdp, "w", encoding="utf-8") as f:
         f.write(md)
     print("wrote %s (%d 줄)" % (mdp, md.count("\n") + 1))
 
     html = build_onepager(p1, p2, p3, p4, p5, p7, p8, p9, p10, p11, p12, e21,
                           cliff)
+    html = prose_style(html)
     if "@@" in html:
         print("치환되지 않은 자리표시자가 남았다")
         return 1
-    chrome = next((c for c in CHROME if os.path.exists(c)), None)
-    out = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop",
-                       "ML-KEM QUIC 핸드셰이크 FEC 요약.pdf")
-    if not chrome:
-        print("⚠️ Chromium(Chrome/Edge)을 못 찾아 **한 장 요약 PDF 를 건너뛴다**")
-        print("   찾아본 자리: %s" % " | ".join(CHROME))
+    if args.no_pdf:
         return 0
-    tmp = os.path.join(tempfile.gettempdir(), "padfec_onepager.html")
-    with open(tmp, "w", encoding="utf-8") as f:
-        f.write(html)
-    if os.path.exists(out):
-        os.remove(out)
-    # encoding 을 안 주면 Windows 기본 cp949 로 크롬 stderr 를 읽다가
-    # 읽기 스레드가 UnicodeDecodeError 로 죽는다(PDF 는 나오지만 역추적이 뜬다).
-    #
-    # 🩸 2026-08-26 - **`--headless=new` 하나만 쓰면 안 된다.** 이 PC 의 Edge
-    #    (151.0.4129.107)는 그 모드에서 종료코드 0 을 내면서 **파일을 안
-    #    만든다** - stderr 도 비어 있어 "실패했다"는 말조차 없다. 구 모드
-    #    `--headless` 로는 같은 입력이 그대로 된다(30 KB). 어느 쪽이 되는지는
-    #    브라우저와 판번호에 달렸으므로 **하나를 고르지 말고 차례로 시도**하고,
-    #    무엇이 됐는지 찍는다. 판정 기준은 종료코드가 아니라 **파일의 존재**다
-    #    (종료코드 0 이 거짓말을 하는 자리를 이미 봤다).
-    # 🩸 2026-08-26 - **exit 0 이 거짓말을 한다.** Edge 는 런처 프로세스가
-    #    렌더를 **떨어져 나간 자식**에게 넘기고 즉시 0 으로 죽는다. 그래서
-    #    subprocess.run 이 돌아온 순간 파일은 아직 없고, 바로 존재를 검사하면
-    #    성공한 렌더가 "실패"로 찍힌다. 실제로는 약 3~4 초 뒤에 나타난다.
-    #
-    #    ⚠️ 이 자리에서 **오진을 두 번** 했다. 조급한 검사가 낸 실패를 보고
-    #    (a) "`--headless=new` 가 Edge 에서 안 된다" (b) "출력 경로에 한글이
-    #    있으면 안 된다" 로 각각 결론지었는데, **폴링으로 다시 재니 셋 다
-    #    3.0~3.5 초에 정상으로 나왔다.** 둘 다 유령이었다. 원인은 하나뿐이고,
-    #    고칠 것도 하나뿐이다 - **종료를 기다리지 말고 산출물을 기다린다.**
-    deadline = time.time() + 60
-    r = subprocess.run([chrome, "--headless=new", "--disable-gpu",
-                        "--no-pdf-header-footer",
-                        "--print-to-pdf=" + out, tmp],
-                       capture_output=True, text=True, timeout=180,
-                       encoding="utf-8", errors="replace")
-    while not os.path.exists(out) and time.time() < deadline:
-        time.sleep(0.5)
-    if not os.path.exists(out):
-        print("PDF 렌더 실패 (%s, exit %s, 60 초 기다림):"
-              % (os.path.basename(chrome), r.returncode),
-              (r.stderr or "")[-400:])
+    chrome = next((c for c in CHROME if os.path.exists(c)), None)
+    out = os.path.join(output_dir, "ML-KEM QUIC 핸드셰이크 FEC 요약.pdf")
+    if not chrome:
+        print("PDF 생성에 필요한 Chrome/Edge가 없다. Markdown만 원하면 --no-pdf를 지정한다.")
+        return 1
+    unverified = [row["file"] for row in manifest["sources"]
+                  if row["exists"] and not row["current_code_validated"]]
+    if unverified:
+        warning = ("저장된 과거 결과 요약. 현재 코드에서 재검증 미확인: "
+                   + ", ".join(unverified))
+        # Insert into the body after CSS, preserving a complete HTML document.
+        notice = '<p style="font-size:9pt;border:1px solid #555;padding:6px">' + html_escape.escape(warning) + '</p>'
+        html = html.replace("</style>", "</style>" + notice, 1)
+    if not render_pdf(chrome, html, out):
         return 1
     print("wrote %s (%.0f KB)" % (out, os.path.getsize(out) / 1024))
-    try:
-        os.remove(tmp)
-    except OSError:
-        pass
     return 0
 
 

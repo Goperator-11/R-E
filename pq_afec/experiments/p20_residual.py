@@ -634,9 +634,8 @@ def main():
         "passed": sum(1 for c in checks if c["ok"]),
         "total": len(checks),
     }
-    os.makedirs(RES, exist_ok=True)
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=1)
+    from _journal import save_result
+    save_result(OUT, out)
 
     print("P20 잔차 해부")
     for c in conds:

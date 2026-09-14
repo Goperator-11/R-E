@@ -69,8 +69,9 @@ def probe_a(group, k, cert, n, jr):
     s = B.summarize(rows, rtt_ms=RTT_MS)
     rec = {"cert": cert, "ok": s["ok"], "n": s["n"],
            "two_rtt_rate": s["two_rtt_rate"], "p50": s["p50"],
-           "first_flight_bytes": cs.get("first_flight_bytes")}
-    if s["ok"] == s["n"]:
+           "first_flight_bytes": cs.get("first_flight_bytes"), "error": err,
+           "valid": not err and n > 0 and s["ok"] == s["n"] == n}
+    if rec["valid"]:
         jr.record(key, rec)
     return rec
 
@@ -87,16 +88,21 @@ def probe_b(group, cert, n, jr):
     two = sum(1 for t in ok if t > 1.5 * RTT_MS)
     rec = {"cert": cert, "ok": len(ok), "n": len(rows),
            "two_rtt_rate": (two / float(len(ok))) if ok else None,
-           "p50": sorted(ok)[len(ok) // 2] if ok else None}
-    if rows and len(ok) == len(rows):
+           "p50": sorted(ok)[len(ok) // 2] if ok else None,
+           "valid": n > 0 and len(ok) == len(rows) == n}
+    if rec["valid"]:
         jr.record(key, rec)
     return rec
 
 
 def bisect(probe, log):
+    def valid(rec):
+        return (rec.get("valid") is not False and not rec.get("error")
+                and rec.get("n", 0) > 0 and rec.get("ok") == rec.get("n")
+                and rec.get("two_rtt_rate") is not None)
     lo, hi = LO, HI
     a, b = probe(lo, N_PROBE), probe(hi, N_PROBE)
-    if not a.get("ok") or not b.get("ok"):
+    if not valid(a) or not valid(b):
         return {"lo": None, "hi": None, "note": "경계에서 핸드셰이크 실패"}
     if (a["two_rtt_rate"] or 0) >= 0.5:
         return {"lo": None, "hi": lo, "note": "하한에서 이미 2-RTT"}
@@ -105,11 +111,13 @@ def bisect(probe, log):
     while hi - lo > RESOLUTION:
         mid = (lo + hi) // 2
         r = probe(mid, N_PROBE)
-        if not r.get("ok"):
+        if not valid(r):
             return {"lo": None, "hi": None, "note": "cert %d 에서 실패" % mid}
         rate = r["two_rtt_rate"] or 0.0
         if 0.2 < rate < 0.8:
             r = probe(mid, N_CONFIRM)
+            if not valid(r):
+                return {"lo": None, "hi": None, "note": "cert %d 재확인 실패" % mid}
             rate = r["two_rtt_rate"] or 0.0
         if rate >= 0.5:
             hi = mid

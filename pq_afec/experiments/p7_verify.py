@@ -11,27 +11,27 @@
 데서 온 것이다.
 
   V1  off, 소거 없음              1-RTT, 100% 성공          (정상 동작 기준선)
-  V2  off, 원본 0 소거            PTO (>= 900 ms)          (기준선이 실제로 아프다)
-  V3  off, 원본 1 소거            PTO
+  V2  off, 원본 0 소거            추가 왕복 (중앙값 >= 75 ms)
+  V3  off, 원본 1 소거            추가 왕복
   V4  fec m=1, 원본 0 소거        1-RTT, 복구 = 시행 수      (긍정)
   V5  fec m=1, 원본 1 소거        1-RTT, 복구 = 시행 수      (긍정)
-  V6  fec m=1, 패리티 소거        PTO, 복구 0               (부정: 패리티 없으면 못 고쳐야)
-  V7  fec m=1, 원본0 + 패리티 손상  PTO, 복구 0, CRC 거절 > 0 (부정: 틀린 복구를 안 넘긴다)
+  V6  fec m=1, 원본0 + 패리티 소거 추가 왕복, 복구 0         (부정: 패리티 없으면 못 고쳐야)
+  V7  fec m=1, 원본0 + 패리티 손상 추가 왕복, 복구 0, CRC 거절 > 0
   V8  fec m=2, 원본 0 소거        1-RTT, 복구 = 시행 수      (긍정)
-  V9  fec m=1, 원본 0+1 소거      실패 또는 PTO, 복구 0      (부정: m=1 은 2 소거를 못 고친다)
+  V9  fec m=1, 원본 0+1 소거      실패 또는 추가 왕복, 복구 0 (부정: m=1 은 2 소거를 못 고친다)
   V10 모든 조건에서 스택 전달 바이트 <= 물리 수신 바이트         (회계 불변식)
-  V11 커널 계수기로 본 증폭비 <= 3.0                          (우리 코드 밖의 증거)
+  V11 커널 계수기로 본 L2 송수신비 <= 3.0                    (보조 진단)
 
-V11 은 우리 계수기를 믿지 않는다. RTT 를 아주 크게(편도 2 초) 잡아 서버의
-첫 응답 버스트와 클라이언트의 두 번째 비행을 시간축에서 갈라 놓고, 그 사이에
-`ip -s link` 로 커널이 센 바이트를 읽는다. 우리 프로그램이 무엇을 세든
-상관없이 커널이 본 숫자다.
+V11 은 편도 400 ms 조건에서 `ip -s link`의 L2 누적 바이트를 100 ms마다
+25회 읽는다. 주소 검증 시점을 식별하지 않고 UDP 페이로드만 세지도 않으므로
+RFC 9000의 주소 검증 전 3배 제한 준수 여부를 증명하는 검사는 아니다.
 
 Output: experiments/results/p7_verify.json
 """
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 import subprocess
@@ -53,6 +53,13 @@ K = 2
 PTO_FLOOR_MS = 900.0   # RFC 9002 초기 PTO 는 약 999 ms
 
 
+def valid_trial_row(row):
+    return (isinstance(row, dict) and type(row.get("i")) is int
+            and type(row.get("ok")) is bool
+            and type(row.get("ms")) in (int, float)
+            and math.isfinite(row["ms"]) and row["ms"] >= 0)
+
+
 def run_case(name, fec, m, drop_i="", drop_p=-1, corrupt_p=-1, n=N):
     extra = []
     if drop_i:
@@ -71,13 +78,18 @@ def run_case(name, fec, m, drop_i="", drop_p=-1, corrupt_p=-1, n=N):
     # 반대로 하면 복구 건수가 실제보다 적게 보고된다(40회 중 39회로 나왔다).
     B.stop_server(p)
     ss = B.read_server_stats(sp)
+    valid_rows = [r for r in rows if valid_trial_row(r)]
+    if (len(valid_rows) != n or len(valid_rows) != len(rows)
+            or sorted(r["i"] for r in valid_rows) != list(range(n))):
+        err = "; ".join(filter(None, (err, "client trial records missing or invalid")))
+    rows = valid_rows
     s = B.summarize(rows, rtt_ms=RTT_MS)
     ok_ms = [r["ms"] for r in rows if r.get("ok")]
     return {
         "case": name, "fec": fec, "m": m,
         "drop_initial": drop_i, "drop_parity": drop_p,
         "corrupt_parity": corrupt_p,
-        "n": s["n"], "ok": s["ok"], "fail": s["fail"],
+        "planned_n": n, "n": s["n"], "ok": s["ok"], "fail": s["fail"],
         "p50": s["p50"], "p95": s["p95"], "max": s["max"],
         "pto_share": (sum(1 for t in ok_ms if t >= PTO_FLOOR_MS)
                       / float(len(ok_ms))) if ok_ms else None,
@@ -96,6 +108,48 @@ def run_case(name, fec, m, drop_i="", drop_p=-1, corrupt_p=-1, n=N):
     }
 
 
+def case_complete(case):
+    """빈 결과, 부분 기록, 잘못된 계수와 시간을 정상 실험으로 인정하지 않는다."""
+    counters = ("planned_n", "n", "ok", "fail",
+                "cli_dropped_orig", "cli_dropped_par", "cli_corrupt_par",
+                "cli_parity_sent", "srv_recovered", "srv_late", "srv_crc_fail",
+                "srv_unrecover", "srv_refused",
+                "srv_bytes_in", "srv_bytes_to_stack")
+    if (case.get("err") != ""
+            or not all(type(case.get(k)) is int and case[k] >= 0
+                       for k in counters)):
+        return False
+    if (case["planned_n"] <= 0 or case["n"] != case["planned_n"]
+            or case["ok"] + case["fail"] != case["n"]
+            or case["srv_late"] > case["srv_recovered"]):
+        return False
+    timing = ("p50", "p95", "max", "pto_share")
+    if case["ok"] == 0:
+        return all(k in case and case[k] is None for k in timing)
+    return (all(type(case.get(k)) in (int, float) and math.isfinite(case[k])
+                for k in timing)
+            and 0 <= case["p50"] <= case["p95"] <= case["max"]
+            and 0 <= case["pto_share"] <= 1
+            and case["srv_bytes_in"] > 0 and case["srv_bytes_to_stack"] > 0)
+
+
+def injections_match(case):
+    """각 시행에 지정한 원본 소거, 패리티 소거와 손상이 실제로 주입됐는가."""
+    if not case_complete(case):
+        return False
+    original = case.get("drop_initial")
+    parity = case.get("drop_parity")
+    corrupt = case.get("corrupt_parity")
+    if (not isinstance(original, str)
+            or type(parity) is not int or type(corrupt) is not int):
+        return False
+    count_original = len(set(original.split(","))) if original else 0
+    n = case["planned_n"]
+    return (case["cli_dropped_orig"] == count_original * n
+            and case["cli_dropped_par"] == int(parity >= 0) * n
+            and case["cli_corrupt_par"] == int(corrupt >= 0) * n)
+
+
 def link_counters(dev, ns=None):
     cmd = "ip -s link show %s" % dev
     if ns:
@@ -111,10 +165,9 @@ def link_counters(dev, ns=None):
 def amplification_wire_check(fec="off", m=1):
     """커널 계수기로 증폭비를 직접 잰다 (우리 코드 밖의 증거).
 
-    편도 2 초를 걸어 서버의 첫 응답 버스트와 클라이언트의 두 번째 비행을
-    시간축에서 갈라 놓고, 그 사이에 계수기를 읽는다.
+    편도 400 ms에서 누적 L2 송수신비를 100 ms마다 읽는다.
+    주소 검증 시점과 UDP 페이로드는 별도로 식별하지 않는다.
     """
-    out = {}
     # 2-RTT 가 확실한 인증서 크기 (기준선 임계 5,903~5,984 B 위)
     cert = 9000
     # 🩸 편도 지연을 PTO(약 999 ms)보다 **짧게** 잡아야 한다. 처음에 편도
@@ -130,7 +183,7 @@ def amplification_wire_check(fec="off", m=1):
     p, sp = B.start_server(cert, fec="off")
     base = link_counters(B.DEV_PEER, B.NS)
     qamp = B.require_bin()
-    t0 = time.time()
+    t0 = time.monotonic()
     cli = subprocess.Popen(
         ["timeout", "40", qamp, "-mode", "client",
          "-addr", "%s:%d" % (B.RX_IP, B.SERVER_PORT),
@@ -147,22 +200,22 @@ def amplification_wire_check(fec="off", m=1):
         c = link_counters(B.DEV_PEER, B.NS)
         if not (c and base):
             continue
-        timeline.append({"t": round(time.time() - t0, 2),
+        timeline.append({"t": round(time.monotonic() - t0, 2),
                          "rx": c["rx_bytes"] - base["rx_bytes"],
                          "tx": c["tx_bytes"] - base["tx_bytes"]})
+    client_returncode = None
     try:
-        cli.wait(timeout=40)
-    except Exception:
+        client_returncode = cli.wait(timeout=40)
+    except subprocess.TimeoutExpired:
         cli.kill()
+        cli.wait(timeout=3)
     B.stop_server(p)
     B.set_netem(RTT_MS / 2.0)
 
     # 🩸 한 시점을 골라 "그때가 첫 버스트다" 라고 주장하는 것은 두 번 틀렸다.
-    # 위상을 분리하려 애쓰는 대신 **모든 시점에서 불변식을 본다.**
-    # RFC 9000 8.1 이 요구하는 것은 정확히 이것이다:
-    #     서버 누적 송신 <= 3 x 서버 누적 수신
-    # 커널 계수기는 이더넷 프레임을 세므로 양쪽에 같은 42 B/패킷 머리가
-    # 붙어 비율에는 거의 영향이 없다.
+    # 샘플링한 시점의 L2 송수신비를 보조 진단으로 남긴다.
+    # 패킷 수가 다르면 L2 머리의 영향도 다르고, 주소 검증 뒤에는 RFC의
+    # 제한 자체가 해제된다. 따라서 이 값으로 RFC 준수를 판정하지 않는다.
     worst = None
     for x in timeline:
         if x["rx"] <= 0:
@@ -170,12 +223,32 @@ def amplification_wire_check(fec="off", m=1):
         r = x["tx"] / float(x["rx"])
         if worst is None or r > worst["ratio"]:
             worst = {"t": x["t"], "rx": x["rx"], "tx": x["tx"], "ratio": r}
-    if worst is None:
-        return {"cert": cert, "fec": fec, "m": m, "timeline": timeline,
-                "ok": False, "detail": "커널 계수기에서 트래픽을 못 봤다"}
+    errors = []
+    if len(timeline) != 25:
+        errors.append("커널 계수기 표본 %d/25" % len(timeline))
+    if client_returncode != 0:
+        errors.append("클라이언트 종료 코드 %s" % client_returncode)
+    previous_rx, previous_tx = 0, 0
+    for x in timeline:
+        if x["rx"] < previous_rx or x["tx"] < previous_tx:
+            errors.append("누적 계수기가 감소함")
+            break
+        previous_rx, previous_tx = x["rx"], x["tx"]
+    if not timeline or timeline[-1]["rx"] <= 0 or timeline[-1]["tx"] <= 0:
+        errors.append("양방향 트래픽을 관측하지 못함")
+    if any(x["rx"] == 0 and x["tx"] > 0 for x in timeline):
+        errors.append("수신 기록 없이 송신만 관측됨")
+    max_ratio = worst["ratio"] if worst else None
     return {"cert": cert, "fec": fec, "m": m, "one_way_ms": ONE_WAY_MS,
             "timeline": timeline, "worst": worst,
-            "max_ratio": worst["ratio"], "ok": worst["ratio"] <= 3.0}
+            "max_ratio": max_ratio,
+            "ok": not errors and max_ratio is not None and max_ratio <= 3.0,
+            "observation_complete": not errors,
+            "client_returncode": client_returncode,
+            "detail": "; ".join(errors),
+            "measurement_layer": "L2", "sample_interval_s": 0.1,
+            "address_validation_tracked": False,
+            "rfc_compliance_verified": False}
 
 
 def main():
@@ -226,12 +299,20 @@ def main():
     def add(name, ok, detail):
         checks.append({"check": name, "ok": bool(ok), "detail": detail})
 
+    incomplete = [c["case"] for c in cases if not case_complete(c)]
+    add("모든 조건에 계획한 시행과 서버 통계가 기록됨", not incomplete,
+        "불완전한 조건: " + (", ".join(incomplete) or "없음"))
+    wrong_injection = [c["case"] for c in cases if not injections_match(c)]
+    add("모든 시행에 계획한 소거와 손상이 주입됨", not wrong_injection,
+        "주입 불일치 조건: " + (", ".join(wrong_injection) or "없음"))
+
     ONE_RTT = 1.5 * RTT_MS      # 이보다 작으면 왕복 한 번
 
     v0 = by("V0")
     add("V0 손실이 0 이면 규모를 키워도 복구가 0 이어야 한다 "
         "(유령 복구 금지)",
-        (v0["srv_recovered"] or 0) == 0 and (v0["srv_late"] or 0) == 0
+        case_complete(v0)
+        and (v0["srv_recovered"] or 0) == 0 and (v0["srv_late"] or 0) == 0
         and (v0["srv_crc_fail"] or 0) == 0 and v0["ok"] == v0["n"],
         "n=%d 성공 %d, 복구 %s, 늦은복구 %s, CRC거절 %s"
         % (v0["n"], v0["ok"], v0["srv_recovered"], v0["srv_late"],
@@ -239,7 +320,8 @@ def main():
 
     v1 = by("V1")
     add("V1 기준선은 소거가 없으면 100% 성공, 모든 시행이 1-RTT",
-        v1["ok"] == v1["n"] and (v1["max"] or 1e9) < ONE_RTT,
+        case_complete(v1) and v1["ok"] == v1["n"]
+        and (v1["max"] or 1e9) < ONE_RTT,
         "성공 %d/%d, p50 %.1f ms, 최대 %.1f ms"
         % (v1["ok"], v1["n"], v1["p50"] or -1, v1["max"] or -1))
 
@@ -250,16 +332,19 @@ def main():
     for nm in ("V2", "V3"):
         c = by(nm)
         add("%s 기준선은 원본 하나만 잃어도 왕복을 더 쓴다" % nm,
-            (c["p50"] or 0) >= ONE_RTT and (c["cli_dropped_orig"] or 0) > 0,
+            injections_match(c) and c["ok"] == c["n"]
+            and (c["p50"] or 0) >= ONE_RTT,
             "p50 %.1f ms (= %.1f RTT), 소거주입 %s건"
             % (c["p50"] or -1, (c["p50"] or 0) / RTT_MS,
                c["cli_dropped_orig"]))
 
     for nm in ("V4", "V5", "V8"):
         c = by(nm)
-        rec = (c["srv_recovered"] or 0) + (c["srv_late"] or 0)
+        # qamp의 recovered는 늦은 복구도 포함한 원본 수다.
+        rec = c["srv_recovered"] or 0
         add("%s FEC 는 그 소거를 복구해 **모든 시행**이 1-RTT" % nm,
-            (c["max"] or 1e9) < ONE_RTT and rec >= c["n"]
+            injections_match(c) and c["ok"] == c["n"]
+            and (c["max"] or 1e9) < ONE_RTT and rec == c["n"]
             and (c["srv_crc_fail"] or 0) == 0,
             "최대 %.1f ms, 복구 %d/%d, CRC실패 %s"
             % (c["max"] or -1, rec, c["n"], c["srv_crc_fail"]))
@@ -267,26 +352,29 @@ def main():
     c = by("V6")
     add("V6 패리티를 없애면 FEC 도 못 고치고 기준선으로 돌아간다 "
         "(개선이 다른 경로에서 온 것이 아님)",
-        (c["p50"] or 0) >= ONE_RTT and (c["srv_recovered"] or 0) == 0,
+        injections_match(c) and c["ok"] == c["n"]
+        and (c["p50"] or 0) >= ONE_RTT and (c["srv_recovered"] or 0) == 0,
         "p50 %.1f ms, 복구 %s, 패리티소거 %s건"
         % (c["p50"] or -1, c["srv_recovered"], c["cli_dropped_par"]))
 
     c = by("V7")
     add("V7 패리티가 손상되면 CRC 가 걸러 내고 잘못된 복구를 안 넘긴다",
-        (c["srv_recovered"] or 0) == 0 and (c["srv_crc_fail"] or 0) > 0
+        injections_match(c) and c["ok"] == c["n"]
+        and (c["srv_recovered"] or 0) == 0 and (c["srv_crc_fail"] or 0) > 0
         and (c["p50"] or 0) >= ONE_RTT,
         "복구 %s, CRC거절 %s, p50 %.1f ms"
         % (c["srv_recovered"], c["srv_crc_fail"], c["p50"] or -1))
 
     c = by("V9")
     add("V9 m=1 은 소거 2개를 복구하지 못한다 (능력을 과장하지 않는다)",
-        (c["srv_recovered"] or 0) == 0 and (c["cli_dropped_orig"] or 0) > 0
-        and (c["p50"] or 0) >= ONE_RTT,
+        injections_match(c) and (c["srv_recovered"] or 0) == 0
+        and (c["ok"] == 0 or (c["p50"] or 0) >= ONE_RTT),
         "복구 %s, 소거주입 %s건, p50 %.1f ms"
         % (c["srv_recovered"], c["cli_dropped_orig"], c["p50"] or -1))
 
     bad = [c["case"] for c in cases
-           if (c["srv_bytes_to_stack"] or 0) > (c["srv_bytes_in"] or 0)]
+           if not case_complete(c)
+           or c["srv_bytes_to_stack"] > c["srv_bytes_in"]]
     add("V10 모든 조건에서 스택 전달 바이트 <= 물리 수신 바이트",
         not bad, "위반 조건: %s" % (", ".join(bad) if bad else "없음"))
 
@@ -296,7 +384,7 @@ def main():
     amp_on = amplification_wire_check("on", 2)
     for nm, a in (("off", amp_off), ("fec m=2", amp_on)):
         w = a.get("worst") or {}
-        add("V11 커널 계수기: %s 팔에서 **모든 시점** 서버송신 <= 3 x 서버수신"
+        add("V11 커널 L2 계수기: %s 팔의 관측 시점 송수신비 <= 3 (보조 진단)"
             % nm, a.get("ok"),
             "최악 t=%.2fs 수신 %s B 송신 %s B 비 %.2f (한계 3.00)"
             % (w.get("t", -1), w.get("rx"), w.get("tx"),

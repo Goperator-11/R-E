@@ -4,6 +4,8 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include <limits.h>
+#include <signal.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <poll.h>
@@ -24,11 +26,20 @@ static double pct(double*s,int n,double p){if(n<=0)return 0.0;if(n==1)return s[0
     double idx=(p/100.0)*(n-1);int lo=(int)idx,hi=lo+1<n?lo+1:n-1;double fr=idx-lo;
     return s[lo]*(1.0-fr)+s[hi]*fr;}
 
+static int parse_int(const char *text, int minimum, int maximum, const char *name){
+  char *end; errno=0; long value=strtol(text,&end,10);
+  if(errno || !*text || *end || value<minimum || value>maximum){
+    fprintf(stderr,"invalid %s: %s\n",name,text);exit(2);
+  }
+  return (int)value;
+}
+
 int main(int argc,char**argv){
   if(argc<6){fprintf(stderr,"usage: %s <host> <port> <group> <iters> <warmup> [csv] [timeout_ms]\n",argv[0]);return 2;}
-  const char*host=argv[1];int port=atoi(argv[2]);const char*group=argv[3];
-  int iters=atoi(argv[4]),warmup=atoi(argv[5]);const char*csv=(argc>6)?argv[6]:NULL;
-  int TMO=(argc>7)?atoi(argv[7]):5000;
+  const char*host=argv[1];int port=parse_int(argv[2],1,65535,"port");const char*group=argv[3];
+  int iters=parse_int(argv[4],1,INT_MAX/2,"iters"),warmup=parse_int(argv[5],0,INT_MAX/2,"warmup");const char*csv=(argc>6)?argv[6]:NULL;
+  int TMO=(argc>7)?parse_int(argv[7],1,INT_MAX,"timeout_ms"):5000;
+  signal(SIGPIPE,SIG_IGN);
 
   SSL_CTX*ctx=SSL_CTX_new(TLS_client_method());
   if(!ctx){ERR_print_errors_fp(stderr);return 1;}
@@ -48,6 +59,7 @@ int main(int argc,char**argv){
 
   int total=warmup+iters;
   double*all=calloc(iters,sizeof(double));
+  if(!all){perror("calloc");SSL_CTX_free(ctx);return 1;}
   FILE*fp=NULL;
   if(csv){fp=fopen(csv,"w");if(!fp){perror("fopen");return 1;}
     fprintf(fp,"group,iter,tcp_ms,tls_ms,total_ms,status,negotiated_group\n");}
@@ -56,7 +68,7 @@ int main(int argc,char**argv){
   for(int i=0;i<total;i++){
     int w=(i<warmup);double t0=now_ms();
     int fd=socket(AF_INET,SOCK_STREAM,0);
-    if(fd<0){if(!w)fail++;continue;}  /* 2026-09-07: 워밍업은 ok/fail/tmo 에 안 센다 */
+    if(fd<0){if(!w){fail++;if(fp)fprintf(fp,"%s,%d,,,,socket_fail,\n",group,i-warmup);}continue;}
     int one=1;setsockopt(fd,IPPROTO_TCP,TCP_NODELAY,&one,sizeof one);
     int fl=fcntl(fd,F_GETFL,0);fcntl(fd,F_SETFL,fl|O_NONBLOCK);
 
@@ -78,8 +90,9 @@ int main(int argc,char**argv){
     SSL*ssl=SSL_new(ctx);SSL_set_fd(ssl,fd);
     SSL_set_tlsext_host_name(ssl,"localhost");
 
-    int r;double dl=t1+TMO;
+    int r;double dl=t0+TMO; /* One deadline for TCP and TLS together. */
     for(;;){
+      if(now_ms()>=dl){r=-2;break;}
       r=SSL_connect(ssl);
       if(r==1)break;
       int e=SSL_get_error(ssl,r);
@@ -87,7 +100,9 @@ int main(int argc,char**argv){
       double rem=dl-now_ms();
       if(rem<=0){r=-2;break;}
       struct pollfd pfd={fd,(short)(e==SSL_ERROR_WANT_READ?POLLIN:POLLOUT),0};
-      if(poll(&pfd,1,(int)rem)<=0){r=-2;break;}
+      int pr=poll(&pfd,1,(int)ceil(rem));
+      if(pr<0&&errno==EINTR)continue;
+      if(pr<=0){r=pr==0?-2:-1;break;}
     }
     double t2=now_ms();
 
@@ -103,10 +118,11 @@ int main(int argc,char**argv){
                         r==-2?"tls_timeout":"tls_fail");}
     SSL_free(ssl);close(fd);
   }
-  if(fp)fclose(fp);
+  if(fp){int bad=ferror(fp);if(fclose(fp)!=0)bad=1;if(bad){perror("csv write");free(all);SSL_CTX_free(ctx);return 1;}}
 
   int n=0;for(int i=0;i<iters;i++)if(all[i]>0.0)n++;
   double*s=calloc(n>0?n:1,sizeof(double));int j=0;double sum=0;
+  if(!s){perror("calloc");free(all);SSL_CTX_free(ctx);return 1;}
   for(int i=0;i<iters;i++)if(all[i]>0.0){s[j++]=all[i];sum+=all[i];}
   qsort(s,n,sizeof(double),cmpd);
   double mean=n?sum/n:0,var=0;

@@ -310,6 +310,10 @@ class ShimRx(object):
             if len(missing) > 1:
                 self.stats["unrecoverable_seen"] += 1
             return
+        # Reconstructed originals are absent from parts, which records physical
+        # arrivals. A repeated parity must not count an already delivered repair.
+        if missing[0] in fl["delivered"]:
+            return
         acc = fl["parity"]
         for i, d in fl["parts"].items():
             acc = xor_into(acc, d)

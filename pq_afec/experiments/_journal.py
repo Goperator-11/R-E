@@ -20,6 +20,10 @@ Standard library only.  ASCII console output.
 """
 import json
 import os
+import hashlib
+import platform
+import shutil
+import sys
 import tempfile
 
 
@@ -38,15 +42,17 @@ class Journal(object):
         if not os.path.exists(self.path):
             return
         good = []
-        with open(self.path, "r", encoding="utf-8") as f:
+        with open(self.path, "rb") as f:
             for line in f:
                 line = line.strip()
                 if not line:
                     continue
                 try:
                     rec = json.loads(line)
-                except ValueError:
+                except (ValueError, UnicodeDecodeError):
                     # torn final line from an interrupted write: drop it
+                    continue
+                if not isinstance(rec, dict) or not isinstance(rec.get("key"), str):
                     continue
                 if rec.get("fp") != self.fingerprint:
                     continue
@@ -72,13 +78,23 @@ class Journal(object):
 
     # -------------------------------------------------------------- write
     def record(self, key, val):
-        self._done[key] = val
+        if not isinstance(key, str):
+            raise TypeError("journal keys must be strings")
         line = json.dumps({"fp": self.fingerprint, "key": key, "val": val},
                           ensure_ascii=False)
-        with open(self.path, "a", encoding="utf-8") as f:
-            f.write(line + "\n")
+        # Preserve a torn tail, but separate it from the next complete record.
+        # Publish the in-memory completion only after the durable append succeeds.
+        with open(self.path, "a+b") as f:
+            f.seek(0, os.SEEK_END)
+            size = f.tell()
+            if size:
+                f.seek(-1, os.SEEK_END)
+                if f.read(1) != b"\n":
+                    f.write(b"\n")
+            f.write((line + "\n").encode("utf-8"))
             f.flush()
             os.fsync(f.fileno())
+        self._done[key] = val
 
     def reset(self):
         self._done = {}
@@ -86,7 +102,7 @@ class Journal(object):
             os.remove(self.path)
 
 
-def atomic_write_json(path, obj):
+def atomic_write_json(path, obj, indent=2, default=None, before_replace=None):
     """Write JSON so a crash mid-write cannot leave a half file behind."""
     d = os.path.dirname(path)
     if d:
@@ -94,9 +110,11 @@ def atomic_write_json(path, obj):
     fd, tmp = tempfile.mkstemp(dir=d or ".", suffix=".tmp")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(obj, f, indent=2, ensure_ascii=False)
+            json.dump(obj, f, indent=indent, ensure_ascii=False, default=default)
             f.flush()
             os.fsync(f.fileno())
+        if before_replace is not None:
+            before_replace()
         os.replace(tmp, path)
     except Exception:
         try:
@@ -104,6 +122,35 @@ def atomic_write_json(path, obj):
         except OSError:
             pass
         raise
+
+
+def save_result(path, obj, indent=1, backup_dir=None, default=None):
+    """Retain an existing result, then replace it atomically. Never prune raw data."""
+    def preserve():
+        if not os.path.isfile(path):
+            return
+        archive = backup_dir or os.path.join(os.path.dirname(path), "..", "state", "backup")
+        os.makedirs(archive, exist_ok=True)
+        fd, previous = tempfile.mkstemp(prefix=os.path.basename(path) + ".", suffix=".json",
+                                         dir=archive)
+        os.close(fd)
+        shutil.copy2(path, previous)
+
+    atomic_write_json(path, obj, indent=indent, default=default, before_replace=preserve)
+    return path
+
+
+def runtime_context():
+    """Stable run settings, excluding changing load and timestamps."""
+    try:
+        affinity = sorted(os.sched_getaffinity(0))
+    except (AttributeError, OSError):
+        affinity = None
+    return {"python": sys.version, "executable": sys.executable,
+            "platform": platform.platform(), "machine": platform.machine(),
+            "cpu_count": os.cpu_count(), "affinity": affinity,
+            "padfec_env": {k: v for k, v in sorted(os.environ.items())
+                           if k.startswith("PADFEC_")}}
 
 
 def code_fingerprint(paths, root=None):
@@ -115,9 +162,19 @@ def code_fingerprint(paths, root=None):
     resumable pipeline gets into a state nobody can explain.  Mixing the code
     hash into the fingerprint makes stale units invisible instead.
     """
-    import hashlib
-    import os
     h = hashlib.sha256()
+    # Handwritten dependency lists used to miss shared measurement helpers and
+    # generated Go code. A conservative source closure prevents stale reuse.
+    paths = set(paths)
+    if root:
+        for subdir, suffixes in (("experiments", (".py",)),
+                                ("experiments/quicbed", (".go", ".sh", ".mod", ".sum")),
+                                ("afec", (".py",)), ("padfec", (".py",))):
+            directory = os.path.join(root, subdir)
+            if os.path.isdir(directory):
+                paths.update(subdir + "/" + name for name in os.listdir(directory)
+                             if name.endswith(suffixes))
+    h.update(json.dumps(runtime_context(), sort_keys=True).encode())
     for rel in sorted(paths):
         full = os.path.join(root, rel) if root else rel
         h.update(rel.encode())

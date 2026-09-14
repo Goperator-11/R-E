@@ -355,6 +355,15 @@ def main():
             if se_auto is not None and _se_h is not None:
                 se_hold = (se_auto ** 2 + _se_h ** 2) ** 0.5
         _methods = sorted(set(m for m, _k in _se_methods if m))
+        half_late = BST.batch_diff_half(arms["auto"].get("ms_late") or [],
+                                        arms[best_late].get("ms_late") or [])
+        half_full = BST.batch_diff_half(arms["auto"].get("ms") or [],
+                                        arms[best_arm].get("ms") or [])
+        half_hold = None
+        if best_hold is not None:
+            hold_values = arms[best_hold].get("ms") or []
+            half_hold = BST.batch_diff_half(arms["auto"].get("ms_late") or [],
+                                            hold_values[len(hold_values)//2:])
 
         out["regret"].append({
             "cond": name, "cert": cert, "loss": loss,
@@ -369,11 +378,10 @@ def main():
             "regret_late_sel_ms": reg_sel,
             "best_fixed_holdout": best_hold,
             "se_regret_ms": se_reg,
-            "ci95_half_ms": (1.96 * se_reg) if se_reg is not None else None,
-            "ci95_half_full_ms": ((1.96 * se_reg_f)
-                                  if se_reg_f is not None else None),
-            "ci95_half_holdout_ms": ((1.96 * se_hold)
-                                     if se_hold is not None else None),
+            "ci95_half_ms": half_late,
+            "ci95_half_full_ms": half_full,
+            "ci95_half_holdout_ms": half_hold,
+            "ci_method": "Welch-t on batch means (iid fallback for short samples)",
             "se_method": ("batch" if _methods == ["batch"]
                           else "+".join(_methods) or None),
             "se_batches_min": min((k for _m, k in _se_methods if k),
@@ -385,7 +393,7 @@ def main():
               % (best_arm, fixed[best_arm], arms["auto"]["mean"], reg,
                  reg_late,
                  ("%+.2f" % reg_hold) if reg_hold is not None else "-",
-                 ("%.2f" % (1.96 * se_reg)) if se_reg is not None else "-"))
+                 ("%.2f" % half_late) if half_late is not None else "-"))
         if probe_tax is not None:
             print("       내역: 선택 오류분 %+.2f ms + 탐색세 %+.2f ms "
                   "(수렴후 탐색 %d 라운드)"

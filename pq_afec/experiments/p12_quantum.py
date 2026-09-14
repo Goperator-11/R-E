@@ -13,6 +13,8 @@
 
 이 문장은 반증 가능하다. `ips` 를 1 B 씩 움직이면서 1-RTT → 2-RTT 임계
 인증서 크기를 재면, 임계가 **1280 과 1281 사이에서만** 한 칸 뛰어야 한다.
+이 실험은 데이터그램별 IPS를 바꾼다. k=1이면 IPS +1 B가 총 +1 B이고,
+k=2인 교차 실험에서는 총 +2 B다. 후자는 총 +1 B의 직접 실측이 아니다.
 1279 와 1280 은 같은 칸이어야 하고, 1281 위쪽(1282·1300·1350·1450)은 전부
 같은 고원이어야 한다.
 
@@ -198,8 +200,9 @@ def probe(group, ips, cert, k, n, jr):
            "ok": s["ok"], "p50": s["p50"],
            "two_rtt_rate": s["two_rtt_rate"],
            "first_flight_bytes": cs.get("first_flight_bytes"),
-           "first_flight_datagrams": cs.get("first_flight_datagrams")}
-    if s["ok"] == s["n"] and s["n"] > 0:
+           "first_flight_datagrams": cs.get("first_flight_datagrams"),
+           "error": _err, "valid": not _err and n > 0 and s["ok"] == s["n"] == n}
+    if rec["valid"]:
         jr.record(key, rec)
     return rec
 
@@ -231,12 +234,15 @@ def bisect_threshold(group, ips, k, jr):
     while hi - lo > RESOLUTION:
         mid = (lo + hi) // 2
         r = probe(group, ips, mid, k, N_PROBE, jr)
-        if not r["ok"]:
+        if P2.is_two_rtt(r) is None:
             return {"lo": None, "hi": None, "ref": r_lo,
                     "note": "cert %d 에서 핸드셰이크 실패 - 판정 불가" % mid}
         rate = r["two_rtt_rate"] or 0.0
         if 0.2 < rate < 0.8:
             r = probe(group, ips, mid, k, N_CONFIRM, jr)
+            if P2.is_two_rtt(r) is None:
+                return {"lo": None, "hi": None, "ref": r_lo,
+                        "note": "cert %d 재확인 실패 - 판정 불가" % mid}
             rate = r["two_rtt_rate"] or 0.0
         if rate >= 0.5:
             hi = mid

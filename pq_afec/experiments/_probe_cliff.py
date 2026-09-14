@@ -133,7 +133,7 @@ def main():
             "1279 n_rtt=%s / 1280 n_rtt=%s"
             % (by[1279]["n_rtt_obs"], by[1280]["n_rtt_obs"]))
     if 1281 in by and 1350 in by:
-        add("1281 과 1350 이 같은 칸 (1 바이트가 170 바이트와 같은 효과)",
+        add("1281 과 1350 이 같은 칸 (IPS +1 B와 +70 B의 임계 효과가 같음)",
             by[1281]["n_rtt_obs"] == by[1350]["n_rtt_obs"],
             "1281 n_rtt=%s / 1350 n_rtt=%s"
             % (by[1281]["n_rtt_obs"], by[1350]["n_rtt_obs"]))

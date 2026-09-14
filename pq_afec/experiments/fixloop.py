@@ -56,6 +56,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -697,6 +698,33 @@ def main():
         drop_lock()
 
 
+def detached_command(a):
+    cmd = [PY, "-u", os.path.abspath(__file__),
+           "--rounds", str(a.rounds), "--max-env-retry", str(a.max_env_retry)]
+    if a.force_unlock:
+        cmd.append("--force-unlock")
+    if a.loop2_arg:
+        cmd += ["--loop2-arg"] + list(a.loop2_arg)
+    return cmd
+
+
+def detached_launcher(cmd, out, env):
+    """WMI has no shell redirection or inherited caller environment."""
+    settings = {k: v for k, v in env.items()
+                if k.startswith("PADFEC_") or k in ("PYTHONIOENCODING", "PYTHONUNBUFFERED", "WSLENV")}
+    fd, path = tempfile.mkstemp(prefix="fixloop_launcher_", suffix=".py", dir=STATE_DIR)
+    source = ("import os, subprocess, sys\n"
+              "env = dict(os.environ)\n"
+              "env.update(%r)\n"
+              "with open(%r, 'ab', buffering=0) as log:\n"
+              "    result = subprocess.run(%r, cwd=%r, env=env, stdout=log, "
+              "stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)\n"
+              "sys.exit(result.returncode)\n" % (settings, out, cmd, ROOT))
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        f.write(source)
+    return [PY, "-u", path]
+
+
 def detach(a):
     """자기 자신을 세션 밖으로 띄운다.
 
@@ -717,15 +745,11 @@ def detach(a):
        그대로 둔다(Ctrl+C 전파를 끊는다).
     """
     NEW_CONSOLE = 0x00000010
-    DETACHED = 0x00000008
     NEW_GROUP = 0x00000200
     BREAKAWAY = 0x01000000
     tried = []
     out = os.path.join(STATE_DIR, "fixloop_detached.txt")
-    cmd = [PY, "-u", os.path.abspath(__file__),
-           "--rounds", str(a.rounds), "--max-env-retry", str(a.max_env_retry)]
-    if a.loop2_arg:
-        cmd += ["--loop2-arg"] + list(a.loop2_arg)
+    cmd = detached_command(a)
     env = dict(os.environ)
     env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONUNBUFFERED"] = "1"
@@ -735,10 +759,9 @@ def detach(a):
     si = subprocess.STARTUPINFO()
     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     si.wShowWindow = 0                      # SW_HIDE - 창은 안 뜬다
-    # 콘솔을 가진 쪽을 **먼저** 시도한다. DETACHED 는 되돌아갈 자리로만 둔다.
-    for flags in (NEW_CONSOLE | NEW_GROUP | BREAKAWAY,
-                  NEW_CONSOLE | NEW_GROUP,
-                  DETACHED | NEW_GROUP):
+    # A process still in the caller's Job can die when this session closes.
+    # If BREAKAWAY is refused, use the WMI launcher below immediately.
+    for flags in (NEW_CONSOLE | NEW_GROUP | BREAKAWAY,):
         try:
             p = subprocess.Popen(cmd, cwd=ROOT, env=env, stdout=f,
                                  stderr=subprocess.STDOUT,
@@ -750,16 +773,13 @@ def detach(a):
             # 때문에 "BREAKAWAY 가 통한 줄" 알고 세 번째로 잃었다.
             tried.append("0x%08x" % flags)
             continue
-        if flags & BREAKAWAY == 0:
-            print("⚠ BREAKAWAY 가 안 통해 Job 안에 남는 조합으로 띄웠다"
-                  " (시도 실패: %s). 이 세션이 끝나면 같이 죽을 수 있다 -"
-                  " 2026-08-27 에 그렇게 p17 을 18 분째 잃었다."
-                  % (", ".join(tried) or "없음"))
         print("떨어져 나갔다: pid %d" % p.pid)
         print("진행:  python experiments/fixloop.py --status")
         print("원문:  %s" % out)
         journal("분리 실행 pid %d (rounds=%d)" % (p.pid, a.rounds))
+        f.close()
         return 0
+    f.close()
     # 2026-08-27 **세 번째 죽음 - 그리고 진짜 원인.**
     #
     #   위 BREAKAWAY 는 부모의 Job 이 `JOB_OBJECT_LIMIT_BREAKAWAY_OK` 를
@@ -778,18 +798,20 @@ def detach(a):
     #   대가: stdout 을 파이프로 못 받는다 - 그래서 자식이 로그를 직접
     #   파일로 쓰게 리다이렉션을 명령줄에 넣는다.
     try:
-        import shlex  # noqa: F401  (경로에 공백이 있어 인용이 필요하다)
+        launcher = detached_launcher(cmd, out, env)
         ps_cmd = (
+            "$startup = New-CimInstance -ClassName Win32_ProcessStartup "
+            "-ClientOnly -Property @{ShowWindow=0}; "
             "$r = Invoke-CimMethod -ClassName Win32_Process -MethodName "
-            "Create -Arguments @{CommandLine='%s'; CurrentDirectory='%s'}; "
-            "$r.ProcessId"
-            % ((" ".join('\"%s\"' % c if " " in c else c for c in cmd)
-                + " >> \"%s\" 2>&1" % out).replace("'", "''"),
+            "Create -Arguments @{CommandLine='%s'; CurrentDirectory='%s'; "
+            "ProcessStartupInformation=$startup}; "
+            "if ($r.ReturnValue -eq 0) { $r.ProcessId } else { exit 1 }"
+            % (subprocess.list2cmdline(launcher).replace("'", "''"),
                ROOT.replace("'", "''")))
         r = subprocess.run(["powershell", "-NoProfile", "-Command", ps_cmd],
                            capture_output=True, text=True, timeout=60)
         pid = (r.stdout or "").strip().splitlines()[-1:] or [""]
-        if pid[0].isdigit():
+        if r.returncode == 0 and pid[0].isdigit() and int(pid[0]) > 0:
             print("떨어져 나갔다 (WMI): pid %s" % pid[0])
             print("진행:  python experiments/fixloop.py --status")
             print("원문:  %s" % out)

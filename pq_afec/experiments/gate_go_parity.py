@@ -113,7 +113,7 @@ def go_src_fingerprint():
     """quicbed 소스의 지문. `quicbed/build.sh` 가 뜨는 것과 **같은 식**이다.
 
     파일마다 `"<이름> <sha256>\\n"` 을 만들어 이어 붙이고 그 전체를 다시
-    sha256 한다. 대상은 quicbed 의 `*.go` 전부 + `build.sh` 이고, 목록은
+    sha256 한다. 대상은 quicbed 의 `*.go` 전부와 `build.sh`, `go.mod`, `go.sum`이다.
     훑어서 만든다 - `loop2.py` 의 `_sources` 와 같은 범위이고 같은 이유다
     (사람이 두 곳을 같이 고쳐야 하는 구조가 애초에 사고의 원인이었다).
 
@@ -122,9 +122,7 @@ def go_src_fingerprint():
     벗긴 것도 같으므로 원본을 재는 쪽이 엄격하면서 단순하다.
     """
     names = sorted([n for n in os.listdir(QUICBED) if n.endswith(".go")]
-                   + (["build.sh"]
-                      if os.path.exists(os.path.join(QUICBED, "build.sh"))
-                      else []))
+                   + ["build.sh", "go.mod", "go.sum"])
     h = hashlib.sha256()
     for n in names:
         with open(os.path.join(QUICBED, n), "rb") as f:

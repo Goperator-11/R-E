@@ -38,7 +38,7 @@ T_recover = 복구 실패 시 물어야 하는 지연.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from .channel import GilbertElliott
 
@@ -182,8 +182,12 @@ class AdaptiveFecController:
         self.last_decision: Decision | None = None
 
     def next_block(self, rate_bps: float | None = None) -> Decision:
-        cfg = self.cfg
-        rate = rate_bps or cfg.rate_bps
+        rate = self.cfg.rate_bps if rate_bps is None else rate_bps
+        if not math.isfinite(rate) or rate <= 0:
+            raise ValueError("rate_bps must be finite and positive")
+        # Use the current link rate for both candidate selection and reporting.
+        # Keep the caller's configuration available as the default for later blocks.
+        cfg = replace(self.cfg, rate_bps=rate)
         k = choose_block_size(cfg, rate)
 
         srtt = self.cong.srtt

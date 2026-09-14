@@ -32,6 +32,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -133,6 +134,50 @@ def _parse_key_share(msg):
     return out
 
 
+def loopback_stage0():
+    """Bounded READY wait and client run; always stop this server by PID."""
+    rows, ready, returncode, error = [], False, None, ""
+    with tempfile.TemporaryDirectory(prefix="padfec_p0_") as directory:
+        stderr_path = os.path.join(directory, "server.stderr")
+        with open(stderr_path, "wb") as stream:
+            srv = subprocess.Popen(
+                [B.QAMP, "-mode", "server", "-addr", "127.0.0.1:%d" % DOC_PORT,
+                 "-certsize", str(DOC_CERT), "-fec", "off"],
+                stdout=subprocess.DEVNULL, stderr=stream)
+        try:
+            deadline = time.monotonic() + 15
+            while time.monotonic() < deadline:
+                with open(stderr_path, "rb") as stream:
+                    ready = b"READY" in stream.read()
+                if ready or srv.poll() is not None:
+                    break
+                time.sleep(.05)
+            ready = ready and srv.poll() is None
+            if ready:
+                result = subprocess.run(
+                    ["timeout", "60", B.QAMP, "-mode", "client",
+                     "-addr", "127.0.0.1:%d" % DOC_PORT, "-group", "X25519",
+                     "-n", "5", "-gap", "20ms", "-timeout", "10s"],
+                    capture_output=True, text=True, timeout=90)
+                returncode = result.returncode
+                for line in result.stdout.splitlines():
+                    if line.strip().startswith("{"):
+                        rows.append(json.loads(line))
+                if returncode:
+                    error = "client exit %d: %s" % (returncode, result.stderr[-300:])
+            else:
+                error = "server did not become ready within 15 seconds"
+        except (subprocess.TimeoutExpired, ValueError) as exc:
+            error = str(exc)
+        finally:
+            B.stop_server(srv)
+    successful = sum(1 for row in rows if row.get("ok"))
+    info = {"ready": ready, "trials": len(rows), "ok": successful,
+            "client_returncode": returncode, "error": error,
+            "kem_ids": sorted({x.get("kem_id") for x in rows if x.get("kem_id") is not None})}
+    return ready and not error and returncode == 0 and successful == len(rows) == 5, info
+
+
 def main():
     B.harden()
     B.require_root()
@@ -142,11 +187,11 @@ def main():
     # ------------------------------------------------------------ 도구 버전
     rc, out = sh("export PATH=\"$HOME/goroot/bin:$PATH\"; go version")
     info["go_version"] = out.strip()
-    check(results, "Go 툴체인 (문서: go1.26.5)", DOC_GO in out, out.strip())
+    check(results, "Go 툴체인 (문서: go1.26.5)", rc == 0 and DOC_GO in out, out.strip())
 
     rc, out = sh("openssl version")
     info["openssl_version"] = out.strip()
-    check(results, "OpenSSL (문서 환경: 3.5)", "3.5" in out, out.strip())
+    check(results, "OpenSSL (문서 환경: 3.5)", rc == 0 and "3.5" in out, out.strip())
 
     rc, out = sh("ls -la /tmp/qamp 2>&1 || true")
     B.require_bin()
@@ -181,39 +226,7 @@ def main():
     # ------------------------------------------------- 문서 단계 0 (loopback)
     # 문서 4절 그대로: 127.0.0.1:44433, X25519, certsize 3000, n=5.
     # 종료는 PID 로만 한다 (문서 6절: pkill -f 는 부모 셸까지 죽인다).
-    srv = subprocess.Popen(
-        [B.QAMP, "-mode", "server", "-addr", "127.0.0.1:%d" % DOC_PORT,
-         "-certsize", str(DOC_CERT), "-fec", "off"],
-        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-    deadline = time.time() + 15
-    ready = False
-    while time.time() < deadline:
-        line = srv.stderr.readline()
-        if not line:
-            break
-        if b"READY" in line:
-            ready = True
-            break
-    rows = []
-    try:
-        r = subprocess.run(
-            ["timeout", "60", B.QAMP, "-mode", "client",
-             "-addr", "127.0.0.1:%d" % DOC_PORT, "-group", "X25519",
-             "-n", "5", "-gap", "20ms", "-timeout", "10s"],
-            capture_output=True, text=True, timeout=90)
-        for line in r.stdout.splitlines():
-            if line.strip().startswith("{"):
-                rows.append(json.loads(line))
-    finally:
-        srv.terminate()
-        try:
-            srv.wait(timeout=3)
-        except Exception:
-            srv.kill()
-    ok = ready and len(rows) == 5 and all(x.get("ok") for x in rows)
-    info["stage0"] = {"ready": ready, "trials": len(rows),
-                      "ok": sum(1 for x in rows if x.get("ok")),
-                      "kem_ids": sorted(set(x.get("kem_id") for x in rows))}
+    ok, info["stage0"] = loopback_stage0()
     check(results, "문서 단계 0: 서버 기동 + 클라이언트 5회 성공", ok,
           "성공 %d/5, group_id %s"
           % (info["stage0"]["ok"], info["stage0"]["kem_ids"]))
@@ -232,25 +245,26 @@ def main():
     info["key_share"] = ks
     got = {e["group"]: e["key_bytes"] for e in (ks or {}).get("key_shares", [])}
     # 0x11EC = 4588 = X25519MLKEM768.  32(X25519) + 1184(ML-KEM-768 ek) = 1216
-    ok = got.get(4588) == 1216
+    complete = not err and len(rows) == 3 and all(x.get("ok") for x in rows)
+    ok = complete and got.get(4588) == 1216
     check(results, "ClientHello key_share: X25519MLKEM768 = 1216 B "
                    "(= 32 + ML-KEM-768 캡슐화키 1184, FIPS 203)",
           ok, "실측 %s" % got)
     kem_ids = sorted(set(x.get("kem_id") for x in rows if x.get("ok")))
     info["negotiated_group_ids"] = kem_ids
     check(results, "QUIC 핸드셰이크에서 실제로 X25519MLKEM768(4588) 합의",
-          kem_ids == [4588], str(kem_ids))
+          complete and kem_ids == [4588], str(kem_ids))
 
     # ---------------------------------------------- ML-KEM 동일성 (상호운용)
     rc, out = sh("sed 's/\\r$//' %s/quicbed/mlkem_interop.sh > "
                  "/tmp/mlkem_interop.sh && bash /tmp/mlkem_interop.sh"
                  % HERE.replace("\\", "/"), timeout=240)
     info["interop_output"] = out[-1500:]
-    ok_pq = '"group":"X25519MLKEM768"' in out and '"ok":true' in out
+    ok_pq = rc == 0 and '"group":"X25519MLKEM768"' in out and '"ok":true' in out
     check(results, "상호운용: Go crypto/tls <-> OpenSSL 3.5 가 "
                    "X25519MLKEM768 로 핸드셰이크 완료", ok_pq,
           "두 독립 구현이 같은 공유비밀에 도달했다는 뜻")
-    ok_size = "캡슐화키 1184 B 포함 여부: 예" in out
+    ok_size = rc == 0 and "캡슐화키 1184 B 포함 여부: 예" in out
     check(results, "OpenSSL ML-KEM-768 캡슐화키 1184 B (FIPS 203)", ok_size,
           "")
 

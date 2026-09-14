@@ -40,11 +40,12 @@ type countConn struct {
 
 func (c *countConn) WriteTo(b []byte, addr net.Addr) (int, error) {
 	c.mu.Lock()
-	if c.counting {
-		c.sent = append(c.sent, len(b))
+	defer c.mu.Unlock()
+	n, err := c.PacketConn.WriteTo(b, addr)
+	if c.counting && n > 0 {
+		c.sent = append(c.sent, n)
 	}
-	c.mu.Unlock()
-	return c.PacketConn.WriteTo(b, addr)
+	return n, err
 }
 
 func (c *countConn) ReadFrom(b []byte) (int, net.Addr, error) {
@@ -161,12 +162,6 @@ func runClient(addr, group string, n int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	pc, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.IPv4zero, Port: 0})
-	if err != nil {
-		log.Fatal(err)
-	}
-	cc := &countConn{PacketConn: pc}
-	tr := &quic.Transport{Conn: cc}
 	tlsConf := &tls.Config{
 		InsecureSkipVerify: true,
 		NextProtos:         []string{alpn},
@@ -176,7 +171,14 @@ func runClient(addr, group string, n int) {
 
 	fmt.Printf("=== %s ===\n", group)
 	var totSent, totRecv, cntS, cntR int
+	okN := 0
 	for i := 0; i < n; i++ {
+		pc, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.IPv4zero, Port: 0})
+		if err != nil {
+			log.Fatal(err)
+		}
+		cc := &countConn{PacketConn: pc}
+		tr := &quic.Transport{Conn: cc}
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		cc.start()
 		t0 := time.Now()
@@ -188,11 +190,16 @@ func runClient(addr, group string, n int) {
 		el := float64(time.Since(t0).Microseconds()) / 1000.0
 		s, r := cc.stop()
 		cancel()
+		if conn != nil {
+			conn.CloseWithError(0, "bye")
+		}
+		tr.Close()
+		pc.Close()
 		if err != nil {
 			fmt.Printf("  [%d] 실패: %v\n", i, err)
 			continue
 		}
-		conn.CloseWithError(0, "bye")
+		okN++
 
 		if i == 0 {
 			fmt.Printf("  송신 데이터그램: %v  (합계 %dB)\n", s, sum(s))
@@ -205,13 +212,14 @@ func runClient(addr, group string, n int) {
 		cntS += len(s)
 		cntR += len(r)
 	}
-	if n > 0 {
+	if okN > 0 {
 		fmt.Printf("  평균: 송신 %.1f개 %.0fB · 수신 %.1f개 %.0fB\n",
-			float64(cntS)/float64(n), float64(totSent)/float64(n),
-			float64(cntR)/float64(n), float64(totRecv)/float64(n))
-		fmt.Printf("  증폭비(수신/송신): %.2f  ← RFC 9000 §8.1 서버 한도 3배\n",
+			float64(cntS)/float64(okN), float64(totSent)/float64(okN),
+			float64(cntR)/float64(okN), float64(totRecv)/float64(okN))
+		fmt.Printf("  핸드셰이크 전체 수신/송신: %.2f (주소 검증 전 한도 판정에 사용 불가)\n",
 			float64(totRecv)/float64(totSent))
 	}
+	fmt.Printf("  성공 %d, 실패 %d\n", okN, n-okN)
 }
 
 func main() {
@@ -220,6 +228,9 @@ func main() {
 	group := flag.String("group", "X25519MLKEM768", "키 교환 그룹")
 	n := flag.Int("n", 5, "반복 횟수")
 	flag.Parse()
+	if *n <= 0 {
+		log.Fatal("n은 양수여야 합니다")
+	}
 
 	switch *mode {
 	case "server":

@@ -531,9 +531,8 @@ def main():
 
     out = {"results": results, "passed": npass, "total": len(results)}
     path = os.path.join(HERE, "results", "p5_audit.json")
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=1)
+    from _journal import save_result
+    save_result(path, out)
     print("saved:", path)
     return 0 if npass == len(results) else 1
 

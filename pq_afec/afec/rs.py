@@ -89,6 +89,8 @@ class RSErasureCode:
     """
 
     def __init__(self, k: int, r: int):
+        if type(k) is not int or type(r) is not int:
+            raise TypeError("k and r must be integers")
         if k < 1 or r < 0:
             raise ValueError("k >= 1, r >= 0 이어야 한다")
         if k + r > 256:
@@ -133,11 +135,16 @@ class RSErasureCode:
 
         살아남은 게 K개 미만이면 ValueError. 이게 곧 '복구 실패'다.
         """
+        if any(type(i) is not int or not 0 <= i < self.k + self.r
+               for i in received):
+            raise ValueError("received symbol index is outside the codeword")
         if len(received) < self.k:
             raise ValueError(
                 f"살아남은 심볼 {len(received)}개 < K={self.k} - 복구 불가")
 
         size = len(next(iter(received.values())))
+        if any(len(s) != size for s in received.values()):
+            raise ValueError("received symbols must have equal lengths")
         indices = sorted(received)[:self.k]
 
         # 원본이 전부 살아있으면 복호 자체가 불필요

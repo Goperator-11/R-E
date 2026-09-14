@@ -376,6 +376,8 @@ def main():
         _methods = sorted(set(m for m, _k in _se_methods if m))
         se_reg = ((sa ** 2 + sf ** 2) ** 0.5
                   if sa is not None and sf is not None else None)
+        half_reg = BST.batch_diff_half(fin.get("ms") or [],
+                                       _late_ms(best) or arms[best].get("ms") or [])
 
         # 🆕 수렴 판정. "몇 라운드 돌았으니 수렴했다"가 아니라 **직접 본다**:
         #    마지막 세 라운드의 p 추정이 상대 5% 안에서 안정적이고, 선택
@@ -425,7 +427,8 @@ def main():
             "probe_tax_ms": probe_tax,
             "regret_sel_ms": reg_sel,
             "se_regret_ms": se_reg,
-            "ci95_half_ms": (1.96 * se_reg) if se_reg is not None else None,
+            "ci95_half_ms": half_reg,
+            "ci_method": "Welch-t on batch means (iid fallback for short samples)",
             "regret_paired_late_ms": reg_paired,
             "regret_paired_late_ci95_half_ms": reg_paired_half,
             "paired_rounds": len(_pd),
@@ -437,7 +440,7 @@ def main():
               "후회 %+.2f ms (전구간창 %+.2f, 홀드아웃 %s, ±%s ms) | 수렴 %s (%s)"
               % (best, fixed_means_late[best], fin["mean"], reg, reg_full,
                  ("%+.2f" % reg_hold) if reg_hold is not None else "-",
-                 ("%.2f" % (1.96 * se_reg)) if se_reg is not None else "-",
+                 ("%.2f" % half_reg) if half_reg is not None else "-",
                  "예" if conv_ok else "**아니오**", conv_why),
               flush=True)
 

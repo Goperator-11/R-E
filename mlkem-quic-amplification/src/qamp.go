@@ -18,6 +18,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"encoding/csv"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -46,11 +47,12 @@ type countConn struct {
 
 func (c *countConn) WriteTo(b []byte, a net.Addr) (int, error) {
 	c.mu.Lock()
-	if c.counting {
-		c.sent = append(c.sent, len(b))
+	defer c.mu.Unlock()
+	n, err := c.PacketConn.WriteTo(b, a)
+	if c.counting && n > 0 {
+		c.sent = append(c.sent, n)
 	}
-	c.mu.Unlock()
-	return c.PacketConn.WriteTo(b, a)
+	return n, err
 }
 
 func (c *countConn) ReadFrom(b []byte) (int, net.Addr, error) {
@@ -210,7 +212,7 @@ func runServer(addr, group string, certSize int) {
 	}
 }
 
-func runClient(addr, group string, n, timeoutMs int, csvPath string, summary bool) {
+func runClient(addr, group string, n, warmup, timeoutMs, initialSize int, csvPath string, summary bool) {
 	cid, err := curveOf(group)
 	if err != nil {
 		log.Fatal(err)
@@ -219,12 +221,6 @@ func runClient(addr, group string, n, timeoutMs int, csvPath string, summary boo
 	if err != nil {
 		log.Fatal(err)
 	}
-	pc, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.IPv4zero, Port: 0})
-	if err != nil {
-		log.Fatal(err)
-	}
-	cc := &countConn{PacketConn: pc}
-	tr := &quic.Transport{Conn: cc}
 	tlsConf := &tls.Config{
 		InsecureSkipVerify: true,
 		NextProtos:         []string{alpn},
@@ -241,41 +237,64 @@ func runClient(addr, group string, n, timeoutMs int, csvPath string, summary boo
 		defer fh.Close()
 		w = csv.NewWriter(fh)
 		defer w.Flush()
-		w.Write([]string{"iter", "hct_ms", "sent_pkts", "sent_bytes", "recv_pkts", "recv_bytes", "status"})
+		w.Write([]string{"iter", "hct_ms", "sent_pkts", "sent_bytes", "recv_pkts", "recv_bytes", "status", "negotiated_group", "initial_size"})
 	}
 
 	var hcts []float64
 	var sPk, sBy, rPk, rBy []float64
 	failN, tmoN := 0, 0
 
-	for i := 0; i < n; i++ {
+	for attempt := 0; attempt < n+warmup; attempt++ {
+		i := attempt - warmup
+		// Separate sockets prevent delayed packets from the preceding connection
+		// entering this connection's byte counters.
+		pc, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.IPv4zero, Port: 0})
+		if err != nil {
+			log.Fatal(err)
+		}
+		cc := &countConn{PacketConn: pc}
+		tr := &quic.Transport{Conn: cc}
 		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeoutMs)*time.Millisecond)
 		cc.start()
 		t0 := time.Now()
 		conn, err := tr.Dial(ctx, raddr, tlsConf, &quic.Config{
+			InitialPacketSize:       uint16(initialSize),
 			HandshakeIdleTimeout:    time.Duration(timeoutMs) * time.Millisecond,
 			MaxIdleTimeout:          30 * time.Second,
 			DisablePathMTUDiscovery: true,
 		})
 		el := float64(time.Since(t0).Microseconds()) / 1000.0
 		s, r := cc.stop()
+		contextErr := ctx.Err()
 		cancel()
+		negotiated := ""
+		if conn != nil {
+			negotiated = conn.ConnectionState().TLS.CurveID.String()
+			if conn.ConnectionState().TLS.CurveID != cid {
+				err = fmt.Errorf("negotiated group %s differs from requested %s", negotiated, group)
+			}
+			conn.CloseWithError(0, "bye")
+		}
+		tr.Close()
+		pc.Close()
+		if i < 0 {
+			continue
+		}
 
 		if err != nil {
 			failN++
 			st := "fail"
-			if ctx.Err() == context.DeadlineExceeded {
+			var timeoutError net.Error
+			if contextErr == context.DeadlineExceeded || errors.Is(err, context.DeadlineExceeded) || (errors.As(err, &timeoutError) && timeoutError.Timeout()) {
 				tmoN++
 				st = "timeout"
 			}
 			if w != nil {
 				w.Write([]string{strconv.Itoa(i), "", strconv.Itoa(len(s)), strconv.Itoa(sum(s)),
-					strconv.Itoa(len(r)), strconv.Itoa(sum(r)), st})
+					strconv.Itoa(len(r)), strconv.Itoa(sum(r)), st, negotiated, strconv.Itoa(initialSize)})
 			}
 			continue
 		}
-		conn.CloseWithError(0, "bye")
-
 		hcts = append(hcts, el)
 		sPk = append(sPk, float64(len(s)))
 		sBy = append(sBy, float64(sum(s)))
@@ -285,7 +304,7 @@ func runClient(addr, group string, n, timeoutMs int, csvPath string, summary boo
 		if w != nil {
 			w.Write([]string{strconv.Itoa(i), fmt.Sprintf("%.4f", el),
 				strconv.Itoa(len(s)), strconv.Itoa(sum(s)),
-				strconv.Itoa(len(r)), strconv.Itoa(sum(r)), "ok"})
+				strconv.Itoa(len(r)), strconv.Itoa(sum(r)), "ok", negotiated, strconv.Itoa(initialSize)})
 		}
 		if !summary {
 			fmt.Printf("  [%d] HCT=%.3fms  송신 %d개/%dB  수신 %d개/%dB\n",
@@ -327,10 +346,15 @@ func runClient(addr, group string, n, timeoutMs int, csvPath string, summary boo
 		group, len(hcts), failN, tmoN, frate)
 	fmt.Printf("  HCT(ms) mean=%.3f sd=%.3f p50=%.3f p95=%.3f p99=%.3f\n",
 		m, sd, pct(sorted, 50), pct(sorted, 95), pct(sorted, 99))
-	fmt.Printf("  송신 %.2f개/%.0fB  수신 %.2f개/%.0fB  증폭비=%.2f (한도 3.0)\n",
+	fmt.Printf("  송신 %.2f개/%.0fB  수신 %.2f개/%.0fB  핸드셰이크 전체 수신/송신=%.2f\n",
 		avg(sPk), sentB, avg(rPk), recvB, amp)
-	fmt.Printf("  증폭예산=%.0fB  서버응답=%.0fB  예산사용률=%.0f%%\n",
-		sentB*3, recvB, 100*recvB/(sentB*3))
+	fmt.Println("  주소 검증 전 바이트를 분리하지 않았으므로 이 비율로 RFC 증폭 한도를 판정할 수 없습니다.")
+	if w != nil {
+		w.Flush()
+		if err := w.Error(); err != nil {
+			log.Fatal("CSV write failed: ", err)
+		}
+	}
 }
 
 func main() {
@@ -339,16 +363,21 @@ func main() {
 	group := flag.String("group", "X25519MLKEM768", "키 교환 그룹")
 	certSize := flag.Int("certsize", 0, "서버 인증서 목표 크기(B). 0이면 기본(약 500B)")
 	n := flag.Int("n", 100, "반복 횟수")
+	warmup := flag.Int("warmup", 0, "워밍업 횟수 (통계 및 CSV 제외)")
+	initialSize := flag.Int("initpkt", 1280, "클라이언트 Initial UDP 페이로드 크기(B, IPv4 MTU 1500에서 1200~1472)")
 	timeout := flag.Int("timeout", 5000, "타임아웃(ms)")
 	csvPath := flag.String("csv", "", "원자료 CSV 경로")
 	summary := flag.Bool("summary", false, "요약만 출력")
 	flag.Parse()
+	if *n <= 0 || *warmup < 0 || *timeout <= 0 || *certSize < 0 || *initialSize < 1200 || *initialSize > 1472 {
+		log.Fatal("n과 timeout은 양수, warmup과 certsize는 음이 아닌 수, initpkt는 1200~1472여야 합니다")
+	}
 
 	switch *mode {
 	case "server":
 		runServer(*addr, *group, *certSize)
 	case "client":
-		runClient(*addr, *group, *n, *timeout, *csvPath, *summary)
+		runClient(*addr, *group, *n, *warmup, *timeout, *initialSize, *csvPath, *summary)
 	default:
 		log.Fatal("mode는 server 또는 client")
 	}

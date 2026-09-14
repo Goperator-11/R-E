@@ -66,10 +66,14 @@ class FlightCode(object):
     """한 비행(k 개 원본 + m 개 패리티)의 부호."""
 
     def __init__(self, k, m=1):
+        if type(k) is not int or type(m) is not int:
+            raise TypeError("k and m must be integers")
         if k < 1:
             raise ValueError("k >= 1 이어야 한다")
         if m < 1:
             raise ValueError("m >= 1 이어야 한다")
+        if k + m > 256:
+            raise ValueError("k + m must fit the one-byte symbol index")
         self.k = k
         self.m = m
         # m = 1 이면 평문 XOR 을 쓴다. 문서 2-3 이 지정한 형태이고, 1-소거에
@@ -105,8 +109,15 @@ class FlightCode(object):
 
         sizes: {index: 원본길이} - 제로패딩을 걷어내기 위해 필요하다.
         """
+        if any(type(i) is not int or not 0 <= i < self.k + self.m
+               for i in received):
+            raise ValueError("received symbol index is outside the codeword")
         if len(received) < self.k:
             raise ValueError("심볼이 %d 개 미만이라 복호 불가" % self.k)
+        width = max(len(s) for s in received.values())
+        if any(type(n) is not int or not 0 <= n <= width
+               for i, n in sizes.items() if 0 <= i < self.k):
+            raise ValueError("original length must be within the symbol width")
         if self.xor_only:
             size = max(len(s) for s in received.values())
             norm = {i: s.ljust(size, b"\x00") for i, s in received.items()}
