@@ -1,0 +1,5 @@
+gen32 vet passed
+gen32 build passed
+gen32 tests 94
+ok  	pqafec/quicbed/cmd/qamp	2.635s
+development binary /tmp/qamp_gen32/qamp

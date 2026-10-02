@@ -8,6 +8,7 @@
 |---|---|
 | [mlkem-quic-amplification](mlkem-quic-amplification/) | 팀 측정 코드, 원자료, 실험환경 명세와 연구 문서 |
 | [pq_afec](pq_afec/) | 적응형 FEC와 PAD-FEC 알고리즘, Go 테스트베드, 검증 단계와 결과 |
+| [pq_afec_gen32](pq_afec_gen32/) | v3.1에서 분리한 v3.2 개발본. 학습 전이·잔차 감시·입력 검사 수정과 구현 대조 |
 
 ML-KEM이 ClientHello를 크게 만들면 QUIC의 증폭 제한에 사용할 수 있는 수신 바이트도 늘어난다. 이 연구는 인증서 크기와 손실 조건에 따라 그 변화가 핸드셰이크 시간에 미치는 영향을 측정하고, 패딩 증가량과 패리티 수를 고르는 정책을 검증한다.
 
@@ -17,7 +18,9 @@ quic-go v0.61.0에서 `InitialPacketSize`를 1280에서 1281로 올린 과거 �
 
 팀 자료의 버스트 손실률 표기와 단방향·양방향 설정에는 이전 코드와 문서 사이의 불일치가 있다. 해당 README의 데이터 주의를 확인해야 한다. 유의한 차이를 찾지 못한 결과만으로 두 방식이 동등하거나 기존 연구 전제가 기각됐다고 단정할 수 없다.
 
-측정은 Windows와 WSL Ubuntu에서 실행한다. 실제 측정 정본은 `C:\dev\pq_afec`이며, 이 저장소는 배포 사본이다. `results/*.json`에는 여러 날짜의 결과가 함께 있으므로, 실행 기록과 소스 지문을 함께 확인해야 한다.
+측정은 Windows와 WSL Ubuntu에서 실행한다. 기존 측정 정본은 `C:\dev\pq_afec`, 최신 v3.1 측정본은 `C:\dev\pq_afec_gen31`이다. 이 저장소는 배포 사본이다. `results/*.json`에는 여러 날짜의 결과가 함께 있으므로, 실행 기록과 소스 지문을 함께 확인해야 한다.
+
+`pq_afec_gen32`는 `v3.2-dev`이며 새 네트워크 성능은 아직 측정하지 않았다. 구현 검사 근거는 [v3.2 검증 기록](pq_afec_gen32/g3/development_validation/README.md)에 있다. 과거 v3.1의 H1 통과, H2·H3 실패, H4 기여 미확인 판정은 새 개발본의 성능 판정으로 쓰지 않는다.
 
 ```powershell
 python pq_afec/experiments/loop2.py --status
