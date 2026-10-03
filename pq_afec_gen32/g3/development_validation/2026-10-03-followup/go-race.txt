@@ -1,0 +1,1 @@
+ok  	pqafec/quicbed/cmd/qamp	45.051s

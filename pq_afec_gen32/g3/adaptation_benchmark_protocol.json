@@ -1,0 +1,39 @@
+{
+  "schema": "padfec3.adaptation_benchmark_protocol/toy-v1",
+  "label": "Development toy simulation; no network measurements",
+  "seeds": [31],
+  "warmup_steps": 32,
+  "variants": ["full", "frozen_loss", "skip_hazard_ablation"],
+  "conditions": [
+    {
+      "id": "bigcert_step_recovery",
+      "k": 2, "W": 1280, "cert": 16000, "s0_base": 1472.0,
+      "rtt_ms": 50.0, "uplink_mbps": 2.0, "c_pkt": 41.983,
+      "phases": [
+        {"id": "low_loss", "steps": 160, "p_true": 0.02},
+        {"id": "high_loss", "steps": 160, "p_true": 0.25},
+        {"id": "recovery", "steps": 160, "p_true": 0.02}
+      ]
+    },
+    {
+      "id": "c6000_step_recovery",
+      "k": 2, "W": 1280, "cert": 6000, "s0_base": 1472.0,
+      "rtt_ms": 80.0, "uplink_mbps": 10.0, "c_pkt": 41.983,
+      "phases": [
+        {"id": "low_loss", "steps": 160, "p_true": 0.01},
+        {"id": "high_loss", "steps": 160, "p_true": 0.08},
+        {"id": "recovery", "steps": 160, "p_true": 0.01}
+      ]
+    },
+    {
+      "id": "rtt200_stationary_control",
+      "k": 2, "W": 1280, "cert": 9000, "s0_base": 1472.0,
+      "rtt_ms": 200.0, "uplink_mbps": 2.0, "c_pkt": 41.983,
+      "phases": [
+        {"id": "early", "steps": 160, "p_true": 0.02},
+        {"id": "middle", "steps": 160, "p_true": 0.02},
+        {"id": "late", "steps": 160, "p_true": 0.02}
+      ]
+    }
+  ]
+}

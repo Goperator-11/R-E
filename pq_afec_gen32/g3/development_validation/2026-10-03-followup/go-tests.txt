@@ -1,0 +1,530 @@
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/plan_inputs
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/observe_inputs
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/action
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/hct
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/srv
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/j_pred
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/plan_inputs
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/observe_inputs
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/action
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/hct
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/srv
+=== RUN   TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/j_pred
+--- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/plan_inputs (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/observe_inputs (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/action (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/hct (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/srv (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/new/j_pred (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/plan_inputs (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/observe_inputs (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/action (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/hct (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/srv (0.00s)
+    --- PASS: TestP3CacheFailedCallsPreserveMemoryAndSavedJSON/existing/j_pred (0.00s)
+=== RUN   TestP3CacheSuccessfulCommitKeepsEntryAndStatePointers
+--- PASS: TestP3CacheSuccessfulCommitKeepsEntryAndStatePointers (0.00s)
+=== RUN   TestP3CacheInvalidLearnerReturnsErrorWithoutMetadataChanges
+--- PASS: TestP3CacheInvalidLearnerReturnsErrorWithoutMetadataChanges (0.00s)
+=== RUN   TestP3GuardGapOverflowRejectedOnRestoreAndObserve
+--- PASS: TestP3GuardGapOverflowRejectedOnRestoreAndObserve (0.00s)
+=== RUN   TestP3CacheLoaderRejectsMetadataAndTrailingDocuments
+=== RUN   TestP3CacheLoaderRejectsMetadataAndTrailingDocuments/min_rtt_ms
+=== RUN   TestP3CacheLoaderRejectsMetadataAndTrailingDocuments/min_hct_ms
+=== RUN   TestP3CacheLoaderRejectsMetadataAndTrailingDocuments/rtt_observations
+=== RUN   TestP3CacheLoaderRejectsMetadataAndTrailingDocuments/conns
+--- PASS: TestP3CacheLoaderRejectsMetadataAndTrailingDocuments (0.00s)
+    --- PASS: TestP3CacheLoaderRejectsMetadataAndTrailingDocuments/min_rtt_ms (0.00s)
+    --- PASS: TestP3CacheLoaderRejectsMetadataAndTrailingDocuments/min_hct_ms (0.00s)
+    --- PASS: TestP3CacheLoaderRejectsMetadataAndTrailingDocuments/rtt_observations (0.00s)
+    --- PASS: TestP3CacheLoaderRejectsMetadataAndTrailingDocuments/conns (0.00s)
+=== RUN   TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile
+=== RUN   TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/min_rtt
+=== RUN   TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/min_hct
+=== RUN   TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/rtt_obs
+=== RUN   TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/conns
+=== RUN   TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/state
+=== RUN   TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/nonfinite_rtt
+=== RUN   TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/nonfinite_hct
+--- PASS: TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile (0.00s)
+    --- PASS: TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/min_rtt (0.00s)
+    --- PASS: TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/min_hct (0.00s)
+    --- PASS: TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/rtt_obs (0.00s)
+    --- PASS: TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/conns (0.00s)
+    --- PASS: TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/state (0.00s)
+    --- PASS: TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/nonfinite_rtt (0.00s)
+    --- PASS: TestP3CacheSaveRejectsInvalidEntryWithoutChangingSavedFile/nonfinite_hct (0.00s)
+=== RUN   TestP3ObserveNonfiniteTransferredBaselinePreservesState
+--- PASS: TestP3ObserveNonfiniteTransferredBaselinePreservesState (0.00s)
+=== RUN   TestP3Gen32VersionsSeparateOldCaches
+--- PASS: TestP3Gen32VersionsSeparateOldCaches (0.00s)
+=== RUN   TestP3SkippedObservationsAdvanceEachHazardOnce
+=== RUN   TestP3SkippedObservationsAdvanceEachHazardOnce/no_base
+=== RUN   TestP3SkippedObservationsAdvanceEachHazardOnce/no_context
+=== RUN   TestP3SkippedObservationsAdvanceEachHazardOnce/no_rtt
+=== RUN   TestP3SkippedObservationsAdvanceEachHazardOnce/shield
+=== RUN   TestP3SkippedObservationsAdvanceEachHazardOnce/nominal_two
+=== RUN   TestP3SkippedObservationsAdvanceEachHazardOnce/guard
+=== RUN   TestP3SkippedObservationsAdvanceEachHazardOnce/failure_without_base
+--- PASS: TestP3SkippedObservationsAdvanceEachHazardOnce (0.00s)
+    --- PASS: TestP3SkippedObservationsAdvanceEachHazardOnce/no_base (0.00s)
+    --- PASS: TestP3SkippedObservationsAdvanceEachHazardOnce/no_context (0.00s)
+    --- PASS: TestP3SkippedObservationsAdvanceEachHazardOnce/no_rtt (0.00s)
+    --- PASS: TestP3SkippedObservationsAdvanceEachHazardOnce/shield (0.00s)
+    --- PASS: TestP3SkippedObservationsAdvanceEachHazardOnce/nominal_two (0.00s)
+    --- PASS: TestP3SkippedObservationsAdvanceEachHazardOnce/guard (0.00s)
+    --- PASS: TestP3SkippedObservationsAdvanceEachHazardOnce/failure_without_base (0.00s)
+=== RUN   TestP3SkippedRunForgetsAtTheHazardRate
+--- PASS: TestP3SkippedRunForgetsAtTheHazardRate (0.00s)
+=== RUN   TestP3ObservedEvidenceUsesOnlyOneTransition
+--- PASS: TestP3ObservedEvidenceUsesOnlyOneTransition (0.00s)
+=== RUN   TestP3GuardMedianResistsSingleActionOutliers
+--- PASS: TestP3GuardMedianResistsSingleActionOutliers (0.00s)
+=== RUN   TestP3AlarmedSuccessesRefreshTheCommonDelay
+--- PASS: TestP3AlarmedSuccessesRefreshTheCommonDelay (0.00s)
+=== RUN   TestP3GridIsTheTableAxis
+--- PASS: TestP3GridIsTheTableAxis (0.00s)
+=== RUN   TestP3ConstantsAreTheSharedOnes
+--- PASS: TestP3ConstantsAreTheSharedOnes (0.00s)
+=== RUN   TestP3PySumIsCPythonSum
+--- PASS: TestP3PySumIsCPythonSum (0.00s)
+=== RUN   TestP3EvaluateMassAndEvent
+--- PASS: TestP3EvaluateMassAndEvent (0.00s)
+=== RUN   TestP3EvaluateMatchesPythonPrimitives
+--- PASS: TestP3EvaluateMatchesPythonPrimitives (0.00s)
+=== RUN   TestP3DecisionsMatchPythonSample
+--- PASS: TestP3DecisionsMatchPythonSample (0.00s)
+=== RUN   TestP3CandidatesContainGen2Actions
+--- PASS: TestP3CandidatesContainGen2Actions (0.00s)
+=== RUN   TestP3PointPosteriorPicksTheTieRuleArgmin
+--- PASS: TestP3PointPosteriorPicksTheTieRuleArgmin (0.00s)
+=== RUN   TestP3ModeRecentAndMedian
+--- PASS: TestP3ModeRecentAndMedian (0.00s)
+=== RUN   TestP3ColdStartAndExit
+--- PASS: TestP3ColdStartAndExit (0.00s)
+=== RUN   TestP3PosteriorStaysNormalised
+--- PASS: TestP3PosteriorStaysNormalised (0.00s)
+=== RUN   TestP3ShieldedObservationPredictsWithoutLossEvidence
+--- PASS: TestP3ShieldedObservationPredictsWithoutLossEvidence (0.00s)
+=== RUN   TestP3FailedConnectionCountsButIsNotWindowed
+--- PASS: TestP3FailedConnectionCountsButIsNotWindowed (0.00s)
+=== RUN   TestP3OutlierDoesNotMoveTheBaseline
+--- PASS: TestP3OutlierDoesNotMoveTheBaseline (0.00s)
+=== RUN   TestP3BaselineTransfer
+--- PASS: TestP3BaselineTransfer (0.00s)
+=== RUN   TestP3StateAndCacheRoundTrip
+--- PASS: TestP3StateAndCacheRoundTrip (0.00s)
+=== RUN   TestP3StateJSONMatchesPythonKeys
+--- PASS: TestP3StateJSONMatchesPythonKeys (0.00s)
+=== RUN   TestAuto3FlagChecks
+--- PASS: TestAuto3FlagChecks (0.00s)
+=== RUN   TestAuto3PlanDrivesTheV3Transport
+--- PASS: TestAuto3PlanDrivesTheV3Transport (0.00s)
+=== RUN   TestAuto3RowAddsFieldsAndLeavesTrialAlone
+--- PASS: TestAuto3RowAddsFieldsAndLeavesTrialAlone (0.00s)
+=== RUN   TestP3CompletionRuleWithoutPreflightIsTheCeilRule
+--- PASS: TestP3CompletionRuleWithoutPreflightIsTheCeilRule (0.00s)
+=== RUN   TestP3PreflightBytesGateTheCliff
+--- PASS: TestP3PreflightBytesGateTheCliff (0.00s)
+=== RUN   TestP3SkipUsesV31CompletionRule
+--- PASS: TestP3SkipUsesV31CompletionRule (0.00s)
+=== RUN   TestP3NominalTwoObservationUpdatesWindowsAndPredicts
+--- PASS: TestP3NominalTwoObservationUpdatesWindowsAndPredicts (0.00s)
+=== RUN   TestP3ReevalEverySixteenthQualifyingDecision
+--- PASS: TestP3ReevalEverySixteenthQualifyingDecision (0.00s)
+=== RUN   TestP3NoReevalWithoutNominalOneCandidate
+--- PASS: TestP3NoReevalWithoutNominalOneCandidate (0.00s)
+=== RUN   TestP3ColdDecisionCountsButNeverReevaluates
+--- PASS: TestP3ColdDecisionCountsButNeverReevaluates (0.00s)
+=== RUN   TestP3CommonDelayIsTheMedianOfAllSuccessfulResiduals
+--- PASS: TestP3CommonDelayIsTheMedianOfAllSuccessfulResiduals (0.00s)
+=== RUN   TestP3AlarmNeedsEightResidualsAndHalfRTTExcess
+--- PASS: TestP3AlarmNeedsEightResidualsAndHalfRTTExcess (0.00s)
+=== RUN   TestP3AlarmedActionPenaltySkipAndClear
+--- PASS: TestP3AlarmedActionPenaltySkipAndClear (0.00s)
+=== RUN   TestP3PenaltyFloorsAtZeroWhenCommonDelayRises
+--- PASS: TestP3PenaltyFloorsAtZeroWhenCommonDelayRises (0.00s)
+=== RUN   TestP3OtherActionsCanAlarmWhenCommonDelayFalls
+--- PASS: TestP3OtherActionsCanAlarmWhenCommonDelayFalls (0.00s)
+=== RUN   TestP3NoResidualWithoutPredictionOrOnFailure
+--- PASS: TestP3NoResidualWithoutPredictionOrOnFailure (0.00s)
+=== RUN   TestAuto3CacheFeedsThePlanPrediction
+--- PASS: TestAuto3CacheFeedsThePlanPrediction (0.00s)
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/small_W
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/negative_u
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/nan_u
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/infinite_u
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/negative_rtt
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/nan_rtt
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/infinite_rtt
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/negative_c_pkt
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/c_pkt_at_packet_size
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/nan_c_pkt
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/infinite_c_pkt
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/negative_srv
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/nan_srv
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/infinite_srv
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/zero_hct
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/negative_hct
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/nan_hct
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/infinite_hct
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/nan_prediction
+=== RUN   TestP3InvalidObservationInputsLeaveStateUntouched/infinite_prediction
+--- PASS: TestP3InvalidObservationInputsLeaveStateUntouched (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/small_W (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/negative_u (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/nan_u (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/infinite_u (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/negative_rtt (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/nan_rtt (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/infinite_rtt (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/negative_c_pkt (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/c_pkt_at_packet_size (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/nan_c_pkt (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/infinite_c_pkt (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/negative_srv (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/nan_srv (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/infinite_srv (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/zero_hct (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/negative_hct (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/nan_hct (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/infinite_hct (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/nan_prediction (0.00s)
+    --- PASS: TestP3InvalidObservationInputsLeaveStateUntouched/infinite_prediction (0.00s)
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/small_W
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/negative_u
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/nan_u
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/infinite_u
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/negative_rtt
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/nan_rtt
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/infinite_rtt
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/negative_c_pkt
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/c_pkt_at_packet_size
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/nan_c_pkt
+=== RUN   TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/infinite_c_pkt
+--- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/small_W (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/negative_u (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/nan_u (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/infinite_u (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/negative_rtt (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/nan_rtt (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/infinite_rtt (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/negative_c_pkt (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/c_pkt_at_packet_size (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/nan_c_pkt (0.00s)
+    --- PASS: TestP3InvalidDecisionInputsDoNotReleaseAlarmsOrCount/infinite_c_pkt (0.00s)
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/short_posterior
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/zero_mass
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/negative_probability
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/nan_probability
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/infinite_probability
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/mass_too_low
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/mass_too_high
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/zero_k
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/large_k
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/small_W
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/zero_S
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/negative_S
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/nan_S
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/infinite_S
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/negative_u
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/nan_u
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/infinite_u
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/missing_rtt
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/negative_rtt
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/nan_rtt
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/infinite_rtt
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/negative_c_pkt
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/c_pkt_at_packet_size
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/nan_c_pkt
+=== RUN   TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/infinite_c_pkt
+--- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/short_posterior (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/zero_mass (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/negative_probability (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/nan_probability (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/infinite_probability (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/mass_too_low (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/mass_too_high (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/zero_k (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/large_k (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/small_W (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/zero_S (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/negative_S (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/nan_S (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/infinite_S (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/negative_u (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/nan_u (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/infinite_u (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/missing_rtt (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/negative_rtt (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/nan_rtt (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/infinite_rtt (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/negative_c_pkt (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/c_pkt_at_packet_size (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/nan_c_pkt (0.00s)
+    --- PASS: TestP3CoreRejectsInvalidDistributionAndPhysicalInputs/infinite_c_pkt (0.00s)
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/zero_posterior_mass
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/large_posterior_mass
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/nan_posterior
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_posterior
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/zero_weight_mass
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/large_weight_mass
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/nan_weight
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_weight
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/zero_k_history
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_k_history
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/zero_S_history
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_S_history
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/nan_S_history
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/infinite_S_history
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/zero_hct_history
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_hct_history
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/nan_hct_history
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/infinite_hct_history
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_sequence
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_hct_sequence
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Obs
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Predict
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Upd
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Shield
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Nominal2
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Guard
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_NoBase
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_NoCtx
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Events
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Fail
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Resid
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Reeval
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_AlarmRaised
+=== RUN   TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_AlarmCleared
+--- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/zero_posterior_mass (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/large_posterior_mass (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/nan_posterior (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_posterior (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/zero_weight_mass (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/large_weight_mass (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/nan_weight (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_weight (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/zero_k_history (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_k_history (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/zero_S_history (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_S_history (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/nan_S_history (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/infinite_S_history (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/zero_hct_history (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_hct_history (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/nan_hct_history (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/infinite_hct_history (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_sequence (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_hct_sequence (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Obs (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Predict (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Upd (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Shield (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Nominal2 (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Guard (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_NoBase (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_NoCtx (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Events (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Fail (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Resid (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_Reeval (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_AlarmRaised (0.00s)
+    --- PASS: TestP3StateRejectsInvalidMassWindowsSequencesAndStats/negative_stats_AlarmCleared (0.00s)
+=== RUN   TestP3InvalidStateCannotMutateThroughObservationOrDecision
+=== RUN   TestP3InvalidStateCannotMutateThroughObservationOrDecision/observe
+=== RUN   TestP3InvalidStateCannotMutateThroughObservationOrDecision/decide
+--- PASS: TestP3InvalidStateCannotMutateThroughObservationOrDecision (0.00s)
+    --- PASS: TestP3InvalidStateCannotMutateThroughObservationOrDecision/observe (0.00s)
+    --- PASS: TestP3InvalidStateCannotMutateThroughObservationOrDecision/decide (0.00s)
+=== RUN   TestP3ContextRejectsInputsBeforeBinNeeded
+--- PASS: TestP3ContextRejectsInputsBeforeBinNeeded (0.00s)
+=== RUN   TestP3ValidStateRoundTripAndMissingInputsRemainSupported
+--- PASS: TestP3ValidStateRoundTripAndMissingInputsRemainSupported (0.00s)
+=== RUN   TestP3SafeBinCalculationMatchesNormalCasesAndHasAnExactByteBoundary
+--- PASS: TestP3SafeBinCalculationMatchesNormalCasesAndHasAnExactByteBoundary (0.00s)
+=== RUN   TestP3FiniteExtremesAreRejectedBeforeStateChanges
+=== RUN   TestP3FiniteExtremesAreRejectedBeforeStateChanges/huge_server_bytes
+=== RUN   TestP3FiniteExtremesAreRejectedBeforeStateChanges/near_singular_c_pkt
+=== RUN   TestP3FiniteExtremesAreRejectedBeforeStateChanges/huge_rtt
+=== RUN   TestP3FiniteExtremesAreRejectedBeforeStateChanges/huge_bandwidth
+=== RUN   TestP3FiniteExtremesAreRejectedBeforeStateChanges/tiny_bandwidth
+=== RUN   TestP3FiniteExtremesAreRejectedBeforeStateChanges/huge_W
+--- PASS: TestP3FiniteExtremesAreRejectedBeforeStateChanges (0.00s)
+    --- PASS: TestP3FiniteExtremesAreRejectedBeforeStateChanges/huge_server_bytes (0.00s)
+    --- PASS: TestP3FiniteExtremesAreRejectedBeforeStateChanges/near_singular_c_pkt (0.00s)
+    --- PASS: TestP3FiniteExtremesAreRejectedBeforeStateChanges/huge_rtt (0.00s)
+    --- PASS: TestP3FiniteExtremesAreRejectedBeforeStateChanges/huge_bandwidth (0.00s)
+    --- PASS: TestP3FiniteExtremesAreRejectedBeforeStateChanges/tiny_bandwidth (0.00s)
+    --- PASS: TestP3FiniteExtremesAreRejectedBeforeStateChanges/huge_W (0.00s)
+=== RUN   TestP3FailedCoreCalculationDoesNotCommitTheDecision
+--- PASS: TestP3FailedCoreCalculationDoesNotCommitTheDecision (0.00s)
+=== RUN   TestP3MedianAndResidualDoNotOverflowOnFiniteValues
+--- PASS: TestP3MedianAndResidualDoNotOverflowOnFiniteValues (0.00s)
+=== RUN   TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta
+=== RUN   TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta/9007199254740992,0,0
+=== RUN   TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta/0,9223372036854775807,9223372036854775807
+=== RUN   TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta/0,9223372036854775807,0
+=== RUN   TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta/0,0,9223372036854775807
+=== RUN   TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta/0,4,4
+--- PASS: TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta (0.00s)
+    --- PASS: TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta/9007199254740992,0,0 (0.00s)
+    --- PASS: TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta/0,9223372036854775807,9223372036854775807 (0.00s)
+    --- PASS: TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta/0,9223372036854775807,0 (0.00s)
+    --- PASS: TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta/0,0,9223372036854775807 (0.00s)
+    --- PASS: TestP3ActionValidationRejectsIntegerOverflowAndUnrepresentableDelta/0,4,4 (0.00s)
+=== RUN   TestP3ObservedActionChecksItsEffectivePacketSizeBeforeMutation
+--- PASS: TestP3ObservedActionChecksItsEffectivePacketSizeBeforeMutation (0.00s)
+=== RUN   TestDisabledProbesStayDisabled
+--- PASS: TestDisabledProbesStayDisabled (0.00s)
+=== RUN   TestEnabledProbesStillRun
+--- PASS: TestEnabledProbesStillRun (0.00s)
+=== RUN   TestSymbolFeedbackExitsProtectedColdStart
+--- PASS: TestSymbolFeedbackExitsProtectedColdStart (0.00s)
+=== RUN   TestPolicyDoesNotUseHandshakeDurationAsPathRTT
+--- PASS: TestPolicyDoesNotUseHandshakeDurationAsPathRTT (0.00s)
+=== RUN   TestTransportRTTDefaultIsNotAnObservation
+--- PASS: TestTransportRTTDefaultIsNotAnObservation (0.00s)
+=== RUN   TestTransportRTTUsesValidACKMinimum
+--- PASS: TestTransportRTTUsesValidACKMinimum (0.00s)
+=== RUN   TestLegacyHCTProxyMigratesOnlyOnValidRTT
+--- PASS: TestLegacyHCTProxyMigratesOnlyOnValidRTT (0.00s)
+=== RUN   TestUnclassifiedFirstProbeDoesNotCountAsLossFree
+--- PASS: TestUnclassifiedFirstProbeDoesNotCountAsLossFree (0.00s)
+=== RUN   TestAccountingSeparatesReusedUDPAddress
+--- PASS: TestAccountingSeparatesReusedUDPAddress (0.00s)
+=== RUN   TestAccountingTracksCIDTransitionAndMigration
+--- PASS: TestAccountingTracksCIDTransitionAndMigration (0.00s)
+=== RUN   TestAccountingNeverGuessesUnknownOrAmbiguousCID
+--- PASS: TestAccountingNeverGuessesUnknownOrAmbiguousCID (0.00s)
+=== RUN   TestAccountingCapacityDoesNotReuseLastAddress
+--- PASS: TestAccountingCapacityDoesNotReuseLastAddress (0.00s)
+=== RUN   TestRepeatedClientSCIDIsNotSilentlyMerged
+--- PASS: TestRepeatedClientSCIDIsNotSilentlyMerged (0.00s)
+=== RUN   TestPendingRecoveryKeepsOriginalAccount
+--- PASS: TestPendingRecoveryKeepsOriginalAccount (0.00s)
+=== RUN   TestUnknownAccountingIsReported
+--- PASS: TestUnknownAccountingIsReported (0.00s)
+=== RUN   TestRecoveredOriginalIsCountedOnItsConnection
+--- PASS: TestRecoveredOriginalIsCountedOnItsConnection (0.00s)
+=== RUN   TestRecoveryAccountingCommitIsGuardedAndConnectionSpecific
+--- PASS: TestRecoveryAccountingCommitIsGuardedAndConnectionSpecific (0.00s)
+=== RUN   TestRejectInvalidParityIndex
+--- PASS: TestRejectInvalidParityIndex (0.00s)
+=== RUN   TestRejectImpossibleSymbolLength
+--- PASS: TestRejectImpossibleSymbolLength (0.00s)
+=== RUN   TestFeedbackExcludesRetransmissionsAndDuplicates
+--- PASS: TestFeedbackExcludesRetransmissionsAndDuplicates (0.00s)
+=== RUN   TestClientRecordsFirstFlightForFeedback
+--- PASS: TestClientRecordsFirstFlightForFeedback (0.00s)
+=== RUN   TestFeedbackCapAndTruncation
+--- PASS: TestFeedbackCapAndTruncation (0.00s)
+=== RUN   TestComboCandidatesMatchCreditBoundaries
+--- PASS: TestComboCandidatesMatchCreditBoundaries (0.01s)
+=== RUN   TestFinalSendStatsWaitsForAcceptedParity
+--- PASS: TestFinalSendStatsWaitsForAcceptedParity (0.00s)
+=== RUN   TestFinalSendStatsIncludesLateACKInRowsAndTotals
+--- PASS: TestFinalSendStatsIncludesLateACKInRowsAndTotals (0.00s)
+=== RUN   TestFinalSendStatsRegistrationBoundaries
+=== RUN   TestFinalSendStatsRegistrationBoundaries/registered_Initial_creates_timer_after_finalization_starts
+=== RUN   TestFinalSendStatsRegistrationBoundaries/callback_starts_after_finalization
+--- PASS: TestFinalSendStatsRegistrationBoundaries (0.00s)
+    --- PASS: TestFinalSendStatsRegistrationBoundaries/registered_Initial_creates_timer_after_finalization_starts (0.00s)
+    --- PASS: TestFinalSendStatsRegistrationBoundaries/callback_starts_after_finalization (0.00s)
+=== RUN   TestFinalSendStatsRejectsInitialAndDiscardsBuffer
+--- PASS: TestFinalSendStatsRejectsInitialAndDiscardsBuffer (0.00s)
+=== RUN   TestFinalSendStatsModesAndFailures
+=== RUN   TestFinalSendStatsModesAndFailures/off/none/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/off/error/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/off/drop/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/off/corrupt/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/off/none/timer
+=== RUN   TestFinalSendStatsModesAndFailures/off/error/timer
+=== RUN   TestFinalSendStatsModesAndFailures/off/drop/timer
+=== RUN   TestFinalSendStatsModesAndFailures/off/corrupt/timer
+=== RUN   TestFinalSendStatsModesAndFailures/buf/none/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/buf/error/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/buf/drop/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/buf/corrupt/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/buf/none/timer
+=== RUN   TestFinalSendStatsModesAndFailures/buf/error/timer
+=== RUN   TestFinalSendStatsModesAndFailures/buf/drop/timer
+=== RUN   TestFinalSendStatsModesAndFailures/buf/corrupt/timer
+=== RUN   TestFinalSendStatsModesAndFailures/fec/none/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/fec/error/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/fec/drop/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/fec/corrupt/immediate
+=== RUN   TestFinalSendStatsModesAndFailures/fec/none/timer
+=== RUN   TestFinalSendStatsModesAndFailures/fec/error/timer
+=== RUN   TestFinalSendStatsModesAndFailures/fec/drop/timer
+=== RUN   TestFinalSendStatsModesAndFailures/fec/corrupt/timer
+=== RUN   TestFinalSendStatsModesAndFailures/v3_later_success
+=== RUN   TestFinalSendStatsModesAndFailures/v3_later_error
+--- PASS: TestFinalSendStatsModesAndFailures (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/off/none/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/off/error/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/off/drop/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/off/corrupt/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/off/none/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/off/error/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/off/drop/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/off/corrupt/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/buf/none/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/buf/error/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/buf/drop/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/buf/corrupt/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/buf/none/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/buf/error/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/buf/drop/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/buf/corrupt/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/fec/none/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/fec/error/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/fec/drop/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/fec/corrupt/immediate (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/fec/none/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/fec/error/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/fec/drop/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/fec/corrupt/timer (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/v3_later_success (0.00s)
+    --- PASS: TestFinalSendStatsModesAndFailures/v3_later_error (0.00s)
+=== RUN   TestFinalSendStatsPreservesHCTAndPolicyObservation
+--- PASS: TestFinalSendStatsPreservesHCTAndPolicyObservation (0.00s)
+=== RUN   TestLeadV2OutputMatchesGen2Golden
+--- PASS: TestLeadV2OutputMatchesGen2Golden (0.00s)
+=== RUN   TestLeadV2LaterFlightKeepsGen2Shape
+--- PASS: TestLeadV2LaterFlightKeepsGen2Shape (0.00s)
+=== RUN   TestLeadV3AllArrivalsFeedOne
+    qamp_lead_test.go:378: 74717 arrival subsets x orders checked
+--- PASS: TestLeadV3AllArrivalsFeedOne (1.03s)
+=== RUN   TestLeadV3AllArrivalsReadFrom
+    qamp_lead_test.go:378: 74717 arrival subsets x orders checked
+--- PASS: TestLeadV3AllArrivalsReadFrom (1.03s)
+=== RUN   TestLeadVer1LegacyAllArrivalsFeedOne
+    qamp_lead_test.go:378: 18824 arrival subsets x orders checked
+--- PASS: TestLeadVer1LegacyAllArrivalsFeedOne (0.29s)
+=== RUN   TestLeadVer1LegacyAllArrivalsReadFrom
+    qamp_lead_test.go:378: 18824 arrival subsets x orders checked
+--- PASS: TestLeadVer1LegacyAllArrivalsReadFrom (0.31s)
+=== RUN   TestLeadCreditRule
+--- PASS: TestLeadCreditRule (0.00s)
+=== RUN   TestLeadHeaderRoundTrip
+--- PASS: TestLeadHeaderRoundTrip (0.00s)
+=== RUN   TestLeadClientV3Layout
+--- PASS: TestLeadClientV3Layout (0.00s)
+=== RUN   TestLeadClientV3LegacyLeadDefault
+--- PASS: TestLeadClientV3LegacyLeadDefault (0.00s)
+=== RUN   TestLeadClientToServerRecovers
+--- PASS: TestLeadClientToServerRecovers (0.00s)
+=== RUN   TestLeadLayoutFlags
+--- PASS: TestLeadLayoutFlags (0.00s)
+PASS
+ok  	pqafec/quicbed/cmd/qamp	2.712s

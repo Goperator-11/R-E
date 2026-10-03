@@ -8,9 +8,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"math"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -697,6 +699,16 @@ func (st *p3State) validate() error {
 			return fmt.Errorf("alarm %s raised at decision %d of %d", k, at, st.NDec)
 		}
 	}
+	return p3ValidateGuardGaps(st)
+}
+
+func p3ValidateGuardGaps(st *p3State) error {
+	b := p3GuardCommon(st)
+	for key, win := range st.GResid {
+		if len(win) > 0 && !p3Finite(p3Median(win)-b) {
+			return fmt.Errorf("guard residual gap %s exceeds floating-point range", key)
+		}
+	}
 	return nil
 }
 
@@ -1075,13 +1087,23 @@ func p3Observe(st *p3State, a p3Action, hct float64, ok bool, kObs int, srv floa
 			}
 		}
 	}
+	if ok && jPred != nil {
+		preview := p3CloneState(st)
+		p3GuardObserve(preview, key, hct-*jPred, rtt)
+		if err := p3ValidateGuardGaps(preview); err != nil {
+			return p3ObsInfo{Y: -1}, err
+		}
+	}
+	c, hasCtx := p3Context(st, w, u, rtt, cPkt)
+	b, ref, hasB := p3Baseline(st, c, a)
+	if hasB && !p3Finite(b) {
+		return p3ObsInfo{Y: -1}, errors.New("HCT baseline exceeds floating-point range")
+	}
 	st.Stats.Obs++
 	st.Stats.Predict++
 	if !ok {
 		st.Stats.Fail++
 	}
-	c, hasCtx := p3Context(st, w, u, rtt, cPkt)
-	b, ref, hasB := p3Baseline(st, c, a)
 	info := p3ObsInfo{Y: -1, Baseline: b, HasBase: hasB, Ref: ref, HasCtx: hasCtx}
 	if hasB && rtt > 0 {
 		if !ok || hct-b >= p3EventFrac*rtt {
@@ -1464,6 +1486,19 @@ type cache3Entry struct {
 	Conns  int      `json:"conns"`
 }
 
+func (e *cache3Entry) validate() error {
+	if e == nil || e.State == nil {
+		return errors.New("destination has no state")
+	}
+	if !p3Finite(e.MinRTT) || e.MinRTT < 0 || !p3Finite(e.MinHCT) || e.MinHCT < 0 {
+		return errors.New("cache minimum RTT and HCT must be finite and nonnegative")
+	}
+	if e.RTTObs < 0 || e.Conns < 0 {
+		return errors.New("cache observation and connection counters must be nonnegative")
+	}
+	return e.State.validate()
+}
+
 func (e *cache3Entry) policyRTT() (float64, string) {
 	if e.RTTObs > 0 && e.MinRTT > 0 && p3Finite(e.MinRTT) {
 		return e.MinRTT, "quic_ack_min_rtt"
@@ -1502,6 +1537,13 @@ func loadDestCache3(path string) (*destCache3, error) {
 	if err := dec.Decode(&f); err != nil {
 		return nil, fmt.Errorf("%s: %v", path, err)
 	}
+	var trailing any
+	if err := dec.Decode(&trailing); err != io.EOF {
+		if err == nil {
+			err = errors.New("more than one JSON document")
+		}
+		return nil, fmt.Errorf("%s: trailing cache data: %v", path, err)
+	}
 	if f.Schema != p3CacheSchema {
 		return nil, fmt.Errorf("%s: schema %q, want %q", path, f.Schema, p3CacheSchema)
 	}
@@ -1510,7 +1552,7 @@ func loadDestCache3(path string) (*destCache3, error) {
 			return nil, fmt.Errorf("%s: destination %s has no state", path, addr)
 		}
 		e.State.normalize()
-		if err := e.State.validate(); err != nil {
+		if err := e.validate(); err != nil {
 			return nil, fmt.Errorf("%s: destination %s: %v", path, addr, err)
 		}
 		c.Dests[addr] = e
@@ -1523,6 +1565,12 @@ func (c *destCache3) save() error {
 		return nil
 	}
 	c.mu.Lock()
+	for addr, e := range c.Dests {
+		if err := e.validate(); err != nil {
+			c.mu.Unlock()
+			return fmt.Errorf("destination %s: %v", addr, err)
+		}
+	}
 	b, err := json.Marshal(struct {
 		Schema string                  `json:"schema"`
 		Dests  map[string]*cache3Entry `json:"dests"`
@@ -1539,13 +1587,55 @@ func (c *destCache3) save() error {
 	return os.Rename(tmp, c.path)
 }
 
-func (c *destCache3) entry(addr string) *cache3Entry {
+func p3CloneState(st *p3State) *p3State {
+	if st == nil {
+		return nil
+	}
+	next := *st
+	next.KHist = slices.Clone(st.KHist)
+	next.SHist = slices.Clone(st.SHist)
+	next.Post = slices.Clone(st.Post)
+	for j, row := range st.Post {
+		next.Post[j] = slices.Clone(row)
+	}
+	next.W = slices.Clone(st.W)
+	next.HCT = maps.Clone(st.HCT)
+	for key, win := range st.HCT {
+		next.HCT[key] = slices.Clone(win)
+	}
+	next.HCTSeq = maps.Clone(st.HCTSeq)
+	next.GResid = maps.Clone(st.GResid)
+	for key, win := range st.GResid {
+		next.GResid[key] = slices.Clone(win)
+	}
+	next.GCommon = slices.Clone(st.GCommon)
+	next.GAlarm = maps.Clone(st.GAlarm)
+	return &next
+}
+
+// candidate and commit are called with c.mu held. Failed policy calls never
+// publish their candidate, including destination creation and RTT metadata.
+func (c *destCache3) candidate(addr string) *cache3Entry {
 	e := c.Dests[addr]
 	if e == nil {
-		e = &cache3Entry{State: newP3State()}
-		c.Dests[addr] = e
+		return &cache3Entry{State: newP3State()}
 	}
-	return e
+	next := *e
+	next.State = p3CloneState(e.State)
+	return &next
+}
+
+func (c *destCache3) commit(addr string, next *cache3Entry) {
+	e := c.Dests[addr]
+	if e == nil {
+		c.Dests[addr] = next
+		return
+	}
+	if e.State != nil && next.State != nil {
+		*e.State = *next.State
+		next.State = e.State
+	}
+	*e = *next
 }
 
 type auto3Plan struct {
@@ -1583,12 +1673,16 @@ func auto3PlanFor(d p3Decision, w int, rtt float64, src string) auto3Plan {
 func (c *destCache3) plan(addr string, w int, u, cPkt float64) (auto3Plan, error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	e := c.entry(addr)
+	e := c.candidate(addr)
+	if err := e.validate(); err != nil {
+		return auto3Plan{}, err
+	}
 	rtt, src := e.policyRTT()
 	d, err := p3Decide(e.State, w, u, rtt, cPkt, false)
 	if err != nil {
 		return auto3Plan{}, err
 	}
+	c.commit(addr, e)
 	return auto3PlanFor(d, w, rtt, src), nil
 }
 
@@ -1609,7 +1703,10 @@ func (c *destCache3) observePred(addr string, a p3Action, jPred *float64, hct fl
 	kObs int, srv float64, pathRTT float64, pathValid bool, w int, u, cPkt float64) (p3ObsInfo, float64, error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	e := c.entry(addr)
+	e := c.candidate(addr)
+	if err := e.validate(); err != nil {
+		return p3ObsInfo{Y: -1}, 0, err
+	}
 	if pathValid && pathRTT > 0 && p3Finite(pathRTT) {
 		if e.MinRTT <= 0 || pathRTT < e.MinRTT {
 			e.MinRTT = pathRTT
@@ -1620,9 +1717,17 @@ func (c *destCache3) observePred(addr string, a p3Action, jPred *float64, hct fl
 		e.MinHCT = hct
 	}
 	e.Conns++
+	if err := e.validate(); err != nil {
+		return p3ObsInfo{Y: -1}, 0, err
+	}
 	rtt, _ := e.policyRTT()
 	info, err := p3Observe(e.State, a, hct, ok, kObs, srv, rtt, w, u, cPkt, jPred)
-	return info, p3PostMean(p3Combined(e.State)), err
+	if err != nil {
+		return info, 0, err
+	}
+	after := p3PostMean(p3Combined(e.State))
+	c.commit(addr, e)
+	return info, after, nil
 }
 
 func checkAuto3Flags(layoutSet bool, layout string, lead, ips int) error {

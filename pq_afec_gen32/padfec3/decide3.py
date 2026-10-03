@@ -17,24 +17,41 @@ def parity_bytes(w, k):
     return policy.parity_datagram_bytes(w, k)
 
 
+def check_candidate_options(max_ips, m_max, max_steps):
+    m_max = learn3._int("m_max", m_max)
+    max_steps = learn3._nonnegative_int("max_steps", max_steps)
+    if m_max < 0 or m_max > M_MAX:
+        raise ValueError("m_max must be in 0..%d: %r" % (M_MAX, m_max))
+    if max_ips is not None:
+        max_ips = learn3._int("max_ips", max_ips)
+        if max_ips != 0 and max_ips < MIN_W:
+            raise ValueError("max_ips must be 0 or >= %d: %r" % (MIN_W, max_ips))
+
+
 def levers_s(k, w, max_steps, m_max, S, c_pkt, max_ips):
+    check_candidate_options(max_ips, m_max, max_steps)
     base = k * w
     base_bin = quantum.bin_index(base)
 
     def mk(mode, m, delta):
         w_eff = w + delta
+        learn3.check_model_arithmetic(w_eff, 0.0, 0.0)
         return {"mode": mode, "m": m, "delta": delta, "W_eff": w_eff,
                 "client_bytes": k * w_eff + m * parity_bytes(w_eff, k)}
 
     out = [mk("none", 0, 0)]
     for j in range(1, max_steps + 1):
-        out.append(mk("pad", 0, quantum._ceil_div(quantum.delta_min(base, j), k)))
+        delta = quantum._ceil_div(quantum.delta_min(base, j), k)
+        out.append(mk("pad", 0, delta))
     for m in range(1, m_max + 1):
         out.append(mk("parity", m, 0))
     for j in range(1, max_steps + 1):
         dj = quantum.delta_min(base, j)
         if dj >= w:
-            out.append(mk("parity", quantum._ceil_div(dj, parity_bytes(w, k)), 0))
+            m = quantum._ceil_div(dj, parity_bytes(w, k))
+            if m > m_max:
+                break
+            out.append(mk("parity", m, 0))
     seen = set()
     uniq = []
     for c in out:
@@ -75,9 +92,22 @@ def _cand(mode, delta, lead, t, k, w):
 
 def candidates3(k, w, S, c_pkt, *, max_ips=MAX_IPS, m_max=M_MAX,
                 max_steps=MAX_STEPS):
+    check_candidate_options(max_ips, m_max, max_steps)
+    if max_ips:
+        if w > max_ips:
+            return []
+        base = k * w
+        base_bin = quantum.bin_index(base)
+        pad_last = ((quantum.AMP * k * max_ips - 1) // quantum.P_SERVER
+                    - base_bin + 1)
+        parity_last = ((quantum.AMP * (base + m_max * parity_bytes(w, k)) - 1)
+                       // quantum.P_SERVER - base_bin + 1)
+        max_steps = min(max_steps, max(0, pad_last, parity_last))
     out = []
     seen = set()
     for c in levers_s(k, w, max_steps, m_max, S, c_pkt, max_ips):
+        if c["m"] > m_max:
+            continue
         if max_ips is not None and max_ips > 0 and c["W_eff"] > max_ips:
             continue
         if c["m"] > 0 and parity_bytes(c["W_eff"], k) > UDP_MAX:
@@ -139,6 +169,8 @@ def decide_core(post, k, W, S, u_mbps, rtt_ms, c_pkt, *, actions=None,
                 later=learn3.LATER_DEFAULT, max_ips=MAX_IPS, m_max=M_MAX,
                 max_steps=MAX_STEPS, keep_cands=False, pen=None, reeval=False):
     learn3.check_transport(W, u_mbps, rtt_ms, c_pkt)
+    learn3.check_later(later)
+    check_candidate_options(max_ips, m_max, max_steps)
     k = learn3._int("k", k)
     if k < 1 or k > layout.K_MAX:
         raise ValueError("k must be in 1..%d: %r" % (layout.K_MAX, k))
@@ -204,6 +236,8 @@ def decide3(st, W, u_mbps, rtt_ms, c_pkt, *, actions=None,
             later=learn3.LATER_DEFAULT, max_ips=MAX_IPS, m_max=M_MAX,
             max_steps=MAX_STEPS, keep_cands=False):
     learn3.check_transport(W, u_mbps, rtt_ms, c_pkt, missing_rtt=True)
+    learn3.check_later(later)
+    check_candidate_options(max_ips, m_max, max_steps)
     if actions is not None:
         actions = [learn3.check_action(tuple(a)) for a in actions]
         for a in actions:

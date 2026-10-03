@@ -8,7 +8,7 @@
 |---|---|
 | [mlkem-quic-amplification](mlkem-quic-amplification/) | 팀 측정 코드, 원자료, 실험환경 명세와 연구 문서 |
 | [pq_afec](pq_afec/) | 적응형 FEC와 PAD-FEC 알고리즘, Go 테스트베드, 검증 단계와 결과 |
-| [pq_afec_gen32](pq_afec_gen32/) | v3.1에서 분리한 v3.2 개발본. 학습 전이·잔차 감시·입력 검사 수정과 구현 대조 |
+| [pq_afec_gen32](pq_afec_gen32/) | v3.1에서 분리한 v3.2 개발본. 학습·후보·캐시 수정, 구현 대조와 합성 적응 벤치 |
 
 ML-KEM이 ClientHello를 크게 만들면 QUIC의 증폭 제한에 사용할 수 있는 수신 바이트도 늘어난다. 이 연구는 인증서 크기와 손실 조건에 따라 그 변화가 핸드셰이크 시간에 미치는 영향을 측정하고, 패딩 증가량과 패리티 수를 고르는 정책을 검증한다.
 

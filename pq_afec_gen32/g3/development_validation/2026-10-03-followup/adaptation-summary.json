@@ -1,0 +1,3498 @@
+{
+  "ablation_rule": "frozen_loss restores only post and w after every observation; skip_hazard_ablation restores them only when no likelihood update occurred; histories, guard and decision counters advance in every arm",
+  "cases": [
+    {
+      "candidate_actions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ],
+      "condition": "bigcert_step_recovery",
+      "noise_tape_sha256": "19813c53c097cc93caae905b97128ec72c80b023c97994c74fbdccd35b92ea86",
+      "oracle_rule": "strict minimum true-p model J over the common candidate set; no J_TIE",
+      "paired_differences": {
+        "frozen_loss": {
+          "mean_expected_cost_difference_ms": 6.715195064853913,
+          "mean_synthetic_cost_difference_ms": 8.893106018518518,
+          "steps": 480
+        },
+        "skip_hazard_ablation": {
+          "mean_expected_cost_difference_ms": 4.200533030488565,
+          "mean_synthetic_cost_difference_ms": 5.207460185185185,
+          "steps": 480
+        }
+      },
+      "paired_differences_by_phase": {
+        "high_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 21.723911740607107,
+            "mean_synthetic_cost_difference_ms": 27.769593055555553,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": -0.2504884977608775,
+            "mean_synthetic_cost_difference_ms": 2.609580555555556,
+            "steps": 160
+          }
+        },
+        "low_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "recovery": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": -1.5783265460453684,
+            "mean_synthetic_cost_difference_ms": -1.0902749999999999,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 12.85208758922657,
+            "mean_synthetic_cost_difference_ms": 13.012799999999999,
+            "steps": 160
+          }
+        }
+      },
+      "seed": 31,
+      "variants": {
+        "frozen_loss": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 6,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 139.20869988669048,
+              "mean_expected_regret_ms": 23.14334656125208,
+              "mean_synthetic_cost_ms": 142.82091064814816,
+              "observation_alarm_steps": 12,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 6,
+              "steps": 160,
+              "sum_expected_regret_ms": 3702.9354498003327
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 78.0921,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 79.023225,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 6,
+            "alarm_raised": 6,
+            "events": 45,
+            "fail": 0,
+            "guard": 12,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 90,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 6,
+            "resid": 512,
+            "shield": 0,
+            "upd": 402
+          },
+          "summary": {
+            "decision_alarm_steps": 6,
+            "hazard_transitions_committed": 0,
+            "mean_expected_cost_ms": 99.26431801551479,
+            "mean_expected_regret_ms": 7.714448853750693,
+            "mean_synthetic_cost_ms": 99.97874521604939,
+            "observation_alarm_steps": 12,
+            "posterior_updates_committed": 0,
+            "reeval_steps": 6,
+            "steps": 480,
+            "sum_expected_regret_ms": 3702.9354498003327
+          }
+        },
+        "full": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 117.48478814608336,
+              "mean_expected_regret_ms": 1.4194348206449725,
+              "mean_synthetic_cost_ms": 115.0513175925926,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 17,
+              "reeval_steps": 9,
+              "steps": 160,
+              "sum_expected_regret_ms": 227.1095713031956
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 78.0921,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 80.87045362597233,
+              "mean_expected_regret_ms": 1.5783265460453684,
+              "mean_synthetic_cost_ms": 80.1135,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 153,
+              "reeval_steps": 1,
+              "steps": 160,
+              "sum_expected_regret_ms": 252.53224736725895
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 26,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 150,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 10,
+            "resid": 512,
+            "shield": 0,
+            "upd": 354
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 92.54912295066089,
+            "mean_expected_regret_ms": 0.9992537888967803,
+            "mean_synthetic_cost_ms": 91.08563919753087,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 330,
+            "reeval_steps": 10,
+            "steps": 480,
+            "sum_expected_regret_ms": 479.64181867045454
+          }
+        },
+        "skip_hazard_ablation": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 14,
+              "mean_expected_cost_ms": 117.23429964832249,
+              "mean_expected_regret_ms": 1.168946322884095,
+              "mean_synthetic_cost_ms": 117.66089814814815,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 14,
+              "reeval_steps": 9,
+              "steps": 160,
+              "sum_expected_regret_ms": 187.0314116614552
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 78.0921,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 96,
+              "mean_expected_cost_ms": 93.7225412151989,
+              "mean_expected_regret_ms": 14.43041413527194,
+              "mean_synthetic_cost_ms": 93.1263,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 96,
+              "reeval_steps": 5,
+              "steps": 160,
+              "sum_expected_regret_ms": 2308.8662616435104
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 23,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 210,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 14,
+            "resid": 512,
+            "shield": 0,
+            "upd": 294
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 270,
+            "mean_expected_cost_ms": 96.74965598114944,
+            "mean_expected_regret_ms": 5.199786819385345,
+            "mean_synthetic_cost_ms": 96.29309938271605,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 270,
+            "reeval_steps": 14,
+            "steps": 480,
+            "sum_expected_regret_ms": 2495.897673304966
+          }
+        }
+      },
+      "warmup": {
+        "excluded_from_comparison": true,
+        "initial_state_sha256": "431b79c633a3d4d0b1be615d12d266abcb7f495cac5752a5fe468726544246dd",
+        "noise_tape_sha256": "153d920dc873e3bcc0aee847daafb899ed10d867aa722d1191455038cd3e12d6",
+        "steps": 32
+      }
+    },
+    {
+      "candidate_actions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ],
+      "condition": "bigcert_step_recovery",
+      "noise_tape_sha256": "9561026c2e3a2c92bfd1f16d5ca3189d5fb2da5cd98fcd738f960b2e0a972f2b",
+      "oracle_rule": "strict minimum true-p model J over the common candidate set; no J_TIE",
+      "paired_differences": {
+        "frozen_loss": {
+          "mean_expected_cost_difference_ms": 5.190845632746987,
+          "mean_synthetic_cost_difference_ms": 7.581879031101873,
+          "steps": 480
+        },
+        "skip_hazard_ablation": {
+          "mean_expected_cost_difference_ms": 0.45095044172724813,
+          "mean_synthetic_cost_difference_ms": 0.3856083333333333,
+          "steps": 480
+        }
+      },
+      "paired_differences_by_phase": {
+        "high_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 23.191459064449834,
+            "mean_synthetic_cost_difference_ms": 28.83434528780791,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "low_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "recovery": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": -7.618922166208874,
+            "mean_synthetic_cost_difference_ms": -6.08870819450229,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 1.3528513251817444,
+            "mean_synthetic_cost_difference_ms": 1.1568249999999998,
+            "steps": 160
+          }
+        }
+      },
+      "seed": 32,
+      "variants": {
+        "frozen_loss": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 17,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 140.25876638093175,
+              "mean_expected_regret_ms": 24.193413055493345,
+              "mean_synthetic_cost_ms": 145.91239289021163,
+              "observation_alarm_steps": 23,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 5,
+              "steps": 160,
+              "sum_expected_regret_ms": 3870.946088878935
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 78.97543730496909,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 80.91768896912667,
+              "mean_expected_regret_ms": 1.625561889199713,
+              "mean_synthetic_cost_ms": 82.34374180549771,
+              "observation_alarm_steps": 1,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 260.0899022719541
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 7,
+            "alarm_raised": 7,
+            "events": 48,
+            "fail": 0,
+            "guard": 24,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 79,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 5,
+            "resid": 512,
+            "shield": 0,
+            "upd": 401
+          },
+          "summary": {
+            "decision_alarm_steps": 17,
+            "hazard_transitions_committed": 0,
+            "mean_expected_cost_ms": 100.15619414332845,
+            "mean_expected_regret_ms": 8.606324981564352,
+            "mean_synthetic_cost_ms": 102.41052400022615,
+            "observation_alarm_steps": 24,
+            "posterior_updates_committed": 0,
+            "reeval_steps": 5,
+            "steps": 480,
+            "sum_expected_regret_ms": 4131.0359911508895
+          }
+        },
+        "full": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 117.0673073164819,
+              "mean_expected_regret_ms": 1.00195399104351,
+              "mean_synthetic_cost_ms": 117.07804760240373,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 12,
+              "reeval_steps": 9,
+              "steps": 160,
+              "sum_expected_regret_ms": 160.3126385669616
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 78.97543730496909,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 88.53661113533555,
+              "mean_expected_regret_ms": 9.244484055408586,
+              "mean_synthetic_cost_ms": 88.43245,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 119,
+              "reeval_steps": 3,
+              "steps": 160,
+              "sum_expected_regret_ms": 1479.1174488653737
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 25,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 189,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 12,
+            "resid": 512,
+            "shield": 0,
+            "upd": 315
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 94.96534851058146,
+            "mean_expected_regret_ms": 3.4154793488173656,
+            "mean_synthetic_cost_ms": 94.82864496912427,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 291,
+            "reeval_steps": 12,
+            "steps": 480,
+            "sum_expected_regret_ms": 1639.4300874323353
+          }
+        },
+        "skip_hazard_ablation": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 12,
+              "mean_expected_cost_ms": 117.0673073164819,
+              "mean_expected_regret_ms": 1.00195399104351,
+              "mean_synthetic_cost_ms": 117.07804760240373,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 12,
+              "reeval_steps": 9,
+              "steps": 160,
+              "sum_expected_regret_ms": 160.3126385669616
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 78.97543730496909,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 113,
+              "mean_expected_cost_ms": 89.8894624605173,
+              "mean_expected_regret_ms": 10.59733538059033,
+              "mean_synthetic_cost_ms": 89.589275,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 113,
+              "reeval_steps": 4,
+              "steps": 160,
+              "sum_expected_regret_ms": 1695.573660894453
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 24,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 195,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 13,
+            "resid": 512,
+            "shield": 0,
+            "upd": 309
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 285,
+            "mean_expected_cost_ms": 95.41629895230872,
+            "mean_expected_regret_ms": 3.8664297905446134,
+            "mean_synthetic_cost_ms": 95.2142533024576,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 285,
+            "reeval_steps": 13,
+            "steps": 480,
+            "sum_expected_regret_ms": 1855.8862994614146
+          }
+        }
+      },
+      "warmup": {
+        "excluded_from_comparison": true,
+        "initial_state_sha256": "37a62c51417cc0ad8513c7589abc1c9fba6470628738e5eb1f052b1052401f24",
+        "noise_tape_sha256": "37f761a0136b7375cc38c12ac9b30ec4c49a1f6c2f73436a7a6c5cd715f2eee9",
+        "steps": 32
+      }
+    },
+    {
+      "candidate_actions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ],
+      "condition": "bigcert_step_recovery",
+      "noise_tape_sha256": "8881a05a2ffd7b7bf5c6bf472ad287040edb40ea2b7a03dbfb914a4fdf4995c9",
+      "oracle_rule": "strict minimum true-p model J over the common candidate set; no J_TIE",
+      "paired_differences": {
+        "frozen_loss": {
+          "mean_expected_cost_difference_ms": 10.478643823568387,
+          "mean_synthetic_cost_difference_ms": 9.358164032186947,
+          "steps": 480
+        },
+        "skip_hazard_ablation": {
+          "mean_expected_cost_difference_ms": -1.1411142675773307,
+          "mean_synthetic_cost_difference_ms": -0.8614450617283953,
+          "steps": 480
+        }
+      },
+      "paired_differences_by_phase": {
+        "high_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 31.210455651720775,
+            "mean_synthetic_cost_difference_ms": 27.82981709656084,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": -3.4233428027319923,
+            "mean_synthetic_cost_difference_ms": -2.584335185185186,
+            "steps": 160
+          }
+        },
+        "low_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "recovery": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.2254758189843872,
+            "mean_synthetic_cost_difference_ms": 0.24467499999999998,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        }
+      },
+      "seed": 33,
+      "variants": {
+        "frozen_loss": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 7,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 154.03899841670287,
+              "mean_expected_regret_ms": 37.973645091264466,
+              "mean_synthetic_cost_ms": 147.1642939484127,
+              "observation_alarm_steps": 13,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 4,
+              "steps": 160,
+              "sum_expected_regret_ms": 6075.783214602315
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 79.95435,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 79.51760289891135,
+              "mean_expected_regret_ms": 0.2254758189843872,
+              "mean_synthetic_cost_ms": 78.02810000000001,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 36.07613103750195
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 6,
+            "alarm_raised": 6,
+            "events": 55,
+            "fail": 0,
+            "guard": 13,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 67,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 4,
+            "resid": 512,
+            "shield": 0,
+            "upd": 424
+          },
+          "summary": {
+            "decision_alarm_steps": 7,
+            "hazard_transitions_committed": 0,
+            "mean_expected_cost_ms": 104.28290946518038,
+            "mean_expected_regret_ms": 12.733040303416285,
+            "mean_synthetic_cost_ms": 101.71558131613757,
+            "observation_alarm_steps": 13,
+            "posterior_updates_committed": 0,
+            "reeval_steps": 4,
+            "steps": 480,
+            "sum_expected_regret_ms": 6111.859345639817
+          }
+        },
+        "full": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 122.82854276498209,
+              "mean_expected_regret_ms": 6.763189439543693,
+              "mean_synthetic_cost_ms": 119.33447685185186,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 81,
+              "reeval_steps": 5,
+              "steps": 160,
+              "sum_expected_regret_ms": 1082.1103103269907
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 79.95435,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 77.78342500000001,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 48,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 79,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 5,
+            "resid": 512,
+            "shield": 0,
+            "upd": 425
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 93.804265641612,
+            "mean_expected_regret_ms": 2.2543964798478973,
+            "mean_synthetic_cost_ms": 92.35741728395062,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 401,
+            "reeval_steps": 5,
+            "steps": 480,
+            "sum_expected_regret_ms": 1082.1103103269907
+          }
+        },
+        "skip_hazard_ablation": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 40,
+              "mean_expected_cost_ms": 119.4051999622501,
+              "mean_expected_regret_ms": 3.3398466368117,
+              "mean_synthetic_cost_ms": 116.75014166666666,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 40,
+              "reeval_steps": 8,
+              "steps": 160,
+              "sum_expected_regret_ms": 534.375461889872
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 79.95435,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 79.29212707992696,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 77.78342500000001,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 37,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 120,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 8,
+            "resid": 512,
+            "shield": 0,
+            "upd": 384
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 360,
+            "mean_expected_cost_ms": 92.66315137403467,
+            "mean_expected_regret_ms": 1.1132822122705666,
+            "mean_synthetic_cost_ms": 91.49597222222222,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 360,
+            "reeval_steps": 8,
+            "steps": 480,
+            "sum_expected_regret_ms": 534.375461889872
+          }
+        }
+      },
+      "warmup": {
+        "excluded_from_comparison": true,
+        "initial_state_sha256": "4d1f1682e928d18a1b784129af6e13c9fcf106b8b4976cb82c9ddaf71f734754",
+        "noise_tape_sha256": "2eced31f327104ff21a9a24f59626c609d4a54334cd553a2f2c7b997298b5ca2",
+        "steps": 32
+      }
+    },
+    {
+      "candidate_actions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          4,
+          0
+        ],
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          2
+        ],
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          1,
+          0,
+          3
+        ],
+        [
+          1,
+          1,
+          2
+        ],
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          1,
+          3,
+          0
+        ],
+        [
+          1,
+          0,
+          4
+        ],
+        [
+          1,
+          1,
+          3
+        ],
+        [
+          1,
+          2,
+          2
+        ],
+        [
+          1,
+          3,
+          1
+        ],
+        [
+          1,
+          4,
+          0
+        ]
+      ],
+      "condition": "c6000_step_recovery",
+      "noise_tape_sha256": "fc7a6f20159d8cb24eb28377ca0e0375dc1f30978e9769eeabef09c29a0e7404",
+      "oracle_rule": "strict minimum true-p model J over the common candidate set; no J_TIE",
+      "paired_differences": {
+        "frozen_loss": {
+          "mean_expected_cost_difference_ms": 0.0,
+          "mean_synthetic_cost_difference_ms": 0.0,
+          "steps": 480
+        },
+        "skip_hazard_ablation": {
+          "mean_expected_cost_difference_ms": 0.0,
+          "mean_synthetic_cost_difference_ms": 0.0,
+          "steps": 480
+        }
+      },
+      "paired_differences_by_phase": {
+        "high_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "low_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "recovery": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        }
+      },
+      "seed": 31,
+      "variants": {
+        "frozen_loss": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 84.88098890477289,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 85.03193,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.16531,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.13817999999999,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 2,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 0,
+            "mean_expected_cost_ms": 84.40426675152702,
+            "mean_expected_regret_ms": 0.17099832559291409,
+            "mean_synthetic_cost_ms": 84.44514,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 0,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 82.07919628459877
+          }
+        },
+        "full": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.88098890477289,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 85.03193,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.16531,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.13817999999999,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 2,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 84.40426675152702,
+            "mean_expected_regret_ms": 0.17099832559291409,
+            "mean_synthetic_cost_ms": 84.44514,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 82.07919628459877
+          }
+        },
+        "skip_hazard_ablation": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.88098890477289,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 85.03193,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.16531,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.13817999999999,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 2,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 84.40426675152702,
+            "mean_expected_regret_ms": 0.17099832559291409,
+            "mean_synthetic_cost_ms": 84.44514,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 82.07919628459877
+          }
+        }
+      },
+      "warmup": {
+        "excluded_from_comparison": true,
+        "initial_state_sha256": "1bfa7b98dacdfb6ec48d413dff67e1f72b2861063905d89995e5807c68dd29cb",
+        "noise_tape_sha256": "e6af6243834c22c1020a53f3d5dd8b0ec11178856cd4eb522c696ee82a6d6e02",
+        "steps": 32
+      }
+    },
+    {
+      "candidate_actions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          4,
+          0
+        ],
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          2
+        ],
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          1,
+          0,
+          3
+        ],
+        [
+          1,
+          1,
+          2
+        ],
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          1,
+          3,
+          0
+        ],
+        [
+          1,
+          0,
+          4
+        ],
+        [
+          1,
+          1,
+          3
+        ],
+        [
+          1,
+          2,
+          2
+        ],
+        [
+          1,
+          3,
+          1
+        ],
+        [
+          1,
+          4,
+          0
+        ]
+      ],
+      "condition": "c6000_step_recovery",
+      "noise_tape_sha256": "7a2ea7a6023ad2ecd1dcfddc4e6f3502defa7f819aada3f92858e6da1974a512",
+      "oracle_rule": "strict minimum true-p model J over the common candidate set; no J_TIE",
+      "paired_differences": {
+        "frozen_loss": {
+          "mean_expected_cost_difference_ms": 0.0,
+          "mean_synthetic_cost_difference_ms": 0.0,
+          "steps": 480
+        },
+        "skip_hazard_ablation": {
+          "mean_expected_cost_difference_ms": 0.0,
+          "mean_synthetic_cost_difference_ms": 0.0,
+          "steps": 480
+        }
+      },
+      "paired_differences_by_phase": {
+        "high_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "low_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "recovery": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        }
+      },
+      "seed": 32,
+      "variants": {
+        "frozen_loss": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 84.88098890477289,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 84.54832499999999,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.17171,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.13817999999999,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 1,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 0,
+            "mean_expected_cost_ms": 84.40426675152702,
+            "mean_expected_regret_ms": 0.17099832559291409,
+            "mean_synthetic_cost_ms": 84.28607166666667,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 0,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 82.07919628459877
+          }
+        },
+        "full": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.88098890477289,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 84.54832499999999,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.17171,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.13817999999999,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 1,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 84.40426675152702,
+            "mean_expected_regret_ms": 0.17099832559291409,
+            "mean_synthetic_cost_ms": 84.28607166666667,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 82.07919628459877
+          }
+        },
+        "skip_hazard_ablation": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.88098890477289,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 84.54832499999999,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.17171,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.13817999999999,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 1,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 84.40426675152702,
+            "mean_expected_regret_ms": 0.17099832559291409,
+            "mean_synthetic_cost_ms": 84.28607166666667,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 82.07919628459877
+          }
+        }
+      },
+      "warmup": {
+        "excluded_from_comparison": true,
+        "initial_state_sha256": "993a129e23ee5297b284e463efb870ec396d50f84a292aec65e374a76ea7cef6",
+        "noise_tape_sha256": "fdff873ff54bc9433064e4003a617f20f62a64a12f0d9bbc859af3b11566d780",
+        "steps": 32
+      }
+    },
+    {
+      "candidate_actions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          4,
+          0
+        ],
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          2
+        ],
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          1,
+          0,
+          3
+        ],
+        [
+          1,
+          1,
+          2
+        ],
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          1,
+          3,
+          0
+        ],
+        [
+          1,
+          0,
+          4
+        ],
+        [
+          1,
+          1,
+          3
+        ],
+        [
+          1,
+          2,
+          2
+        ],
+        [
+          1,
+          3,
+          1
+        ],
+        [
+          1,
+          4,
+          0
+        ]
+      ],
+      "condition": "c6000_step_recovery",
+      "noise_tape_sha256": "c1ee07ea31b07045c3bd27b6e27f77c5c62b24d5bffb5fb516b4231286f79778",
+      "oracle_rule": "strict minimum true-p model J over the common candidate set; no J_TIE",
+      "paired_differences": {
+        "frozen_loss": {
+          "mean_expected_cost_difference_ms": 0.0,
+          "mean_synthetic_cost_difference_ms": 0.0,
+          "steps": 480
+        },
+        "skip_hazard_ablation": {
+          "mean_expected_cost_difference_ms": 0.0,
+          "mean_synthetic_cost_difference_ms": 0.0,
+          "steps": 480
+        }
+      },
+      "paired_differences_by_phase": {
+        "high_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "low_loss": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "recovery": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        }
+      },
+      "seed": 33,
+      "variants": {
+        "frozen_loss": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 84.88098890477289,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 85.28406051470607,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.17171,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.164545,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 1,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 0,
+            "mean_expected_cost_ms": 84.40426675152702,
+            "mean_expected_regret_ms": 0.17099832559291409,
+            "mean_synthetic_cost_ms": 84.54010517156868,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 0,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 82.07919628459877
+          }
+        },
+        "full": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.88098890477289,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 85.28406051470607,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.17171,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.164545,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 1,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 84.40426675152702,
+            "mean_expected_regret_ms": 0.17099832559291409,
+            "mean_synthetic_cost_ms": 84.54010517156868,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 82.07919628459877
+          }
+        },
+        "skip_hazard_ablation": {
+          "by_phase": {
+            "high_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.88098890477289,
+              "mean_expected_regret_ms": 0.0,
+              "mean_synthetic_cost_ms": 85.28406051470607,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 0.0
+            },
+            "low_loss": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.17171,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            },
+            "recovery": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 84.16590567490408,
+              "mean_expected_regret_ms": 0.25649748838937114,
+              "mean_synthetic_cost_ms": 84.164545,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 41.03959814229938
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 1,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 84.40426675152702,
+            "mean_expected_regret_ms": 0.17099832559291409,
+            "mean_synthetic_cost_ms": 84.54010517156868,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 82.07919628459877
+          }
+        }
+      },
+      "warmup": {
+        "excluded_from_comparison": true,
+        "initial_state_sha256": "c0d651613aad59fa0c90fd91da531fa50af25430ef52472d17baf8754c43bfd9",
+        "noise_tape_sha256": "e4704e49916ec769bbc658776b59e88ab92f0f72aaff8a9609288d05b02ab78e",
+        "steps": 32
+      }
+    },
+    {
+      "candidate_actions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ],
+      "condition": "rtt200_stationary_control",
+      "noise_tape_sha256": "01faf69fc207f79b2e236bf52662f835645848d8da2a08935f238b1b644b2c89",
+      "oracle_rule": "strict minimum true-p model J over the common candidate set; no J_TIE",
+      "paired_differences": {
+        "frozen_loss": {
+          "mean_expected_cost_difference_ms": 0.06283095493615794,
+          "mean_synthetic_cost_difference_ms": -0.5884666666666661,
+          "steps": 480
+        },
+        "skip_hazard_ablation": {
+          "mean_expected_cost_difference_ms": 0.0,
+          "mean_synthetic_cost_difference_ms": 0.0,
+          "steps": 480
+        }
+      },
+      "paired_differences_by_phase": {
+        "early": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.05277800214637267,
+            "mean_synthetic_cost_difference_ms": 0.23292500000000055,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "late": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.09047657510806743,
+            "mean_synthetic_cost_difference_ms": -0.9159749999999993,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "middle": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.04523828755403372,
+            "mean_synthetic_cost_difference_ms": -1.0823499999999997,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        }
+      },
+      "seed": 31,
+      "variants": {
+        "frozen_loss": {
+          "by_phase": {
+            "early": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 220.793275,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            },
+            "late": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 220.76,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            },
+            "middle": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 220.699825,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 0,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 0,
+            "mean_expected_cost_ms": 220.77465273679962,
+            "mean_expected_regret_ms": 1.2063543347742325,
+            "mean_synthetic_cost_ms": 220.75103333333334,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 0,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 579.0500806916316
+          }
+        },
+        "full": {
+          "by_phase": {
+            "early": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.72187473465326,
+              "mean_expected_regret_ms": 1.1535763326278599,
+              "mean_synthetic_cost_ms": 220.56035,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 184.57221322045757
+            },
+            "late": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.68417616169157,
+              "mean_expected_regret_ms": 1.115877759666165,
+              "mean_synthetic_cost_ms": 221.675975,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 178.5404415465864
+            },
+            "middle": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.72941444924558,
+              "mean_expected_regret_ms": 1.1611160472201987,
+              "mean_synthetic_cost_ms": 221.782175,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 185.7785675552318
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 2,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 220.71182178186348,
+            "mean_expected_regret_ms": 1.1435233798380746,
+            "mean_synthetic_cost_ms": 221.33950000000002,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 548.8912223222758
+          }
+        },
+        "skip_hazard_ablation": {
+          "by_phase": {
+            "early": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.72187473465326,
+              "mean_expected_regret_ms": 1.1535763326278599,
+              "mean_synthetic_cost_ms": 220.56035,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 184.57221322045757
+            },
+            "late": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.68417616169157,
+              "mean_expected_regret_ms": 1.115877759666165,
+              "mean_synthetic_cost_ms": 221.675975,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 178.5404415465864
+            },
+            "middle": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.72941444924558,
+              "mean_expected_regret_ms": 1.1611160472201987,
+              "mean_synthetic_cost_ms": 221.782175,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 185.7785675552318
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 2,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 220.71182178186348,
+            "mean_expected_regret_ms": 1.1435233798380746,
+            "mean_synthetic_cost_ms": 221.33950000000002,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 548.8912223222758
+          }
+        }
+      },
+      "warmup": {
+        "excluded_from_comparison": true,
+        "initial_state_sha256": "dd520a0d6abdeb399469c62843ed61c0b1510100e780e554d1bf8559fc63020d",
+        "noise_tape_sha256": "38bafdd6ad6a2bbbdaa71e2bf4ec1c17dd3855eb38635cbff28c82df0acab2cc",
+        "steps": 32
+      }
+    },
+    {
+      "candidate_actions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ],
+      "condition": "rtt200_stationary_control",
+      "noise_tape_sha256": "bcb5d231725df1cb7b1e928d069ceaf659a595a3602c7c87bf300bf8fb6d8311",
+      "oracle_rule": "strict minimum true-p model J over the common candidate set; no J_TIE",
+      "paired_differences": {
+        "frozen_loss": {
+          "mean_expected_cost_difference_ms": 0.10806924249019166,
+          "mean_synthetic_cost_difference_ms": 0.45475833333333426,
+          "steps": 480
+        },
+        "skip_hazard_ablation": {
+          "mean_expected_cost_difference_ms": 0.0,
+          "mean_synthetic_cost_difference_ms": 0.0,
+          "steps": 480
+        }
+      },
+      "paired_differences_by_phase": {
+        "early": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.007539714592338953,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "late": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.31666801287823604,
+            "mean_synthetic_cost_difference_ms": 1.3642750000000028,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "middle": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        }
+      },
+      "seed": 32,
+      "variants": {
+        "frozen_loss": {
+          "by_phase": {
+            "early": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 221.979275,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            },
+            "late": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 220.630725,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            },
+            "middle": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 220.662725,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 1,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 0,
+            "mean_expected_cost_ms": 220.77465273679962,
+            "mean_expected_regret_ms": 1.2063543347742325,
+            "mean_synthetic_cost_ms": 221.09090833333335,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 0,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 579.0500806916316
+          }
+        },
+        "full": {
+          "by_phase": {
+            "early": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.7671130222073,
+              "mean_expected_regret_ms": 1.1988146201818934,
+              "mean_synthetic_cost_ms": 221.979275,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 191.81033922910296
+            },
+            "late": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.45798472392138,
+              "mean_expected_regret_ms": 0.8896863218959965,
+              "mean_synthetic_cost_ms": 219.26645,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 142.34981150335943
+            },
+            "middle": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 220.662725,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 1,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 220.66658349430944,
+            "mean_expected_regret_ms": 1.0982850922840408,
+            "mean_synthetic_cost_ms": 220.63615000000001,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 527.1768442963396
+          }
+        },
+        "skip_hazard_ablation": {
+          "by_phase": {
+            "early": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.7671130222073,
+              "mean_expected_regret_ms": 1.1988146201818934,
+              "mean_synthetic_cost_ms": 221.979275,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 191.81033922910296
+            },
+            "late": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.45798472392138,
+              "mean_expected_regret_ms": 0.8896863218959965,
+              "mean_synthetic_cost_ms": 219.26645,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 142.34981150335943
+            },
+            "middle": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 220.662725,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 1,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 220.66658349430944,
+            "mean_expected_regret_ms": 1.0982850922840408,
+            "mean_synthetic_cost_ms": 220.63615000000001,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 527.1768442963396
+          }
+        }
+      },
+      "warmup": {
+        "excluded_from_comparison": true,
+        "initial_state_sha256": "2f283a2a88d8ac0730ef116c90252dac172a169e78bb9859fb29fd681df31c5a",
+        "noise_tape_sha256": "8b28bba739d4f8219de6245a7285711a5309fe7fa9fa03bdc5806ef09b44538e",
+        "steps": 32
+      }
+    },
+    {
+      "candidate_actions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ],
+      "condition": "rtt200_stationary_control",
+      "noise_tape_sha256": "860cddc12ba02959beda4cf0c1ff2aff6b36e99002c0a354081c784a5df648e4",
+      "oracle_rule": "strict minimum true-p model J over the common candidate set; no J_TIE",
+      "paired_differences": {
+        "frozen_loss": {
+          "mean_expected_cost_difference_ms": 0.32420772747057497,
+          "mean_synthetic_cost_difference_ms": 0.5207000000000027,
+          "steps": 480
+        },
+        "skip_hazard_ablation": {
+          "mean_expected_cost_difference_ms": 0.0,
+          "mean_synthetic_cost_difference_ms": 0.0,
+          "steps": 480
+        }
+      },
+      "paired_differences_by_phase": {
+        "early": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.05277800214637267,
+            "mean_synthetic_cost_difference_ms": 0.23292500000000035,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "late": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.6182565965717941,
+            "mean_synthetic_cost_difference_ms": 1.3800000000000052,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        },
+        "middle": {
+          "frozen_loss": {
+            "mean_expected_cost_difference_ms": 0.3015885836935581,
+            "mean_synthetic_cost_difference_ms": -0.050824999999997365,
+            "steps": 160
+          },
+          "skip_hazard_ablation": {
+            "mean_expected_cost_difference_ms": 0.0,
+            "mean_synthetic_cost_difference_ms": 0.0,
+            "steps": 160
+          }
+        }
+      },
+      "seed": 33,
+      "variants": {
+        "frozen_loss": {
+          "by_phase": {
+            "early": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 220.59745,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            },
+            "late": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 220.694725,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            },
+            "middle": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 0,
+              "mean_expected_cost_ms": 220.77465273679962,
+              "mean_expected_regret_ms": 1.2063543347742325,
+              "mean_synthetic_cost_ms": 221.843625,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 0,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 193.0166935638772
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 1,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 0,
+            "mean_expected_cost_ms": 220.77465273679962,
+            "mean_expected_regret_ms": 1.2063543347742325,
+            "mean_synthetic_cost_ms": 221.04526666666666,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 0,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 579.0500806916316
+          }
+        },
+        "full": {
+          "by_phase": {
+            "early": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.72187473465326,
+              "mean_expected_regret_ms": 1.1535763326278599,
+              "mean_synthetic_cost_ms": 220.36452500000001,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 184.57221322045757
+            },
+            "late": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.15639614022783,
+              "mean_expected_regret_ms": 0.5880977382024384,
+              "mean_synthetic_cost_ms": 219.314725,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 94.09563811239013
+            },
+            "middle": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.47306415310607,
+              "mean_expected_regret_ms": 0.9047657510806744,
+              "mean_synthetic_cost_ms": 221.89445,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 144.7625201729079
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 3,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 220.45044500932906,
+            "mean_expected_regret_ms": 0.8821466073036575,
+            "mean_synthetic_cost_ms": 220.52456666666666,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 423.4303715057556
+          }
+        },
+        "skip_hazard_ablation": {
+          "by_phase": {
+            "early": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.72187473465326,
+              "mean_expected_regret_ms": 1.1535763326278599,
+              "mean_synthetic_cost_ms": 220.36452500000001,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 184.57221322045757
+            },
+            "late": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.15639614022783,
+              "mean_expected_regret_ms": 0.5880977382024384,
+              "mean_synthetic_cost_ms": 219.314725,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 94.09563811239013
+            },
+            "middle": {
+              "decision_alarm_steps": 0,
+              "hazard_transitions_committed": 160,
+              "mean_expected_cost_ms": 220.47306415310607,
+              "mean_expected_regret_ms": 0.9047657510806744,
+              "mean_synthetic_cost_ms": 221.89445,
+              "observation_alarm_steps": 0,
+              "posterior_updates_committed": 160,
+              "reeval_steps": 0,
+              "steps": 160,
+              "sum_expected_regret_ms": 144.7625201729079
+            }
+          },
+          "learner_stats_after": {
+            "alarm_cleared": 0,
+            "alarm_raised": 0,
+            "events": 3,
+            "fail": 0,
+            "guard": 0,
+            "no_base": 8,
+            "no_ctx": 0,
+            "nominal2": 0,
+            "obs": 512,
+            "predict": 512,
+            "reeval": 0,
+            "resid": 512,
+            "shield": 0,
+            "upd": 504
+          },
+          "summary": {
+            "decision_alarm_steps": 0,
+            "hazard_transitions_committed": 480,
+            "mean_expected_cost_ms": 220.45044500932906,
+            "mean_expected_regret_ms": 0.8821466073036575,
+            "mean_synthetic_cost_ms": 220.52456666666666,
+            "observation_alarm_steps": 0,
+            "posterior_updates_committed": 480,
+            "reeval_steps": 0,
+            "steps": 480,
+            "sum_expected_regret_ms": 423.4303715057556
+          }
+        }
+      },
+      "warmup": {
+        "excluded_from_comparison": true,
+        "initial_state_sha256": "82373bf3f8d555f7c73068ab21162fca810e1e0fc8488c44d3110cfbd03612ad",
+        "noise_tape_sha256": "61704f3f781aeb84af718f04e35d42f5e9445ab2b3085a7125af222a3e68af8f",
+        "steps": 32
+      }
+    }
+  ],
+  "confirmatory": false,
+  "environment": "fixed known k, server bytes and RTT; costs come from the policy model",
+  "label": "development synthetic toy comparison",
+  "learner_stats_rule": "learner counters include shared warmup and discarded updates; committed counters cover comparison steps only",
+  "model_mode": "v3",
+  "network_measurements": 0,
+  "noise_coupling": "four semantic original uniforms, four parity uniforms and one race uniform per step",
+  "note": "Development toy simulation under the policy's own cost model. No network measurements or real HCT observations are used. Ablation differences describe this model and protocol; they do not establish real performance or predictive accuracy.",
+  "observation_rule": "all modeled connections are ok=True; initial failure uses the model recovery cost",
+  "paired_difference_rule": "ablation minus full; descriptive model differences without tests or confidence intervals",
+  "policy_version": "v3.2-dev",
+  "protocol": {
+    "conditions": [
+      {
+        "W": 1280,
+        "c_pkt": 41.983,
+        "cert": 16000,
+        "id": "bigcert_step_recovery",
+        "k": 2,
+        "phases": [
+          {
+            "id": "low_loss",
+            "p_true": 0.02,
+            "steps": 160
+          },
+          {
+            "id": "high_loss",
+            "p_true": 0.25,
+            "steps": 160
+          },
+          {
+            "id": "recovery",
+            "p_true": 0.02,
+            "steps": 160
+          }
+        ],
+        "rtt_ms": 50.0,
+        "s0_base": 1472.0,
+        "uplink_mbps": 2.0
+      },
+      {
+        "W": 1280,
+        "c_pkt": 41.983,
+        "cert": 6000,
+        "id": "c6000_step_recovery",
+        "k": 2,
+        "phases": [
+          {
+            "id": "low_loss",
+            "p_true": 0.01,
+            "steps": 160
+          },
+          {
+            "id": "high_loss",
+            "p_true": 0.08,
+            "steps": 160
+          },
+          {
+            "id": "recovery",
+            "p_true": 0.01,
+            "steps": 160
+          }
+        ],
+        "rtt_ms": 80.0,
+        "s0_base": 1472.0,
+        "uplink_mbps": 10.0
+      },
+      {
+        "W": 1280,
+        "c_pkt": 41.983,
+        "cert": 9000,
+        "id": "rtt200_stationary_control",
+        "k": 2,
+        "phases": [
+          {
+            "id": "early",
+            "p_true": 0.02,
+            "steps": 160
+          },
+          {
+            "id": "middle",
+            "p_true": 0.02,
+            "steps": 160
+          },
+          {
+            "id": "late",
+            "p_true": 0.02,
+            "steps": 160
+          }
+        ],
+        "rtt_ms": 200.0,
+        "s0_base": 1472.0,
+        "uplink_mbps": 2.0
+      }
+    ],
+    "label": "Development toy simulation; no network measurements",
+    "schema": "padfec3.adaptation_benchmark_protocol/toy-v1",
+    "seeds": [
+      31,
+      32,
+      33
+    ],
+    "variants": [
+      "full",
+      "frozen_loss",
+      "skip_hazard_ablation"
+    ],
+    "warmup_steps": 32
+  },
+  "protocol_input_sha256": "7329170e8e30d003da0b8850f45b996ecf3406f4919446e6da4fc105bc480ac9",
+  "protocol_sha256": "15f13df07f4181efec05bddf5339d319a70145a178d333c131c524699ca4d750",
+  "schema": "padfec3.adaptation_benchmark/synthetic-v1",
+  "seeds": [
+    31,
+    32,
+    33
+  ],
+  "source_sha256": {
+    "experiments/adaptation_benchmark.py": "1ed202fca5d408541dae36375ed5a19a8679fef4947e632cee3f395bb8297e87",
+    "g3/adaptation_benchmark_protocol.json": "7329170e8e30d003da0b8850f45b996ecf3406f4919446e6da4fc105bc480ac9",
+    "padfec/policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+    "padfec/quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "padfec/table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "padfec3/decide3.py": "72e6f388651df35d2e70cb52c65c71e5ec6a0d496ad95400e623544a3fb880ba",
+    "padfec3/layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+    "padfec3/learn3.py": "a78a69b057179e633b9dbc8cbfac57bbfc9a68b25ecc47853c9e6f6b42b9044e"
+  },
+  "synthetic": true,
+  "publication": {
+    "per_observation_rows_published": false,
+    "comparison_observations": 12960,
+    "rows_omitted_only": true
+  }
+}

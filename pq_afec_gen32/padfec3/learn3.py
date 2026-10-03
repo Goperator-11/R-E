@@ -1,4 +1,6 @@
 import math
+from collections import OrderedDict
+from copy import deepcopy
 
 from padfec import policy, quantum, table
 from padfec3 import layout
@@ -33,7 +35,8 @@ SKIP_SHIELD = "shield"
 SKIP_NOMINAL2 = "nominal2"
 SKIP_GUARD = "guard"
 
-_MODEL = {}
+MODEL_CACHE_MAX = 100000
+_MODEL = OrderedDict()
 
 
 def clear_model_cache():
@@ -78,6 +81,11 @@ def check_c_pkt(c_pkt):
     if value >= P_SERVER:
         raise ValueError("c_pkt must be < %d: %r" % (P_SERVER, c_pkt))
     return value
+
+
+def check_later(later):
+    if later not in layout.LATER_MODES:
+        raise ValueError("later must be one of %r: %r" % (layout.LATER_MODES, later))
 
 
 def check_transport(W, u_mbps, rtt_ms, c_pkt, *, missing_rtt=False):
@@ -193,6 +201,7 @@ def bin_needed_s(S, base_bin, c_pkt):
 
 
 def model_point(k, w_eff, u, rtt, n_need, lead, m, g, later=LATER_DEFAULT):
+    check_later(later)
     key = (k, w_eff, float(u), float(rtt), n_need, lead, m, g, later)
     r = _MODEL.get(key)
     if r is None:
@@ -200,6 +209,8 @@ def model_point(k, w_eff, u, rtt, n_need, lead, m, g, later=LATER_DEFAULT):
                              n_need, later)
         _finite("model cost", ev["J"])
         r = (ev["J"], ev["e"], ev["p_two_rtt"], ev["p_fail"])
+        while len(_MODEL) >= MODEL_CACHE_MAX:
+            _MODEL.popitem(last=False)
         _MODEL[key] = r
     return r
 
@@ -343,6 +354,9 @@ class DestState3:
             raise ValueError("alarm time must be <= n_dec")
         st.stats.update({k: _nonnegative_int("stats[%s]" % k, v)
                          for k, v in _mapping("stats", d.get("stats", {})).items()})
+        b = guard_common(st)
+        for key in st.g_resid:
+            guard_excess(st, key, b)
         return st
 
 
@@ -484,7 +498,7 @@ def guard_excess(st, key, b):
     win = st.g_resid.get(key)
     if not win:
         return None
-    return median(win) - b
+    return _finite("guard gap for %s" % key, median(win) - b)
 
 
 def guard_penalty(st, key, b):
@@ -515,13 +529,14 @@ def guard_check(st, rtt_ms):
     if rtt_ms is None or not rtt_ms > 0:
         return []
     b = guard_common(st)
+    gaps = {key: guard_excess(st, key, b) for key in sorted(st.g_resid)}
     lim = GUARD_RTT_FRAC * float(rtt_ms)
     raised = []
     for key in sorted(st.g_resid):
         if key in st.g_alarm:
             continue
         win = st.g_resid[key]
-        if len(win) >= GUARD_MIN and median(win) - b > lim:
+        if len(win) >= GUARD_MIN and gaps[key] > lim:
             st.g_alarm[key] = st.n_dec
             raised.append(key)
     st.stats["alarm_raised"] += len(raised)
@@ -529,14 +544,34 @@ def guard_check(st, rtt_ms):
 
 
 def guard_observe(st, key, resid, rtt_ms):
-    _push(st.g_resid.setdefault(key, []), resid, GUARD_ACTION_WIN)
-    _push(st.g_common, resid, GUARD_COMMON_WIN)
+    win = list(st.g_resid.get(key, []))
+    common = list(st.g_common)
+    _push(win, resid, GUARD_ACTION_WIN)
+    _push(common, resid, GUARD_COMMON_WIN)
+    b = median(common)
+    preview = dict(st.g_resid)
+    preview[key] = win
+    for action_key, values in preview.items():
+        if values:
+            _finite("guard gap for %s" % action_key, median(values) - b)
+    st.g_resid[key] = win
+    st.g_common = common
     st.stats["resid"] += 1
     return guard_check(st, rtt_ms)
 
 
 def observe3(st, action, hct_ms, ok, k_obs, srv_bytes, rtt_ms, *, W, u_mbps,
              c_pkt, later=LATER_DEFAULT, j_pred=None):
+    check_later(later)
+    candidate = deepcopy(st)
+    info = _observe3(candidate, action, hct_ms, ok, k_obs, srv_bytes, rtt_ms,
+                     W=W, u_mbps=u_mbps, c_pkt=c_pkt, later=later, j_pred=j_pred)
+    st.__dict__.update(candidate.__dict__)
+    return info
+
+
+def _observe3(st, action, hct_ms, ok, k_obs, srv_bytes, rtt_ms, *, W, u_mbps,
+              c_pkt, later, j_pred):
     check_transport(W, u_mbps, rtt_ms, c_pkt, missing_rtt=True)
     if srv_bytes is not None:
         _finite("srv_bytes", srv_bytes, minimum=0.0)
@@ -555,6 +590,8 @@ def observe3(st, action, hct_ms, ok, k_obs, srv_bytes, rtt_ms, *, W, u_mbps,
         bin_needed_s(s_hat(st), quantum.bin_index(k * W), c_pkt)
     ctx = context(st, W, u_mbps, rtt_ms, c_pkt)
     b, ref = baseline(st, ctx, action, later)
+    if b is not None:
+        _finite("HCT baseline", b)
     y = None
     if b is not None and rtt_ms is not None and rtt_ms > 0:
         if (not ok) or (hct_ms - b >= EVENT_RTT_FRAC * float(rtt_ms)):
