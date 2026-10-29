@@ -962,6 +962,7 @@ type destStat struct {
 	ServerFlight    float64 `json:"server_flight"` // EWMA, 바이트
 	MinHCT          float64 `json:"min_hct_ms"`    // 손실 분류용 최소 핸드셰이크 시간
 	MinRTT          float64 `json:"min_rtt_ms"`    // ACK로 측정한 경로 RTT
+	RTTEstimate     float64 `json:"rtt_ewma_ms"`
 	RTTObservations int     `json:"rtt_observations"`
 	// 🩸 손실률은 EWMA 로 추정하면 안 된다. 3% 짜리 희귀 사건인데 alpha=0.25
 	// 로 두면 손실 한 번에 0.25 로 튀고 깨끗한 연결 몇 번에 0 으로 꺼진다.
@@ -986,8 +987,12 @@ type destStat struct {
 	//
 	// 왜 필요한가(p17 실측): 탐색 기반 관측은 구간당 7~8 개뿐이라 유효
 	// 기억 100 을 못 갈아치우고, 손실 상승 적응률이 **0%** 였다.
-	SymLoss float64 `json:"sym_loss"`
-	SymObs  float64 `json:"sym_obs"`
+	SymLoss           float64 `json:"sym_loss"`
+	SymObs            float64 `json:"sym_obs"`
+	SymC1Conns        int     `json:"sym_c1_conns"`
+	SymLastC1Conn     int     `json:"sym_last_c1_conn"`
+	SymLastC1Decision int     `json:"sym_last_c1_decision"`
+	PolicyDecisions   int     `json:"policy_decisions"`
 	// C2(회신 없는 연결을 전멸로 본 것)가 위 통계에 얼마나 기여했는지.
 	// 판정에는 안 쓰고 **원인을 가르는 자료로만** 남긴다 - 낮은 손실에서
 	// p̂ 가 과대하면 여기부터 본다.
@@ -1009,7 +1014,10 @@ func newDestCache(path string) *destCache {
 	c := &destCache{path: path, M: map[string]*destStat{}}
 	if path != "" {
 		if b, err := os.ReadFile(path); err == nil {
-			_ = json.Unmarshal(b, &c.M)
+			var records map[string]*destStat
+			if json.Unmarshal(b, &records) == nil && records != nil {
+				c.M = records
+			}
 		}
 	}
 	return c
@@ -1126,10 +1134,15 @@ func (c *destCache) observeRTT(addr string, rttMs float64) {
 	if st.MinRTT <= 0 || rttMs < st.MinRTT {
 		st.MinRTT = rttMs
 	}
+	st.RTTEstimate = ewma(st.RTTEstimate, rttMs, st.RTTObservations)
 	st.RTTObservations++
 }
 
 func policyRTT(st destStat) (float64, string) {
+	if st.RTTObservations > 0 && st.RTTEstimate > 0 &&
+		!math.IsNaN(st.RTTEstimate) && !math.IsInf(st.RTTEstimate, 0) {
+		return st.RTTEstimate, "quic_ack_rtt_ewma"
+	}
 	if st.RTTObservations > 0 && st.MinRTT > 0 &&
 		!math.IsNaN(st.MinRTT) && !math.IsInf(st.MinRTT, 0) {
 		return st.MinRTT, "quic_ack_min_rtt"
@@ -1173,21 +1186,32 @@ func (c *destCache) observeSymbolsWhy(addr string, nSym, nLost int,
 	if hctMs > 0 && (st.MinHCT <= 0 || hctMs < st.MinHCT) {
 		st.MinHCT = hctMs
 	}
-	// 🩸 2026-08-23 - 손실을 **루프 밖에서 한꺼번에** 더하면 감쇠를 nSym 번
-	//    덜 받아 과대 추정된다. 관측과 같은 자리에서 세야 단위가 맞는다.
 	const decay = 0.99
-	for i := 0; i < nSym; i++ {
-		st.SymLoss *= decay
-		st.SymObs *= decay
-		st.SymObs++
-		if i < nLost {
-			st.SymLoss++
-		}
-	}
+	factor := math.Pow(decay, float64(nSym))
+	mass := (1 - factor) / (1 - decay)
+	st.SymObs = st.SymObs*factor + mass
+	st.SymLoss = st.SymLoss*factor + mass*float64(nLost)/float64(nSym)
 	if c2 {
 		st.SymC2Conns++
 		st.SymC2Symbols += float64(nLost)
+	} else {
+		st.SymC1Conns++
+		st.SymLastC1Conn = st.Conns
+		st.SymLastC1Decision = st.PolicyDecisions
 	}
+}
+
+func recentSymbolFeedback(st destStat, probeEvery int) bool {
+	if st.SymObs < 1 || st.SymC1Conns < 1 || st.SymLastC1Conn > st.Conns ||
+		st.SymLastC1Decision > st.PolicyDecisions {
+		return false
+	}
+	maxAge := probeEvery
+	if maxAge <= 0 {
+		maxAge = 20
+	}
+	return st.Conns-st.SymLastC1Conn < maxAge &&
+		st.PolicyDecisions-st.SymLastC1Decision <= maxAge
 }
 
 // decide 는 이 목적지에 쓸 (InitialPacketSize, m) 을 고른다.
@@ -1213,13 +1237,16 @@ func (c *destCache) decide(addr string, w, mMax, coldM, probeEvery int,
 	st := c.M[addr]
 	var snap destStat
 	if st != nil {
+		st.PolicyDecisions++
 		snap = *st
 	}
 	c.mu.Unlock()
 
 	rtt, rttSource := policyRTT(snap)
+	symbolFeedback := recentSymbolFeedback(snap, probeEvery)
+	needsLossSample := snap.ObsCount < 1 && !symbolFeedback
 	if st == nil || snap.Conns < 1 || rtt <= 0 || snap.K < 1 ||
-		(snap.ObsCount < 1 && snap.SymObs < 1) {
+		(needsLossSample && probeEvery <= 0) {
 		// 🩸 2026-08-27 - 네 번째 반환값은 「이 판을 손실 관측에 써도
 		//    되는가」인데 **리터럴 true** 였다. coldM > 0 이면 이 판은
 		//    패리티로 보호되므로 소거가 복구돼 손실이 **안 보인다** -
@@ -1238,7 +1265,7 @@ func (c *destCache) decide(addr string, w, mMax, coldM, probeEvery int,
 	// 단위**라 연결->심볼 환산(1-(1-pConn)^(1/k))을 하면 안 된다.
 	// 없으면(피드백 off) 기존 연결 단위 경로 그대로.
 	var p float64
-	if snap.SymObs >= 1 {
+	if symbolFeedback {
 		p = (snap.SymLoss + 0.5) / (snap.SymObs + 1.0)
 	} else {
 		pConn := (snap.LossCount + 0.5) / (snap.ObsCount + 1.0)
@@ -1320,7 +1347,7 @@ func (c *destCache) decide(addr string, w, mMax, coldM, probeEvery int,
 	// 탐색 라운드는 관측을 얻으려고 일부러 m=0 으로 가는 것이고, 그 대가가
 	// p11 실측 +0.48~0.51 ms/연결(임계위 후회의 25~40%)이었다. 서버 회신이
 	// 연결마다 k+m 심볼을 주므로 그 대가를 낼 이유가 없다.
-	if snap.SymObs >= 1 {
+	if symbolFeedback {
 		probeEvery = 0
 	}
 	probeC := ranked[0]
@@ -1329,6 +1356,11 @@ func (c *destCache) decide(addr string, w, mMax, coldM, probeEvery int,
 			probeC = ranked[i]
 			break
 		}
+	}
+	if needsLossSample && probeEvery > 0 {
+		return probeC.c.wEff, 0, fmt.Sprintf(
+			"초기 탐색 %s δ=%d ips=%d (손실 관측 기준선 학습)",
+			probeC.c.mode, probeC.c.delta, probeC.c.wEff), true
 	}
 	probeCost := probeC.j - bestCost
 	every := probeEvery

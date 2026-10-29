@@ -85,11 +85,61 @@ func TestLegacyHCTProxyMigratesOnlyOnValidRTT(t *testing.T) {
 	}
 	c.save()
 	loaded := newDestCache(path)
-	if rtt, source := policyRTT(*loaded.M["test"]); rtt != 50 || source != "quic_ack_min_rtt" {
+	if rtt, source := policyRTT(*loaded.M["test"]); rtt != 52.5 || source != "quic_ack_rtt_ewma" {
 		t.Fatalf("observed RTT lost across cache save/load: %g %s", rtt, source)
 	}
 	if loaded.M["test"].RTTObservations != 2 {
 		t.Fatal("RTT sample provenance did not survive reload")
+	}
+}
+
+func TestPolicyRTTAdaptsAcrossConnections(t *testing.T) {
+	c := &destCache{M: map[string]*destStat{}}
+	c.observeRTT("test", 50)
+	for i := 0; i < 8; i++ {
+		c.observeRTT("test", 100)
+	}
+	st := c.M["test"]
+	higher, source := policyRTT(*st)
+	if higher < 90 || higher > 100 || source != "quic_ack_rtt_ewma" || st.MinRTT != 50 {
+		t.Fatalf("policy kept historical minimum after path slowed: rtt=%g source=%s min=%g", higher, source, st.MinRTT)
+	}
+	for i := 0; i < 8; i++ {
+		c.observeRTT("test", 25)
+	}
+	lower, source := policyRTT(*st)
+	if lower < 25 || lower > 35 || source != "quic_ack_rtt_ewma" || st.MinRTT != 25 {
+		t.Fatalf("policy did not adapt after path sped up: rtt=%g source=%s min=%g", lower, source, st.MinRTT)
+	}
+}
+
+func TestLegacyACKMinimumStartsCurrentRTTEstimate(t *testing.T) {
+	c := cacheWithTransportRTT(t, 120)
+	if rtt, source := policyRTT(*c.M["test"]); rtt != 50 || source != "quic_ack_min_rtt" {
+		t.Fatalf("legacy ACK provenance changed before a new observation: %g %s", rtt, source)
+	}
+	c.observeRTT("test", 100)
+	if rtt, source := policyRTT(*c.M["test"]); rtt != 100 || source != "quic_ack_rtt_ewma" {
+		t.Fatalf("new observed path retained stale legacy RTT: %g %s", rtt, source)
+	}
+}
+
+func TestNullAndMalformedCacheRemainUsable(t *testing.T) {
+	for _, data := range []string{"null", `{"test":{"k":2},"broken":`} {
+		path := filepath.Join(t.TempDir(), "cache.json")
+		if err := os.WriteFile(path, []byte(data), 0600); err != nil {
+			t.Fatal(err)
+		}
+		c := newDestCache(path)
+		if c.M == nil || len(c.M) != 0 {
+			t.Fatalf("invalid cache was partially accepted: %v", c.M)
+		}
+		c.observeRTT("test", 50)
+		c.observe("test", 2, 10472, 50, false, true)
+		c.observeSymbols("test", 2, 0, 50)
+		if c.M["test"].RTTObservations != 1 || c.M["test"].SymC1Conns != 1 {
+			t.Fatal("discarded cache cannot record new observations")
+		}
 	}
 }
 

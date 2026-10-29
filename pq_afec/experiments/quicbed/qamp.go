@@ -355,6 +355,7 @@ func (s *decodeConn) feedOne(d []byte) {
 		fb = parseFecBlock(b[:n])
 	}
 	s.mu.Lock()
+	s.expireLocked(time.Now())
 	s.stats.BytesIn += int64(n)
 	ca := s.acctLocked(addr, b[:n], false)
 	s.mu.Unlock()
@@ -384,8 +385,11 @@ func (s *decodeConn) feedOne(d []byte) {
 		fr = &flightRec{fb: fb, dcid: dc, addr: addr, acct: ca, created: time.Now(),
 			syms: map[int][]byte{}}
 		s.flights[key] = fr
+	} else if !sameFecFlight(fr.fb, fb) {
+		s.stackLocked(ca, n)
+		s.mu.Unlock()
+		return
 	}
-	fr.fb = fb
 	// 🩸 2026-08-28 (2 단계 감사) - ReadFrom 과 **같은 가드**다. 근거는 거기
 	//    주석에 적었다(결론이 난 비행을 다시 풀면 같은 원본을 또 복원한다).
 	//    두 경로가 갈라지면 자체시험이 재는 것과 실제로 도는 것이 달라진다.
@@ -614,6 +618,24 @@ type fecBlock struct {
 	crcs   []uint32
 	lens   []uint16
 	sym    []byte
+}
+
+func sameFecFlight(a, b *fecBlock) bool {
+	if a == nil || b == nil || a.flight != b.flight || a.k != b.k || a.m != b.m || a.symLen != b.symLen ||
+		len(a.crcs) != len(b.crcs) || len(a.lens) != len(b.lens) {
+		return false
+	}
+	for i := range a.crcs {
+		if a.crcs[i] != b.crcs[i] {
+			return false
+		}
+	}
+	for i := range a.lens {
+		if a.lens[i] != b.lens[i] {
+			return false
+		}
+	}
+	return true
 }
 
 // buildParity 는 패리티 하나를 담은 데이터그램을 만든다. 겉모양은 정상적인
@@ -1793,6 +1815,8 @@ func (s *decodeConn) expireLocked(now time.Time) {
 	}
 	for k, fr := range s.flights {
 		if now.Sub(fr.created) > flightTTL {
+			s.heldBytes -= fr.heldBytes
+			fr.heldBytes = 0
 			delete(s.flights, k)
 		}
 	}
@@ -1925,9 +1949,9 @@ again:
 		p := s.pending[0]
 		s.pending = s.pending[1:]
 		s.pendingBytes -= int64(len(p.data))
-		s.stackLocked(p.acct, len(p.data))
-		s.mu.Unlock()
 		n := copy(b, p.data)
+		s.stackLocked(p.acct, n)
+		s.mu.Unlock()
 		return n, p.addr, nil
 	}
 	s.mu.Unlock()
@@ -1951,6 +1975,7 @@ again:
 	isHandshake := hasHandshake(b[:n])
 	var fbOut []byte
 	s.mu.Lock()
+	s.expireLocked(time.Now())
 	s.stats.BytesIn += int64(n)
 	if !hs.ok {
 		s.stats.HdrShort++
@@ -2086,8 +2111,11 @@ again:
 		fr = &flightRec{fb: fb, dcid: dc, addr: addr, acct: ca, created: time.Now(),
 			syms: map[int][]byte{}}
 		s.flights[key] = fr
+	} else if !sameFecFlight(fr.fb, fb) {
+		s.stackLocked(ca, n)
+		s.mu.Unlock()
+		return n, addr, nil
 	}
-	fr.fb = fb
 	// 🩸 2026-08-28 (2 단계 감사) - **결론이 난 비행은 다시 풀지 않는다.**
 	//    tryLate 는 진작부터 `fr.done || fr.poisoned` 를 걸렀는데(위 tryLate)
 	//    이 경로만 안 걸렀다. 복원본은 noteOriginal 을 안 거치므로 s.recent 에

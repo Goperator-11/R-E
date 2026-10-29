@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import os
 import sys
+from functools import lru_cache
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -780,6 +781,7 @@ def joint_arrival_pmf(k, m, p, burst):
 MAX_RECOVERY_ROUNDS = 20      # 기대 라운드 급수를 끊는 자리 (수렴은 훨씬 빠르다)
 
 
+@lru_cache(maxsize=512)
 def expected_rounds(k, m, p, burst):
     """이 비행이 **몇 번** 나가야 서버가 받는가의 기댓값 (첫 시도 포함).
 

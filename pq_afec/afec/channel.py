@@ -156,7 +156,7 @@ class GilbertElliott:
         if ch is None:
             if len(_CHANNEL_CACHE) > 512:
                 _CHANNEL_CACHE.clear()
-            ch = cls.from_burst(key[0] / 1e4, key[1] / 1e2)
+            ch = cls.for_prior(key[0] / 1e4, key[1] / 1e2)
             _CHANNEL_CACHE[key] = ch
         return ch
 
