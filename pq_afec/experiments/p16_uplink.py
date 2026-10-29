@@ -27,8 +27,8 @@ B 가 없으면 A 는 "비용이 없으니 없다고 하자"로 들린다. 둘�
 어떻게 재나
 -----------
 임계 **아래**에서(모든 팔이 1-RTT) 첫 비행 바이트만 바꿔 가며 HCT 를 잰다.
-칸이 안 바뀌므로 HCT 차이는 순전히 직렬화 시간이다. 추가 바이트에 대한
-기울기가 곧 1/대역이다.
+칸이 안 바뀌는 조건에서 HCT와 추가 바이트의 관계를 대조한다. HCT에는
+직렬화 외의 시간·스택 효과도 남으므로 회귀 기울기는 진단으로 기록한다.
 
     기울기 [ms/B] = 8 / (대역[Mbps] * 1e6) * 1000
 
@@ -53,6 +53,9 @@ import math
 import os
 import statistics
 import sys
+import datetime
+import time
+import uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -217,8 +220,48 @@ def diff_half(a, b, alpha=0.05):
     return BST.batch_diff_half(a, b, alpha)
 
 
+def contrast_ci(groups, coefficients, alpha=0.05):
+    """Combine group mean variances before applying one Welch-t quantile.
+
+    Independent groups and independent batch means are approximations. The
+    returned diagnostics expose iid fallback and unused batch-tail observations.
+    """
+    out = {"estimate_ms": None, "half_ms": None, "variance": None, "df": None,
+           "alpha": alpha, "groups": [], "status": "unavailable",
+           "method": "group_batch_variances_welch_t",
+           "assumptions": "independent group means and approximately independent batch means",
+           "limits": "cross-group and residual time dependence are not estimated; no multiplicity adjustment"}
+    if (not groups or len(groups) != len(coefficients)
+            or not 0 < alpha < 1):
+        return out
+    terms = []
+    estimate = 0.0
+    for values, coefficient in zip(groups, coefficients):
+        if (not values or any(type(x) not in (int, float) or not math.isfinite(x)
+                              for x in values)
+                or type(coefficient) not in (int, float) or not math.isfinite(coefficient)):
+            return out
+        se, method, count = BST.batch_se_info(values)
+        batch_size = max(1, int(math.sqrt(len(values)))) if method == "batch" else 1
+        out["groups"].append({"coefficient": coefficient, "n": len(values),
+                              "se_method": method, "mean_se": se,
+                              "effective_mean_count": count, "batch_size": batch_size,
+                              "unused_batch_tail": len(values) - batch_size * count})
+        if se is None or count < 2:
+            return out
+        estimate += coefficient * mean(values)
+        terms.append((coefficient * coefficient * se * se, count))
+    variance = sum(v for v, _ in terms)
+    denominator = sum(v * v / (count - 1) for v, count in terms)
+    df = variance * variance / denominator if denominator else None
+    half = BST.t_crit(df, alpha) * math.sqrt(variance) if variance else 0.0
+    out.update(estimate_ms=estimate, half_ms=half, variance=variance, df=df,
+               status="available", iid_fallback=any(g["se_method"] == "iid" for g in out["groups"]))
+    return out
+
+
 def need_n(a, b, target, alpha=0.05, power=0.80):
-    """target 크기를 유의하게 잡으려면 팔당 몇 판이 필요한가."""
+    """배치 SE에서 환산한 정규 근사 표본 진단. 독립성이나 목표 정밀도 보장은 아니다."""
     sa, sb = _sd(a), _sd(b)
     if sa is None or sb is None or not target or abs(target) < 1e-3:
         return None
@@ -244,26 +287,137 @@ def verdict3(diff, half, ruler):
     return "판정불능"
 
 
-def run_arm(name, fec, m, ips, rate_mbit, up_policy):
+def ips_evidence(rows, requested, fec, m, n_req, base_ips=W, k=K):
+    """Retain full client rows, including failures and actual wire/RTT fields."""
+    observations = [dict(row) for row in rows]
+    return {
+        "source": "qamp client JSON rows, including unsuccessful trials",
+        "observations_scope": "full_client_json_rows",
+        "ips_eff_semantics": "client effective configuration after the stack size cap",
+        "wire_crosscheck": "data/parity bytes and datagrams; actual k and path RTT are retained",
+        "requested_ips": requested, "base_ips": base_ips, "expected_k": k,
+        "expected_k_semantics": "client flush hint; actual first_flight_datagrams is retained",
+        "fec": fec, "configured_m": m, "n_req": n_req,
+        "n_rows": len(observations), "observations": observations,
+        "ips_used_values": sorted({r["ips_used"] for r in observations
+                                   if type(r.get("ips_used")) is int}),
+        "ips_eff_values": sorted({r["ips_eff"] for r in observations
+                                  if type(r.get("ips_eff")) is int}),
+    }
+
+
+def byte_evidence(rows):
+    """Do not replace missing parity/data bytes with zero or drop failed trials."""
+    data = [row.get("first_flight_bytes") for row in rows]
+    parity = [row.get("first_flight_parity_bytes") for row in rows]
+    valid = lambda x: type(x) is int and x >= 0
+    totals = [d + p if valid(d) and valid(p) else None for d, p in zip(data, parity)]
+    missing = sum(value is None for value in totals)
+    # Preserve the existing upper-median definition, but use both blocks.
+    median = sorted(totals)[len(totals) // 2] if totals and not missing else None
+    return {"data_bytes": data, "parity_bytes": parity, "total_bytes": totals,
+            "n_rows": len(rows), "n_valid": len(rows) - missing, "n_missing": missing,
+            "total_bytes_median": median, "median_method": "upper_order_statistic"}
+
+
+def trial_denominators(rows, n_req, err=""):
+    successes = [row for row in rows if row.get("ok") is True]
+    finite = lambda x: type(x) in (int, float) and math.isfinite(x)
+    latencies = [row["ms"] for row in successes if finite(row.get("ms"))]
+    byte_counts = byte_evidence(rows)
+    n_unknown = sum(type(row.get("ok")) is not bool for row in rows)
+    out = {"requested": n_req, "returned": len(rows), "successful": len(successes),
+           "failed": sum(row.get("ok") is False for row in rows),
+           "missing_returned": max(0, n_req - len(rows)),
+           "excess_returned": max(0, len(rows) - n_req),
+           "unknown_success_flag": n_unknown,
+           "successful_latency_rows": len(latencies),
+           "missing_successful_latency": len(successes) - len(latencies),
+           "byte_rows": byte_counts["n_valid"], "missing_byte_rows": byte_counts["n_missing"]}
+    out["complete"] = (type(n_req) is int and n_req > 0 and len(rows) == n_req
+                       and len(successes) == n_req and len(latencies) == n_req
+                       and byte_counts["n_valid"] == n_req and not n_unknown and not err)
+    return out
+
+
+def merge_blocks(blocks, name, fec, m, ips, condition):
+    """Aggregate every returned client row and keep each collection's server record."""
+    if not blocks:
+        raise ValueError("collection blocks are required")
+    rows = [dict(row) for block in blocks for row in block["client_rows"]]
+    err = " | ".join(block["err"] for block in blocks if block["err"])
+    n_req = sum(block["denominators"]["requested"] for block in blocks)
+    counts = trial_denominators(rows, n_req, err)
+    counts["aggregate_missing_returned"] = counts["missing_returned"]
+    counts["aggregate_excess_returned"] = counts["excess_returned"]
+    # Missing and excess rows in different collection units cannot cancel.
+    counts["missing_returned"] = sum(block["denominators"]["missing_returned"] for block in blocks)
+    counts["excess_returned"] = sum(block["denominators"]["excess_returned"] for block in blocks)
+    counts["incomplete_units"] = sum(block["denominators"].get("complete") is not True for block in blocks)
+    counts["complete"] = bool(counts["complete"] and counts["incomplete_units"] == 0)
+    counts["return_coverage_scope"] = "unit sums; missing and excess in distinct units do not cancel"
+    latencies = [row["ms"] for row in rows if row.get("ok") is True
+                 and type(row.get("ms")) in (int, float) and math.isfinite(row["ms"])]
+    bytes_ = byte_evidence(rows)
+    units = []
+    offset = 0
+    for block in blocks:
+        units.append({"collection": dict(block["collection"]), "position": block.get("pos"),
+                      "row_start": offset, "row_stop": offset + len(block["client_rows"]),
+                      "client_stats": block["client_stats"], "server_stats": block["server_stats"],
+                      "denominators": block["denominators"],
+                      "server_stats_present": bool(block["server_stats"]),
+                      "server_connection_completeness_verified": False})
+        offset += len(block["client_rows"])
+    median = bytes_["total_bytes_median"]
+    return {"arm": name, "cond": condition, "rate_mbit": blocks[0]["rate_mbit"],
+            "n": len(rows), "n_req": n_req, "ok": counts["successful"], "ms": latencies,
+            "mean": mean(latencies), "p50": B.pctl(latencies, .5), "p95": B.pctl(latencies, .95),
+            "two_rtt_rate": (sum(t > 1.5 * RTT_MS for t in latencies) / len(latencies)
+                             if latencies else None),
+            "ff_bytes_med": median, "added_bytes": max(0, median - K * W) if median is not None else None,
+            "added_bytes_reference": "configured expected_k * base W; actual k is retained in client rows",
+            "positions": [block.get("pos") for block in blocks],
+            "block_drift_ms": (blocks[1]["mean"] - blocks[0]["mean"]
+                               if len(blocks) == 2 and all(block["mean"] is not None for block in blocks)
+                               else None),
+            "client_rows": rows, "ips_evidence": ips_evidence(rows, ips, fec, m, n_req),
+            "byte_evidence": bytes_, "denominators": counts,
+            "collection_units": units, "err": err}
+
+
+def run_arm(name, fec, m, ips, rate_mbit, up_policy, run_id=None, block_pos=None):
+    collection = {"run_id": run_id, "unit_id": uuid.uuid4().hex, "block_position": block_pos,
+                  "started_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                  "started_at_ns": time.time_ns()}
     B.set_netem(RTT_MS / 2.0, loss_c2s=0.0, rate_up_mbit=rate_mbit)
     p, sp = B.start_server(CERT, fec=("on" if fec == "on" else "off"))
-    rows, cs, err = B.run_client(GROUP, N, fec=fec, m=max(m, 1), ips=ips,
+    try:
+        rows, cs, err = B.run_client(GROUP, N, fec=fec, m=max(m, 1), ips=ips,
                                  gap_ms=8, timeout_s=10, expect_k=K,
                                  uplink_mbps=up_policy)
-    B.stop_server(p)
-    ok = [r["ms"] for r in rows if r.get("ok")]
-    ff = [(r.get("first_flight_bytes") or 0)
-          + (r.get("first_flight_parity_bytes") or 0) for r in rows]
-    ff_med = sorted(ff)[len(ff) // 2] if ff else 0
-    return {"arm": name, "rate_mbit": rate_mbit, "n": len(rows), "ok": len(ok),
+    finally:
+        B.stop_server(p)
+    srv = B.read_server_stats(sp)
+    collection.update(finished_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                      finished_at_ns=time.time_ns(), server_stats_path=sp)
+    counts = trial_denominators(rows, N, err)
+    ok = [r["ms"] for r in rows if r.get("ok") is True
+          and type(r.get("ms")) in (int, float) and math.isfinite(r["ms"])]
+    bytes_ = byte_evidence(rows)
+    ff_med = bytes_["total_bytes_median"]
+    return {"arm": name, "rate_mbit": rate_mbit, "n": len(rows), "ok": counts["successful"],
             "mean": mean(ok), "p50": B.pctl(ok, 0.5), "p95": B.pctl(ok, 0.95),
             # 2-RTT 로 넘어간 판의 비율. 0 이어야 기울기가 직렬화 시간이다.
             "two_rtt_rate": (sum(1 for t in ok if t > 1.5 * RTT_MS)
                              / float(len(ok))) if ok else None,
             "ff_bytes_med": ff_med,
-            "added_bytes": max(0, ff_med - K * W),
+            "added_bytes": max(0, ff_med - K * W) if ff_med is not None else None,
             # 블록을 합쳐 다시 요약하려면 원자료가 있어야 한다.
             "ms": ok,
+            "ips_evidence": ips_evidence(rows, ips, fec, m, N),
+            "client_rows": [dict(row) for row in rows], "client_stats": cs, "server_stats": srv,
+            "collection": collection, "denominators": counts, "byte_evidence": bytes_,
             "err": err}
 
 
@@ -274,7 +428,13 @@ def main():
     B.setup()
 
     out = {"rtt_ms": RTT_MS, "group": GROUP, "cert": CERT, "n": N,
-           "arms": [], "fits": {}, "checks": []}
+           "arms": [], "fits": {}, "checks": [], "run_id": uuid.uuid4().hex,
+           "started_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+           "statistical_limits": {
+               "ci": "batch means with Welch degrees of freedom; iid fallback is reported for short samples",
+               "dependence": "residual batch, arm, block, and condition dependence is not estimated",
+               "sample_size": "normal-approximation diagnostic; no automatic resampling or precision guarantee",
+               "scope": "x25519, cert 2000 B, RTT 50 ms, no loss, fixed arms; not general PQ adaptation evidence"}}
 
     def add(name, ok, detail):
         out["checks"].append({"check": name, "ok": bool(ok), "detail": detail})
@@ -299,7 +459,7 @@ def main():
         #    바이트가 늘수록 더 빨라졌는데, 그 순서가 실행 순서와
         #    정확히 같았다(직렬화 비용으로는 설명이 안 된다).
         #    정방향 1 블록 + 역방향 1 블록을 합치면 모든 팔의 평균
-        #    위치가 4.5 로 같아져 **선형 표류가 정확히 상쇄된다.**
+        #    위치가 3.5 로 같아져 **선형 표류가 정확히 상쇄된다.**
         #    표류의 크기 자체는 block_drift_ms 로 남긴다 - 상쇄했다고
         #    없던 일로 하지 않는다.
         blocks = {}
@@ -308,7 +468,8 @@ def main():
         #    항등적으로 참이었다 - 아래 검사 2b 주석).
         for _pos, (aname, fec, m, ips) in enumerate(
                 list(ARMS) + list(reversed(ARMS))):
-            b = run_arm(aname, fec, m, ips, rate, up_policy)
+            b = run_arm(aname, fec, m, ips, rate, up_policy,
+                        run_id=out["run_id"], block_pos=_pos)
             b["pos"] = _pos
             blocks.setdefault(aname, []).append(b)
             print("   블록 %-8s %-8s 평균 %-9.3f (유효 %d)"
@@ -318,26 +479,10 @@ def main():
         rows = []
         for aname, fec, m, ips in ARMS:
             bs = blocks[aname]
-            _ms = [t for b in bs for t in (b.get("ms") or [])]
-            r = dict(bs[0])
-            r["ms"] = _ms
-            r["n"] = sum(b["n"] for b in bs)
-            r["ok"] = len(_ms)
-            r["mean"] = mean(_ms)
-            r["p50"] = B.pctl(_ms, 0.5)
-            r["p95"] = B.pctl(_ms, 0.95)
-            r["two_rtt_rate"] = (
-                (sum(1 for t in _ms if t > 1.5 * RTT_MS)
-                 / float(len(_ms))) if _ms else None)
-            r["positions"] = [x.get("pos") for x in bs]
-            r["block_drift_ms"] = (
-                (bs[1]["mean"] - bs[0]["mean"])
-                if all(b["mean"] is not None for b in bs) else None)
-            r["err"] = " | ".join(b["err"] for b in bs if b["err"])
-            r["cond"] = cname
+            r = merge_blocks(bs, aname, fec, m, ips, cname)
             out["arms"].append(r)
             rows.append(r)
-            print("%-8s %-8s %-9d %-9.3f %-9.3f %-9s %s"
+            print("%-8s %-8s %-9s %-9.3f %-9.3f %-9s %s"
                   % (cname, aname, r["added_bytes"], r["mean"] or -1,
                      r["p50"] or -1,
                      ("%.1f%%" % (100 * (r["two_rtt_rate"] or 0))),
@@ -357,7 +502,7 @@ def main():
                  LOAD_TRACE_REF_0901.get(cname, "기준 없음")))
         sys.stdout.flush()
 
-        good = [r for r in rows if r["mean"] is not None]
+        good = [r for r in rows if r["mean"] is not None and r["added_bytes"] is not None]
         xs = [r["added_bytes"] for r in good]
         ys = [r["mean"] for r in good]
         b, a = linfit(xs, ys)
@@ -368,6 +513,7 @@ def main():
             "policy_uplink_mbps": up_policy,
             "points": list(zip(xs, ys)),
             "max_two_rtt": max((r["two_rtt_rate"] or 0) for r in rows),
+            "evidence_scope": "diagnostic from the same four arms; not independent evidence or a critical-path-only bandwidth estimate",
         }
         f = out["fits"][cname]
         print("    -> 기울기 %.3e ms/B  = 함의 %s Mbps  (모형 %.3e ms/B)"
@@ -379,6 +525,13 @@ def main():
 
     print()
     print("=" * 100)
+
+    incomplete = ["%s/%s: %s" % (r["cond"], r["arm"], r["denominators"])
+                  for r in out["arms"] if not r["denominators"]["complete"]]
+    add("0. 전 팔 요청/반환/성공과 지연·바이트 원자료 분모가 일치한다",
+        bool(out["arms"]) and not incomplete,
+        "완전한 팔 %d/%d | %s" % (len(out["arms"]) - len(incomplete), len(out["arms"]),
+                                   "; ".join(incomplete)))
 
     # 1. 칸이 안 바뀌어야 차이가 직렬화 시간이다.
     worst2 = max((r["two_rtt_rate"] or 0) for r in out["arms"])
@@ -396,7 +549,8 @@ def main():
         if not base or base["mean"] is None:
             continue
         for r in rows:
-            if r["arm"] == "base" or r["mean"] is None:
+            if (r["arm"] == "base" or r["mean"] is None
+                    or r["added_bytes"] is None or base["added_bytes"] is None):
                 continue
             meas = r["mean"] - base["mean"]
             k_, m_, w_ = K, (1 if r["arm"] == "m1" else
@@ -408,7 +562,8 @@ def main():
             pred_old = POL.tx_cost_ms(r["added_bytes"], up_policy)
             # 🩸 2026-08-27 - 이 차이의 **정밀도**를 같이 낸다. 없으면
             #    아래 검사들이 자기 분해능보다 가는 자를 들게 된다.
-            _half = diff_half(r["ms"], base["ms"])
+            _ci = contrast_ci([r["ms"], base["ms"]], [1, -1])
+            _half = _ci["half_ms"]
             _res = meas - pred_new
             per_arm.append({"cond": cname, "arm": r["arm"],
                             "added_bytes": r["added_bytes"],
@@ -416,17 +571,19 @@ def main():
                             "pred_critical_ms": pred_new,
                             "pred_naive_ms": pred_old,
                             "ci95_half_ms": _half,
+                            "ci_diagnostic": _ci,
                             "residual_ms": _res,
                             "n_per_arm": min(len(r["ms"]), len(base["ms"])),
                             # 자(0.25 ms)를 걸고 판정할 수 있는 표본 수
                             "n_needed_for_ruler": need_n(r["ms"], base["ms"],
-                                                         RULER_MS)})
+                                                         RULER_MS),
+                            "n_needed_semantics": "normal approximation diagnostic based on batch-derived effective SD; no precision guarantee"})
     out["per_arm"] = per_arm
     print()
     print("%-8s %-6s %-9s %-9s %-11s %-11s %s"
           % ("조건", "팔", "추가B", "임계B", "실측Δ", "임계경로식", "옛식(전체B)"))
     for x in per_arm:
-        print("%-8s %-6s %-9d %-9d %-11.3f %-11.3f %.3f"
+        print("%-8s %-6s %-9s %-9d %-11.3f %-11.3f %.3f"
               % (x["cond"], x["arm"], x["added_bytes"], x["critical_bytes"],
                  x["measured_ms"], x["pred_critical_ms"], x["pred_naive_ms"]))
 
@@ -515,7 +672,7 @@ def main():
            ", ".join("%s %+.3f ±%.3f [%s]%s"
                      % (x["arm"], x["residual_ms"], x["ci95_half_ms"] or -1, v,
                         ("" if v != "판정불능" else
-                         " 필요 n=%s(지금 %d)" % (x["n_needed_for_ruler"],
+                         " 표본 진단 n=%s(지금 %d, 정밀도 보장 아님)" % (x["n_needed_for_ruler"],
                                                x["n_per_arm"])))
                      for x, v in _v)))
 
@@ -535,7 +692,7 @@ def main():
     #    성형이 걸렸다는 주장은 「10Mbps 의 m2 비용이 무제한의 m2 비용보다
     #    유의하게 크다」이므로 그대로 검정한다 - 상수 대신 신뢰구간으로.
     #    같은 조건의 회귀 기울기(함의 대역)도 나란히 적는다 - 그것이
-    #    성형이 걸렸다는 **독립된 증거**다.
+    #    같은 네 팔을 다시 쓰는 진단이며 독립된 확인 실험이 아니다.
     _m2u_r = next((r for r in out["arms"]
                    if r["cond"] == "무제한" and r["arm"] == "m2"), None)
     _m2s_r = next((r for r in out["arms"]
@@ -549,14 +706,16 @@ def main():
     _hu = diff_half(_m2u_r["ms"], _bu_r["ms"]) if (_m2u_r and _bu_r) else None
     _hs = diff_half(_m2s_r["ms"], _bs_r["ms"]) if (_m2s_r and _bs_r) else None
     _d5 = (m2s - m2u) if (m2u is not None and m2s is not None) else None
-    _h5 = (math.sqrt((_hu or 0) ** 2 + (_hs or 0) ** 2)
-           if (_hu is not None and _hs is not None) else None)
+    _ci5 = (contrast_ci([_m2s_r["ms"], _bs_r["ms"], _m2u_r["ms"], _bu_r["ms"]],
+                        [1, -1, -1, 1]) if all((_m2s_r, _bs_r, _m2u_r, _bu_r)) else None)
+    _h5 = _ci5["half_ms"] if _ci5 is not None else None
+    out["shaping_contrast_ci"] = _ci5
     ok5 = bool(_d5 is not None and _h5 is not None and _d5 > _h5)
     _imp = (out["fits"].get("10Mbps") or {}).get("implied_mbps")
     add("5. [부정] m2 팔의 비용이 성형 조건에서만 나타난다 "
         "(성형이 실제로 걸렸다)",
         ok5, "무제한 %+.3f ±%.3f vs 10Mbps %+.3f ±%.3f -> 차 %+.3f ±%.3f "
-             "| 독립 증거: 회귀 함의 대역 %s Mbps (걸린 값 10)"
+             "| 같은 팔 회귀 진단: 함의 대역 %s Mbps (걸린 값 10)"
         % (m2u if m2u is not None else -1, _hu or -1,
            m2s if m2s is not None else -1, _hs or -1,
            _d5 if _d5 is not None else -1, _h5 or -1,
@@ -565,6 +724,7 @@ def main():
     npass = sum(1 for c in out["checks"] if c["ok"])
     out["passed"] = npass
     out["total"] = len(out["checks"])
+    out["finished_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     print("-" * 100)
     print("%d / %d 통과" % (npass, len(out["checks"])))
     print("saved:", B.save("p16_uplink.json", out))

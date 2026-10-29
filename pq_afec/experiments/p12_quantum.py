@@ -59,6 +59,7 @@ Output: experiments/results/p12_quantum.json   (--smoke 는 *_smoke.json)
 """
 from __future__ import annotations
 
+import datetime as dt
 import os
 import sys
 
@@ -189,22 +190,50 @@ def probe(group, ips, cert, k, n, jr):
     key = "%s|ips%d|c%d|n%d" % (group, ips, cert, n)
     if jr.has(key):
         return jr.get(key)
+    started = dt.datetime.now(dt.timezone.utc).isoformat()
     p, _sp = B.start_server(cert, fec="off")
     # p2 의 ips_sweep 과 같게 1280 은 -ips 를 주지 않고 quic-go 기본값으로 둔다.
     rows, cs, _err = B.run_client(group, n, fec="off",
                                   ips=(0 if ips == 1280 else ips),
                                   gap_ms=15, expect_k=k)
     B.stop_server(p)
+    ss = B.read_server_stats(_sp)
     s = B.summarize(rows, rtt_ms=RTT_MS)
     rec = {"group": group, "ips": ips, "cert": cert, "n": s["n"],
            "ok": s["ok"], "p50": s["p50"],
            "two_rtt_rate": s["two_rtt_rate"],
            "first_flight_bytes": cs.get("first_flight_bytes"),
            "first_flight_datagrams": cs.get("first_flight_datagrams"),
+           "n_req": n, "n_failed": s["n"] - s["ok"],
+           "n_missing": max(0, n - s["n"]),
+           "client_rows": rows, "client_stats": cs, "server_stats": ss,
+           "collection_provenance": {"run_id": jr.run_id, "journal_key": key,
+                                     "fingerprint": jr.fingerprint,
+                                     "started_at": started,
+                                     "finished_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+                                     "expected_k_flush_hint": k,
+                                     "time_scope": "collection interval, not individual connection timestamps"},
            "error": _err, "valid": not _err and n > 0 and s["ok"] == s["n"] == n}
     if rec["valid"]:
         jr.record(key, rec)
+    else:
+        # Failed search bounds may not be returned as the threshold's ref.
+        # Preserve every attempted failed unit outside the completed journal.
+        if not hasattr(jr, "_p12_failed_probe_units"):
+            jr._p12_failed_probe_units = []
+        jr._p12_failed_probe_units.append({"key": key, "result": rec,
+                                           "journaled": False, "reused": False})
     return rec
+
+
+def consumed_units(jr):
+    """Keep stored probe p50 and provenance; absent old telemetry stays absent."""
+    provenance = jr.provenance()
+    return {"journal_provenance": provenance,
+            "probe_units": [{"key": unit["key"], "result": jr.get(unit["key"])}
+                            for unit in provenance["units"]],
+            "failed_probe_units": list(getattr(jr, "_p12_failed_probe_units", [])),
+            "probe_unit_scope": "completed journal units and separate failed attempts; reused units are prior measurements; recording times are not measurement start times"}
 
 
 def bisect_threshold(group, ips, k, jr):
@@ -704,6 +733,7 @@ def main():
         # 쓴다. 건식은 "runs" 에서 잡히므로 "ips_sweep" 별칭은 순수 중복이었다
         # (같은 목록을 두 번 직렬화). 별칭을 뺀다.
         out = {"smoke": True, "rtt_ms": RTT_MS, "n": SMOKE_N,
+               **consumed_units(jr),
                "runs": runs,
                "checks": results, "passed": npass, "total": len(results)}
         log("")
@@ -780,6 +810,7 @@ def main():
                 log("  - %s | %s" % (r["check"], r["detail"]))
 
     out = {"smoke": False, "rtt_ms": RTT_MS, "resolution": RESOLUTION,
+           **consumed_units(jr),
            "n_probe": N_PROBE, "n_confirm": N_CONFIRM,
            "server_packet_size": P, "jump_model": JUMP_MODEL,
            "jump_window": [JUMP_LO, JUMP_HI],

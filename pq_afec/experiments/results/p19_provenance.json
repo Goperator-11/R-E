@@ -1,14 +1,15 @@
 {
  "tol": 1e-06,
- "items": 902,
+ "items": 2531,
  "mismatch": [],
  "no_raw": [],
  "stale": [],
+ "mtime_warnings": [],
  "checks": [
   {
    "check": "1. 재계산 가능한 항목이 실제로 있다 (0 이면 이 단계가 공허하다)",
    "ok": true,
-   "detail": "대조 항목 902 개"
+   "detail": "대조 항목 2531 개"
   },
   {
    "check": "2. ⭐ 재계산한 값이 보고된 값과 일치 (상대오차 <= 1e-06)",
@@ -16,16 +17,121 @@
    "detail": "불일치 0 건"
   },
   {
-   "check": "3. ⭐ 결과 파일이 알고리즘 소스보다 나중에 만들어졌다",
+   "check": "3. 당시 소스·launcher 환경·산출물 내용 출처를 확인했다",
    "ok": true,
-   "detail": "낡은 결과 없음"
+   "detail": "출처 불일치 또는 확인불가 없음"
   },
   {
-   "check": "4. 판정 헤드라인이 결과에 실제로 있다",
+   "check": "4. 판정 헤드라인과 각 측정 팔의 원자료가 실제로 있다",
    "ok": true,
    "detail": "빠진 것 없음"
+  },
+  {
+   "check": "5. 모형 T_recover 상수가 p7 원자료(이름으로 찾음)를 10 ms 안에서 재현",
+   "ok": true,
+   "detail": "V2 모형 57.7 vs 실측 58.6 | V3 모형 150.0 vs 실측 153.4 | V9 모형 200.9 vs 실측 201.0 (최대 3.36 ms)"
   }
  ],
- "passed": 4,
- "total": 4
+ "mismatch_count": 0,
+ "trial_record_limits": [],
+ "provenance_limit": "수치 재계산과 당시 실행 기록 대조. launcher 환경·PADFEC 설정 범위이며 WSL 내부 전체 환경이나 외부 오염을 인증하지 않는다",
+ "state_file": "C:\\dev\\pq_afec\\experiments\\state\\loop2.json",
+ "content_provenance": [
+  {
+   "stage": "p3",
+   "status": "verified",
+   "reason": "당시 기록과 현재 소스·launcher 환경·산출물 내용 일치",
+   "measurement_status": "done",
+   "sha256": "f0928bc5d33e6af8663adfd77060f55a6b3558feeacba86b628fa3856f8a2548",
+   "fingerprint": "2c23ebffef22eb38",
+   "runtime_scope": "loop2_launcher_and_forwarded_PADFEC_env",
+   "file": "p3_effect.json"
+  },
+  {
+   "stage": "p14",
+   "status": "verified",
+   "reason": "당시 기록과 현재 소스·launcher 환경·산출물 내용 일치",
+   "measurement_status": "done",
+   "sha256": "a22ed5ae47bf32fd1ca10c45720db2950232fcc297eaf4be2d95dbf9ecee36f5",
+   "fingerprint": "5218dbcef5b66de6",
+   "runtime_scope": "loop2_launcher_and_forwarded_PADFEC_env",
+   "file": "p14_dominance.json"
+  },
+  {
+   "stage": "p16",
+   "status": "verified",
+   "reason": "당시 기록과 현재 소스·launcher 환경·산출물 내용 일치",
+   "measurement_status": "done",
+   "sha256": "f182db7b93bacdfba647aa97e36e90acd4dd069c77ef52e7b446cf089a5c3223",
+   "fingerprint": "03be198e9a68f690",
+   "runtime_scope": "loop2_launcher_and_forwarded_PADFEC_env",
+   "file": "p16_uplink.json"
+  },
+  {
+   "stage": "p11",
+   "status": "verified",
+   "reason": "당시 기록과 현재 소스·launcher 환경·산출물 내용 일치",
+   "measurement_status": "done",
+   "sha256": "c1cb8f35e5c2a73c430a7b8cc089b0f8fd131816917bb666807d0496c253c58e",
+   "fingerprint": "383349e22619e95b",
+   "runtime_scope": "loop2_launcher_and_forwarded_PADFEC_env",
+   "file": "p11_adaptive.json"
+  },
+  {
+   "stage": "p15",
+   "status": "verified",
+   "reason": "당시 기록과 현재 소스·launcher 환경·산출물 내용 일치",
+   "measurement_status": "failed",
+   "sha256": "6200206324256f3ad4b1c2960dd9cd5e58caecda2262d1dc334b7ca803a87989",
+   "fingerprint": "4350423e16e956da",
+   "runtime_scope": "loop2_launcher_and_forwarded_PADFEC_env",
+   "file": "p15_v2policy.json"
+  },
+  {
+   "stage": "p17",
+   "status": "verified",
+   "reason": "당시 기록과 현재 소스·launcher 환경·산출물 내용 일치",
+   "measurement_status": "failed",
+   "sha256": "bc3979b76a74961989dd6abc7d996c9eebe7c70c9ecbb56973b1709f497f071b",
+   "fingerprint": "dde99d85f3597a3c",
+   "runtime_scope": "loop2_launcher_and_forwarded_PADFEC_env",
+   "file": "p17_adaptive_value.json"
+  },
+  {
+   "stage": "p18",
+   "status": "verified",
+   "reason": "당시 기록과 현재 소스·launcher 환경·산출물 내용 일치",
+   "measurement_status": "failed",
+   "sha256": "1f0dedb483d155ad10b90cfecdc9682f95015626529d513d1c9b601065d609ea",
+   "fingerprint": "afa0003c46f58c84",
+   "runtime_scope": "loop2_launcher_and_forwarded_PADFEC_env",
+   "file": "p18_mmax.json"
+  },
+  {
+   "stage": "p7",
+   "status": "verified",
+   "reason": "당시 기록과 현재 소스·launcher 환경·산출물 내용 일치",
+   "measurement_status": "done",
+   "sha256": "3748fdf03fbda9b41158b685f0b0203760804372d594bade503729d1450227b0",
+   "fingerprint": "397538b694ae5b52",
+   "runtime_scope": "loop2_launcher_and_forwarded_PADFEC_env",
+   "file": "p7_verify.json"
+  }
+ ],
+ "t_recover_vs_p7": {
+  "measured": {
+   "V2": 58.555,
+   "V3": 153.358,
+   "V9": 200.964
+  },
+  "model": {
+   "V2": 57.674,
+   "V3": 150.0,
+   "V9": 200.86
+  },
+  "worst_abs_ms": 3.358000000000004,
+  "rtt_ms": 50.0
+ },
+ "passed": 5,
+ "total": 5
 }

@@ -71,7 +71,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 STATE_DIR = os.path.join(HERE, "state")
 STATE = os.path.join(STATE_DIR, "loop2.json")
-os.makedirs(STATE_DIR, exist_ok=True)
 
 PY = sys.executable
 # 문서 5절과 같은 형태: unshare -Urnm (=--user --map-root-user --net --mount)
@@ -266,6 +265,20 @@ def harden():
             pass
 
 
+def fingerprint_from_provenance(provenance):
+    """Reproduce a stage fingerprint from its recorded inputs, without I/O."""
+    h = hashlib.sha256()
+    h.update(json.dumps(provenance["runtime_context"], sort_keys=True).encode())
+    h.update(provenance["runner"].encode())
+    h.update(json.dumps(provenance["command"], ensure_ascii=False).encode())
+    for key in ("deps", "soft_deps", "outputs"):
+        h.update(json.dumps(sorted(provenance[key]), ensure_ascii=False).encode())
+    for rel, digest in sorted(provenance["source_hashes"].items()):
+        h.update(rel.encode())
+        h.update(bytes.fromhex(digest) if digest is not None else b"MISSING")
+    return h.hexdigest()[:16]
+
+
 class Stage(object):
     def __init__(self, sid, title, runner, cmd, outputs, scripts, deps=(),
                  timeout=7200, note="", soft_deps=()):
@@ -299,28 +312,28 @@ class Stage(object):
         self.timeout = timeout
         self.note = note
 
-    def fingerprint(self):
-        h = hashlib.sha256()
-        h.update(json.dumps(runtime_context(), sort_keys=True).encode())
-        h.update(self.runner.encode())
-        h.update(json.dumps(self.cmd, ensure_ascii=False).encode())
-        # 🩸 2026-08-20 2차 감사. deps 와 outputs 가 지문 밖에 있었다. 그래서
-        #    **의존 그래프를 고쳐도 아무 단계도 무효가 되지 않았다** - 예컨대
-        #    p4 의 deps 에서 p3 를 빼거나 p6 가 보는 산출물을 바꿔도 done 이
-        #    그대로 남아, 새 그래프로는 한 번도 안 돌아 본 결과가 최신으로
-        #    통했다. 실행기·명령줄과 똑같이 지문에 섞는다.
-        h.update(json.dumps(sorted(self.deps), ensure_ascii=False).encode())
-        h.update(json.dumps(sorted(self.soft_deps), ensure_ascii=False).encode())
-        h.update(json.dumps(sorted(self.outputs), ensure_ascii=False).encode())
+    def provenance(self):
+        """Capture the launcher context and declared source bytes for a new run.
+
+        This does not attest to the WSL child's complete OS/library environment.
+        PADFEC variables are the exact settings forwarded by run_stage.
+        """
+        sources = {}
         for rel in sorted(set(self.scripts) | {"experiments/loop2.py", "experiments/_journal.py"}):
             p = os.path.join(ROOT, rel)
-            h.update(rel.encode())
             if os.path.exists(p):
                 with open(p, "rb") as f:
-                    h.update(hashlib.sha256(f.read()).digest())
+                    sources[rel] = hashlib.sha256(f.read()).hexdigest()
             else:
-                h.update(b"MISSING")
-        return h.hexdigest()[:16]
+                sources[rel] = None
+        return {"schema_version": 1, "runtime_context": runtime_context(),
+                "runtime_scope": "loop2_launcher_and_forwarded_PADFEC_env",
+                "runner": self.runner, "command": list(self.cmd) if isinstance(self.cmd, list) else self.cmd,
+                "deps": sorted(self.deps), "soft_deps": sorted(self.soft_deps),
+                "outputs": sorted(self.outputs), "source_hashes": sources}
+
+    def fingerprint(self):
+        return fingerprint_from_provenance(self.provenance())
 
     def outputs_present(self):
         return all(os.path.isfile(os.path.join(ROOT, o)) for o in self.outputs)
@@ -331,6 +344,45 @@ class Stage(object):
             with open(os.path.join(ROOT, output), "rb") as f:
                 hashes[output] = hashlib.sha256(f.read()).hexdigest()
         return hashes
+
+    def observe_outputs(self):
+        observed = {}
+        for rel in self.outputs:
+            path = os.path.join(ROOT, rel)
+            try:
+                before = os.stat(path)
+                with open(path, "rb") as f:
+                    digest = hashlib.sha256(f.read()).hexdigest()
+                after = os.stat(path)
+                if (before.st_size, before.st_mtime_ns, before.st_ctime_ns) != (
+                        after.st_size, after.st_mtime_ns, after.st_ctime_ns):
+                    observed[rel] = None
+                    continue
+                observed[rel] = {"sha256": digest, "size": after.st_size,
+                                 "mtime_ns": after.st_mtime_ns,
+                                 "ctime_ns": after.st_ctime_ns,
+                                 "file_id": after.st_ino, "device": after.st_dev}
+            except OSError:
+                observed[rel] = None
+        return observed
+
+
+def result_provenance(stage, before, started_ns, source_consistent):
+    """Record newly published outputs even when a statistical check failed.
+
+    Untouched pre-existing files do not become evidence of the current run.
+    Windows filesystem times can lag time.time_ns(), so ordering those clocks
+    is not used as a gate. Before/after identity, metadata and bytes are retained.
+    This assumes the runner is the only writer, not a tamper-proof attestation.
+    """
+    after = stage.observe_outputs()
+    return {"schema_version": 1, "source_consistent": source_consistent,
+            "started_at_ns": started_ns, "finished_at_ns": time.time_ns(),
+            "observation_scope": "exclusive_writer_before_after_file_observation",
+            "outputs": {rel: {
+                "before": before.get(rel), "after": observed,
+                "written_during_run": bool(observed and observed != before.get(rel))}
+                for rel, observed in after.items()}}
 
 
 def _cheap_first(stages, cheap=("p4", "p5")):
@@ -735,45 +787,6 @@ def build_stages():
         note="새 실측을 하지 않는다. 어긋난 자리를 이름 붙여 세는 것이 일이고, "
              "고칠지 더 잴지는 사람이 정한다"))
 
-    # 🩸 2026-08-26 - **p6 를 여기로 옮겼다** (그전 자리: p5 바로 뒤, p13 앞).
-    #    `_cheap_first` 는 위상 정렬이 아니라 "싼 단계를 앞으로 당기는" 재배치라
-    #    p6 처럼 cheap 이 아닌 단계는 **선언 순서대로** 돈다. 즉 deps 에 p17 을
-    #    적어도 실행 순서는 안 바뀐다 - p6 가 p17 보다 먼저 돌아 **옛 p17 을
-    #    읽고 done 이 되고**, 다음 바퀴엔 둘 다 done 이라 아무도 안 돈다.
-    #    그러면 보고서가 옛 수치를 인용한 채 영원히 초록이다(2026-08-21 이
-    #    p11·p12 에서 겪은 사고와 같은 형태, 이번엔 순서 쪽).
-    #    deps 를 고치는 것만으로는 부족하고 **선언 위치도 같이** 옮겨야 한다.
-    #    보고서는 모든 측정 뒤에 나오는 것이 맞으므로 p18 뒤가 제자리다.
-    #    (p19 보다는 앞이어야 한다 - p19 가 보고된 수치를 원자료와 대조한다.)
-    S.append(Stage(
-        "p6", "보고서 + 바탕화면 한 장 요약",
-        "win", [PY, "experiments/p6_report.py"],
-        outputs=["docs/PADFEC 실측 보고서.md",
-                 "docs/ML-KEM QUIC 핸드셰이크 FEC 요약.pdf",
-                 "docs/PADFEC 보고서 출처.json"],
-        scripts=ALGO + deps_py("p6_report.py"),
-        # 🩸 2026-08-21 - p6_report.py 는 p11_adaptive.json 과
-        #    p12_quantum.json 을 **읽는데** deps 에 없었다. 그래서 그
-        #    둘이 갱신돼도 보고서가 무효화되지 않고 옛 수치를 인용한
-        #    채 남는다. 읽는 것을 전부 적는다.
-        # 🩸 2026-08-26 - **p17 을 더했다.** 보고서가 p17 을 두 군데서 읽기
-        #    시작했다: 9 장(오라클 이득 = 적응이 벌 수 있는 것)과 한계 절의
-        #    자리 효과.
-        #    (p13·p14·p15·p16·p18 은 아직 보고서가 읽지 않는다 - 읽지 않는
-        #     것을 deps 에 넣으면 순서만 묶이고 사실과 어긋난다. 보고서에
-        #     넣는 것은 별개 작업으로 남긴다.)
-        # 🩸 2026-09-07 - **p18·p20 을 더했다.** 보고서 「한계」 절이 p18 의
-        #    필요 표본(팔당 8,544~12,404 판)과 p17/p18 의 m3-m2 부호를 인용하는데
-        #    p18 이 deps 에 없어서 p18 이 바뀌어도 p6 가 안 돌았고, 그래서 그
-        #    문장이 p6_report.py 에 **손으로 박혀** 있었다(1672~1674 행).
-        #    이제 그 문장은 p18 결과에서 읽는다(sample_facts). 선언 위치는 이미
-        #    p18 뒤다(fixloop --selftest 의 그래프 불변식이 지킨다). p20 은
-        #    보고서가 아직 읽지 않으므로 넣지 않는다 - 읽지 않는 것을 deps 에
-        #    넣으면 순서만 묶이고 사실과 어긋난다(p17 의 08-26 사고).
-        deps=["p1", "p2", "p3", "p4", "p5", "p7", "p8", "p9", "p10",
-              "p11", "p12", "p17", "p18"],
-        timeout=1800))
-
     # 🩸 2026-08-24 신설. 이 저장소는 "측정이 잘 돌았는가"는 여러 자로 보는데
     #    **보고된 요약 수치가 그 측정의 원자료와 맞는지**를 보는 자가 없었다.
     #    그 틈에서 생길 수 있는 일: 요약만 갱신되고 원자료는 옛것, 상수가
@@ -792,7 +805,7 @@ def build_stages():
         #    (resolve 는 deps 로만 전이한다). 옛 자료로 낸 초록이 그대로 남는다.
         #    soft_deps 는 막지는 않되(stale_upstream 이 hard_only 로 뺀다) 무효는
         #    전이시키므로 정확히 이 용도다. 읽는 파일의 단계만 적는다(RULES).
-        soft_deps=["p3", "p11", "p14", "p15", "p16", "p17", "p18"],
+        soft_deps=["p3", "p7", "p11", "p14", "p15", "p16", "p17", "p18"],
         # 🩸 2026-08-25 - deps 를 **비운다.** 처음엔 [p3,p11,p14,p15,p16] 로
         #    뒀는데, p11·p15 는 상시 N 에서 정밀도 검사 때문에 늘 실패하므로
         #    p19 가 매번 "상류 무효"로 건너뛰어졌다 — 즉 **영원히 안 도는
@@ -802,6 +815,21 @@ def build_stages():
         #    목록에서 맨 뒤라는 것으로 이미 보장된다.
         deps=[], timeout=600,
         note="요약 수치를 원자료에서 재계산해 대조한다. 불일치 0 이어야 한다"))
+
+    # The report reads provenance and residual diagnostics, so it runs after
+    # their producers. Soft dependencies invalidate a stale report without
+    # preventing a report from describing a failed diagnostic.
+    S.append(Stage(
+        "p6", "보고서 + PDF 요약",
+        "win", [PY, "experiments/p6_report.py"],
+        outputs=["docs/PADFEC 실측 보고서.md",
+                 "docs/ML-KEM QUIC 핸드셰이크 FEC 요약.pdf",
+                 "docs/PADFEC 보고서 출처.json"],
+        scripts=ALGO + deps_py("p6_report.py"),
+        deps=["p1", "p2", "p3", "p4", "p5", "p7", "p8", "p9", "p10",
+              "p11", "p12", "p17", "p18"],
+        soft_deps=["p13", "p15", "p16", "p19", "p20"],
+        timeout=1800))
 
     return _cheap_first(S)
 
@@ -954,6 +982,7 @@ def run_stage(stage):
             (e.stdout or b"").decode("utf-8", "replace"))
         ok, err = False, "timeout %ds" % stage.timeout
     dt = time.time() - t0
+    os.makedirs(STATE_DIR, exist_ok=True)
     log = os.path.join(STATE_DIR, "log2_%s.txt" % stage.id)
     with open(log, "w", encoding="utf-8", errors="replace") as f:
         f.write(out or "")
@@ -1119,9 +1148,14 @@ def main():
             sys.stdout.flush()
             continue
 
-        run_fingerprint = s.fingerprint()
+        run_provenance = s.provenance()
+        run_fingerprint = fingerprint_from_provenance(run_provenance)
+        before_outputs = s.observe_outputs()
+        started_ns = time.time_ns()
         ok, err, dt, out, log = run_stage(s)
-        if ok and s.fingerprint() != run_fingerprint:
+        source_consistent = s.provenance() == run_provenance
+        published = result_provenance(s, before_outputs, started_ns, source_consistent)
+        if not source_consistent:
             ok, err = False, "실행 중 소스 또는 환경이 바뀜"
         if not ok:
             failed.append(s.id)
@@ -1145,6 +1179,8 @@ def main():
         st["stages"][s.id] = {
             "status": status,
             "fingerprint": run_fingerprint,
+            "provenance": run_provenance,
+            "result_provenance": published,
             "output_hashes": s.output_hashes() if ok else {},
             "finished": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
             "seconds": round(dt, 1), "error": err, "log": log,

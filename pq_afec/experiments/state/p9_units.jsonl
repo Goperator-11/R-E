@@ -125,3 +125,129 @@
 {"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 55.578}}
 {"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 0.7333333333333333, "p50": 105.963}}
 {"fp": "84eb7c0f4278", "key": "B|X25519MLKEM768|c5974|n40", "val": {"cert": 5974, "ok": 40, "n": 40, "two_rtt_rate": 0.9, "p50": 106.042}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.121, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.82, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.345, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.396, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c3312|n15", "val": {"cert": 3312, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.807, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c4218|n15", "val": {"cert": 4218, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.085, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c3765|n15", "val": {"cert": 3765, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.841, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c3538|n15", "val": {"cert": 3538, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.093, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c3425|n15", "val": {"cert": 3425, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.89, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c3368|n15", "val": {"cert": 3368, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.544, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|x25519|c3000|n15", "val": {"cert": 3000, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.808, "first_flight_bytes": 1280}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.305, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.026, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.629, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.454, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c6937|n15", "val": {"cert": 6937, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.625, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c6031|n15", "val": {"cert": 6031, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.544, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c5578|n15", "val": {"cert": 5578, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.256, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.702, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.71, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.851, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "A|X25519MLKEM768|c3000|n15", "val": {"cert": 3000, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.484, "first_flight_bytes": 2560}}
+{"fp": "3994f661fb2c", "key": "B|x25519|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.06666666666666667, "p50": 59.445}}
+{"fp": "3994f661fb2c", "key": "B|x25519|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 112.011}}
+{"fp": "3994f661fb2c", "key": "B|x25519|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 110.531}}
+{"fp": "3994f661fb2c", "key": "B|x25519|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.735}}
+{"fp": "3994f661fb2c", "key": "B|x25519|c3312|n15", "val": {"cert": 3312, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 58.068}}
+{"fp": "3994f661fb2c", "key": "B|x25519|c4218|n15", "val": {"cert": 4218, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.957}}
+{"fp": "3994f661fb2c", "key": "B|x25519|c3765|n15", "val": {"cert": 3765, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.535}}
+{"fp": "3994f661fb2c", "key": "B|x25519|c3538|n15", "val": {"cert": 3538, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.889}}
+{"fp": "3994f661fb2c", "key": "B|x25519|c3425|n15", "val": {"cert": 3425, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.652}}
+{"fp": "3994f661fb2c", "key": "B|x25519|c3368|n15", "val": {"cert": 3368, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.799}}
+{"fp": "3994f661fb2c", "key": "B|X25519MLKEM768|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 58.768}}
+{"fp": "3994f661fb2c", "key": "B|X25519MLKEM768|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 110.462}}
+{"fp": "3994f661fb2c", "key": "B|X25519MLKEM768|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 110.931}}
+{"fp": "3994f661fb2c", "key": "B|X25519MLKEM768|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 59.234}}
+{"fp": "3994f661fb2c", "key": "B|X25519MLKEM768|c6937|n15", "val": {"cert": 6937, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 108.341}}
+{"fp": "3994f661fb2c", "key": "B|X25519MLKEM768|c6031|n15", "val": {"cert": 6031, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 110.249}}
+{"fp": "3994f661fb2c", "key": "B|X25519MLKEM768|c5578|n15", "val": {"cert": 5578, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 57.462}}
+{"fp": "3994f661fb2c", "key": "B|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 59.171}}
+{"fp": "3994f661fb2c", "key": "B|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 59.245}}
+{"fp": "3994f661fb2c", "key": "B|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 0.9333333333333333, "p50": 110.563}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.555, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.574, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.289, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.852, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c3312|n15", "val": {"cert": 3312, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 51.934, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c4218|n15", "val": {"cert": 4218, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.987, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c3765|n15", "val": {"cert": 3765, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.96, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c3538|n15", "val": {"cert": 3538, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.807, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c3425|n15", "val": {"cert": 3425, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.314, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c3368|n15", "val": {"cert": 3368, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.941, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|x25519|c3000|n15", "val": {"cert": 3000, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.274, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.527, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.741, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.951, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.405, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c6937|n15", "val": {"cert": 6937, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.683, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c6031|n15", "val": {"cert": 6031, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.93, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c5578|n15", "val": {"cert": 5578, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.244, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.26, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.626, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.683, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "A|X25519MLKEM768|c3000|n15", "val": {"cert": 3000, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.306, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|x25519|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.06666666666666667, "p50": 58.957, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|x25519|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 111.822, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|x25519|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 108.765, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|x25519|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.945, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|x25519|c3312|n15", "val": {"cert": 3312, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 57.553, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|x25519|c4218|n15", "val": {"cert": 4218, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.914, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|x25519|c3765|n15", "val": {"cert": 3765, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.77, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|x25519|c3538|n15", "val": {"cert": 3538, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.742, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|x25519|c3425|n15", "val": {"cert": 3425, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.67, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|x25519|c3368|n15", "val": {"cert": 3368, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.959, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|X25519MLKEM768|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 59.064, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|X25519MLKEM768|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 111.113, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|X25519MLKEM768|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 107.2, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|X25519MLKEM768|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 56.91, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|X25519MLKEM768|c6937|n15", "val": {"cert": 6937, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 107.286, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|X25519MLKEM768|c6031|n15", "val": {"cert": 6031, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 110.238, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|X25519MLKEM768|c5578|n15", "val": {"cert": 5578, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 59.617, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 58.46, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 58.997, "valid": true}}
+{"fp": "7050e00d56c3", "key": "B|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 110.509, "valid": true}}
+{"recorded_at": "2026-09-29T11:45:07.939625+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.286, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:10.002769+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.531, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:12.074957+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.251, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:14.138051+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.079, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:15.386482+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c3312|n15", "val": {"cert": 3312, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.298, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:17.438946+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c4218|n15", "val": {"cert": 4218, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.462, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:19.497115+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c3765|n15", "val": {"cert": 3765, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.998, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:21.547158+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c3538|n15", "val": {"cert": 3538, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 104.92, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:23.610899+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c3425|n15", "val": {"cert": 3425, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.267, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:25.676077+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c3368|n15", "val": {"cert": 3368, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.399, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:26.931143+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|x25519|c3000|n15", "val": {"cert": 3000, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.298, "first_flight_bytes": 1280, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:28.206091+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.38, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:30.263600+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.922, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:32.313183+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.24, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:33.565109+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.477, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:35.623082+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c6937|n15", "val": {"cert": 6937, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.4, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:37.683733+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c6031|n15", "val": {"cert": 6031, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 105.853, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:38.946916+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c5578|n15", "val": {"cert": 5578, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.517, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:40.197615+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 54.5, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:41.458080+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 53.831, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:43.520445+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 106.457, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:44.778845+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "A|X25519MLKEM768|c3000|n15", "val": {"cert": 3000, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 52.601, "first_flight_bytes": 2560, "error": "", "valid": true}}
+{"recorded_at": "2026-09-29T11:45:47.911864+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|x25519|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.06666666666666667, "p50": 58.648, "valid": true}}
+{"recorded_at": "2026-09-29T11:45:51.609745+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|x25519|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 111.376, "valid": true}}
+{"recorded_at": "2026-09-29T11:45:55.291397+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|x25519|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.441, "valid": true}}
+{"recorded_at": "2026-09-29T11:45:58.966454+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|x25519|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 110.208, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:01.842272+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|x25519|c3312|n15", "val": {"cert": 3312, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 58.04, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:05.516867+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|x25519|c4218|n15", "val": {"cert": 4218, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.651, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:09.217852+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|x25519|c3765|n15", "val": {"cert": 3765, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.726, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:12.883325+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|x25519|c3538|n15", "val": {"cert": 3538, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 110.136, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:16.559875+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|x25519|c3425|n15", "val": {"cert": 3425, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.981, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:20.233544+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|x25519|c3368|n15", "val": {"cert": 3368, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 109.57, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:23.145374+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|X25519MLKEM768|c1500|n15", "val": {"cert": 1500, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 59.067, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:26.850799+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|X25519MLKEM768|c16000|n15", "val": {"cert": 16000, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 111.235, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:30.536542+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|X25519MLKEM768|c8750|n15", "val": {"cert": 8750, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 110.641, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:33.425126+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|X25519MLKEM768|c5125|n15", "val": {"cert": 5125, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 58.618, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:37.141733+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|X25519MLKEM768|c6937|n15", "val": {"cert": 6937, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 111.676, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:40.854531+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|X25519MLKEM768|c6031|n15", "val": {"cert": 6031, "ok": 15, "n": 15, "two_rtt_rate": 1.0, "p50": 111.712, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:43.757458+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|X25519MLKEM768|c5578|n15", "val": {"cert": 5578, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 58.902, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:46.669642+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|X25519MLKEM768|c5804|n15", "val": {"cert": 5804, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 58.731, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:49.579882+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|X25519MLKEM768|c5917|n15", "val": {"cert": 5917, "ok": 15, "n": 15, "two_rtt_rate": 0.0, "p50": 58.937, "valid": true}}
+{"recorded_at": "2026-09-29T11:46:53.179787+00:00", "run_id": "ed2ed4524e2a4aa293db8307843dcabf", "fp": "e9660ca243a2", "key": "B|X25519MLKEM768|c5974|n15", "val": {"cert": 5974, "ok": 15, "n": 15, "two_rtt_rate": 0.9333333333333333, "p50": 107.413, "valid": true}}

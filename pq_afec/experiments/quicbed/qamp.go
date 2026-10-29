@@ -356,10 +356,11 @@ func (s *decodeConn) feedOne(d []byte) {
 	}
 	s.mu.Lock()
 	s.stats.BytesIn += int64(n)
+	ca := s.acctLocked(addr, b[:n], false)
 	s.mu.Unlock()
 	if fb == nil {
 		s.mu.Lock()
-		s.stackLocked(addr, n)
+		s.stackLocked(ca, n)
 		s.mu.Unlock()
 		s.noteOriginal(b[:n], addr)
 		return
@@ -369,7 +370,7 @@ func (s *decodeConn) feedOne(d []byte) {
 	//    어긋나면 이 시험이 실제 경로가 아닌 것을 재게 된다.
 	if fb.m >= 2 && fb.index == 0 {
 		s.stats.CreditParities++
-		s.stackLocked(addr, n)
+		s.stackLocked(ca, n)
 		s.mu.Unlock()
 		return
 	}
@@ -380,7 +381,7 @@ func (s *decodeConn) feedOne(d []byte) {
 	}
 	fr := s.flights[key]
 	if fr == nil {
-		fr = &flightRec{fb: fb, dcid: dc, addr: addr, created: time.Now(),
+		fr = &flightRec{fb: fb, dcid: dc, addr: addr, acct: ca, created: time.Now(),
 			syms: map[int][]byte{}}
 		s.flights[key] = fr
 	}
@@ -389,7 +390,7 @@ func (s *decodeConn) feedOne(d []byte) {
 	//    주석에 적었다(결론이 난 비행을 다시 풀면 같은 원본을 또 복원한다).
 	//    두 경로가 갈라지면 자체시험이 재는 것과 실제로 도는 것이 달라진다.
 	if fr.done || fr.poisoned {
-		s.stackLocked(addr, n)
+		s.stackLocked(ca, n)
 		s.mu.Unlock()
 		return
 	}
@@ -398,7 +399,7 @@ func (s *decodeConn) feedOne(d []byte) {
 	if rec := s.settleRecovery(fr, outs); rec != nil {
 		// 2026-09-07 감사 - 복원본은 스택에 올라가는 바이트다. 장부에 적는다
 		// (ReadFrom 과 같은 수리. 근거는 거기 주석).
-		s.stackLocked(addr, len(rec))
+		s.stackLocked(fr.acct, len(rec))
 		s.mu.Unlock()
 		return
 	}
@@ -408,7 +409,7 @@ func (s *decodeConn) feedOne(d []byte) {
 		s.mu.Unlock()
 		return
 	}
-	s.stackLocked(addr, n)
+	s.stackLocked(ca, n)
 	s.mu.Unlock()
 }
 
@@ -443,11 +444,14 @@ func (s *decodeConn) pendingErasures(fr *flightRec) int {
 // 돌려주는 것: 스택에 넘길 첫 복원본 (없으면 nil).
 // 나머지는 pending 에 예약한다. 회계가 안 되면 아무것도 안 하고 nil 이다.
 func (s *decodeConn) settleRecovery(fr *flightRec, outs [][]byte) []byte {
-	if len(outs) == 0 {
+	if fr == nil || fr.done || fr.poisoned || len(outs) == 0 {
 		return nil
 	}
 	var tot int64
 	for _, o := range outs {
+		if len(o) == 0 {
+			return nil
+		}
 		tot += int64(len(o))
 	}
 	// 쓰인 뒤따르는 패리티는 **보류 중이므로 아직 스택에 없다.** 그래서
@@ -459,6 +463,9 @@ func (s *decodeConn) settleRecovery(fr *flightRec, outs [][]byte) []byte {
 	}
 	fr.done = true
 	s.stats.Recovered += len(outs)
+	if fr.acct != nil && !fr.acct.FbSent {
+		fr.acct.RecovN += len(outs)
+	}
 	// 사건 수는 **비행당 한 번**이어야 한다. fr.done 가드가 죽으면 여기가
 	// 두 번 이상 돌고, 그것을 자체시험이 [중복] 로 잡는다.
 	s.stats.RecoverEvents++
@@ -469,7 +476,7 @@ func (s *decodeConn) settleRecovery(fr *flightRec, outs [][]byte) []byte {
 		fr.recCRC[crc32.ChecksumIEEE(o)] = true
 	}
 	for _, extra := range outs[1:] {
-		s.pending = append(s.pending, pendingPkt{data: extra, addr: fr.addr})
+		s.pending = append(s.pending, pendingPkt{data: extra, addr: fr.addr, acct: fr.acct})
 		s.pendingBytes += int64(len(extra))
 	}
 	// 보류했던 바이트는 이제 역할이 정해졌다. 회계에서 놓아 준다.
@@ -1407,15 +1414,20 @@ type serverStats struct {
 	//    (회계 불변식도 안 깨진다) **Recovered 지표는 부푼다** - p3·p13 이
 	//    그 값을 읽으므로 따로 세어 두지 않으면 조용히 섞인다.
 	//    netem 에 재정렬을 안 걸므로 지금 실측에서는 0 이어야 한다.
-	PrematureRecover int   `json:"premature_recovered"`
-	RecoverFail      int   `json:"recover_crc_fail"`
-	LateRecover      int   `json:"late_recovered"`
-	RecoverRefused   int   `json:"recover_refused_by_accounting"`
-	CreditParities   int   `json:"credit_parities"`
-	Unrecover        int   `json:"unrecoverable_seen"`
-	BytesIn          int64 `json:"bytes_in"`
-	BytesToStack     int64 `json:"bytes_to_stack"`
-	ConnAcctDropped  int   `json:"conn_acct_dropped"` // connAcctCap 초과로 못 센 연결
+	PrematureRecover       int   `json:"premature_recovered"`
+	RecoverFail            int   `json:"recover_crc_fail"`
+	LateRecover            int   `json:"late_recovered"`
+	RecoverRefused         int   `json:"recover_refused_by_accounting"`
+	CreditParities         int   `json:"credit_parities"`
+	Unrecover              int   `json:"unrecoverable_seen"`
+	BytesIn                int64 `json:"bytes_in"`
+	BytesToStack           int64 `json:"bytes_to_stack"`
+	ConnAcctDropped        int   `json:"conn_acct_dropped"` // connAcctCap 초과로 못 센 연결
+	ConnAcctUnmappedRX     int   `json:"conn_acct_unmapped_rx"`
+	ConnAcctUnmappedTX     int   `json:"conn_acct_unmapped_tx"`
+	ConnAcctUnmappedStack  int64 `json:"conn_acct_unmapped_stack_bytes"`
+	ConnAcctAliasConflicts int   `json:"conn_acct_alias_conflicts"`
+	ConnAcctAliasDropped   int   `json:"conn_acct_alias_dropped"`
 	// C1 진단: 롱헤더 타입별 수신 수와 회신 송신 수. 배선이 어디서 끊겼는지
 	// 추측하지 않고 자료로 보려고 둔다.
 	HdrInitial     int `json:"hdr_initial"`
@@ -1438,6 +1450,7 @@ type flightRec struct {
 	fb      *fecBlock
 	dcid    string
 	addr    net.Addr
+	acct    *connAcct
 	created time.Time
 	done    bool
 	// 🩸 2026-08-28 (2 단계 감사) - 이 비행에서 **복원해 낸** 원본의 CRC.
@@ -1469,6 +1482,7 @@ type flightRec struct {
 type pendingPkt struct {
 	data []byte
 	addr net.Addr
+	acct *connAcct
 }
 
 // ------------------------------------------------- 연결별 회계 (p13, 2026-08-20)
@@ -1479,8 +1493,10 @@ type pendingPkt struct {
 // "첫 송신 시점"이라는 것 자체가 없었다 - B_eff 재해석이 사후 가설에
 // 머문 이유다.
 //
-// 연결의 열쇠는 클라이언트 주소다. 시행마다 새 UDP 소켓(새 포트)을 쓰므로
-// 주소가 곧 연결이다. DCID 는 서버가 Retry 없이도 바꿔 앉을 수 있어 안 쓴다.
+// UDP source ports can be reused while older packets are still in flight. Identify
+// an Initial by its (DCID, SCID) pair, then follow visible client/server CIDs.
+// Unknown or ambiguous CIDs remain explicitly unaccounted; never guess by address.
+// Encrypted NEW_CONNECTION_ID frames cannot be observed at this PacketConn layer.
 //
 // 두 종류의 바이트를 다 센다.
 //
@@ -1489,12 +1505,18 @@ type pendingPkt struct {
 //	      복구가 일어나면 패리티 대신 복구본이 넘어가므로 phys 와 갈린다.
 //	      무손실 시행에서는 둘이 같다.
 type connAcct struct {
-	FirstRxNs int64 `json:"first_rx_ns"`
-	FirstTxNs int64 `json:"first_tx_ns"`
-	RxDgrams  int   `json:"rx_dgrams"`
-	RxBytes   int64 `json:"rx_bytes"`
-	RxOrig    int64 `json:"rx_orig_bytes"`
-	RxParity  int64 `json:"rx_parity_bytes"`
+	InitialDCID string `json:"initial_dcid"`
+	ClientSCID  string `json:"client_scid"`
+	FirstPeer   string `json:"first_peer"`
+	LastPeer    string `json:"last_peer"`
+	PeerChanges int    `json:"peer_changes"`
+	aliasCount  int
+	FirstRxNs   int64 `json:"first_rx_ns"`
+	FirstTxNs   int64 `json:"first_tx_ns"`
+	RxDgrams    int   `json:"rx_dgrams"`
+	RxBytes     int64 `json:"rx_bytes"`
+	RxOrig      int64 `json:"rx_orig_bytes"`
+	RxParity    int64 `json:"rx_parity_bytes"`
 	// 🩸 2026-08-23 (C1) - 위 둘은 **바이트**다. 피드백은 심볼 **개수**를
 	//    보내야 하므로 따로 센다. 첫 비행 몫만 세려고 Handshake 를 본
 	//    시점에 잠근다(FbSent).
@@ -1576,39 +1598,145 @@ type decodeConn struct {
 	//    패리티의 바이트. 아직 스택에 안 넘겼으므로 불변식의 왼쪽에
 	//    들어가지 않는다. 복구가 끝나면 쓰인 만큼은 복원본으로 대체되고
 	//    남은 것은 신용으로 풀린다.
-	heldBytes int64
-	conns     map[string]*connAcct
-	stats     serverStats
+	heldBytes  int64
+	conns      map[string]*connAcct
+	clientCIDs map[string]*connAcct // server destination CIDs; nil means ambiguous
+	serverCIDs map[string]*connAcct // client destination CIDs; nil means ambiguous
+	stats      serverStats
 }
 
-// acctLocked 는 이 주소의 연결 회계를 준다. mu 를 쥔 채로만 부른다.
-func (s *decodeConn) acctLocked(addr net.Addr) *connAcct {
-	if addr == nil {
+const connAliasCap = 16
+
+// Explicitly matches quic-go v0.61.0's existing default. A fresh client Initial
+// DCID is at least 8 bytes; server-issued CIDs here are always 4 bytes.
+const serverConnIDLength = 4
+
+// Both CID namespaces are bounded by connAcctCap * connAliasCap. Collisions are
+// marked ambiguous instead of silently assigning another connection's packets.
+func (s *decodeConn) bindCIDLocked(index map[string]*connAcct, cid []byte, ca *connAcct) {
+	if len(cid) == 0 || len(cid) > 20 || ca == nil {
+		return
+	}
+	key := string(cid)
+	if old, exists := index[key]; exists {
+		if old != ca && old != nil {
+			index[key] = nil
+			s.stats.ConnAcctAliasConflicts++
+		}
+		return
+	}
+	if ca.aliasCount >= connAliasCap {
+		s.stats.ConnAcctAliasDropped++
+		return
+	}
+	index[key] = ca
+	ca.aliasCount++
+}
+
+func shortCIDAccount(b []byte, index map[string]*connAcct) *connAcct {
+	if len(b) < 2 || b[0]&0xc0 != 0x40 {
 		return nil
 	}
-	key := addr.String()
-	ca, ok := s.conns[key]
-	if ok {
-		return ca
+	var found *connAcct
+	for n := 1; n <= 20 && n < len(b); n++ {
+		ca, exists := index[string(b[1:1+n])]
+		if !exists {
+			continue
+		}
+		if ca == nil || (found != nil && found != ca) {
+			return nil
+		}
+		found = ca
 	}
-	if s.conns == nil {
-		s.conns = map[string]*connAcct{}
+	return found
+}
+
+// acctLocked follows visible CIDs for this testbed's 4-byte server CID policy.
+// The Initial (DCID, SCID) pair separates even repeated client SCIDs. Later
+// long headers can reveal new server CIDs while keeping the client SCID.
+// Zero-length, ambiguous and unseen short-header CIDs remain unmapped.
+func (s *decodeConn) acctLocked(addr net.Addr, b []byte, outbound bool) *connAcct {
+	if s.clientCIDs == nil {
+		s.clientCIDs = map[string]*connAcct{}
 	}
-	if len(s.conns) >= connAcctCap {
-		s.stats.ConnAcctDropped++
-		return nil
+	if s.serverCIDs == nil {
+		s.serverCIDs = map[string]*connAcct{}
 	}
-	ca = &connAcct{}
-	s.conns[key] = ca
+	h := parseLongHdr(b)
+	var ca *connAcct
+	if !h.ok {
+		if outbound {
+			ca = shortCIDAccount(b, s.clientCIDs)
+		} else {
+			ca = shortCIDAccount(b, s.serverCIDs)
+		}
+	} else if len(h.scid) <= 20 && len(h.dcid) <= 20 {
+		if outbound {
+			// A known server source CID also disambiguates a reused client CID.
+			ca = s.serverCIDs[string(h.scid)]
+			if dst := s.clientCIDs[string(h.dcid)]; ca != nil && dst != nil && ca != dst {
+				s.serverCIDs[string(h.scid)] = nil
+				s.stats.ConnAcctAliasConflicts++
+				return nil
+			}
+			if ca == nil {
+				ca = s.clientCIDs[string(h.dcid)]
+			}
+			if ca != nil {
+				s.bindCIDLocked(s.serverCIDs, h.scid, ca)
+			}
+		} else {
+			if h.typ == 0 && len(h.scid) > 0 && len(h.dcid) > 0 && len(h.dcid) != serverConnIDLength {
+				key := fmt.Sprintf("initial:%x/%x", h.dcid, h.scid)
+				ca = s.conns[key]
+				if ca == nil {
+					if len(s.conns) >= connAcctCap {
+						s.stats.ConnAcctDropped++
+						return nil
+					}
+					if s.conns == nil {
+						s.conns = map[string]*connAcct{}
+					}
+					ca = &connAcct{InitialDCID: fmt.Sprintf("%x", h.dcid), ClientSCID: fmt.Sprintf("%x", h.scid)}
+					s.conns[key] = ca
+				}
+			} else {
+				ca = s.serverCIDs[string(h.dcid)]
+				if src := s.clientCIDs[string(h.scid)]; ca != nil && src != nil && ca != src {
+					s.stats.ConnAcctAliasConflicts++
+					return nil
+				}
+				if ca == nil {
+					ca = s.clientCIDs[string(h.scid)]
+				}
+			}
+			if ca != nil {
+				s.bindCIDLocked(s.clientCIDs, h.scid, ca)
+				s.bindCIDLocked(s.serverCIDs, h.dcid, ca)
+			}
+		}
+	}
+	if ca != nil && addr != nil {
+		peer := addr.String()
+		if ca.FirstPeer == "" {
+			ca.FirstPeer = peer
+		}
+		if ca.LastPeer != "" && ca.LastPeer != peer {
+			ca.PeerChanges++
+		}
+		ca.LastPeer = peer
+	}
 	return ca
 }
 
 // stackLocked 는 "스택에 넘긴 바이트"를 전역과 연결 양쪽에 계상한다.
 // quic-go 의 증폭 예산이 실제로 세는 것이 이 양이므로, B_eff 의 정본도 이쪽이다.
-func (s *decodeConn) stackLocked(addr net.Addr, n int) {
+func (s *decodeConn) stackLocked(ca *connAcct, n int) {
 	s.stats.BytesToStack += int64(n)
-	if ca := s.acctLocked(addr); ca != nil {
+	if ca != nil {
 		ca.Stack += int64(n)
+	} else {
+		s.stats.ConnAcctUnmappedStack += int64(n)
 	}
 }
 
@@ -1617,7 +1745,7 @@ func (s *decodeConn) stackLocked(addr net.Addr, n int) {
 // 전에 하므로, 첫 송신 시점의 수신 누적이 첫 응답 비행의 예산을 정한 값이다.
 func (s *decodeConn) WriteTo(b []byte, addr net.Addr) (int, error) {
 	s.mu.Lock()
-	if ca := s.acctLocked(addr); ca != nil {
+	if ca := s.acctLocked(addr, b, true); ca != nil {
 		now := time.Now().UnixNano()
 		if ca.TxDgrams == 0 {
 			ca.FirstTxNs = now
@@ -1633,6 +1761,8 @@ func (s *decodeConn) WriteTo(b []byte, addr net.Addr) (int, error) {
 		}
 		ca.TxDgrams++
 		ca.TxBytes += int64(len(b))
+	} else {
+		s.stats.ConnAcctUnmappedTX++
 	}
 	s.mu.Unlock()
 	n, err := s.PacketConn.WriteTo(b, addr)
@@ -1780,7 +1910,7 @@ func (s *decodeConn) tryLate() {
 			continue
 		}
 		s.pending = append(s.pending,
-			pendingPkt{data: rec, addr: fr.addr})
+			pendingPkt{data: rec, addr: fr.addr, acct: fr.acct})
 		s.pendingBytes += int64(len(rec)) // 예약: 넘길 때까지 잡아 둔다
 		s.stats.LateRecover++
 	}
@@ -1795,7 +1925,7 @@ again:
 		p := s.pending[0]
 		s.pending = s.pending[1:]
 		s.pendingBytes -= int64(len(p.data))
-		s.stackLocked(p.addr, len(p.data))
+		s.stackLocked(p.acct, len(p.data))
 		s.mu.Unlock()
 		n := copy(b, p.data)
 		return n, p.addr, nil
@@ -1832,7 +1962,8 @@ again:
 	if isHandshake {
 		s.stats.HdrCoalescedHS++
 	}
-	if ca := s.acctLocked(addr); ca != nil {
+	ca := s.acctLocked(addr, b[:n], false)
+	if ca != nil {
 		if ca.RxDgrams == 0 {
 			ca.FirstRxNs = time.Now().UnixNano()
 		}
@@ -1878,6 +2009,8 @@ again:
 				crcs:   ca.RxCRC, truncated: ca.RxCRCTruncated,
 			})
 		}
+	} else {
+		s.stats.ConnAcctUnmappedRX++
 	}
 	s.mu.Unlock()
 	if fbOut != nil {
@@ -1891,7 +2024,7 @@ again:
 	}
 	if s.mode == "off" {
 		s.mu.Lock()
-		s.stackLocked(addr, n)
+		s.stackLocked(ca, n)
 		s.mu.Unlock()
 		return n, addr, nil
 	}
@@ -1917,7 +2050,7 @@ again:
 		//       안전망**으로 이 결함을 가리고 있다. 복사만 먼저 넣으면
 		//       확률적 CRC 실패가 **결정적 불변식 위반**으로 바뀐다.
 		s.mu.Lock()
-		s.stackLocked(addr, n)
+		s.stackLocked(ca, n)
 		s.mu.Unlock()
 		s.noteOriginal(b[:n], addr)
 		return n, addr, nil
@@ -1937,7 +2070,7 @@ again:
 	//    개수를 이미 알 수 있고, 그래서 아래에서 즉시 판정한다.
 	if fb.m >= 2 && fb.index == 0 {
 		s.stats.CreditParities++
-		s.stackLocked(addr, n)
+		s.stackLocked(ca, n)
 		s.mu.Unlock()
 		return n, addr, nil
 	}
@@ -1950,7 +2083,7 @@ again:
 	}
 	fr := s.flights[key]
 	if fr == nil {
-		fr = &flightRec{fb: fb, dcid: dc, addr: addr, created: time.Now(),
+		fr = &flightRec{fb: fb, dcid: dc, addr: addr, acct: ca, created: time.Now(),
 			syms: map[int][]byte{}}
 		s.flights[key] = fr
 	}
@@ -1968,7 +2101,7 @@ again:
 	//    불가능했다. 뒤따르는 패리티를 m-1 개로 늘리면서 열린 길이다.
 	//    결론이 난 비행에 늦게 온 패리티는 그냥 **평범한 신용**이다.
 	if fr.done || fr.poisoned {
-		s.stackLocked(addr, n)
+		s.stackLocked(ca, n)
 		s.mu.Unlock()
 		return n, addr, nil
 	}
@@ -1985,7 +2118,7 @@ again:
 		//    W 만큼 실제로 넘긴 바이트보다 작았고, 회계 자체시험은 `인계 <= 도착`
 		//    만 봐서 W 만큼 관대했다(스크래치 시험: k=2·m=1 에서 인계 2400 vs
 		//    장부 1200). 넘기는 바이트를 넘기기 전에 적는다.
-		s.stackLocked(addr, len(rec))
+		s.stackLocked(fr.acct, len(rec))
 		s.mu.Unlock()
 		m := copy(b, rec)
 		return m, addr, nil
@@ -2017,7 +2150,7 @@ again:
 		s.mu.Unlock()
 		goto again // 삼킨다 - quic-go 는 이 바이트를 보지 못한다
 	}
-	s.stackLocked(addr, n)
+	s.stackLocked(ca, n)
 	s.mu.Unlock()
 	return n, addr, nil
 }
@@ -2041,12 +2174,14 @@ func (s *decodeConn) report() interface{} {
 		cp.TxRxTimeline = append([]int64(nil), v.TxRxTimeline...)
 		cp.TxSizes = append([]int(nil), v.TxSizes...)
 		cp.TxNs = append([]int64(nil), v.TxNs...)
+		cp.RxCRC = append([]uint32(nil), v.RxCRC...)
 		conns[k] = &cp
 	}
 	return struct {
 		serverStats
-		Conns map[string]*connAcct `json:"conns"`
-	}{s.stats, conns}
+		ConnAcctScope string               `json:"conn_acct_scope"`
+		Conns         map[string]*connAcct `json:"conns"`
+	}{s.stats, "visible_handshake_cids_server_cid4_v1", conns}
 }
 
 // ------------------------------------------------------------------ 인증서
@@ -2116,7 +2251,7 @@ func runServer(addr string, certSize int, mode string, statsPath string,
 	fc := &decodeConn{countConn: countConn{PacketConn: udp}, mode: mode,
 		feedback: feedback,
 		flights:  map[string]*flightRec{}}
-	tr := &quic.Transport{Conn: fc}
+	tr := &quic.Transport{Conn: fc, ConnectionIDLength: serverConnIDLength}
 	tlsConf := &tls.Config{
 		Certificates: []tls.Certificate{makeCert(certSize)},
 		NextProtos:   []string{"padfec"},
@@ -2215,10 +2350,25 @@ type trial struct {
 	IPSUsed       int     `json:"ips_used"`
 	// 2026-09-07 - quic-go 가 실제로 쓰는 값. -ips 가 1452 를 넘으면 조용히
 	// 1452 로 깎이는데 ips_used 는 요청값을 적어 와이어에 없던 W 가 남았다.
-	IPSEff   int    `json:"ips_eff"`
-	MWhy     string `json:"m_why,omitempty"`
-	SrvBytes int64  `json:"server_bytes"`
-	LossEvt  bool   `json:"loss_event"`
+	IPSEff        int     `json:"ips_eff"`
+	MWhy          string  `json:"m_why,omitempty"`
+	SrvBytes      int64   `json:"server_bytes"`
+	LossEvt       bool    `json:"loss_event"`
+	PathRTTMS     float64 `json:"path_rtt_ms"`
+	PathRTTValid  bool    `json:"path_rtt_valid"`
+	PathRTTSource string  `json:"path_rtt_source"`
+}
+
+// quic-go v0.61 starts MinRTT/LatestRTT/SmoothedRTT at 100 ms before
+// receiving any RTT sample. MeanDeviation starts at zero and the first
+// valid sample initializes it to sample/2. Require that evidence rather
+// than treating the positive 100 ms default as a measurement. A valid
+// sample whose deviation rounds to zero is conservatively omitted.
+func measuredPathRTT(stats quic.ConnectionStats) (float64, bool) {
+	if stats.MinRTT <= 0 || stats.LatestRTT <= 0 || stats.MeanDeviation <= 0 {
+		return 0, false
+	}
+	return float64(stats.MinRTT) / float64(time.Millisecond), true
 }
 
 func runClient(addr, group string, n int, timeout, gap time.Duration,
@@ -2251,6 +2401,11 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 		trialIPS := ips
 		unbiased := true
 		fmode := mode
+		if mode == "off" {
+			// The CLI's default m is irrelevant when no parity is transmitted.
+			// Keep m_used faithful to the actual fixed policy in trial records.
+			trialM = 0
+		}
 		if mode == "auto" {
 			// 🩸 2026-08-20 v2 이식. 그전에는 m 만 받아서 δ 지렛대를 쓸 수
 			// 없었다. 이제 정책이 고른 ips 를 그대로 이 판에 적용한다 -
@@ -2352,13 +2507,21 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 			FFParity:      st.FirstFlightParity,
 			FFParityBytes: st.FirstFlightParityBytes,
 			MUsed:         trialM, IPSUsed: trialIPS, IPSEff: ipsEff,
-			MWhy: why, SrvBytes: srvBytes, LossEvt: lossEvt}
+			MWhy: why, SrvBytes: srvBytes, LossEvt: lossEvt,
+			PathRTTSource: "unavailable"}
 		if err != nil {
 			t.Err = err.Error()
 		} else {
 			cs := conn.ConnectionState().TLS
 			t.CipherID = cs.CipherSuite
 			t.KEM = uint16(cs.CurveID)
+			t.PathRTTMS, t.PathRTTValid = measuredPathRTT(conn.ConnectionStats())
+			if t.PathRTTValid {
+				t.PathRTTSource = "quic_ack_min_rtt"
+				if mode == "auto" {
+					cache.observeRTT(addr, t.PathRTTMS)
+				}
+			}
 			conn.CloseWithError(0, "done")
 		}
 		if err == nil && mode == "auto" {

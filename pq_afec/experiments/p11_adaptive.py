@@ -9,7 +9,7 @@
 1 은 돌려 보면 안다. 2 는 **고정 m 을 전부 돌려 보고 그 중 최선과 비교**해야
 안다. 그 차이가 후회다. 1 차 연구에서 쓰던 지표를 그대로 가져왔다.
 
-    후회 = auto 의 평균 HCT - min(고정 m=0, m=1, m=2 의 평균 HCT)
+    후회 = auto 평균 HCT - min(m=0부터 기본 m 상한까지 고정팔의 평균 HCT)
 
 후회가 작으면 폐루프가 제 몫을 한 것이고, 크면 정책이 틀렸거나 관측이
 모자란 것이다. 어느 쪽인지는 auto 가 실제로 고른 m 과 최선 m 을 대조하면
@@ -31,6 +31,7 @@ import json
 import math
 import os
 import sys
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -39,6 +40,7 @@ sys.path.insert(0, ROOT)
 
 import padbed as B                               # noqa: E402
 import blockstat as BST                          # noqa: E402
+import policy_evaluation as PE                   # noqa: E402
 from padfec import policy as POL                 # noqa: E402
 from _journal import Journal, code_fingerprint   # noqa: E402
 
@@ -133,7 +135,9 @@ if N != N_REQ:
 
 def run_condition(cert, loss, jr):
     """조건 하나의 다섯 팔을 교대로 잰다. {팔: rec}."""
-    key = "%d|%.1f|latin|n%d|b%d" % (cert, loss, N, BLOCKS)
+    if N < BLOCKS or BLOCKS % (2 * len(ALL_ARMS)):
+        raise ValueError("P11 requires two complete Latin squares and positive block sizes")
+    key = "%s|%d|%.1f|latin|n%d|b%d" % (PE.PROTOCOL, cert, loss, N, BLOCKS)
     if jr.has(key):
         return jr.get(key)
     n_blk = N // BLOCKS
@@ -156,6 +160,7 @@ def run_condition(cert, loss, jr):
                 else:
                     m = int(arm[1:])
                     fec, extra = ("off" if m == 0 else "on"), []
+                started_ns = time.time_ns()
                 rows, cs, e = B.run_client(
                     GROUP, n_blk, fec=fec, m=max(m, 1), gap_ms=8,
                     timeout_s=10, expect_k=K, extra=extra,
@@ -164,10 +169,16 @@ def run_condition(cert, loss, jr):
                     uplink_mbps=UPLINK_MBPS)
                 if e:
                     err_by[arm] = e
+                row_start = len(rows_by[arm])
                 rows_by[arm].extend(rows)
                 ok = [x["ms"] for x in rows if x.get("ok")]
                 blocks_by[arm].append({"block": b, "pos": pos, "n": len(rows),
-                                       "ok": len(ok), "mean": mean(ok)})
+                                       "ok": len(ok), "mean": mean(ok),
+                                       "row_start": row_start, "row_stop": len(rows_by[arm]),
+                                       "started_at_unix_ns": started_ns,
+                                       "finished_at_unix_ns": time.time_ns(),
+                                       "ms_rows": [x["ms"] if x.get("ok") else None
+                                                   for x in rows]})
             print("   블록 %2d/%d  %s"
                   % (b + 1, BLOCKS,
                      "  ".join("%s(자리%d) %.2f"
@@ -182,8 +193,9 @@ def run_condition(cert, loss, jr):
         rows = rows_by[arm]
         ok = [r["ms"] for r in rows if r.get("ok")]
         # 🩸 두 통계가 서로 다른 창을 쓰면 안 된다. **행 인덱스 기준 한 창**.
-        half_rows = len(rows) // 2
-        late_rows = rows[half_rows:]
+        late_blocks = [b for b in blocks_by[arm] if b["block"] >= BLOCKS // 2]
+        late_rows = [row for b in late_blocks
+                     for row in rows[b["row_start"]:b["row_stop"]]]
         ok_late = [r["ms"] for r in late_rows if r.get("ok")]
         out[arm] = {
             "arm": arm, "cert": cert, "loss": loss,
@@ -198,6 +210,8 @@ def run_condition(cert, loss, jr):
             "probe_rows": [(r.get("m_why") or "").startswith("탐색")
                            for r in rows],
             "ms": ok, "ms_late": ok_late,
+            "late_trial_indices": [i for b in late_blocks
+                                   for i in range(b["row_start"], b["row_stop"])],
             "m_why": [r.get("m_why") for r in rows[:3]],
             "blocks": blocks_by[arm],
             # 서버가 조건당 하나이므로 아래 둘은 **조건 합**이다.
@@ -206,7 +220,7 @@ def run_condition(cert, loss, jr):
             "srv_stats_present": bool(ss),
             "err": err_by[arm]}
     complete = all(len(rows_by[a]) == n_blk * BLOCKS for a in ALL_ARMS)
-    if complete and bool(ss) and (ss.get("recover_crc_fail") or 0) == 0:
+    if complete and not any(err_by.values()) and bool(ss) and (ss.get("recover_crc_fail") or 0) == 0:
         jr.record(key, out)
     return out
 
@@ -221,11 +235,20 @@ def main():
                            "experiments/quicbed/qamp.go",
                            "experiments/quicbed/policy.go",
                            "experiments/quicbed/pfail_table.go",
-                           "experiments/padbed.py"], ROOT)
+                           "experiments/padbed.py",
+                           "experiments/policy_evaluation.py",
+                           "experiments/blockstat.py", "experiments/_journal.py"], ROOT)
     jr = Journal(os.path.join(B.STATE, "p11_units.jsonl"), fp)
 
     out = {"rtt_ms": RTT_MS, "n": N, "n_requested": N_REQ, "group": GROUP,
-           "blocks": BLOCKS, "interleaved": True,
+           "blocks": BLOCKS, "interleaved": True, "analysis_protocol": PE.PROTOCOL,
+           "inference_limits": {
+               "confirmatory": False,
+               "batch_assumption": "batch means use approximate independence; residual time/cache and cross-arm dependence can remain",
+               "observed_best": "best fixed arm selected from the same data; unadjusted intervals are descriptive",
+               "internal_split": "chronological selection/evaluation windows within one run, not independent repetitions",
+               "selection_check": "modal auto choice belongs to the observed 1 ms allowed fixed-arm set; not every trial is optimal",
+               "server_statistics": "shared condition totals copied to arm rows; presence is not per-connection matching completeness"},
            "rows": [], "regret": [], "checks": []}
 
     def add(name, ok, detail):
@@ -242,13 +265,17 @@ def main():
     for name, cert, loss in CONDS:
         print("### %s (cert %d, 손실 %g%%)" % (name, cert, loss), flush=True)
         arms = run_condition(cert, loss, jr)
+        if set(arms) != set(ALL_ARMS):
+            out.setdefault("dropped", []).append(
+                {"cond": name, "cert": cert, "loss": loss, "why": "missing candidate", "raw_arms": arms})
+            continue
         for arm in ALL_ARMS:
             r = arms[arm]
             out["rows"].append(r)
             ms = r["m_used"]
             if arm == "auto":
                 from collections import Counter
-                mtxt = str(dict(sorted(Counter(ms).items())))
+                mtxt = str(dict(sorted(Counter(ms).items(), key=lambda item: str(item[0]))))
             else:
                 mtxt = arm[1:]
             print("%-18s %-6s %-9.2f %-9.2f %-9s %-9s %s"
@@ -256,6 +283,18 @@ def main():
                      ("%.1f%%" % (100 * (r["tail"] or 0))),
                      r["srv_recovered"], mtxt))
             sys.stdout.flush()
+
+        try:
+            if any(arms[a].get("n") != N or arms[a].get("err") for a in ALL_ARMS):
+                raise ValueError("missing trials or client error")
+            matched = PE.matched_diagnostics(
+                arms["auto"]["blocks"], {a: arms[a]["blocks"] for a in FIXED_ARMS},
+                range(BLOCKS // 2), range(BLOCKS // 2, BLOCKS), "block",
+                family_size=len(FIXED_ARMS) * len(CONDS))
+        except (KeyError, TypeError, ValueError) as exc:
+            out.setdefault("dropped", []).append(
+                {"cond": name, "cert": cert, "loss": loss, "why": str(exc)})
+            continue
 
         fixed = {a: arms[a]["mean"] for a in FIXED_ARMS
                  if arms[a]["mean"] is not None}
@@ -286,41 +325,28 @@ def main():
         _pr = arms["auto"].get("probe_rows") or []
         probe_tax = reg_sel = n_probe_late = None
         if _mr and len(_mr) == len(_pr):
-            _h = len(_mr) // 2
-            _lp = [t for t, f_ in zip(_mr[_h:], _pr[_h:])
-                   if f_ and t is not None]
-            _ls = [t for t, f_ in zip(_mr[_h:], _pr[_h:])
-                   if not f_ and t is not None]
+            _ids = arms["auto"]["late_trial_indices"]
+            _lp = [_mr[i] for i in _ids if _pr[i] and _mr[i] is not None]
+            _ls = [_mr[i] for i in _ids if not _pr[i] and _mr[i] is not None]
             n_probe_late = len(_lp)
             if _lp and _ls:
                 _f = len(_lp) / float(len(_lp) + len(_ls))
                 probe_tax = _f * (mean(_lp) - mean(_ls))
                 reg_sel = reg_late - probe_tax
 
-        # 🩸 2026-08-21 승자의 저주 보정.
-        #    `min(고정 3 팔의 평균)` 은 **잡음이 있는 셋의 최소**라 기댓값이
-        #    참값보다 작다. 그래서 후회가 체계적으로 과대하게 나온다. 게다가
-        #    헤드라인은 6 조건의 **최대**라 상방 편향이 한 번 더 붙는다.
-        #    표본을 반으로 갈라 **앞 절반으로 고르고 뒤 절반으로 잰다** -
-        #    고르는 데 쓴 잡음과 재는 데 쓴 잡음이 독립이라 편향이 없어진다.
-        #    (옛 정의도 그대로 남긴다. 수를 조용히 바꾸지 않기 위해서다.)
-        sel = {}
-        ev = {}
+        # Select on explicit early blocks, evaluate on the same late block IDs.
+        # This chronological split is an internal check, not independent validation.
+        sel, ev, hold_values_by = {}, {}, {}
         for a in FIXED_ARMS:
-            v = arms[a].get("ms") or []
-            h = len(v) // 2
-            if h >= 5:
-                sel[a] = mean(v[:h])
-                ev[a] = mean(v[h:])
-        reg_hold = None
-        best_hold = None
+            _, first_values = PE.block_window(arms[a]["blocks"], range(BLOCKS // 2), "block")
+            _, last_values = PE.block_window(arms[a]["blocks"], range(BLOCKS // 2, BLOCKS), "block")
+            sel[a], ev[a], hold_values_by[a] = mean(first_values), mean(last_values), last_values
+        best_hold = min(sel, key=sel.get)
+        reg_hold = arms["auto"]["mean_late"] - ev[best_hold]
         se_hold = None
-        if sel and ev and arms["auto"]["mean_late"] is not None:
-            best_hold = min(sel, key=lambda a: sel[a])
-            reg_hold = arms["auto"]["mean_late"] - ev[best_hold]
 
-        # 후회의 표준오차. auto 와 고정팔은 **서로 다른 손실 실현**을 본
-        # 독립 표본이므로 분산이 더해진다.
+        # 분산 합은 배치 간·팔 간 독립성을 근사한다. 다른 손실 실현을
+        # 봤다는 사실만으로 시간·캐시 의존성이 사라지는 것은 아니다.
         # 🩸 2026-09-07 - s/sqrt(n) 이 아니라 배치평균 SE 다. 연속한 판은
         #    독립이 아니라(부하·표류) 옛 식은 반폭을 과소평가했다(인계 §4b-4b:
         #    p15 1.25 배, p16 2.43 배). blockstat.batch_se 는 p16·p15 와 같은 자다.
@@ -350,8 +376,7 @@ def main():
         #    최선 홀드아웃 팔의 뒤 절반)에서 낸다. 그전에는 수렴 후 후회의 반폭을
         #    빌려 썼다 - 다른 조건·다른 표본 크기의 자였다.
         if best_hold is not None:
-            _v = arms[best_hold].get("ms") or []
-            _se_h = _se(_v[len(_v) // 2:])
+            _se_h = _se(hold_values_by[best_hold])
             if se_auto is not None and _se_h is not None:
                 se_hold = (se_auto ** 2 + _se_h ** 2) ** 0.5
         _methods = sorted(set(m for m, _k in _se_methods if m))
@@ -361,12 +386,14 @@ def main():
                                         arms[best_arm].get("ms") or [])
         half_hold = None
         if best_hold is not None:
-            hold_values = arms[best_hold].get("ms") or []
+            hold_values = hold_values_by[best_hold]
             half_hold = BST.batch_diff_half(arms["auto"].get("ms_late") or [],
-                                            hold_values[len(hold_values)//2:])
+                                            hold_values)
 
         out["regret"].append({
             "cond": name, "cert": cert, "loss": loss,
+            "matched_block_diagnostic": matched,
+            "holdout_scope": "internal chronological split; not independent confirmation",
             "best_fixed": best_arm, "best_fixed_mean": fixed[best_arm],
             "auto_mean": arms["auto"]["mean"], "regret_ms": reg,
             "best_fixed_late": best_late,
@@ -415,9 +442,9 @@ def main():
         "%d/%d 조건 | 빠짐 %s"
         % (len(out["regret"]), len(CONDS),
            [d["cond"] for d in out.get("dropped", [])] or "없음"))
-    add("모든 팔에서 서버 통계가 실제로 있었다 (없으면 CRC 검사가 공허해진다)",
+    add("모든 팔 행에 공유한 조건 서버 통계가 있었다 (연결 대응 검사가 아님)",
         all(r.get("srv_stats_present") for r in out["rows"]) and out["rows"],
-        "%d/%d 팔"
+        "%d/%d 행, 조건 합계를 각 팔에 공유"
         % (sum(1 for r in out["rows"] if r.get("srv_stats_present")),
            len(out["rows"])))
 
@@ -496,7 +523,7 @@ def main():
     _h_late = out.get("worst_regret_late_ci95_half_ms")
     _v_late = _verdict(worst_late, _h_late)
     add("최악 후회가 2 ms 밖이라고 **말할 수 있는** 조건이 없다 (수렴 후)",
-        _v_late != "틀림",
+        _v_late in ("맞음", "판정불능"),
         "최악 %s ms ±%s -> %s%s | 조건별 %s"
         % (("%+.2f" % worst_late) if worst_late is not None else "데이터 없음",
            ("%.2f" % _h_late) if _h_late is not None else "?", _v_late,
@@ -508,8 +535,8 @@ def main():
     _h_hold = _ci_at("regret_holdout_ms", worst_hold, "ci95_half_holdout_ms")
     _v_hold = _verdict(worst_hold, _h_hold)
     add("최악 후회가 2 ms 밖이라고 **말할 수 있는** 조건이 없다 "
-        "(수렴 후 · 승자의 저주 보정)",
-        _v_hold != "틀림",
+        "(수렴 후 · 내부 시간분할 비교)",
+        _v_hold in ("맞음", "판정불능"),
         "최악 %s ms ±%s -> %s | 조건별 %s"
         % (("%+.2f" % worst_hold) if worst_hold is not None else "데이터 없음",
            ("%.2f" % _h_hold) if _h_hold is not None else "?", _v_hold,
@@ -518,7 +545,7 @@ def main():
     #    다음 실행에 뒤집힐 수 있다 - 실제로 캠페인마다 +4.92 / +3.08 / +1.19
     #    로 흔들렸다(2026-08-21 저널 대조). **기준을 완화하는 대신 자를 잰다.**
     add("후회 추정의 95% 신뢰반폭이 1 ms 미만 (기준 2 ms 를 판정할 정밀도)",
-        cis and max(cis) < 1.0,
+        len(cis) == len(CONDS) and max(cis) < 1.0,
         "최대 반폭 %s ms | 조건별 %s"
         % (("%.2f" % max(cis)) if cis else "-",
            ["%.2f" % v for v in cis]))
@@ -533,7 +560,7 @@ def main():
                     and x["loss"] == r["loss"]), None)
         if not row:
             continue
-        late = row["m_used"][len(row["m_used"]) // 2:]
+        late = [row["m_used"][i] for i in row["late_trial_indices"]]
         if not late:
             continue
         from collections import Counter
@@ -567,7 +594,7 @@ def main():
                           % r["cond"])
             continue
         tot += 1
-        picked_ok = ("m%d" % mode_m) in tie
+        picked_ok = isinstance(mode_m, int) and ("m%d" % mode_m) in tie
         if picked_ok:
             agree += 1
         detail.append("%s: auto m=%s / 최선 m=%d / 허용 %s%s"
@@ -598,10 +625,11 @@ def main():
     #    iid 로 되돌아가는데, 그 반폭은 독립 가정이라 09-01 실측 기준 1.7~2.4 배
     #    과소평가다. 그 자로 통과한 정밀도 검사는 통과가 아니다.
     _bad_se = [r["cond"] for r in out["regret"] if r.get("se_method") != "batch"]
-    add("모든 조건의 반폭이 배치평균(독립 가정 아님)으로 나왔다",
+    add("모든 조건의 반폭이 배치평균으로 나왔다 (배치 간 독립성은 근사)",
         out["regret"] and not _bad_se,
         "iid 로 되돌아간 조건: %s" % (_bad_se or "없음"))
 
+    out["journal_provenance"] = jr.provenance()
     npass = sum(1 for c in out["checks"] if c["ok"])
     print("-" * 104)
     print("%d / %d 통과" % (npass, len(out["checks"])))

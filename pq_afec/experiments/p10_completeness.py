@@ -21,7 +21,10 @@ Output: experiments/results/p10_completeness.json
 from __future__ import annotations
 
 import json
+import hashlib
+import math
 import os
+import re
 import socket
 import struct
 import subprocess
@@ -43,10 +46,53 @@ K = 2
 
 
 def add(results, name, ok, detail, kind="시험"):
-    results.append({"check": name, "ok": bool(ok), "detail": detail,
-                    "kind": kind})
-    print("[%s] %-54s %s" % ("통과" if ok else "미흡", name, detail[:78]))
+    indeterminate = kind == "판정불능"
+    verdict = None if indeterminate else bool(ok)
+    label = "판정불능" if indeterminate else ("통과" if verdict else "미흡")
+    results.append({"check": name, "ok": verdict, "detail": detail,
+                    "kind": kind, "gating": kind == "시험",
+                    "status": "indeterminate" if indeterminate else ("passed" if verdict else "failed")})
+    print("[%s] %-54s %s" % (label, name, detail if indeterminate or not verdict else detail[:78]))
     sys.stdout.flush()
+
+
+def validate_client_rows(rows, expected, error=""):
+    """Reject incomplete or malformed runs before computing any success metric."""
+    if error:
+        raise ValueError("클라이언트 실행 오류: %s" % error)
+    if len(rows) != expected:
+        raise ValueError("측정 행 %d != 계획 %d" % (len(rows), expected))
+    ids = []
+    for row in rows:
+        if not isinstance(row, dict) or type(row.get("ok")) is not bool:
+            raise ValueError("측정 행에 bool ok가 없다")
+        ident, ms = row.get("i"), row.get("ms")
+        if type(ident) is not int:
+            raise ValueError("측정 행에 정수 시행 번호가 없다")
+        if (isinstance(ms, bool) or not isinstance(ms, (int, float))
+                or not math.isfinite(ms) or ms < 0):
+            raise ValueError("측정 행의 ms가 유한한 음이 아닌 수가 아니다")
+        ids.append(ident)
+    if sorted(ids) != list(range(expected)):
+        raise ValueError("측정 시행 번호가 0..N-1의 고유 집합이 아니다")
+
+
+def run_client_checked(*args, **kwargs):
+    rows, stats, error = B.run_client(*args, **kwargs)
+    validate_client_rows(rows, args[1], error)
+    return rows, stats, error
+
+
+def server_stats_present(stats, *fields):
+    return (isinstance(stats, dict) and all(
+        type(stats.get(field)) is int and stats[field] >= 0 for field in fields))
+
+
+def complete_summary(summary, expected):
+    return (summary["n"] == expected and summary["ok"] == expected
+            and all(isinstance(summary.get(key), (int, float))
+                    and math.isfinite(summary[key])
+                    for key in ("p50", "p95")))
 
 
 # ------------------------------------------------------------- C1 동시 연결
@@ -64,38 +110,47 @@ def c1_concurrent(results):
     lock = threading.Lock()
 
     def worker(i):
-        r = subprocess.run(
-            ["timeout", "180", qamp, "-mode", "client",
-             "-addr", "%s:%d" % (B.RX_IP, B.SERVER_PORT),
-             "-group", GROUP, "-n", "60", "-fec", "on", "-m", "1",
-             "-gap", "5ms", "-timeout", "8s", "-expect-k", str(K)],
-            capture_output=True, text=True)
-        ok = sum(1 for ln in r.stdout.splitlines()
-                 if ln.strip().startswith("{")
-                 and json.loads(ln)["ok"])
-        n = sum(1 for ln in r.stdout.splitlines()
-                if ln.strip().startswith("{"))
+        rows, error = [], ""
+        try:
+            r = subprocess.run(
+                ["timeout", "180", qamp, "-mode", "client",
+                 "-addr", "%s:%d" % (B.RX_IP, B.SERVER_PORT),
+                 "-group", GROUP, "-n", "60", "-fec", "on", "-m", "1",
+                 "-gap", "5ms", "-timeout", "8s", "-expect-k", str(K)],
+                capture_output=True, text=True, timeout=200)
+            rows = [json.loads(ln) for ln in r.stdout.splitlines()
+                    if ln.strip().startswith("{")]
+            validate_client_rows(rows, 60, "exit %d" % r.returncode
+                                 if r.returncode else "")
+        except (ValueError, OSError, subprocess.TimeoutExpired) as exc:
+            error = str(exc)
         with lock:
-            out[i] = (ok, n)
+            out[i] = {"rows": rows, "error": error,
+                      "ok": sum(1 for row in rows if isinstance(row, dict)
+                                and row.get("ok") is True), "n": len(rows)}
 
     ts = [threading.Thread(target=worker, args=(i,)) for i in range(6)]
-    for t in ts:
-        t.start()
-    for t in ts:
-        t.join()
-    B.stop_server(p)
+    try:
+        for t in ts:
+            t.start()
+        for t in ts:
+            t.join()
+    finally:
+        B.stop_server(p)
     ss = B.read_server_stats(sp)
-    tot_ok = sum(v[0] for v in out.values())
-    tot_n = sum(v[1] for v in out.values())
-    crc = ss.get("recover_crc_fail") or 0
-    bad_acct = (ss.get("bytes_to_stack") or 0) > (ss.get("bytes_in") or 0)
+    tot_ok = sum(v["ok"] for v in out.values())
+    tot_n = sum(v["n"] for v in out.values())
+    valid = len(out) == 6 and all(not v["error"] for v in out.values())
+    stats_ok = server_stats_present(ss, "recover_crc_fail", "bytes_to_stack", "bytes_in")
+    crc = ss.get("recover_crc_fail")
+    bad_acct = not stats_ok or ss["bytes_to_stack"] > ss["bytes_in"]
     add(results,
         "C1 동시 연결 6개 x 60회 (손실 3%) - 성공률과 회계가 유지되는가",
-        tot_ok == tot_n and crc == 0 and not bad_acct,
-        "성공 %d/%d, 복구 %s, CRC거절 %s, 회계 %s"
+        valid and tot_ok == tot_n == 360 and crc == 0 and not bad_acct,
+        "성공 %d/%d (계획 360), 복구 %s, CRC거절 %s, 회계 %s, 실행 유효 %s"
         % (tot_ok, tot_n, ss.get("recovered"), crc,
-           "위반" if bad_acct else "정상"))
-    return {"ok": tot_ok, "n": tot_n, "srv": ss}
+           "누락/위반" if bad_acct else "정상", valid))
+    return {"ok": tot_ok, "n": tot_n, "srv": ss, "clients": out}
 
 
 # ------------------------------------------------------------- C2 극단 RTT
@@ -151,15 +206,20 @@ def c2_rtt(results):
         for arm, fec in (("off", "off"), ("on", "on")):
             B.set_netem(rtt / 2.0)
             p, sp = B.start_server(CERT, fec=fec)
-            r, cs, err = B.run_client(GROUP, 150, fec=fec, m=1, gap_ms=4,
-                                      timeout_s=10, expect_k=K)
-            B.stop_server(p)
+            try:
+                r, cs, err = run_client_checked(GROUP, 150, fec=fec, m=1, gap_ms=4,
+                                                timeout_s=10, expect_k=K)
+            finally:
+                B.stop_server(p)
             s = B.summarize(r, rtt_ms=rtt)
             # p95 도 남긴다 - 아래 분해능 검사가 **이 팔 자신의 흔들림**을
             # 자로 삼는다. 없으면 "여유가 충분한가"를 물을 수가 없다.
             rec["cost_" + arm] = {"p50": s["p50"], "mean": s["mean"],
                                   "p95": s["p95"], "ok": s["ok"], "n": s["n"]}
-        overhead = (rec["cost_on"]["p50"] or 0) - (rec["cost_off"]["p50"] or 0)
+        cost_valid = all(complete_summary(rec["cost_" + arm], 150)
+                         for arm in ("off", "on"))
+        overhead = (rec["cost_on"]["p50"] - rec["cost_off"]["p50"]
+                    if cost_valid else None)
         rec["overhead_ms"] = overhead
 
         # 기준선 팔의 무손실 중앙값에서 기준을 뽑는다(위 🩸 참고).
@@ -175,15 +235,17 @@ def c2_rtt(results):
                                         % (_base, rtt))
         rec["tail_thresh"] = tail_thresh
         rec["tail_headroom_ms"] = (
-            None if _base is None else tail_thresh - (rec["cost_on"]["p50"] or _base))
+            tail_thresh - rec["cost_on"]["p50"] if cost_valid else None)
 
         # (2) 효과 - 손실 3% 에서 꼬리 비율
         for arm, fec in (("off", "off"), ("on", "on")):
             B.set_netem(rtt / 2.0, loss_c2s=3.0)
             p, sp = B.start_server(CERT, fec=fec)
-            r, cs, err = B.run_client(GROUP, 200, fec=fec, m=1, gap_ms=4,
-                                      timeout_s=10, expect_k=K)
-            B.stop_server(p)
+            try:
+                r, cs, err = run_client_checked(GROUP, 200, fec=fec, m=1, gap_ms=4,
+                                                timeout_s=10, expect_k=K)
+            finally:
+                B.stop_server(p)
             ss = B.read_server_stats(sp)
             s = B.summarize(r, rtt_ms=rtt)
             ms = [x["ms"] for x in r if x.get("ok")]
@@ -196,6 +258,8 @@ def c2_rtt(results):
                                  "p50": s["p50"], "ok": s["ok"], "n": s["n"],
                                  "rec": ss.get("recovered"),
                                  "crc": ss.get("recover_crc_fail"),
+                                 "stats_present": server_stats_present(
+                                     ss, "recover_crc_fail", "recovered"),
                                  "ms": ms}
         rows.append(rec)
 
@@ -211,16 +275,15 @@ def c2_rtt(results):
         #    음수 쪽은 **감추지 않는다** - detail 에 그대로 적고, 그 크기가
         #    자를 넘으면 「표류 의심」으로 드러낸다. 빠른 쪽으로 1 ms 를
         #    넘는 것은 비용이 아니라 **측정이 흔들린다**는 신호이기 때문이다.
-        _drift = "" if overhead > -1.0 else (
+        _drift = "" if overhead is None or overhead > -1.0 else (
             "  ⚠ 기준선보다 %.2f ms 빨랐다 - 비용이 아니라 표류 의심"
             % (-overhead))
         add(results,
             "C2 RTT %.0f ms - 순수 오버헤드가 1 ms 미만인가 (한쪽 꼬리)" % rtt,
-            overhead < 1.0,
-            "손실 0 에서 p50 %.2f -> %.2f ms (오버헤드 %+.2f ms, "
-            "RTT 대비 %+.1f%%)%s"
-            % (rec["cost_off"]["p50"] or -1, rec["cost_on"]["p50"] or -1,
-               overhead, 100 * overhead / rtt, _drift))
+            cost_valid and overhead < 1.0,
+            "손실 0 p50 %s -> %s ms, 오버헤드 %s ms, 150회씩 완전 성공 %s%s"
+            % (rec["cost_off"]["p50"], rec["cost_on"]["p50"],
+               overhead, cost_valid, _drift))
 
         a, b = rec["eff_off"], rec["eff_on"]
 
@@ -263,8 +326,10 @@ def c2_rtt(results):
         else:
             add(results,
                 "C2 RTT %.0f ms - 손실 3%% 에서 꼬리 비율이 줄어드는가" % rtt,
-                b["ok"] == b["n"] and (b["crc"] or 0) == 0
-                and (b["tail"] or 0) <= (a["tail"] or 0),
+                a["ok"] == a["n"] == b["ok"] == b["n"] == 200
+                and a["stats_present"] and b["stats_present"] and b["crc"] == 0
+                and a["tail"] is not None and b["tail"] is not None
+                and b["tail"] <= a["tail"],
                 "꼬리 %.1f%% -> %.1f%%, 복구 %s, CRC거절 %s (기준 %.2f ms)"
                 % (100 * (a["tail"] or 0), 100 * (b["tail"] or 0), b["rec"],
                    b["crc"], rec["tail_thresh"]))
@@ -279,21 +344,24 @@ def c3_highloss(results):
         recs = {}
         for arm, fec in (("off", "off"), ("on", "on")):
             p, sp = B.start_server(CERT, fec=fec)
-            r, cs, err = B.run_client(GROUP, 120, fec=fec, m=1, gap_ms=5,
-                                      timeout_s=10, expect_k=K)
-            B.stop_server(p)
+            try:
+                r, cs, err = run_client_checked(GROUP, 120, fec=fec, m=1, gap_ms=5,
+                                                timeout_s=10, expect_k=K)
+            finally:
+                B.stop_server(p)
             ss = B.read_server_stats(sp)
             s = B.summarize(r, rtt_ms=RTT_MS)
             recs[arm] = {"p50": s["p50"], "p95": s["p95"], "ok": s["ok"],
                          "n": s["n"], "rec": ss.get("recovered"),
                          "crc": ss.get("recover_crc_fail"),
+                         "stats_present": server_stats_present(ss, "recover_crc_fail"),
                          "unrec": ss.get("unrecoverable_seen")}
         rows.append({"loss": loss, **recs})
         add(results,
             "C3 손실 %.0f%% 에서 무너지지 않는가 (성공률 유지, 잘못된 복구 0)"
             % loss,
-            recs["on"]["ok"] == recs["on"]["n"]
-            and (recs["on"]["crc"] or 0) == 0
+            recs["on"]["ok"] == recs["on"]["n"] == recs["off"]["n"] == 120
+            and recs["on"]["stats_present"] and recs["on"]["crc"] == 0
             and recs["on"]["ok"] >= recs["off"]["ok"],
             "off 성공 %d/%d p95 %.0f | on 성공 %d/%d p95 %.0f, "
             "복구 %s 복구불가 %s CRC거절 %s"
@@ -358,21 +426,24 @@ def c4_malformed(results):
     alive_before = p.poll() is None
 
     # 공격 뒤에도 정상 연결이 되는가
-    r, cs, err = B.run_client(GROUP, 30, fec="on", m=1, gap_ms=8,
-                              timeout_s=8, expect_k=K)
-    B.stop_server(p)
+    try:
+        r, cs, err = run_client_checked(GROUP, 30, fec="on", m=1, gap_ms=8,
+                                        timeout_s=8, expect_k=K)
+    finally:
+        B.stop_server(p)
     ss = B.read_server_stats(sp)
     su = B.summarize(r, rtt_ms=RTT_MS)
-    ok = (alive_before and su["ok"] == su["n"]
-          and (ss.get("recover_crc_fail") or 0) == 0
-          and (ss.get("bytes_to_stack") or 0) <= (ss.get("bytes_in") or 0))
+    stats_ok = server_stats_present(ss, "recover_crc_fail", "bytes_to_stack", "bytes_in")
+    ok = (sent == 20 * len(cases) and alive_before and su["ok"] == su["n"] == 30
+          and stats_ok and ss["recover_crc_fail"] == 0
+          and ss["bytes_to_stack"] <= ss["bytes_in"])
     add(results,
         "C4 기형/악성 패리티 %d개 투입 후에도 서버 생존 + 정상 연결 + 회계 유지"
         % sent, ok,
         "서버 생존 %s, 공격 후 성공 %d/%d, CRC거절 %s, 회계 %s"
         % (alive_before, su["ok"], su["n"], ss.get("recover_crc_fail"),
-           "정상" if (ss.get("bytes_to_stack") or 0)
-           <= (ss.get("bytes_in") or 0) else "위반"))
+           "누락" if not stats_ok else (
+               "정상" if ss["bytes_to_stack"] <= ss["bytes_in"] else "위반")))
     return {"sent": sent, "alive": alive_before, "srv": ss}
 
 
@@ -389,9 +460,11 @@ def c5_longrun(results):
     for arm, fec in (("off", "off"), ("on", "on")):
         B.set_netem(RTT_MS / 2.0, loss_c2s=3.0)
         p, sp = B.start_server(CERT, fec=fec)
-        r, cs, err = B.run_client(GROUP, 600, fec=fec, m=1, gap_ms=4,
-                                  timeout_s=8, expect_k=K)
-        B.stop_server(p)
+        try:
+            r, cs, err = run_client_checked(GROUP, 600, fec=fec, m=1, gap_ms=4,
+                                            timeout_s=8, expect_k=K)
+        finally:
+            B.stop_server(p)
         ss = B.read_server_stats(sp)
         s = B.summarize(r, rtt_ms=RTT_MS)
         ms = [x["ms"] for x in r if x.get("ok")]
@@ -400,15 +473,19 @@ def c5_longrun(results):
                  if first and last else None)
         rec[arm] = {"ok": s["ok"], "n": s["n"], "drift": drift,
                     "recovered": ss.get("recovered"),
+                    "stats_present": server_stats_present(ss, "recover_crc_fail"),
                     "crc": ss.get("recover_crc_fail")}
-    d_on = abs(rec["on"]["drift"] or 0.0)
-    d_off = abs(rec["off"]["drift"] or 0.0)
+    complete = all(rec[a]["ok"] == rec[a]["n"] == 600
+                   and rec[a]["drift"] is not None and rec[a]["stats_present"]
+                   for a in ("off", "on"))
+    d_on = abs(rec["on"]["drift"]) if complete else None
+    d_off = abs(rec["off"]["drift"]) if complete else None
     add(results,
         "C5 한 서버로 600 연결 - FEC 가 기준선보다 더 처지지 않는가",
-        rec["on"]["ok"] == rec["on"]["n"] and (rec["on"]["crc"] or 0) == 0
+        complete and rec["on"]["crc"] == 0
         and d_on <= d_off + 2.0,
-        "처짐 off %+.2f ms / on %+.2f ms, 성공 %d/%d, 복구 %s, CRC거절 %s"
-        % (rec["off"]["drift"] or 0, rec["on"]["drift"] or 0,
+        "처짐 off %s ms / on %s ms, 성공 %d/%d, 복구 %s, CRC거절 %s"
+        % (rec["off"]["drift"], rec["on"]["drift"],
            rec["on"]["ok"], rec["on"]["n"], rec["on"]["recovered"],
            rec["on"]["crc"]))
     return rec
@@ -416,56 +493,100 @@ def c5_longrun(results):
 
 # --------------------------------------------------- 설계 대비 구현 재고조사
 def inventory(results):
-    """설계했지만 구현 안 된 것을 정직하게 센다."""
-    qamp = open(os.path.join(HERE, "quicbed", "qamp.go"),
-                encoding="utf-8").read()
-    gaps = []
+    """Source inventory only; the separate experiment stages establish behavior."""
+    from padfec import policy
 
-    closed_loop = "policy" in qamp
+    sources, fingerprints = {}, {}
+    for name in ("qamp.go", "policy.go", "pfail_table.go"):
+        path = os.path.join(HERE, "quicbed", name)
+        with open(path, "rb") as stream:
+            raw = stream.read()
+        fingerprints[name] = hashlib.sha256(raw).hexdigest()
+        # Checking named code paths is narrower than finding a word in comments.
+        sources[name] = re.sub(r"//[^\n]*|/\*.*?\*/", "", raw.decode("utf-8"),
+                               flags=re.S)
+    qamp, policy_go = sources["qamp.go"], sources["policy.go"]
+    evidence = {
+        "auto_branch": bool(re.search(r'if\s+mode\s*==\s*"auto"\s*\{', qamp)),
+        "cache_construction": "newDestCache(cachePath)" in qamp,
+        "policy_call": "cache.decide(" in qamp,
+        "observation_call": "cache.observe(" in qamp,
+        "policy_definition": bool(re.search(
+            r"func\s+\(c\s+\*destCache\)\s+decide\s*\(", policy_go)),
+        "observation_definition": bool(re.search(
+            r"func\s+\(c\s+\*destCache\)\s+observe\s*\(", policy_go)),
+    }
+    closed_loop = all(evidence.values())
+    go_match = re.search(r"\bconst\s+mMaxDefault\s*=\s*(\d+)\b",
+                         sources["pfail_table.go"])
+    go_max = int(go_match.group(1)) if go_match else None
+    high_m = (policy.M_MAX_DEFAULT >= 3 and go_max == policy.M_MAX_DEFAULT
+              and bool(re.search(r"func\s+rsEncode\s*\(", qamp))
+              and 'flag.Int("m-max", mMaxDefault,' in qamp)
+    gaps = []
     gaps.append({
         "item": "적응 정책의 폐루프",
         "designed": "padfec/policy.py 가 (C, k, W, cert, p, L, RTT) 로 m 을 고른다",
-        "implemented": "아니다 - m 은 -m 플래그로 사람이 준다",
+        "implemented": ("auto 모드의 목적지 캐시 선택·관측 경로가 소스에 있다"
+                        if closed_loop else "필수 폐루프 소스 경로 일부를 확인하지 못했다"),
+        "implementation_status": "source_present" if closed_loop else "source_incomplete",
         "ok": closed_loop,
-        "why": "정책이 필요로 하는 서버 비행 크기(cert)와 손실률 p 를 "
-               "클라이언트가 **첫 접속 순간에는 알 수 없다**. 알려면 "
-               "목적지별 캐시가 있어야 하는데 2차 범위 밖으로 뒀다."})
+        "validation_status": "not_assessed_by_inventory",
+        "validation_stages": ["p11", "p15", "p17"],
+        "source_checks": evidence, "source_sha256": fingerprints,
+        "why": "처음 접속할 때는 캐시가 없어 콜드스타트를 쓴다. "
+               "소스 경로의 존재는 성능·적응 성공의 증거가 아니며 "
+               "동일 소스에 대한 p11·p15·p17 결과를 별도로 검토해야 한다."})
 
     gaps.append({
         "item": "서버 -> 클라이언트 방향 보호",
         "designed": "없음 (설계상 제외)",
         "implemented": "없음",
+        "implementation_status": "out_of_scope",
         "ok": False,
-        "why": "서버 비행에는 패딩이 없고(인증서로 꽉 찬다) 서버에게 쓸 수 "
-               "있는 무료 바이트도 없다. 원리적 제외이지 미구현이 아니다."})
+        "validation_status": "not_assessed_by_inventory",
+        "why": "현재 설계의 보호 방향은 c2s다. s2c 보호는 구현 범위 밖이다. "
+               "이 제외를 모든 서버 방향 FEC의 불가능성으로 해석하지 않는다."})
 
     gaps.append({
         "item": "제자리(패딩 자리) 배치",
         "designed": "인수인계 문서 단계 2-B",
-        "implemented": "아니다 - 용량 부등식 위반으로 불가 판정",
+        "implemented": "현재 구현은 별도 패리티 데이터그램을 보낸다",
+        "implementation_status": "not_implemented",
         "ok": False,
-        "why": "C <= (k-1)(W-h-f) 를 실측 12개 설정 전부가 위반한다. "
-               "미구현이 아니라 **불가능하다는 결과**다."})
+        "validation_status": "not_assessed_by_inventory",
+        "validation_stages": ["p1"],
+        "why": "용량 부등식의 성립 여부는 p1의 실제 설정과 원자료로 확인한다. "
+               "시험한 설정의 용량 부족을 모든 패킷 구성의 불가능성으로 넓히지 않는다."})
 
     gaps.append({
         "item": "k(비행 데이터그램 수) 제어",
         "designed": "용량 정리는 k 를 늘리면 제자리가 가능해진다고 말한다",
         "implemented": "아니다 - quic-go 가 정하는 값을 받아들인다",
+        "implementation_status": "not_implemented",
         "ok": False,
-        "why": "k 를 늘리려면 패킷 번호 공간을 건드려야 하고, 그러면 "
-               "클라이언트가 보내지 않은 PN 의 ACK 를 받아 "
-               "PROTOCOL_VIOLATION 이 된다."})
+        "validation_status": "not_assessed_by_inventory",
+        "why": "InitialPacketSize 선택과 원본 패킷 수의 직접 제어는 다르다. "
+               "원본 분할과 ACK 처리를 바꾸는 별도 구현은 현재 재고에 없다."})
 
     gaps.append({
         "item": "m >= 3",
-        "designed": "정책 상한은 policy.M_MAX_DEFAULT (2026-08-25 실측으로 3)",
-        "implemented": "부호는 임의 m 을 지원",
-        "ok": False,
-        "why": "필요를 못 봤다. 부호·복호는 되지만 정책이 고르지 않는다."})
+        "designed": "정책 기본 상한은 policy.M_MAX_DEFAULT=%d" % policy.M_MAX_DEFAULT,
+        "implemented": "Python 기본 상한 %d, Go 생성 표 기본 상한 %s, m-max 선택 경로 %s"
+                       % (policy.M_MAX_DEFAULT, go_max, high_m),
+        "implementation_status": "source_present" if high_m else "source_incomplete",
+        "ok": high_m,
+        "validation_status": "not_assessed_by_inventory",
+        "validation_stages": ["gate", "p18"],
+        "source_sha256": fingerprints,
+        "why": "m>=3 후보와 부호화 경로의 존재를 기록한다. "
+               "동일 소스의 관문·p18 검증이 필요하며, "
+               "상한 설정만으로 선택 빈도·성능 이득·상한 없는 지원을 주장하지 않는다."})
 
     for g in gaps:
         add(results, "재고: %s" % g["item"], g["ok"],
-            "%s | %s" % (g["implemented"], g["why"][:60]), kind="재고")
+            "%s | 구현 상태 %s | 실측 검증 별도"
+            % (g["implemented"], g["implementation_status"]), kind="재고")
     return gaps
 
 
@@ -502,7 +623,11 @@ def main():
 
     out = {"results": results, "gaps": gaps, "data": data,
            "tests_passed": npass, "tests_total": len(tests),
-           "open_gaps": len(open_gaps)}
+           "open_gaps": len(open_gaps),
+           "inventory_basis": "source_presence_not_runtime_validation",
+           "inventory_status_counts": {
+               status: sum(g["implementation_status"] == status for g in gaps)
+               for status in sorted({g["implementation_status"] for g in gaps})}}
     print("saved:", B.save("p10_completeness.json", out))
     return 0 if npass == len(tests) else 1
 

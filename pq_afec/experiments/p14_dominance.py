@@ -55,8 +55,10 @@ Output: experiments/results/p14_dominance.json
 """
 from __future__ import annotations
 
+import datetime as dt
 import os
 import sys
+import uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -104,7 +106,19 @@ def model(delta, m, p):
             "allowed": e["allowed_real"], "server_flight": cd["server_flight"]}
 
 
+def arm_evidence(rows, cs, ss, err, n_req):
+    """Keep failed trials and server records outside successful HCT arrays."""
+    n_ok = sum(1 for row in rows if row.get("ok"))
+    return {"n_req": n_req, "n_rows": len(rows), "n_failed": len(rows) - n_ok,
+            "n_missing": max(0, n_req - len(rows)), "client_rows": rows,
+            "client_stats": cs, "server_stats": ss,
+            "client_coverage_complete": len(rows) == n_req and n_ok == n_req and not err,
+            "recording_scope": "available client rows and server connection records; equal counts alone do not establish matching"}
+
+
 def run_arm(name, delta, m, loss):
+    started = dt.datetime.now(dt.timezone.utc).isoformat()
+    collection_id = uuid.uuid4().hex
     fec = "on" if m > 0 else "off"
     B.set_netem(RTT_MS / 2.0, loss_c2s=loss)
     p_, sp = B.start_server(CERT, fec=fec)
@@ -114,10 +128,18 @@ def run_arm(name, delta, m, loss):
                                  uplink_mbps=UPLINK_MBPS)
     B.stop_server(p_)
     ss = B.read_server_stats(sp)
+    cs["collection_provenance"] = {
+        "collection_id": collection_id, "started_at": started,
+        "finished_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "group": GROUP, "expected_k_flush_hint": K, "fec": fec, "m": m,
+        "delta": delta, "cert": CERT, "n_req": N, "loss_c2s_percent": loss,
+        "requested_rtt_ms": RTT_MS, "requested_uplink_mbps": UPLINK_MBPS,
+        "time_scope": "collection interval, not individual connection timestamps"}
     ok = [r["ms"] for r in rows if r.get("ok")]
     ff = [(r.get("first_flight_bytes") or 0)
           + (r.get("first_flight_parity_bytes") or 0) for r in rows]
-    return {"arm": name, "delta": delta, "m": m, "loss": loss,
+    return {**arm_evidence(rows, cs, ss, err, N),
+            "arm": name, "delta": delta, "m": m, "loss": loss,
             "n": len(rows), "ok": len(ok), "mean": mean(ok),
             "p50": B.pctl(ok, 0.5), "p95": B.pctl(ok, 0.95),
             # 2-RTT: 1 왕복은 샀지만 두 배 가까이 걸린 판.

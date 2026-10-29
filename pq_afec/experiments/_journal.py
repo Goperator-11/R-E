@@ -25,16 +25,21 @@ import platform
 import shutil
 import sys
 import tempfile
+import uuid
+from datetime import datetime, timezone
 
 
 class Journal(object):
     def __init__(self, path, fingerprint=""):
         self.path = path
         self.fingerprint = fingerprint
+        self.run_id = uuid.uuid4().hex
         d = os.path.dirname(path)
         if d:
             os.makedirs(d, exist_ok=True)
         self._done = {}
+        self._metadata = {}
+        self._used = set()
         self._load()
 
     # ------------------------------------------------------------ loading
@@ -59,19 +64,49 @@ class Journal(object):
                 good.append(rec)
         for rec in good:
             self._done[rec["key"]] = rec.get("val")
+            self._metadata[rec["key"]] = {
+                "recorded_at": rec.get("recorded_at"),
+                "run_id": rec.get("run_id"),
+            }
 
     # ------------------------------------------------------------- access
     def has(self, key):
         return key in self._done
 
     def get(self, key, default=None):
+        if key in self._done:
+            self._used.add(key)
         return self._done.get(key, default)
 
     def keys(self):
         return set(self._done)
 
     def items(self):
+        self._used.update(self._done)
         return dict(self._done)
+
+    def provenance(self, keys=None):
+        """Describe consumed units, without inventing dates for old journals.
+
+        recorded_at is the UTC time the completed unit was journaled, not its
+        measurement start time. Different run IDs identify resumed collections,
+        not statistically independent replicates. Reading this method is inert.
+        """
+        selected = sorted(self._used if keys is None else set(keys))
+        units = []
+        for key in selected:
+            if key not in self._done:
+                raise KeyError(key)
+            meta = self._metadata[key]
+            units.append(dict(meta, key=key,
+                              reused=meta.get("run_id") != self.run_id))
+        return {"schema_version": 1, "fingerprint": self.fingerprint,
+                "current_run_id": self.run_id, "units": units,
+                "used_units": len(units),
+                "reused_units": sum(u["reused"] for u in units),
+                "unknown_recording_time_units": sum(
+                    not u.get("recorded_at") for u in units),
+                "note": "Recording times are not measurement intervals; run IDs are not independent replicates."}
 
     def __len__(self):
         return len(self._done)
@@ -80,7 +115,9 @@ class Journal(object):
     def record(self, key, val):
         if not isinstance(key, str):
             raise TypeError("journal keys must be strings")
-        line = json.dumps({"fp": self.fingerprint, "key": key, "val": val},
+        meta = {"recorded_at": datetime.now(timezone.utc).isoformat(),
+                "run_id": self.run_id}
+        line = json.dumps(dict(meta, fp=self.fingerprint, key=key, val=val),
                           ensure_ascii=False)
         # Preserve a torn tail, but separate it from the next complete record.
         # Publish the in-memory completion only after the durable append succeeds.
@@ -95,9 +132,13 @@ class Journal(object):
             f.flush()
             os.fsync(f.fileno())
         self._done[key] = val
+        self._metadata[key] = meta
+        self._used.add(key)
 
     def reset(self):
         self._done = {}
+        self._metadata = {}
+        self._used = set()
         if os.path.exists(self.path):
             os.remove(self.path)
 

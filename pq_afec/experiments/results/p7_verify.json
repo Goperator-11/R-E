@@ -11,24 +11,25 @@
    "drop_initial": "",
    "drop_parity": -1,
    "corrupt_parity": -1,
+   "planned_n": 200,
    "n": 200,
    "ok": 200,
    "fail": 0,
-   "p50": 51.829,
-   "p95": 52.6,
-   "max": 53.601,
+   "p50": 51.784,
+   "p95": 52.899,
+   "max": 54.396,
    "pto_share": 0.0,
    "cli_dropped_orig": 0,
    "cli_dropped_par": 0,
    "cli_corrupt_par": 0,
-   "cli_parity_sent": 213,
+   "cli_parity_sent": 207,
    "srv_recovered": 0,
    "srv_late": 0,
    "srv_crc_fail": 0,
    "srv_unrecover": 0,
    "srv_refused": 0,
-   "srv_bytes_in": 1308811,
-   "srv_bytes_to_stack": 1308811,
+   "srv_bytes_in": 1309969,
+   "srv_bytes_to_stack": 1309969,
    "err": ""
   },
   {
@@ -38,12 +39,13 @@
    "drop_initial": "",
    "drop_parity": -1,
    "corrupt_parity": -1,
+   "planned_n": 40,
    "n": 40,
    "ok": 40,
    "fail": 0,
-   "p50": 51.591,
-   "p95": 52.248,
-   "max": 52.485,
+   "p50": 51.627,
+   "p95": 52.507,
+   "max": 53.047,
    "pto_share": 0.0,
    "cli_dropped_orig": 0,
    "cli_dropped_par": 0,
@@ -65,12 +67,13 @@
    "drop_initial": "0",
    "drop_parity": -1,
    "corrupt_parity": -1,
+   "planned_n": 40,
    "n": 40,
    "ok": 40,
    "fail": 0,
-   "p50": 110.206,
-   "p95": 110.973,
-   "max": 111.331,
+   "p50": 110.182,
+   "p95": 111.668,
+   "max": 111.885,
    "pto_share": 0.0,
    "cli_dropped_orig": 40,
    "cli_dropped_par": 0,
@@ -92,12 +95,13 @@
    "drop_initial": "1",
    "drop_parity": -1,
    "corrupt_parity": -1,
+   "planned_n": 40,
    "n": 40,
    "ok": 40,
    "fail": 0,
-   "p50": 204.164,
-   "p95": 205.225,
-   "max": 206.56,
+   "p50": 204.985,
+   "p95": 210.778,
+   "max": 232.33,
    "pto_share": 0.0,
    "cli_dropped_orig": 40,
    "cli_dropped_par": 0,
@@ -119,12 +123,41 @@
    "drop_initial": "0",
    "drop_parity": -1,
    "corrupt_parity": -1,
+   "planned_n": 40,
    "n": 40,
    "ok": 40,
    "fail": 0,
-   "p50": 52.074,
-   "p95": 52.786,
-   "max": 52.915,
+   "p50": 51.887,
+   "p95": 54.059,
+   "max": 54.565,
+   "pto_share": 0.0,
+   "cli_dropped_orig": 40,
+   "cli_dropped_par": 0,
+   "cli_corrupt_par": 0,
+   "cli_parity_sent": 44,
+   "srv_recovered": 40,
+   "srv_late": 0,
+   "srv_crc_fail": 0,
+   "srv_unrecover": 0,
+   "srv_refused": 0,
+   "srv_bytes_in": 209794,
+   "srv_bytes_to_stack": 207684,
+   "err": ""
+  },
+  {
+   "case": "V5 fec m=1 / 원본1 소거",
+   "fec": "on",
+   "m": 1,
+   "drop_initial": "1",
+   "drop_parity": -1,
+   "corrupt_parity": -1,
+   "planned_n": 40,
+   "n": 40,
+   "ok": 40,
+   "fail": 0,
+   "p50": 51.459,
+   "p95": 53.008,
+   "max": 53.288,
    "pto_share": 0.0,
    "cli_dropped_orig": 40,
    "cli_dropped_par": 0,
@@ -135,35 +168,8 @@
    "srv_crc_fail": 0,
    "srv_unrecover": 0,
    "srv_refused": 0,
-   "srv_bytes_in": 211016,
-   "srv_bytes_to_stack": 157800,
-   "err": ""
-  },
-  {
-   "case": "V5 fec m=1 / 원본1 소거",
-   "fec": "on",
-   "m": 1,
-   "drop_initial": "1",
-   "drop_parity": -1,
-   "corrupt_parity": -1,
-   "n": 40,
-   "ok": 40,
-   "fail": 0,
-   "p50": 52.001,
-   "p95": 52.672,
-   "max": 53.34,
-   "pto_share": 0.0,
-   "cli_dropped_orig": 40,
-   "cli_dropped_par": 0,
-   "cli_corrupt_par": 0,
-   "cli_parity_sent": 43,
-   "srv_recovered": 40,
-   "srv_late": 0,
-   "srv_crc_fail": 0,
-   "srv_unrecover": 0,
-   "srv_refused": 0,
-   "srv_bytes_in": 208493,
-   "srv_bytes_to_stack": 155204,
+   "srv_bytes_in": 209759,
+   "srv_bytes_to_stack": 207684,
    "err": ""
   },
   {
@@ -173,24 +179,25 @@
    "drop_initial": "0",
    "drop_parity": 0,
    "corrupt_parity": -1,
+   "planned_n": 40,
    "n": 40,
    "ok": 40,
    "fail": 0,
-   "p50": 111.415,
-   "p95": 112.441,
-   "max": 112.976,
+   "p50": 110.663,
+   "p95": 111.63,
+   "max": 113.247,
    "pto_share": 0.0,
    "cli_dropped_orig": 40,
    "cli_dropped_par": 40,
    "cli_corrupt_par": 0,
-   "cli_parity_sent": 43,
+   "cli_parity_sent": 42,
    "srv_recovered": 0,
    "srv_late": 0,
    "srv_crc_fail": 0,
    "srv_unrecover": 0,
    "srv_refused": 0,
-   "srv_bytes_in": 260324,
-   "srv_bytes_to_stack": 260324,
+   "srv_bytes_in": 257659,
+   "srv_bytes_to_stack": 257659,
    "err": ""
   },
   {
@@ -200,24 +207,25 @@
    "drop_initial": "0",
    "drop_parity": -1,
    "corrupt_parity": 0,
+   "planned_n": 40,
    "n": 40,
    "ok": 40,
    "fail": 0,
-   "p50": 110.447,
-   "p95": 111.84,
-   "max": 112.054,
+   "p50": 110.338,
+   "p95": 111.845,
+   "max": 112.5,
    "pto_share": 0.0,
    "cli_dropped_orig": 40,
    "cli_dropped_par": 0,
    "cli_corrupt_par": 40,
-   "cli_parity_sent": 84,
+   "cli_parity_sent": 81,
    "srv_recovered": 0,
    "srv_late": 0,
    "srv_crc_fail": 40,
    "srv_unrecover": 0,
    "srv_refused": 0,
-   "srv_bytes_in": 315102,
-   "srv_bytes_to_stack": 315102,
+   "srv_bytes_in": 314907,
+   "srv_bytes_to_stack": 314907,
    "err": ""
   },
   {
@@ -227,12 +235,13 @@
    "drop_initial": "0",
    "drop_parity": -1,
    "corrupt_parity": -1,
+   "planned_n": 40,
    "n": 40,
    "ok": 40,
    "fail": 0,
-   "p50": 52.235,
-   "p95": 52.998,
-   "max": 53.366,
+   "p50": 51.485,
+   "p95": 52.415,
+   "max": 52.513,
    "pto_share": 0.0,
    "cli_dropped_orig": 40,
    "cli_dropped_par": 0,
@@ -243,8 +252,8 @@
    "srv_crc_fail": 0,
    "srv_unrecover": 0,
    "srv_refused": 0,
-   "srv_bytes_in": 314318,
-   "srv_bytes_to_stack": 261081,
+   "srv_bytes_in": 315867,
+   "srv_bytes_to_stack": 313786,
    "err": ""
   },
   {
@@ -254,28 +263,39 @@
    "drop_initial": "0,1",
    "drop_parity": -1,
    "corrupt_parity": -1,
+   "planned_n": 40,
    "n": 40,
    "ok": 40,
    "fail": 0,
-   "p50": 253.197,
-   "p95": 254.052,
-   "max": 254.097,
+   "p50": 252.591,
+   "p95": 253.587,
+   "max": 253.943,
    "pto_share": 0.0,
    "cli_dropped_orig": 80,
    "cli_dropped_par": 0,
    "cli_corrupt_par": 0,
-   "cli_parity_sent": 84,
+   "cli_parity_sent": 82,
    "srv_recovered": 0,
    "srv_late": 0,
    "srv_crc_fail": 0,
    "srv_unrecover": 40,
    "srv_refused": 0,
-   "srv_bytes_in": 315550,
-   "srv_bytes_to_stack": 262275,
+   "srv_bytes_in": 315721,
+   "srv_bytes_to_stack": 262451,
    "err": ""
   }
  ],
  "checks": [
+  {
+   "check": "모든 조건에 계획한 시행과 서버 통계가 기록됨",
+   "ok": true,
+   "detail": "불완전한 조건: 없음"
+  },
+  {
+   "check": "모든 시행에 계획한 소거와 손상이 주입됨",
+   "ok": true,
+   "detail": "주입 불일치 조건: 없음"
+  },
   {
    "check": "V0 손실이 0 이면 규모를 키워도 복구가 0 이어야 한다 (유령 복구 금지)",
    "ok": true,
@@ -284,7 +304,7 @@
   {
    "check": "V1 기준선은 소거가 없으면 100% 성공, 모든 시행이 1-RTT",
    "ok": true,
-   "detail": "성공 40/40, p50 51.6 ms, 최대 52.5 ms"
+   "detail": "성공 40/40, p50 51.6 ms, 최대 53.0 ms"
   },
   {
    "check": "V2 기준선은 원본 하나만 잃어도 왕복을 더 쓴다",
@@ -294,12 +314,12 @@
   {
    "check": "V3 기준선은 원본 하나만 잃어도 왕복을 더 쓴다",
    "ok": true,
-   "detail": "p50 204.2 ms (= 4.1 RTT), 소거주입 40건"
+   "detail": "p50 205.0 ms (= 4.1 RTT), 소거주입 40건"
   },
   {
    "check": "V4 FEC 는 그 소거를 복구해 **모든 시행**이 1-RTT",
    "ok": true,
-   "detail": "최대 52.9 ms, 복구 40/40, CRC실패 0"
+   "detail": "최대 54.6 ms, 복구 40/40, CRC실패 0"
   },
   {
    "check": "V5 FEC 는 그 소거를 복구해 **모든 시행**이 1-RTT",
@@ -309,22 +329,22 @@
   {
    "check": "V8 FEC 는 그 소거를 복구해 **모든 시행**이 1-RTT",
    "ok": true,
-   "detail": "최대 53.4 ms, 복구 40/40, CRC실패 0"
+   "detail": "최대 52.5 ms, 복구 40/40, CRC실패 0"
   },
   {
    "check": "V6 패리티를 없애면 FEC 도 못 고치고 기준선으로 돌아간다 (개선이 다른 경로에서 온 것이 아님)",
    "ok": true,
-   "detail": "p50 111.4 ms, 복구 0, 패리티소거 40건"
+   "detail": "p50 110.7 ms, 복구 0, 패리티소거 40건"
   },
   {
    "check": "V7 패리티가 손상되면 CRC 가 걸러 내고 잘못된 복구를 안 넘긴다",
    "ok": true,
-   "detail": "복구 0, CRC거절 40, p50 110.4 ms"
+   "detail": "복구 0, CRC거절 40, p50 110.3 ms"
   },
   {
    "check": "V9 m=1 은 소거 2개를 복구하지 못한다 (능력을 과장하지 않는다)",
    "ok": true,
-   "detail": "복구 0, 소거주입 80건, p50 253.2 ms"
+   "detail": "복구 0, 소거주입 80건, p50 252.6 ms"
   },
   {
    "check": "V10 모든 조건에서 스택 전달 바이트 <= 물리 수신 바이트",
@@ -332,14 +352,14 @@
    "detail": "위반 조건: 없음"
   },
   {
-   "check": "V11 커널 계수기: off 팔에서 **모든 시점** 서버송신 <= 3 x 서버수신",
+   "check": "V11 커널 L2 계수기: off 팔의 관측 시점 송수신비 <= 3 (보조 진단)",
    "ok": true,
-   "detail": "최악 t=1.04s 수신 7932 B 송신 14017 B 비 1.77 (한계 3.00)"
+   "detail": "최악 t=1.04s 수신 7932 B 송신 14016 B 비 1.77 (한계 3.00)"
   },
   {
-   "check": "V11 커널 계수기: fec m=2 팔에서 **모든 시점** 서버송신 <= 3 x 서버수신",
+   "check": "V11 커널 L2 계수기: fec m=2 팔의 관측 시점 송수신비 <= 3 (보조 진단)",
    "ok": true,
-   "detail": "최악 t=0.84s 수신 10776 B 송신 11322 B 비 1.05 (한계 3.00)"
+   "detail": "최악 t=0.83s 수신 10780 B 송신 11319 B 비 1.05 (한계 3.00)"
   }
  ],
  "amplification_wire": {
@@ -350,7 +370,7 @@
    "one_way_ms": 400.0,
    "timeline": [
     {
-     "t": 0.1,
+     "t": 0.11,
      "rx": 0,
      "tx": 0
     },
@@ -375,7 +395,7 @@
      "tx": 0
     },
     {
-     "t": 0.63,
+     "t": 0.62,
      "rx": 5288,
      "tx": 0
     },
@@ -385,104 +405,111 @@
      "tx": 0
     },
     {
-     "t": 0.84,
+     "t": 0.83,
      "rx": 5288,
      "tx": 7932
     },
     {
-     "t": 0.94,
+     "t": 0.93,
      "rx": 5288,
      "tx": 7932
     },
     {
      "t": 1.04,
      "rx": 7932,
-     "tx": 14017
+     "tx": 14016
     },
     {
-     "t": 1.15,
+     "t": 1.14,
      "rx": 7932,
-     "tx": 14017
+     "tx": 14016
     },
     {
-     "t": 1.25,
+     "t": 1.24,
      "rx": 9254,
-     "tx": 14017
+     "tx": 14016
     },
     {
-     "t": 1.36,
+     "t": 1.35,
      "rx": 9254,
-     "tx": 14017
+     "tx": 14016
     },
     {
-     "t": 1.46,
+     "t": 1.45,
      "rx": 9630,
-     "tx": 16744
+     "tx": 16660
     },
     {
-     "t": 1.57,
+     "t": 1.55,
      "rx": 9630,
-     "tx": 16744
+     "tx": 16660
     },
     {
-     "t": 1.67,
+     "t": 1.66,
      "rx": 9630,
-     "tx": 16744
+     "tx": 16660
     },
     {
-     "t": 1.78,
+     "t": 1.76,
      "rx": 9630,
-     "tx": 16744
+     "tx": 16660
     },
     {
-     "t": 1.88,
-     "rx": 10921,
-     "tx": 16911
+     "t": 1.86,
+     "rx": 10810,
+     "tx": 16827
     },
     {
-     "t": 1.99,
-     "rx": 10921,
-     "tx": 16911
+     "t": 1.97,
+     "rx": 10810,
+     "tx": 16827
     },
     {
-     "t": 2.09,
-     "rx": 10921,
-     "tx": 16911
+     "t": 2.07,
+     "rx": 10810,
+     "tx": 16827
     },
     {
-     "t": 2.2,
-     "rx": 10921,
-     "tx": 16911
+     "t": 2.17,
+     "rx": 10810,
+     "tx": 16827
     },
     {
-     "t": 2.3,
-     "rx": 11116,
-     "tx": 16911
+     "t": 2.28,
+     "rx": 11005,
+     "tx": 16827
     },
     {
-     "t": 2.41,
-     "rx": 11116,
-     "tx": 16911
+     "t": 2.38,
+     "rx": 11005,
+     "tx": 16827
     },
     {
-     "t": 2.51,
-     "rx": 11116,
-     "tx": 16911
+     "t": 2.49,
+     "rx": 11005,
+     "tx": 16827
     },
     {
-     "t": 2.62,
-     "rx": 11116,
-     "tx": 16911
+     "t": 2.59,
+     "rx": 11005,
+     "tx": 16827
     }
    ],
    "worst": {
     "t": 1.04,
     "rx": 7932,
-    "tx": 14017,
-    "ratio": 1.7671457387796268
+    "tx": 14016,
+    "ratio": 1.767019667170953
    },
-   "max_ratio": 1.7671457387796268,
-   "ok": true
+   "max_ratio": 1.767019667170953,
+   "ok": true,
+   "observation_complete": true,
+   "client_returncode": 0,
+   "detail": "",
+   "measurement_layer": "L2",
+   "sample_interval_s": 0.1,
+   "address_validation_tracked": false,
+   "rfc_compliance_verified": false
   },
   "fec_m2": {
    "cert": 9000,
@@ -507,125 +534,132 @@
     },
     {
      "t": 0.42,
-     "rx": 5388,
+     "rx": 5390,
      "tx": 0
     },
     {
      "t": 0.52,
-     "rx": 5388,
+     "rx": 5390,
      "tx": 0
     },
     {
-     "t": 0.63,
-     "rx": 10776,
+     "t": 0.62,
+     "rx": 10780,
      "tx": 0
     },
     {
      "t": 0.73,
-     "rx": 10776,
+     "rx": 10780,
      "tx": 0
     },
     {
-     "t": 0.84,
-     "rx": 10776,
-     "tx": 11322
+     "t": 0.83,
+     "rx": 10780,
+     "tx": 11319
     },
     {
-     "t": 0.94,
-     "rx": 10776,
-     "tx": 11322
+     "t": 0.93,
+     "rx": 10780,
+     "tx": 11319
     },
     {
-     "t": 1.05,
-     "rx": 16164,
-     "tx": 14049
+     "t": 1.04,
+     "rx": 16170,
+     "tx": 14046
     },
     {
-     "t": 1.15,
-     "rx": 16164,
-     "tx": 14049
+     "t": 1.14,
+     "rx": 16170,
+     "tx": 14046
     },
     {
-     "t": 1.26,
-     "rx": 20313,
-     "tx": 16693
+     "t": 1.25,
+     "rx": 20319,
+     "tx": 16690
     },
     {
-     "t": 1.36,
-     "rx": 20313,
-     "tx": 16693
+     "t": 1.35,
+     "rx": 20319,
+     "tx": 16690
     },
     {
-     "t": 1.47,
-     "rx": 21604,
-     "tx": 16776
+     "t": 1.45,
+     "rx": 21610,
+     "tx": 16773
     },
     {
-     "t": 1.57,
-     "rx": 21604,
-     "tx": 16776
+     "t": 1.55,
+     "rx": 21610,
+     "tx": 16773
     },
     {
-     "t": 1.68,
-     "rx": 22194,
-     "tx": 16776
+     "t": 1.66,
+     "rx": 22790,
+     "tx": 16773
     },
     {
-     "t": 1.78,
-     "rx": 22194,
-     "tx": 16776
+     "t": 1.76,
+     "rx": 22790,
+     "tx": 16773
     },
     {
-     "t": 1.88,
-     "rx": 22194,
-     "tx": 16776
+     "t": 1.86,
+     "rx": 22790,
+     "tx": 16773
     },
     {
-     "t": 1.99,
-     "rx": 22194,
-     "tx": 16776
+     "t": 1.97,
+     "rx": 22790,
+     "tx": 16773
     },
     {
-     "t": 2.09,
-     "rx": 22194,
-     "tx": 16776
+     "t": 2.07,
+     "rx": 22790,
+     "tx": 16773
     },
     {
-     "t": 2.2,
-     "rx": 22194,
-     "tx": 16776
+     "t": 2.17,
+     "rx": 22790,
+     "tx": 16773
     },
     {
-     "t": 2.3,
-     "rx": 22194,
-     "tx": 16776
+     "t": 2.28,
+     "rx": 22790,
+     "tx": 16773
     },
     {
-     "t": 2.4,
-     "rx": 22194,
-     "tx": 16776
+     "t": 2.38,
+     "rx": 22790,
+     "tx": 16773
     },
     {
-     "t": 2.51,
-     "rx": 22194,
-     "tx": 16776
+     "t": 2.48,
+     "rx": 22790,
+     "tx": 16773
     },
     {
-     "t": 2.61,
-     "rx": 22194,
-     "tx": 16776
+     "t": 2.59,
+     "rx": 22790,
+     "tx": 16773
     }
    ],
    "worst": {
-    "t": 0.84,
-    "rx": 10776,
-    "tx": 11322,
-    "ratio": 1.0506681514476615
+    "t": 0.83,
+    "rx": 10780,
+    "tx": 11319,
+    "ratio": 1.05
    },
-   "max_ratio": 1.0506681514476615,
-   "ok": true
+   "max_ratio": 1.05,
+   "ok": true,
+   "observation_complete": true,
+   "client_returncode": 0,
+   "detail": "",
+   "measurement_layer": "L2",
+   "sample_interval_s": 0.1,
+   "address_validation_tracked": false,
+   "rfc_compliance_verified": false
   }
  },
- "passed": 13,
- "total": 13
+ "passed": 15,
+ "total": 15
 }

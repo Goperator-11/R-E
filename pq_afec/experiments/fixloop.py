@@ -34,7 +34,7 @@ loop2.py 는 단계를 돌린다. forever.py 는 같은 단계를 여러 라운�
 사용법
     python experiments/fixloop.py --status          지금 진단만 보기 (안 돌린다)
     python experiments/fixloop.py                   한 바퀴
-    python experiments/fixloop.py --rounds 4        초록이 될 때까지 최대 4 바퀴
+    python experiments/fixloop.py --rounds 4        미실행 단계가 남으면 최대 4 바퀴
     python experiments/fixloop.py --detach --rounds 4
         떨어져 나가 돈다. **Claude 세션이 끝나도 살아남는다** - 2026-08-26
         15:12 에 띄운 루프가 세션 종료와 함께 p11 도중에 죽었다. 자식으로
@@ -84,8 +84,9 @@ ENV_AMBIGUOUS = {3221225725}
 # 표본 부족이고, 처방은 코드에 이미 있다(--precise).
 SAMPLE_WORDS = ("반폭", "신뢰구간", "신뢰반폭", "표본이", "정밀도", "필요 N")
 
-FAIL_LINE = re.compile(r"^\s*\[(실패|fail)\]\s*(.*)$")
-SCORE_LINE = re.compile(r"^\s*(\d+)\s*/\s*(\d+)\s*통과\s*$")
+FAIL_LINE = re.compile(r"^\s*\[(실패|fail|미흡)\]\s*(.*)$")
+SCORE_LINE = re.compile(
+    r"^\s*(?:새 영역 시험\s+)?(\d+)\s*/\s*(\d+)\s*통과(?:\s*\|.*)?\s*$")
 
 
 def harden():
@@ -275,12 +276,35 @@ def failed_checks(text):
     for ln in text.splitlines():
         m = FAIL_LINE.match(ln)
         if m:
-            fails.append(m.group(2).strip())
+            failure = m.group(2).strip()
+            # p10의 구현 재고는 시험 점수와 별도다. 미구현/범위 밖 항목을
+            # 완료된 통계 시험의 실패에 섞지 않는다.
+            if not re.match(r"재고\s*:", failure):
+                fails.append(failure)
             continue
         m = SCORE_LINE.match(ln)
         if m:
             score = (int(m.group(1)), int(m.group(2)))
     return fails, score
+
+
+def round_stage_scope(extra_args, log=None):
+    """--only 요청과 loop2가 실제로 선택한 상류를 진단 범위로 삼는다."""
+    parser = argparse.ArgumentParser(add_help=False, allow_abbrev=False)
+    parser.add_argument("--only", nargs="*", default=None)
+    selected, _ = parser.parse_known_args(list(extra_args))
+    if log:
+        try:
+            with open(log, encoding="utf-8", errors="replace") as stream:
+                for line in stream:
+                    if line.startswith("실행할 단계:"):
+                        return [sid.strip() for sid in line.split(":", 1)[1].split(",")
+                                if sid.strip()]
+        except OSError:
+            pass
+    # 실행 순서가 나오기 전에 중단돼도 선택 밖의 과거 실패가 재시도를
+    # 일으키면 안 된다. --only가 없으면 전체 상태 진단을 유지한다.
+    return selected.only or None
 
 
 # ----------------------------------------------------------------- 분류
@@ -308,36 +332,32 @@ def classify(sid, rec, loop2_status, note, text, nbytes, round_rc=None):
         return ("안돌았음", "%s - 옛 결과라 못 믿는다" % note, [],
                 "다시 돌려라. 통과로 세면 안 된다.")
 
+    # --- 상류가 무효라 실행되지 않았거나 근거 없이 끝난 것
+    if (rec or {}).get("status") in ("skipped", "stale_deps") or "상류 무효" in err:
+        return ("안돌았음", "상류가 무효인 채로 돈 결과라 근거가 없다 (%s)" % err,
+                [], "상류를 먼저 확인하라.")
+
+    fails, score = failed_checks(text)
+    m = re.search(r"exit (-?\d+)", err)
+    code = int(m.group(1)) if m else None
+    completed = score is not None or code == 0
+
     # --- 시간초과
     if err.startswith("timeout"):
         return ("시간초과", "%s (%.0f 초 돌다 잘림)" % (err, secs), [],
                 "단계 timeout 을 늘리거나 표본을 줄여라. 자를 건드리지 마라.")
 
     # --- 환경사고: 종료 코드로 확정되는 것
-    m = re.search(r"exit (\d+)", err)
-    code = int(m.group(1)) if m else None
-    if code in ENV_EXITS:
+    if not completed and code in ENV_EXITS:
         note = "" if code not in ENV_AMBIGUOUS else " ⚠️ 애매하다 - 로그를 직접 봐라"
         return ("환경사고", "%s: %s%s" % (err, ENV_EXITS[code], note), [],
                 "결함이 아니다. 다시 돌린다. 이 라운드는 표본에서 뺀다.")
 
     # --- 환경사고: 실행조차 못 한 자국 (0.1 초 · 로그 0 바이트)
-    if secs < 2.0 and nbytes == 0:
+    if not completed and secs < 2.0 and nbytes == 0:
         return ("환경사고",
                 "%.1f 초 만에 끝나고 로그가 0 바이트 - 실행조차 못 했다 (%s)" % (secs, err),
                 [], "결함이 아니다. 다시 돌린다.")
-
-    # --- 상류가 무효라 건너뛴 것
-    # 🩸 2026-09-01 - 이 조건은 **죽은 코드였다.** loop2 는 status 에
-    #    "skipped" 를 **절대 안 쓴다** (loop2.py:1073-1076 이 쓰는 값은
-    #    done / failed / stale_deps 셋뿐), err 도 "exit N" · "timeout Ns" ·
-    #    "상류 무효: …" 뿐이라 "건너뜀" 이 들어갈 자리가 없다. 그래서
-    #    **stale_deps 기록이 그대로 실패 갈래로 흘러 「진짜결함」으로
-    #    보고됐다** - loop2 가 「돌긴 돌았는데 상류가 무효라 못 믿는다」고
-    #    명시한 것을 결함으로 세는 꼴이다. history 에 실제 1 건 있다(p2, 08-21).
-    if (rec or {}).get("status") in ("skipped", "stale_deps") or "상류 무효" in err:
-        return ("안돌았음", "상류가 무효인 채로 돈 결과라 근거가 없다 (%s)" % err,
-                [], "상류를 먼저 초록으로 만들어라.")
 
     # --- 로그가 깨졌으면 **분류 자체를 못 한다.** 이걸 결함으로 세면
     #     "왜 실패했는지 모르는 것" 을 "무엇이 틀렸는지 안다" 로 둔갑시킨다.
@@ -350,31 +370,27 @@ def classify(sid, rec, loop2_status, note, text, nbytes, round_rc=None):
                 % (broken, err),
                 [], "이 단계를 다시 돌려라. 다시 깨지면 run_stage 의 encoding 을 봐라.")
 
-    fails, score = failed_checks(text)
-
     # 🩸 2026-08-26 바퀴 1 이 이걸 가르쳤다. p17 이 28 분간 잘 돌다가
     #    **측정 도중에** 죽었는데(로그가 무제한 cyc3 에서 뚝 끊겨 있다)
     #    이 분류기가 "진짜결함" 으로 셌다. 정확히 이 저장소의 자 문제
     #    (4) - 환경사고를 결함으로 세는 것 - 을 내가 새로 저지른 것이다.
     #
-    #    가르는 자국은 분명하다: 단계는 실패하든 통과하든 마지막에 반드시
-    #    "N / M 통과" 를 찍는다. **그 줄도 없고 [실패] 줄도 없다면 검사에
-    #    닿기 전에 죽은 것**이고, 그때는 무엇이 틀렸는지 아무 말도 할 수
-    #    없다. 결함이라고 부르려면 최소한 검사가 돌았어야 한다.
-    if not fails and score is None:
+    # 점수 요약이나 정상 종료 코드가 있으면 검사 출력 형식의 차이를
+    # 중단으로 해석하지 않는다. 실패 표시는 [미흡]도 포함한다.
+    if not fails and not completed:
         return ("도중에죽음",
-                "검사에 닿기 전에 끊겼다 - '%s' 줄도 [실패] 줄도 없다 "
+                "완료 요약과 실패 검사를 확인하지 못했다 - '%s' 줄도 실패 표시도 없다 "
                 "(로그 %d B, %s, %.0f 초)%s"
                 % ("N / M 통과", nbytes, err, secs,
                    "" if round_rc is None else
                    "  바퀴 자체의 종료 코드 %s" % round_rc),
-                [], "다시 돌려라. 같은 자리에서 되풀이되면 그때가 결함이다.")
+                [], "종료 원인을 확인하라. 완료된 실패를 지우려고 재측정하지 마라.")
 
     # 검사는 다 돌았는데(점수 줄이 있는데) 실패한 검사가 안 보이면 그건 사고다
     if not fails:
         return ("진짜결함",
                 "%s 인데 점수는 %s 이고 실패한 검사를 못 찾았다 (로그 %d B)"
-                % (err, "%d/%d" % score, nbytes),
+                % (err, "%d/%d" % score if score else "완료 점수 없음", nbytes),
                 [], "로그를 직접 봐라. 판정과 종료 코드가 어긋난다.")
 
     # --- 표본부족: 실패한 검사가 **전부** 정밀도 이야기일 때만
@@ -396,10 +412,13 @@ def classify(sid, rec, loop2_status, note, text, nbytes, round_rc=None):
             fails, "고쳐야 한다. 자를 늘리지 말고 무엇이 틀렸는지부터 찾아라.")
 
 
-def triage(round_rc=None):
+def triage(round_rc=None, selected=None):
     st = loop2_state()
     rows = []
+    scope = None if selected is None else set(selected)
     for sid, title, stt, note in stage_ids():
+        if scope is not None and sid not in scope:
+            continue
         rec = st["stages"].get(sid)
         text, nbytes = read_log(sid)
         kind, why, fails, rx = classify(sid, rec, stt, note, text,
@@ -674,7 +693,7 @@ def main():
         return selftest()
 
     if a.status:
-        rows = triage()
+        rows = triage(selected=round_stage_scope(a.loop2_arg))
         print_triage(rows)
         bad = ("진짜결함", "로그깨짐", "시간초과")
         return 0 if not any(r["kind"] in bad for r in rows) else 1
@@ -827,7 +846,8 @@ def detach(a):
 def supervise(a):
     # 🩸 감독자가 죽으면 잠금이 남고 바퀴가 통째로 없어진다. 콘솔 제어
     #    이벤트는 우리가 부른 것이 아니므로(아무도 Ctrl+C 를 안 눌렀다)
-    #    무시한다. 정말 멈추려면 프로세스를 죽이거나 잠금 파일을 지운다.
+    #    무시한다. 잠금 파일은 시작할 때만 확인하므로 삭제해도 실행은
+    #    멈추지 않는다. 살아 있는 측정의 잠금 파일을 삭제하지 않는다.
     try:
         import signal
         signal.signal(signal.SIGINT, signal.SIG_IGN)
@@ -838,7 +858,8 @@ def supervise(a):
     while round_no < a.rounds:
         round_no += 1
         fp0 = fingerprints()
-        rc, dt, log = run_round(round_no, a.loop2_arg)
+        tag = "_환경재시도%02d" % env_retries if env_retries else ""
+        rc, dt, log = run_round(round_no, a.loop2_arg, tag=tag)
         moved = [sid for sid, h in fingerprints().items() if fp0.get(sid) != h]
         if moved:
             # 결과를 지우지는 않는다 - loop2 의 지문 규칙이 알아서 그 단계를
@@ -847,7 +868,8 @@ def supervise(a):
             print("\n⚠ 이 바퀴가 도는 중에 소스가 바뀌었다: %s" % ", ".join(moved))
             print("  이 바퀴의 그 단계 결과는 증거가 아니다. 다음 바퀴에서 다시 돈다.")
             journal("바퀴 %d 소스 변경 감지: %s" % (round_no, ", ".join(moved)))
-        rows = triage(rc)
+        scope = round_stage_scope(a.loop2_arg, log)
+        rows = triage(rc, selected=scope)
         out = save_triage(rows, round_no, moved)
         c = out["counts"]
         journal("바퀴 %d  exit %d  %.1f분  진짜결함 %d · 로그깨짐 %d · 표본부족 %d "
@@ -857,12 +879,21 @@ def supervise(a):
                    c["안돌았음"], c["통과"]))
         print_triage(rows)
 
+        # 완료된 검사 실패와 정밀도 부족은 재시도 사유가 아니다. 별도
+        # 단계의 환경 중단이 함께 있어도 알려진 실패를 다시 측정하지 않는다.
+        if c["진짜결함"] or c["시간초과"] or c["표본부족"]:
+            print("\n검사 미통과 또는 정밀도 부족이 남았다. 원인을 검토한 뒤 판단하라.")
+            print("진단서: %s" % TRIAGE)
+            print("진단 갈래만으로 알고리즘 구현 결함이나 성능 개선을 확정하지 않는다.")
+            journal("완료 실패/시간초과/표본부족으로 멈춤 (자동 재측정 없음)")
+            return 1
+
         # 도중에 죽은 것도 환경사고와 같은 처방이다 - 다시 돌린다. 다만
         # 갈래는 따로 둔다("죽은 이유를 안다" 와 "모른다" 는 다른 말이다).
         if c["환경사고"] or c["도중에죽음"]:
             env_retries += 1
             if env_retries > a.max_env_retry:
-                print("환경사고/도중에죽음이 %d 번 되풀이됐다. 기계 쪽 문제다 - 멈춘다."
+                print("환경사고/완료 미확인이 %d 번 되풀이됐다. 재시도 한도로 멈춘다."
                       % env_retries)
                 journal("환경사고 반복 %d 회 - 멈춤" % env_retries)
                 return 3
@@ -880,20 +911,15 @@ def supervise(a):
                 if r["kind"] == "로그깨짐":
                     run_round(round_no, ["--only", r["stage"]],
                               tag="_재실행_%s" % r["stage"])
-            rows = triage()
+            rows = triage(selected=scope)
             out = save_triage(rows, round_no)
             c = out["counts"]
             print_triage(rows)
 
-        if c["진짜결함"] or c["시간초과"]:
-            print("\n진짜결함이 있다. 자동으로 못 고친다 - 판단이 필요하다.")
-            print("진단서: %s" % TRIAGE)
-            journal("진짜결함 %d 건으로 멈춤" % c["진짜결함"])
-            return 1
-
-        if c["표본부족"]:
-            print("\n남은 것은 표본부족뿐이다. --precise 로 다시 돌려야 초록이 된다.")
-            journal("표본부족 %d 건만 남음" % c["표본부족"])
+        if any(c[k] for k in ("진짜결함", "시간초과", "표본부족", "로그깨짐",
+                              "환경사고", "도중에죽음")):
+            print("\n재실행 뒤에도 실패 또는 완료 미확인이 남았다. 자동 재측정하지 않는다.")
+            journal("재실행 뒤 남은 문제로 멈춤")
             return 1
 
         if c["안돌았음"]:

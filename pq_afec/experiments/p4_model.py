@@ -15,7 +15,9 @@ Output: experiments/results/p4_model.json
 from __future__ import annotations
 
 import json
+import math
 import os
+import statistics
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -30,6 +32,64 @@ RESULTS = os.path.join(HERE, "results")
 
 # p3_effect.N_PRECISE 와 같이 유지한다 (모듈 임포트는 부작용이 있어 피한다).
 P3_N_PRECISE = 1200
+
+
+def sample_size_advisory(first, second, gap_ms, alpha, env_floor_ms=0.0):
+    """Observed-gap normal approximation, not a power or bootstrap guarantee.
+
+    Future arms are assumed to have equal N and the observed variances. The
+    success-only samples do not model failures, batch drift or winner selection.
+    Keep the pure sampling estimate visible even when the fixed environment
+    floor prevents separation under the existing acceptance rule.
+    """
+    if not math.isfinite(alpha) or not 0 < alpha < 1:
+        raise ValueError("alpha must be finite and between zero and one")
+    if not math.isfinite(env_floor_ms) or env_floor_ms < 0:
+        raise ValueError("environment floor must be finite and nonnegative")
+    z = statistics.NormalDist().inv_cdf(1.0 - alpha / 2.0)
+    out = {"method": "observed_gap_normal_approximation_equal_n",
+           "alpha": alpha, "normal_critical_value": z,
+           "gap_ms": gap_ms, "env_floor_ms": env_floor_ms,
+           "current_success_n": [len(first), len(second)],
+           "statistical_only_n_per_arm": None, "n_per_arm": None,
+           "status": "insufficient_samples",
+           "assumptions": "같은 관측 분산, 독립 표본, 두 팔에 같은 성공 표본 수",
+           "limitations": "관측된 최선·차선 차이의 정규근사 안내값이다. "
+                          "검정력 설계나 부트스트랩 통과 보장이 아니며, "
+                          "실패 연결·배치 효과·최선 팔 선택 편향을 반영하지 않는다."}
+    if not math.isfinite(gap_ms):
+        out["gap_ms"] = None
+        out["status"] = "invalid_gap"
+        return out
+    if gap_ms <= 0:
+        out["status"] = "zero_or_negative_gap"
+        return out
+    if min(len(first), len(second)) < 2:
+        return out
+    if not all(isinstance(x, (int, float)) and not isinstance(x, bool)
+               and math.isfinite(x) for samples in (first, second) for x in samples):
+        out["status"] = "invalid_samples"
+        return out
+    try:
+        variance_sum = statistics.variance(first) + statistics.variance(second)
+        estimate = z * z * variance_sum / (gap_ms * gap_ms)
+    except (OverflowError, ZeroDivisionError):
+        out["status"] = "unbounded_estimate"
+        return out
+    if not math.isfinite(estimate):
+        out["status"] = "unbounded_estimate"
+        return out
+    # Two samples per arm is the minimum for the estimated-variance calculation.
+    out["statistical_only_n_per_arm"] = max(2, math.ceil(estimate))
+    if gap_ms < env_floor_ms:
+        out["status"] = "below_environment_floor"
+        return out
+    if variance_sum == 0:
+        out["status"] = "zero_observed_variance"
+        return out
+    out["status"] = "approximation_only"
+    out["n_per_arm"] = out["statistical_only_n_per_arm"]
+    return out
 
 
 def load(name):
@@ -203,7 +263,8 @@ def main():
     #    실제로 1 건이 나왔고(ML-KEM 2%·b3, 7.04 ms), 7 개 실행 대조에서
     #    그 차이는 부호까지 뒤집혔다(-5.03 ~ +13.08). Bonferroni 로
     #    α = 0.05/K 를 쓴다. 검정력이 깎이는 만큼은 판정 불능으로
-    #    드러나고, 필요 N 계산이 표본을 얼마나 키우라고 말한다.
+    #    드러난다. 표본 수 안내는 같은 alpha의 관측 차이 정규근사이며
+    #    검정력 설계나 판정 성공의 보장이 아니다.
     _n_judge = sum(1 for _g in ("x25519", "X25519MLKEM768")
                    for _l, _b in ((1.0, 1.0), (2.0, 1.0), (5.0, 1.0),
                                   (2.0, 3.0), (5.0, 3.0)))
@@ -343,36 +404,25 @@ def main():
                         or abs(arms[a] - arms[best]) < env):
                     tie.add(a)
             if len(tie) == len(arms):
-                # 🩸 2026-08-21 - "판정 못 했다"로 끝내지 않는다.
-                #    최선-차선의 차이를 유의하게 하려면 표본이 얼마나
-                #    필요한지 **자료에서 직접 계산해** 남긴다. 다음 사람이
-                #    무엇을 하면 되는지 알 수 있어야 한다.
-                #    N_need = N * (1.96 * SE_diff / 차이)^2
-                def _se(v):
-                    if not v or len(v) < 2:
-                        return None
-                    _m = sum(v) / len(v)
-                    return (sum((x - _m) ** 2 for x in v)
-                            / (len(v) - 1) / len(v)) ** 0.5
+                # Use the same per-condition alpha as the comparison above.
+                # This observed-gap approximation does not promise a future pass.
                 _ord = sorted(arms, key=lambda a: arms[a])
-                _need = None
-                if len(_ord) >= 2:
-                    _s1 = _se(samp.get(_ord[0]) or [])
-                    _s2 = _se(samp.get(_ord[1]) or [])
-                    _df = arms[_ord[1]] - arms[_ord[0]]
-                    _n0 = len(samp.get(_ord[0]) or [])
-                    if _s1 and _s2 and _df > 0 and _n0:
-                        _sd = (_s1 ** 2 + _s2 ** 2) ** 0.5
-                        _need = int(_n0 * (1.96 * _sd / _df) ** 2)
+                advisory = sample_size_advisory(
+                    samp.get(_ord[0]) or [], samp.get(_ord[1]) or [],
+                    arms[_ord[1]] - arms[_ord[0]], _alpha, env)
+                advisory["arms"] = _ord[:2]
+                _need = advisory["n_per_arm"]
                 skipped.append({"group": g, "loss": loss,
                                 "burst": burst,
                                 "why": "전 팔이 잡음 동률",
                                 "n_needed": _need,
+                                "sample_size_advisory": advisory,
                                 "means": arms})
                 print("%-16s %-6s %-6.0f %-10s %-10s 판정불능 "
-                      "(필요 N %s) [%s]"
+                      "(팔당 성공 표본 정규근사 N %s, %s) [%s]"
                       % (g, "%.1f%%" % loss, burst, want, best,
-                         _need if _need else "?",
+                         _need if _need is not None else "계산 불가",
+                         advisory["status"],
                          "  ".join("%s %.1f" % (a, v) for a, v in
                                    sorted(arms.items()))))
                 continue
@@ -441,9 +491,10 @@ def main():
                     if x.get("n_needed"))
     add("[부정] 판정할 조건이 실제로 남았다 (전부 제외되면 공허하다)",
         bool(pa) and pa[1] >= 4,
-        "판정 대상 %d 조건 | 판정불능 조건의 필요 N %s"
+        "판정 대상 %d 조건 | 판정불능 조건의 팔당 성공 표본 정규근사 N %s"
         % (pa[1] if pa else 0,
-           ("%s (중앙 %d) -> p3 --precise(N=%d) 면 %d 조건 추가 판정"
+           ("%s (중앙 %d) | p3 --precise(N=%d) 이하 안내값 %d 조건. "
+            "검정력·추가 판정 보장 아님"
             % (_needs[:5], _needs[len(_needs) // 2], P3_N_PRECISE,
                sum(1 for n in _needs if n <= P3_N_PRECISE)))
            if _needs else "계산 불가"))

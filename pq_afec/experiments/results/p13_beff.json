@@ -158,69 +158,69 @@
    "n_rows": 24,
    "merged_suspect": 0,
    "err": "",
-   "beff_med": 2605.5,
-   "beff_min": 1280,
-   "beff_max": 2612,
+   "beff_med": 2605.0,
+   "beff_min": 2601,
+   "beff_max": 2611,
    "beff_orig_med": 1280.0,
-   "beff_parity_med": 1325.5,
+   "beff_parity_med": 1325.0,
    "client_ff_bytes_med": 1280.0,
-   "client_ff_parity_med": 1325.5,
+   "client_ff_parity_med": 1325.0,
    "req_lo": 2560.0,
    "req_hi": 2986.6666666666665,
-   "parity_credited_frac": 0.9583333333333334,
+   "parity_credited_frac": 1.0,
    "beff_parity_all": [
-    0,
-    1320,
-    1320,
+    1321,
+    1321,
     1321,
     1321,
     1322,
     1322,
     1323,
-    1323,
-    1323,
+    1324,
+    1324,
+    1324,
+    1324,
     1325,
     1325,
-    1326,
+    1325,
+    1325,
     1326,
     1326,
     1327,
     1328,
     1328,
-    1328,
     1329,
     1329,
-    1330,
-    1331,
-    1332
+    1329,
+    1331
    ],
    "client_ff_parity_all": [
-    1320,
-    1320,
-    1320,
+    1321,
+    1321,
     1321,
     1321,
     1322,
     1322,
     1323,
-    1323,
-    1323,
+    1324,
+    1324,
+    1324,
+    1324,
     1325,
     1325,
-    1326,
+    1325,
+    1325,
     1326,
     1326,
     1327,
     1328,
     1328,
-    1328,
     1329,
     1329,
-    1330,
-    1331,
-    1332
+    1329,
+    1331
    ],
-   "parity_jitter_b": 12
+   "parity_jitter_b": 10
   },
   {
    "group": "x25519",
@@ -231,66 +231,66 @@
    "n_rows": 24,
    "merged_suspect": 0,
    "err": "",
-   "beff_med": 2604.0,
+   "beff_med": 2606.5,
    "beff_min": 2600,
    "beff_max": 2612,
    "beff_orig_med": 1280.0,
-   "beff_parity_med": 1324.0,
+   "beff_parity_med": 1326.5,
    "client_ff_bytes_med": 1280.0,
-   "client_ff_parity_med": 1324.0,
+   "client_ff_parity_med": 1326.5,
    "req_lo": 2560.0,
    "req_hi": 2986.6666666666665,
    "parity_credited_frac": 1.0,
    "beff_parity_all": [
     1320,
-    1320,
     1321,
-    1322,
-    1322,
-    1322,
+    1321,
+    1321,
     1322,
     1322,
     1323,
     1324,
     1324,
-    1324,
-    1324,
-    1324,
     1325,
     1326,
+    1326,
+    1327,
+    1327,
     1328,
     1329,
     1329,
-    1330,
+    1329,
     1330,
     1330,
     1331,
+    1331,
+    1332,
     1332
    ],
    "client_ff_parity_all": [
     1320,
-    1320,
     1321,
-    1322,
-    1322,
-    1322,
+    1321,
+    1321,
     1322,
     1322,
     1323,
     1324,
     1324,
-    1324,
-    1324,
-    1324,
     1325,
     1326,
+    1326,
+    1327,
+    1327,
     1328,
     1329,
     1329,
-    1330,
+    1329,
     1330,
     1330,
     1331,
+    1331,
+    1332,
     1332
    ],
    "parity_jitter_b": 12
@@ -300,6 +300,79 @@
    "arm": "on2",
    "m": 2,
    "cert": 3000,
+   "n_conns": 24,
+   "n_rows": 24,
+   "merged_suspect": 0,
+   "err": "",
+   "beff_med": 3927.0,
+   "beff_min": 3920,
+   "beff_max": 3944,
+   "beff_orig_med": 1280.0,
+   "beff_parity_med": 2647.0,
+   "client_ff_bytes_med": 1280.0,
+   "client_ff_parity_med": 2647.0,
+   "req_lo": 3840.0,
+   "req_hi": 4266.666666666667,
+   "parity_credited_frac": 1.0,
+   "beff_parity_all": [
+    2640,
+    2640,
+    2640,
+    2640,
+    2642,
+    2642,
+    2644,
+    2644,
+    2646,
+    2646,
+    2646,
+    2646,
+    2648,
+    2652,
+    2652,
+    2652,
+    2654,
+    2654,
+    2656,
+    2656,
+    2660,
+    2660,
+    2662,
+    2664
+   ],
+   "client_ff_parity_all": [
+    2640,
+    2640,
+    2640,
+    2640,
+    2642,
+    2642,
+    2644,
+    2644,
+    2646,
+    2646,
+    2646,
+    2646,
+    2648,
+    2652,
+    2652,
+    2652,
+    2654,
+    2654,
+    2656,
+    2656,
+    2660,
+    2660,
+    2662,
+    2664
+   ],
+   "parity_jitter_b": 24
+  },
+  {
+   "group": "x25519",
+   "arm": "on2",
+   "m": 2,
+   "cert": 12005,
    "n_conns": 24,
    "n_rows": 24,
    "merged_suspect": 0,
@@ -317,129 +390,56 @@
    "beff_parity_all": [
     2640,
     2640,
+    2640,
+    2642,
+    2642,
     2642,
     2644,
-    2644,
-    2644,
-    2644,
     2646,
     2646,
-    2646,
+    2648,
     2650,
-    2652,
-    2652,
-    2652,
-    2652,
+    2650,
     2654,
-    2656,
-    2656,
+    2654,
     2658,
     2658,
     2662,
     2662,
     2662,
+    2662,
+    2662,
+    2664,
+    2664,
     2664
    ],
    "client_ff_parity_all": [
     2640,
     2640,
+    2640,
+    2642,
+    2642,
     2642,
     2644,
-    2644,
-    2644,
-    2644,
     2646,
     2646,
-    2646,
+    2648,
     2650,
-    2652,
-    2652,
-    2652,
-    2652,
+    2650,
     2654,
-    2656,
-    2656,
+    2654,
     2658,
     2658,
     2662,
     2662,
     2662,
+    2662,
+    2662,
+    2664,
+    2664,
     2664
    ],
    "parity_jitter_b": 24
-  },
-  {
-   "group": "x25519",
-   "arm": "on2",
-   "m": 2,
-   "cert": 12005,
-   "n_conns": 24,
-   "n_rows": 24,
-   "merged_suspect": 0,
-   "err": "",
-   "beff_med": 3931.0,
-   "beff_min": 3920,
-   "beff_max": 3942,
-   "beff_orig_med": 1280.0,
-   "beff_parity_med": 2651.0,
-   "client_ff_bytes_med": 1280.0,
-   "client_ff_parity_med": 2651.0,
-   "req_lo": 3840.0,
-   "req_hi": 4266.666666666667,
-   "parity_credited_frac": 1.0,
-   "beff_parity_all": [
-    2640,
-    2642,
-    2642,
-    2644,
-    2644,
-    2644,
-    2644,
-    2644,
-    2644,
-    2650,
-    2650,
-    2650,
-    2652,
-    2652,
-    2654,
-    2654,
-    2656,
-    2658,
-    2658,
-    2660,
-    2660,
-    2660,
-    2662,
-    2662
-   ],
-   "client_ff_parity_all": [
-    2640,
-    2642,
-    2642,
-    2644,
-    2644,
-    2644,
-    2644,
-    2644,
-    2644,
-    2650,
-    2650,
-    2650,
-    2652,
-    2652,
-    2654,
-    2654,
-    2656,
-    2658,
-    2658,
-    2660,
-    2660,
-    2660,
-    2662,
-    2662
-   ],
-   "parity_jitter_b": 22
   },
   {
    "group": "X25519MLKEM768",
@@ -519,21 +519,22 @@
    "arm": "off",
    "m": 0,
    "cert": 5945,
-   "n_conns": 23,
+   "n_conns": 24,
    "n_rows": 24,
-   "merged_suspect": 1,
+   "merged_suspect": 0,
    "err": "",
-   "beff_med": 2560,
+   "beff_med": 2560.0,
    "beff_min": 2560,
    "beff_max": 2560,
-   "beff_orig_med": 2560,
-   "beff_parity_med": 0,
+   "beff_orig_med": 2560.0,
+   "beff_parity_med": 0.0,
    "client_ff_bytes_med": 2560.0,
    "client_ff_parity_med": 0.0,
    "req_lo": 2133.3333333333335,
    "req_hi": 2560.0,
    "parity_credited_frac": null,
    "beff_parity_all": [
+    0,
     0,
     0,
     0,
@@ -595,69 +596,69 @@
    "n_rows": 24,
    "merged_suspect": 0,
    "err": "",
-   "beff_med": 3892.5,
-   "beff_min": 3887,
-   "beff_max": 3897,
+   "beff_med": 3891.0,
+   "beff_min": 3886,
+   "beff_max": 3898,
    "beff_orig_med": 2560.0,
-   "beff_parity_med": 1332.5,
+   "beff_parity_med": 1331.0,
    "client_ff_bytes_med": 2560.0,
-   "client_ff_parity_med": 1332.5,
+   "client_ff_parity_med": 1331.0,
    "req_lo": 3840.0,
    "req_hi": 4266.666666666667,
    "parity_credited_frac": 1.0,
    "beff_parity_all": [
-    1327,
+    1326,
+    1326,
     1327,
     1328,
     1328,
+    1329,
+    1329,
+    1330,
+    1330,
     1330,
     1331,
     1331,
-    1332,
-    1332,
-    1332,
-    1332,
-    1332,
+    1331,
     1333,
     1333,
     1333,
     1334,
     1334,
-    1335,
-    1335,
-    1337,
-    1337,
-    1337,
-    1337,
-    1337
+    1336,
+    1336,
+    1336,
+    1338,
+    1338,
+    1338
    ],
    "client_ff_parity_all": [
-    1327,
+    1326,
+    1326,
     1327,
     1328,
     1328,
+    1329,
+    1329,
+    1330,
+    1330,
     1330,
     1331,
     1331,
-    1332,
-    1332,
-    1332,
-    1332,
-    1332,
+    1331,
     1333,
     1333,
     1333,
     1334,
     1334,
-    1335,
-    1335,
-    1337,
-    1337,
-    1337,
-    1337,
-    1337
+    1336,
+    1336,
+    1336,
+    1338,
+    1338,
+    1338
    ],
-   "parity_jitter_b": 10
+   "parity_jitter_b": 12
   },
   {
    "group": "X25519MLKEM768",
@@ -668,69 +669,69 @@
    "n_rows": 24,
    "merged_suspect": 0,
    "err": "",
-   "beff_med": 3892.5,
+   "beff_med": 3893.0,
    "beff_min": 3886,
-   "beff_max": 3897,
+   "beff_max": 3898,
    "beff_orig_med": 2560.0,
-   "beff_parity_med": 1332.5,
+   "beff_parity_med": 1333.0,
    "client_ff_bytes_med": 2560.0,
-   "client_ff_parity_med": 1332.5,
+   "client_ff_parity_med": 1333.0,
    "req_lo": 3840.0,
    "req_hi": 4266.666666666667,
    "parity_credited_frac": 1.0,
    "beff_parity_all": [
     1326,
-    1326,
+    1327,
     1327,
     1328,
     1329,
+    1330,
     1331,
-    1331,
-    1331,
     1332,
     1332,
     1332,
     1332,
-    1333,
-    1333,
     1333,
     1333,
     1334,
     1334,
     1334,
+    1334,
+    1335,
     1335,
     1335,
     1336,
     1337,
-    1337
+    1337,
+    1338
    ],
    "client_ff_parity_all": [
     1326,
-    1326,
+    1327,
     1327,
     1328,
     1329,
+    1330,
     1331,
-    1331,
-    1331,
     1332,
     1332,
     1332,
     1332,
-    1333,
-    1333,
     1333,
     1333,
     1334,
     1334,
     1334,
+    1334,
+    1335,
     1335,
     1335,
     1336,
     1337,
-    1337
+    1337,
+    1338
    ],
-   "parity_jitter_b": 11
+   "parity_jitter_b": 12
   },
   {
    "group": "X25519MLKEM768",
@@ -741,67 +742,67 @@
    "n_rows": 24,
    "merged_suspect": 0,
    "err": "",
-   "beff_med": 5222.0,
-   "beff_min": 5212,
-   "beff_max": 5234,
+   "beff_med": 5225.0,
+   "beff_min": 5214,
+   "beff_max": 5236,
    "beff_orig_med": 2560.0,
-   "beff_parity_med": 2662.0,
+   "beff_parity_med": 2665.0,
    "client_ff_bytes_med": 2560.0,
-   "client_ff_parity_med": 2662.0,
+   "client_ff_parity_med": 2665.0,
    "req_lo": 5120.0,
    "req_hi": 5546.666666666667,
    "parity_credited_frac": 1.0,
    "beff_parity_all": [
-    2652,
-    2652,
-    2654,
     2654,
     2654,
     2656,
     2656,
     2658,
-    2658,
     2660,
     2660,
+    2660,
     2662,
-    2662,
-    2662,
-    2662,
+    2664,
+    2664,
+    2664,
     2666,
-    2668,
     2668,
     2670,
     2670,
     2670,
     2672,
+    2672,
+    2672,
     2674,
-    2674
+    2674,
+    2676,
+    2676
    ],
    "client_ff_parity_all": [
-    2652,
-    2652,
-    2654,
     2654,
     2654,
     2656,
     2656,
     2658,
-    2658,
     2660,
     2660,
+    2660,
     2662,
-    2662,
-    2662,
-    2662,
+    2664,
+    2664,
+    2664,
     2666,
-    2668,
     2668,
     2670,
     2670,
     2670,
     2672,
+    2672,
+    2672,
     2674,
-    2674
+    2674,
+    2676,
+    2676
    ],
    "parity_jitter_b": 22
   },
@@ -814,65 +815,65 @@
    "n_rows": 24,
    "merged_suspect": 0,
    "err": "",
-   "beff_med": 5228.0,
+   "beff_med": 5219.0,
    "beff_min": 5212,
    "beff_max": 5236,
    "beff_orig_med": 2560.0,
-   "beff_parity_med": 2668.0,
+   "beff_parity_med": 2659.0,
    "client_ff_bytes_med": 2560.0,
-   "client_ff_parity_med": 2668.0,
+   "client_ff_parity_med": 2659.0,
    "req_lo": 5120.0,
    "req_hi": 5546.666666666667,
    "parity_credited_frac": 1.0,
    "beff_parity_all": [
     2652,
     2652,
+    2652,
+    2652,
+    2652,
+    2654,
+    2654,
+    2654,
     2656,
+    2656,
+    2658,
+    2658,
     2660,
+    2660,
+    2662,
     2664,
-    2664,
-    2668,
-    2668,
-    2668,
-    2668,
-    2668,
-    2668,
-    2668,
+    2666,
+    2666,
     2668,
     2668,
     2670,
     2670,
-    2672,
-    2674,
-    2674,
-    2674,
-    2674,
     2676,
     2676
    ],
    "client_ff_parity_all": [
     2652,
     2652,
+    2652,
+    2652,
+    2652,
+    2654,
+    2654,
+    2654,
     2656,
+    2656,
+    2658,
+    2658,
     2660,
+    2660,
+    2662,
     2664,
-    2664,
-    2668,
-    2668,
-    2668,
-    2668,
-    2668,
-    2668,
-    2668,
+    2666,
+    2666,
     2668,
     2668,
     2670,
     2670,
-    2672,
-    2674,
-    2674,
-    2674,
-    2674,
     2676,
     2676
    ],
@@ -889,13 +890,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 2.0,
-   "flight_bytes_med": 1567.5,
-   "s0_direct_med": 567.5,
-   "s0_spread": 15,
+   "flight_bytes_med": 1566.0,
+   "s0_direct_med": 566.0,
+   "s0_spread": 19,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 1567.5,
+   "srv_rx_med": 1566.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -910,9 +911,9 @@
    "n_flight_med": 3.0,
    "flight_bytes_med": 2565.0,
    "s0_direct_med": 565.0,
-   "s0_spread": 9,
+   "s0_spread": 26,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
    "srv_rx_med": 2565.0,
    "srv_rx_minus_flight": 0.0,
@@ -927,13 +928,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 3.0,
-   "flight_bytes_med": 3606.5,
-   "s0_direct_med": 606.5,
-   "s0_spread": 20,
+   "flight_bytes_med": 3602.5,
+   "s0_direct_med": 602.5,
+   "s0_spread": 18,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 3606.5,
+   "srv_rx_med": 3602.5,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -946,13 +947,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 4.0,
-   "flight_bytes_med": 4647.0,
-   "s0_direct_med": 647.0,
-   "s0_spread": 15,
+   "flight_bytes_med": 4647.5,
+   "s0_direct_med": 647.5,
+   "s0_spread": 22,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 4647.0,
+   "srv_rx_med": 4647.5,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -969,7 +970,7 @@
    "s0_direct_med": 682.5,
    "s0_spread": 17,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
    "srv_rx_med": 5682.5,
    "srv_rx_minus_flight": 0.0,
@@ -984,13 +985,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 6.0,
-   "flight_bytes_med": 6727.0,
-   "s0_direct_med": 727.0,
-   "s0_spread": 18,
+   "flight_bytes_med": 6720.5,
+   "s0_direct_med": 720.5,
+   "s0_spread": 20,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 6727.0,
+   "srv_rx_med": 6720.5,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1003,13 +1004,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 7.0,
-   "flight_bytes_med": 7727.0,
-   "s0_direct_med": 727.0,
-   "s0_spread": 20,
+   "flight_bytes_med": 7723.0,
+   "s0_direct_med": 723.0,
+   "s0_spread": 18,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 7727.0,
+   "srv_rx_med": 7723.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1022,13 +1023,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 7.0,
-   "flight_bytes_med": 8764.5,
-   "s0_direct_med": 764.5,
-   "s0_spread": 23,
+   "flight_bytes_med": 8762.0,
+   "s0_direct_med": 762.0,
+   "s0_spread": 20,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 8764.5,
+   "srv_rx_med": 8762.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1041,13 +1042,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 8.0,
-   "flight_bytes_med": 9803.5,
-   "s0_direct_med": 803.5,
-   "s0_spread": 18,
+   "flight_bytes_med": 9807.5,
+   "s0_direct_med": 807.5,
+   "s0_spread": 20,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 9803.5,
+   "srv_rx_med": 9807.5,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1060,13 +1061,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 9.0,
-   "flight_bytes_med": 11342.5,
-   "s0_direct_med": 842.5,
-   "s0_spread": 20,
+   "flight_bytes_med": 11344.0,
+   "s0_direct_med": 844.0,
+   "s0_spread": 21,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 11342.5,
+   "srv_rx_med": 11344.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1079,13 +1080,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 10.0,
-   "flight_bytes_med": 12388.0,
-   "s0_direct_med": 888.0,
-   "s0_spread": 11,
+   "flight_bytes_med": 12379.0,
+   "s0_direct_med": 879.0,
+   "s0_spread": 17,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 12388.0,
+   "srv_rx_med": 12379.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1098,13 +1099,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 3.0,
-   "flight_bytes_med": 2709.5,
-   "s0_direct_med": 1709.5,
-   "s0_spread": 22,
+   "flight_bytes_med": 2710.5,
+   "s0_direct_med": 1710.5,
+   "s0_spread": 13,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 2709.5,
+   "srv_rx_med": 2710.5,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1117,13 +1118,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 4.0,
-   "flight_bytes_med": 4253.0,
-   "s0_direct_med": 1753.0,
-   "s0_spread": 15,
+   "flight_bytes_med": 4250.0,
+   "s0_direct_med": 1750.0,
+   "s0_spread": 22,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 4253.0,
+   "srv_rx_med": 4250.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1136,13 +1137,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 5.0,
-   "flight_bytes_med": 5790.5,
-   "s0_direct_med": 1790.5,
-   "s0_spread": 18,
+   "flight_bytes_med": 5790.0,
+   "s0_direct_med": 1790.0,
+   "s0_spread": 11,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 5790.5,
+   "srv_rx_med": 5790.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1155,13 +1156,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 6.0,
-   "flight_bytes_med": 7333.5,
-   "s0_direct_med": 1833.5,
-   "s0_spread": 22,
+   "flight_bytes_med": 7330.0,
+   "s0_direct_med": 1830.0,
+   "s0_spread": 20,
    "flight_why": {
-    "꼬리로 절단": 12
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 7333.5,
+   "srv_rx_med": 7330.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1174,13 +1175,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 7.0,
-   "flight_bytes_med": 8370.0,
-   "s0_direct_med": 1870.0,
-   "s0_spread": 22,
+   "flight_bytes_med": 8370.5,
+   "s0_direct_med": 1870.5,
+   "s0_spread": 23,
    "flight_why": {
     "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 8370.0,
+   "srv_rx_med": 8370.5,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1193,13 +1194,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 8.0,
-   "flight_bytes_med": 9914.0,
-   "s0_direct_med": 1914.0,
-   "s0_spread": 22,
+   "flight_bytes_med": 9910.5,
+   "s0_direct_med": 1910.5,
+   "s0_spread": 18,
    "flight_why": {
     "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 9914.0,
+   "srv_rx_med": 9910.5,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1212,13 +1213,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 9.0,
-   "flight_bytes_med": 11453.0,
-   "s0_direct_med": 1953.0,
-   "s0_spread": 21,
+   "flight_bytes_med": 11446.5,
+   "s0_direct_med": 1946.5,
+   "s0_spread": 17,
    "flight_why": {
     "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 11453.0,
+   "srv_rx_med": 11446.5,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1231,14 +1232,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 10.0,
-   "flight_bytes_med": 12488.5,
-   "s0_direct_med": 1988.5,
-   "s0_spread": 11,
+   "flight_bytes_med": 12490.0,
+   "s0_direct_med": 1990.0,
+   "s0_spread": 16,
    "flight_why": {
-    "꼬리없음·타임라인 완전": 11,
-    "꼬리로 절단": 1
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 12488.5,
+   "srv_rx_med": 12490.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1251,13 +1251,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 11.0,
-   "flight_bytes_med": 13531.5,
-   "s0_direct_med": 2031.5,
-   "s0_spread": 19,
+   "flight_bytes_med": 13537.0,
+   "s0_direct_med": 2037.0,
+   "s0_spread": 21,
    "flight_why": {
     "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 13531.5,
+   "srv_rx_med": 13537.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1270,13 +1270,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 12.0,
-   "flight_bytes_med": 15070.5,
-   "s0_direct_med": 2070.5,
-   "s0_spread": 17,
+   "flight_bytes_med": 15071.5,
+   "s0_direct_med": 2071.5,
+   "s0_spread": 20,
    "flight_why": {
     "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 15070.5,
+   "srv_rx_med": 15071.5,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   },
@@ -1289,14 +1289,13 @@
    "n_valid": 12,
    "two_rtt_rate": 0.0,
    "n_flight_med": 13.0,
-   "flight_bytes_med": 16109.0,
-   "s0_direct_med": 2109.0,
-   "s0_spread": 22,
+   "flight_bytes_med": 16107.0,
+   "s0_direct_med": 2107.0,
+   "s0_spread": 13,
    "flight_why": {
-    "꼬리없음·타임라인 완전": 11,
-    "꼬리로 절단": 1
+    "꼬리없음·타임라인 완전": 12
    },
-   "srv_rx_med": 16109.0,
+   "srv_rx_med": 16107.0,
    "srv_rx_minus_flight": 0.0,
    "usable": true
   }
@@ -1306,15 +1305,15 @@
    "points": [
     [
      2.0,
-     567.5
+     566.0
     ],
     [
      3.0,
-     585.75
+     583.75
     ],
     [
      4.0,
-     647.0
+     647.5
     ],
     [
      5.0,
@@ -1322,145 +1321,145 @@
     ],
     [
      6.0,
-     727.0
+     720.5
     ],
     [
      7.0,
-     745.75
+     742.5
     ],
     [
      8.0,
-     803.5
+     807.5
     ],
     [
      9.0,
-     842.5
+     844.0
     ],
     [
      10.0,
-     888.0
+     879.0
     ]
    ],
    "by_n": {
     "2.0": [
-     567.5
+     566.0
     ],
     "3.0": [
      565.0,
-     606.5
+     602.5
     ],
     "4.0": [
-     647.0
+     647.5
     ],
     "5.0": [
      682.5
     ],
     "6.0": [
-     727.0
+     720.5
     ],
     "7.0": [
-     727.0,
-     764.5
+     723.0,
+     762.0
     ],
     "8.0": [
-     803.5
+     807.5
     ],
     "9.0": [
-     842.5
+     844.0
     ],
     "10.0": [
-     888.0
+     879.0
     ]
    },
-   "c": 40.475,
-   "s0_base": 478.2055555555555,
-   "mae": 6.591358024691368
+   "c": 40.2125,
+   "s0_base": 477.975,
+   "mae": 7.316666666666669
   },
   "X25519MLKEM768": {
    "points": [
     [
      3.0,
-     1709.5
+     1710.5
     ],
     [
      4.0,
-     1753.0
+     1750.0
     ],
     [
      5.0,
-     1790.5
+     1790.0
     ],
     [
      6.0,
-     1833.5
+     1830.0
     ],
     [
      7.0,
-     1870.0
+     1870.5
     ],
     [
      8.0,
-     1914.0
+     1910.5
     ],
     [
      9.0,
-     1953.0
+     1946.5
     ],
     [
      10.0,
-     1988.5
+     1990.0
     ],
     [
      11.0,
-     2031.5
+     2037.0
     ],
     [
      12.0,
-     2070.5
+     2071.5
     ],
     [
      13.0,
-     2109.0
+     2107.0
     ]
    ],
    "by_n": {
     "3.0": [
-     1709.5
+     1710.5
     ],
     "4.0": [
-     1753.0
+     1750.0
     ],
     "5.0": [
-     1790.5
+     1790.0
     ],
     "6.0": [
-     1833.5
+     1830.0
     ],
     "7.0": [
-     1870.0
+     1870.5
     ],
     "8.0": [
-     1914.0
+     1910.5
     ],
     "9.0": [
-     1953.0
+     1946.5
     ],
     "10.0": [
-     1988.5
+     1990.0
     ],
     "11.0": [
-     2031.5
+     2037.0
     ],
     "12.0": [
-     2070.5
+     2071.5
     ],
     "13.0": [
-     2109.0
+     2107.0
     ]
    },
-   "c": 39.85,
-   "s0_base": 1592.3818181818183,
-   "mae": 1.5983471074380717
+   "c": 40.05,
+   "s0_base": 1589.918181818182,
+   "mae": 1.519834710743825
   }
  },
  "checks": [
@@ -1472,7 +1471,7 @@
   {
    "check": "2. [loop2 기준] x25519 on1 B_eff ∈ (2560, 2986.7]",
    "ok": true,
-   "detail": "B_eff 중앙값 2604.0"
+   "detail": "B_eff 중앙값 2606.5"
   },
   {
    "check": "3. FEC 4팔 전부 B_eff 가 해당 칸 구간 안",
@@ -1482,17 +1481,22 @@
   {
    "check": "4a. 패리티가 서버 결정 전에 도착해 신용된다 (점추정 >= 0.95; 하한 인증은 검사 5)",
    "ok": true,
-   "detail": "x25519/on1 c3000 0.958 (하한 0.817, n=24) | x25519/on1 c8267 1.000 (하한 0.883, n=24) | x25519/on2 c3000 1.000 (하한 0.883, n=24) | x25519/on2 c12005 1.000 (하한 0.883, n=24) | X25519/on1 c3000 1.000 (하한 0.883, n=24) | X25519/on1 c10929 1.000 (하한 0.883, n=24) | X25519/on2 c3000 1.000 (하한 0.883, n=24) | X25519/on2 c14611 1.000 (하한 0.883, n=24) | 하한 0.95 인증에는 조건당 n>=59 필요 (지금 24)"
+   "detail": "x25519/on1 c3000 1.000 (하한 0.883, n=24) | x25519/on1 c8267 1.000 (하한 0.883, n=24) | x25519/on2 c3000 1.000 (하한 0.883, n=24) | x25519/on2 c12005 1.000 (하한 0.883, n=24) | X25519/on1 c3000 1.000 (하한 0.883, n=24) | X25519/on1 c10929 1.000 (하한 0.883, n=24) | X25519/on2 c3000 1.000 (하한 0.883, n=24) | X25519/on2 c14611 1.000 (하한 0.883, n=24) | 하한 0.95 인증에는 조건당 n>=59 필요 (지금 24)"
   },
   {
    "check": "4b. 서버 패리티 몫 == 클라 패리티 (CID 흔들림 폭 안)",
    "ok": true,
-   "detail": "전 조건에서 흔들림 폭 안 (폭 [0, 10, 11, 12, 22, 24] B)"
+   "detail": "전 조건에서 흔들림 폭 안 (폭 [0, 10, 12, 22, 24] B)"
   },
   {
-   "check": "5. late-parity: 신용률 95% 하한 >= 0.99 (= 늦은 패리티 < 1%)",
+   "check": "5a. late-parity: 요청 시행의 성공·서버 기록이 빠짐없이 있다",
    "ok": true,
-   "detail": "592/592 신용, 하한 0.9950 -> refuted (표본 592 로는 하한이 0.9950 까지만 간다)"
+   "detail": "요청·성공·서버 기록 수 일치 | 서버 기록 누락 0"
+  },
+  {
+   "check": "5. late-parity: 완전한 시행 표본으로 가설을 판정했다",
+   "ok": true,
+   "detail": "관측 신용 600/600, 전체 시행 95% 하한 0.9950 -> refuted (refuted 기준 0.99; 관측 기록만의 하한 0.9950)"
   },
   {
    "check": "6. B_eff <= 첫 비행(원본+패리티) - 뒤 비행 몫이 안 섞임",
@@ -1502,7 +1506,7 @@
   {
    "check": "7. 연결별 회계 완전성 (포트 생일충돌 기대 이내, 조건별 <= 1)",
    "ok": true,
-   "detail": "누락 합 1 (생일 기대 0.12) | 조건별 2+ 누락 없음 | 상세 [('X25519MLKEM768', 'off', 5945, 23, 24)]"
+   "detail": "누락 합 0 (생일 기대 0.12) | 조건별 2+ 누락 없음 | 상세 완전"
   },
   {
    "check": "8. s0 가 첫 비행 데이터그램 수에 대해 단조 증가",
@@ -1512,12 +1516,12 @@
   {
    "check": "9. s0(n) 회귀 MAE <= 15 B (임계 예측 용도의 적합도)",
    "ok": true,
-   "detail": "x25519 6.6 / MLKEM 1.6 B (같은 n 안 실폭은 fits.by_n 에 기록)"
+   "detail": "x25519 7.3 / MLKEM 1.5 B (같은 n 안 실폭은 fits.by_n 에 기록)"
   },
   {
    "check": "10. c > 5 B/패킷 (상수 s0 모형 기각)",
    "ok": true,
-   "detail": "x25519 40.48 / MLKEM 39.85"
+   "detail": "x25519 40.21 / MLKEM 40.05"
   },
   {
    "check": "13. 폐루프 입력(server_bytes)이 첫 비행과 한 칸(1280 B) 안",
@@ -1538,17 +1542,24 @@
  "late_parity": {
   "cert": 8267,
   "n_req": 600,
-  "n_conns": 592,
-  "credited": 592,
+  "n_conns": 600,
+  "credited": 600,
   "err": "",
-  "frac": 1.0,
-  "cred_ci95_lo": 0.9949524234745714,
   "two_rtt_rate": 0.0,
-  "p50": 53.598,
-  "n_ok": 600
+  "p50": 51.842,
+  "n_ok": 600,
+  "frac": 1.0,
+  "frac_scope": "observed_server_records",
+  "observed_cred_ci95_lo": 0.9950195566196387,
+  "cred_ci95_lo": 0.9950195566196387,
+  "coverage_complete": true,
+  "server_coverage_frac": 1.0,
+  "n_missing_server": 0,
+  "coverage_reason": "요청·성공·서버 기록 수 일치",
+  "verdict": "refuted"
  },
  "late_parity_verdict": "refuted",
  "c_policy_default": 41.983,
- "passed": 14,
- "total": 14
+ "passed": 15,
+ "total": 15
 }

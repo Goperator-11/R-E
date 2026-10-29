@@ -11,7 +11,7 @@
 // 것**만 쓴다. 추정이나 가정으로 채운 값은 하나도 없다.
 //
 //	S      핸드셰이크 동안 받은 바이트를 세면 그대로 나온다
-//	RTT    이 목적지의 **최소 HCT** 가 1-RTT 인 경우의 값이다
+//	RTT    QUIC ACK로 측정한 경로 RTT. 옛 캐시의 HCT 대체값은 따로 표시한다.
 //	p      quic-go 가 Initial 을 재전송했는지로 손실 사건을 센다
 //	실패비용 손실이 났던 연결의 HCT 에서 RTT 를 뺀 값 (관측값)
 //
@@ -958,9 +958,11 @@ func evalCands(cs []cand, k, w int, serverFlight, rtt, p, burst, cPkt float64,
 // "데이터 구간 전용" 이라며 내렸었다. 폐루프를 닫으려니 정확히 그 부품이
 // 필요했다. 버린 것이 아니라 자리를 옮긴 것이다.
 type destStat struct {
-	K            int     `json:"k"`             // 첫 비행 데이터그램 수
-	ServerFlight float64 `json:"server_flight"` // EWMA, 바이트
-	MinHCT       float64 `json:"min_hct_ms"`    // 이 목적지의 RTT 추정
+	K               int     `json:"k"`             // 첫 비행 데이터그램 수
+	ServerFlight    float64 `json:"server_flight"` // EWMA, 바이트
+	MinHCT          float64 `json:"min_hct_ms"`    // 손실 분류용 최소 핸드셰이크 시간
+	MinRTT          float64 `json:"min_rtt_ms"`    // ACK로 측정한 경로 RTT
+	RTTObservations int     `json:"rtt_observations"`
 	// 🩸 손실률은 EWMA 로 추정하면 안 된다. 3% 짜리 희귀 사건인데 alpha=0.25
 	// 로 두면 손실 한 번에 0.25 로 튀고 깨끗한 연결 몇 번에 0 으로 꺼진다.
 	// 그래서 m 이 0 과 1 사이를 블록 단위로 **진동**했다(수렴하지 않았다).
@@ -1041,8 +1043,8 @@ func ewma(old, new_ float64, n int) float64 {
 // 실제로 그랬다. 임계위 조건에서 손실 0%/2%/5% 의 선택 분포가
 // {1:156, 2:43} 으로 **완전히 같았다.** 손실을 전혀 못 배운 것이다.
 //
-// 그래서 손실 계수는 **m=0 으로 돈 연결에서만** 갱신한다. S 와 RTT 는
-// 어느 연결에서든 편향 없이 관측되므로 항상 갱신한다.
+// 그래서 손실 계수는 **m=0 으로 돈 연결에서만** 갱신한다. S와 최소 HCT는
+// 성공 연결에서 갱신하고, 정책 RTT는 observeRTT의 ACK 관측으로 분리한다.
 func (c *destCache) observe(addr string, k int, flightBytes, hctMs float64,
 	lossEvent bool, unbiased bool) {
 	c.mu.Lock()
@@ -1075,21 +1077,21 @@ func (c *destCache) observe(addr string, k int, flightBytes, hctMs float64,
 		// x1.3+2ms 는 ACK 가지와 PTO 가지를 모든 RTT 에서 잡고, netem 지연이
 		// 결정적인 이 테스트베드에서는 오탐이 없다. 지터 있는 실경로에서는
 		// 여유를 다시 재야 한다(그때는 이 상수의 출처가 여기라는 것이 단서다).
-		if st.ProbeMinHCT > 0 && hctMs > 0 {
+		classified := st.ProbeMinHCT > 0 && hctMs > 0
+		if classified {
 			lossEvent = hctMs > st.ProbeMinHCT*1.3+2.0
-		} else {
-			lossEvent = false // 첫 무편향 관측은 기준선이 없어 분류 불가
 		}
 		if hctMs > 0 && (st.ProbeMinHCT <= 0 || hctMs < st.ProbeMinHCT) {
 			st.ProbeMinHCT = hctMs
 		}
-		const decay = 0.99
-		st.LossCount *= decay
-		st.ObsCount *= decay
-		st.ObsCount++
-		if lossEvent {
-			st.LossCount++
-			if hctMs > 0 {
+		// Establishing the first HCT baseline is not evidence of zero loss.
+		if classified {
+			const decay = 0.99
+			st.LossCount *= decay
+			st.ObsCount *= decay
+			st.ObsCount++
+			if lossEvent {
+				st.LossCount++
 				st.LossHCT = ewma(st.LossHCT, hctMs, st.Conns)
 			}
 		}
@@ -1097,7 +1099,7 @@ func (c *destCache) observe(addr string, k int, flightBytes, hctMs float64,
 	st.Conns++
 }
 
-// minHCT 는 이 목적지의 RTT 추정(최소 관측 HCT)을 준다. 없으면 0.
+// minHCT 는 이 목적지의 최소 관측 핸드셰이크 시간을 준다. 없으면 0.
 // C2 가 "이 연결이 PTO 를 물었는가"를 판정할 기준선으로 쓴다.
 func (c *destCache) minHCT(addr string) float64 {
 	c.mu.Lock()
@@ -1106,6 +1108,35 @@ func (c *destCache) minHCT(addr string) float64 {
 		return st.MinHCT
 	}
 	return 0
+}
+
+// observeRTT keeps transport RTT separate from handshake completion time.
+// Address validation and serialization can make HCT span more than one RTT.
+func (c *destCache) observeRTT(addr string, rttMs float64) {
+	if rttMs <= 0 || math.IsNaN(rttMs) || math.IsInf(rttMs, 0) {
+		return
+	}
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	st := c.M[addr]
+	if st == nil {
+		st = &destStat{}
+		c.M[addr] = st
+	}
+	if st.MinRTT <= 0 || rttMs < st.MinRTT {
+		st.MinRTT = rttMs
+	}
+	st.RTTObservations++
+}
+
+func policyRTT(st destStat) (float64, string) {
+	if st.RTTObservations > 0 && st.MinRTT > 0 &&
+		!math.IsNaN(st.MinRTT) && !math.IsInf(st.MinRTT, 0) {
+		return st.MinRTT, "quic_ack_min_rtt"
+	}
+	// Old cache files contain only HCT. Keep them usable, but never relabel
+	// that proxy as a measured RTT; the next valid ACK sample replaces it.
+	return st.MinHCT, "hct_proxy_no_ack_rtt"
 }
 
 // observeSymbols 는 심볼 단위 관측을 적립한다 (C1 서버 회신 / C2 PTO).
@@ -1186,8 +1217,9 @@ func (c *destCache) decide(addr string, w, mMax, coldM, probeEvery int,
 	}
 	c.mu.Unlock()
 
-	if st == nil || snap.Conns < 1 || snap.MinHCT <= 0 || snap.K < 1 ||
-		snap.ObsCount < 1 {
+	rtt, rttSource := policyRTT(snap)
+	if st == nil || snap.Conns < 1 || rtt <= 0 || snap.K < 1 ||
+		(snap.ObsCount < 1 && snap.SymObs < 1) {
 		// 🩸 2026-08-27 - 네 번째 반환값은 「이 판을 손실 관측에 써도
 		//    되는가」인데 **리터럴 true** 였다. coldM > 0 이면 이 판은
 		//    패리티로 보호되므로 소거가 복구돼 손실이 **안 보인다** -
@@ -1199,7 +1231,6 @@ func (c *destCache) decide(addr string, w, mMax, coldM, probeEvery int,
 	}
 	// 탐색 주기는 뒤에서 정한다 - 얼마나 비싼지 알아야 하기 때문이다.
 	k := snap.K
-	rtt := snap.MinHCT
 	// 연결당 손실 사건 비율 -> 데이터그램당 손실률.
 	// Jeffreys 사후평균을 쓴다: (손실+0.5)/(관측+1).
 	//
@@ -1248,9 +1279,9 @@ func (c *destCache) decide(addr string, w, mMax, coldM, probeEvery int,
 	bestC := ranked[0]
 	bestCost := bestC.j
 	why := fmt.Sprintf("%s δ=%d m=%d ips=%d 추가=%dB | S=%.0f p=%.4f "+
-		"T_pto=%.0f T_ack=%.0f 비용=%.2fms",
+		"RTT=%.3f(%s) T_pto=%.0f T_ack=%.0f 비용=%.2fms",
 		bestC.c.mode, bestC.c.delta, bestC.c.m, bestC.c.wEff, bestC.added,
-		snap.ServerFlight, p, tPTO, tACK, bestC.j)
+		snap.ServerFlight, p, rtt, rttSource, tPTO, tACK, bestC.j)
 	// 🩸 2026-08-21 - jointLookup 의 보간 t 는 [0,1] 로 잘리므로 표
 	// 상한(p=0.30) 을 넘는 p 는 **조용히** 0.30 행을 읽는다. 콜드
 	// 구간(관측 1 회 + 손실 1 회 -> p=0.75)에서 실제로 도달한다.
@@ -1301,7 +1332,9 @@ func (c *destCache) decide(addr string, w, mMax, coldM, probeEvery int,
 	}
 	probeCost := probeC.j - bestCost
 	every := probeEvery
-	if probeCost > 0 && rtt > 0 {
+	// A zero interval disables probing, including when symbol feedback is
+	// available. Cost throttling can only lengthen an enabled interval.
+	if every > 0 && probeCost > 0 && rtt > 0 {
 		need := int(math.Ceil(probeCost / (0.01 * rtt)))
 		if need > every {
 			every = need

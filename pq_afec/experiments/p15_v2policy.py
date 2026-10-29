@@ -15,11 +15,12 @@ x25519(k=1) · RTT 50 ms. 인증서 두 자리 x 손실 세 조건:
     2955  임계(3340) 아래 - δ 는 쓸모없고 복구만 값을 낸다
     4032  임계 사이(3340 < 4032 < 4580) - δ=1 이 왕복 하나를 산다 (헤드라인)
 
-고정팔: m0(맨몸) / m1 / m2 / pad(ips 1281, m=0).  각 N 연결.
-auto:   빈 캐시에서 라운드(400연결)를 캐시를 이어받으며 반복 - 무손실
-        조건은 손실률 추정이 pad 문턱(≈0.007)까지 내려오는 데 ~7 라운드가
-        걸린다(`_probe_v2converge.py` 실측). 후회는 **마지막 라운드**(수렴
-        후)의 평균으로 잰다 - p11 의 "수렴 후 절반"과 같은 취지다.
+고정팔: m0(맨몸) / m1 / m2 / pad(ips 1281, m=0). 각 N 연결.
+auto: 빈 캐시에서 라운드당 N 연결을 측정하며 캐시를 이어받는다.
+후회는 모든 팔의 같은 후반 라운드를 같은 가중치로 비교한다. 과거의
+마지막 auto 라운드 대 고정팔 후반 평균은 legacy_final_vs_late에 남긴다.
+각 라운드의 auto 노출량은 고정팔보다 크므로 시간 균형이나 독립 확증을
+입증한 프로토콜은 아니다. 선택/평가 분리는 같은 실행 안의 진단이다.
 
 통과 기준 (loop2 에 적힌 것): 수렴 후 최악 후회 < 2 ms. p11 과 같은 자이며
 여기서 완화하지 않는다.
@@ -30,8 +31,10 @@ Output: experiments/results/p15_v2policy.json
 from __future__ import annotations
 
 import os
+import json
 import re
 import sys
+import time
 from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -41,6 +44,7 @@ sys.path.insert(0, ROOT)
 
 import padbed as B                               # noqa: E402
 import blockstat as BST                          # noqa: E402
+import policy_evaluation as PE                   # noqa: E402
 from padfec import policy as POL                 # noqa: E402
 
 RTT_MS = 50.0
@@ -120,6 +124,41 @@ def added_bytes(row):
     return max(0, ff - K * 1280)
 
 
+def cache_evidence(path):
+    """Read the policy state at a collection boundary without changing it."""
+    try:
+        with open(path, encoding="utf-8") as stream:
+            return {"available": True, "value": json.load(stream)}
+    except (OSError, ValueError) as exc:
+        return {"available": False, "reason": type(exc).__name__}
+
+
+def round_evidence(rows, cs, n_req):
+    """Keep joint choices and byte/RTT fields instead of inferring them from marginals."""
+    n_ok = sum(1 for row in rows if row.get("ok"))
+    return {"n_req": n_req, "n_failed": len(rows) - n_ok,
+            "n_missing": max(0, n_req - len(rows)),
+            "client_rows": rows, "client_stats": cs,
+            "joint_ips_m": dict(Counter("%s|%s" % (x.get("ips_used"), x.get("m_used"))
+                                        for x in rows)),
+            "recording_scope": "available client rows; actual k and ACK RTT retain their recorded presence or absence"}
+
+
+def window_added_bytes(blocks, ids):
+    """Equal-round byte estimator. Old blocks lacking raw rows remain unknown."""
+    selected = [b for b in blocks if b.get("round") in set(ids)]
+    if len(selected) != len(set(ids)) or any("client_rows" not in b for b in selected):
+        return None
+    values = []
+    for block in selected:
+        rows = block["client_rows"]
+        if not rows or any(type(x.get("first_flight_bytes")) is not int or
+                           type(x.get("first_flight_parity_bytes")) is not int for x in rows):
+            return None
+        values.append(mean([added_bytes(x) for x in rows]))
+    return mean(values)
+
+
 # 🩸 2026-09-07 - **고정팔과 auto 라운드를 교대로 잰다.** 그전에는 조건마다
 #    m0 -> m1 -> m2 -> pad 를 팔당 N 판씩 통째로 돌린 뒤 auto 를 8 라운드
 #    돌렸다. p11 과 같은 병이다 - 기계의 단조 표류가 팔 이름에 얹혀 후회로
@@ -135,7 +174,9 @@ ROUNDS_ORDER = ["auto"] + [f[0] for f in FIXED]
 
 def run_condition(cert, loss, rounds, jr):
     """조건 하나 - 고정팔 넷과 auto 라운드를 교대로. ({팔: rec}, auto rec)."""
-    key = "latin|%d|%.1f|r%d|n%d" % (cert, loss, rounds, N)
+    if rounds < 2 * len(ROUNDS_ORDER) or rounds % (2 * len(ROUNDS_ORDER)) or N < rounds or N % rounds:
+        raise ValueError("P15 requires two complete Latin squares and N divisible by rounds")
+    key = "%s|latin|%d|%.1f|r%d|n%d" % (PE.PROTOCOL, cert, loss, rounds, N)
     if jr.has(key):
         v = jr.get(key)
         return v["fixed"], v["auto"]
@@ -150,13 +191,19 @@ def run_condition(cert, loss, rounds, jr):
     fx_err = {f[0]: "" for f in FIXED}
     fixed_by = {f[0]: f for f in FIXED}
     hist = []
+    collection_provenance = {"run_id": jr.run_id, "journal_fingerprint": jr.fingerprint,
+                             "journal_key": key, "cert": cert, "loss_c2s_percent": loss,
+                             "group": GROUP, "expected_k_flush_hint": K,
+                             "time_scope": "round collection intervals, not individual connection timestamps"}
     p, sp = B.start_server(cert, fec="on")
     try:
         for rnd in range(1, rounds + 1):
             r = (rnd - 1) % len(ROUNDS_ORDER)
             order = ROUNDS_ORDER[r:] + ROUNDS_ORDER[:r]
             for pos, aname in enumerate(order):
+                started_ns = time.time_ns()
                 if aname == "auto":
+                    cache_before = cache_evidence(CACHE)
                     rows, cs, err = B.run_client(
                         GROUP, N, fec="auto", m=1, gap_ms=8, timeout_s=10,
                         expect_k=K,
@@ -176,7 +223,11 @@ def run_condition(cert, loss, rounds, jr):
                     if not why and rows:
                         why = rows[-1].get("m_why", "") or ""
                     hist.append({
-                        "round": rnd, "pos": pos, "n": len(rows),
+                        **round_evidence(rows, cs, N),
+                        "collection_provenance": collection_provenance,
+                        "round": rnd, "pos": pos, "n": len(rows), "ok": len(ok),
+                        "started_at_unix_ns": started_ns,
+                        "finished_at_unix_ns": time.time_ns(),
                         "mean": mean(ok),
                         "p50": B.pctl(ok, 0.5), "p95": B.pctl(ok, 0.95),
                         "tail": (sum(1 for x in ok if x > 1.5 * RTT_MS)
@@ -192,6 +243,8 @@ def run_condition(cert, loss, rounds, jr):
                                     for x in rows],
                         "probe_rows": [(x.get("m_why") or "")
                                        .startswith("탐색") for x in rows],
+                        "cache_before": cache_before,
+                        "cache_after": cache_evidence(CACHE),
                         "why_last": why, "err": err})
                     continue
                 _n, fec, m, ips = fixed_by[aname]
@@ -204,8 +257,14 @@ def run_condition(cert, loss, rounds, jr):
                 fx_rows[aname].extend(rows)
                 ok = [x["ms"] for x in rows if x.get("ok")]
                 fx_blocks[aname].append({"round": rnd, "pos": pos,
+                                         **round_evidence(rows, cs, n_blk),
+                                         "collection_provenance": collection_provenance,
                                          "n": len(rows), "ok": len(ok),
-                                         "mean": mean(ok), "ms": ok})
+                                         "mean": mean(ok), "ms": ok,
+                                         "started_at_unix_ns": started_ns,
+                                         "finished_at_unix_ns": time.time_ns(),
+                                         "ms_rows": [x["ms"] if x.get("ok") else None
+                                                     for x in rows]})
             print("   라운드 %2d/%d  auto %.2f  %s"
                   % (rnd, rounds, hist[-1]["mean"] or -1,
                      "  ".join("%s(자리%d) %.2f"
@@ -220,6 +279,7 @@ def run_condition(cert, loss, rounds, jr):
         rows = fx_rows[aname]
         ok = [x["ms"] for x in rows if x.get("ok")]
         fixed[aname] = {
+            **round_evidence(rows, {}, n_blk * rounds),
             "arm": aname, "cert": cert, "loss": loss, "n": len(rows),
             "ok": len(ok), "mean": mean(ok), "p50": B.pctl(ok, 0.5),
             "p95": B.pctl(ok, 0.95),
@@ -231,15 +291,21 @@ def run_condition(cert, loss, rounds, jr):
             "srv_recovered": ss.get("recovered"),
             "srv_crc_fail": ss.get("recover_crc_fail"),
             "ms": ok,
+            "ms_rows": [x["ms"] if x.get("ok") else None for x in rows],
             "srv_stats_present": bool(ss),
+            "server_statistics_scope": "shared condition total, not separate statistics for this arm",
             "err": fx_err[aname]}
     au = {"cert": cert, "loss": loss, "rounds": hist,
           "final": hist[-1] if hist else None,
           "srv_stats_present": bool(ss),
+          "server_stats": ss,
+          "server_statistics_scope": "one server for the entire condition and all arms",
           "srv_crc_fail": ss.get("recover_crc_fail")}
-    complete = (all(len(fx_rows[f[0]]) == n_blk * rounds for f in FIXED)
-                and hist and all(h["n"] == N for h in hist))
-    if complete and bool(ss) and (ss.get("recover_crc_fail") or 0) == 0:
+    complete = (all(len(fx_rows[f[0]]) == n_blk * rounds and
+                    all(row.get("ok") for row in fx_rows[f[0]]) for f in FIXED)
+                and hist and all(h["n"] == h["ok"] == N for h in hist))
+    if (complete and not any(fx_err.values()) and not any(h["err"] for h in hist)
+            and bool(ss) and (ss.get("recover_crc_fail") or 0) == 0):
         jr.record(key, {"fixed": fixed, "auto": au})
     return fixed, au
 
@@ -255,11 +321,16 @@ def main():
                            "experiments/quicbed/qamp.go",
                            "experiments/quicbed/policy.go",
                            "experiments/quicbed/pfail_table.go",
-                           "experiments/padbed.py"], ROOT)
+                           "experiments/padbed.py",
+                           "experiments/policy_evaluation.py",
+                           "experiments/blockstat.py", "experiments/_journal.py"], ROOT)
     jr = Journal(os.path.join(B.STATE, "p15_units.jsonl"), fp)
 
     out = {"rtt_ms": RTT_MS, "n": N, "group": GROUP,
-           "interleaved": True,
+           "interleaved": True, "analysis_protocol": PE.PROTOCOL,
+           "comparison_window": "equal-weighted matching late acquisition rounds",
+           "limitations": ["Auto has N trials per round, each fixed arm N/rounds; exposure and wall-clock durations remain unequal.",
+                           "One run with chronological split, not an independent confirmatory experiment."],
            "rows": [], "auto": [], "regret": [], "checks": []}
 
     def add(name, ok, detail):
@@ -277,6 +348,11 @@ def main():
         print("### %s (cert %d, 손실 %g%%) - %d 라운드 교대"
               % (name, cert, loss, rounds), flush=True)
         arms, au = run_condition(cert, loss, rounds, jr)
+        if set(arms) != {a[0] for a in FIXED}:
+            out.setdefault("dropped", []).append(
+                {"cond": name, "cert": cert, "loss": loss, "why": "missing candidate",
+                 "raw_arms": arms, "raw_auto": au})
+            continue
         for aname, fec, m, ips in FIXED:
             r = arms[aname]
             out["rows"].append(r)
@@ -302,82 +378,66 @@ def main():
             print("    -> !! 측정 실패로 이 조건이 빠졌다: %s" % name,
                   flush=True)
             continue
-        # 🩸 2026-09-07 감사 - 헤드라인의 창을 맞춘다. auto 의 마지막 라운드는
-        #    조건의 **끝**에 있는데 고정팔 평균을 조건 전체(라운드 1~10)로 잡으면
-        #    단조 표류의 절반이 여전히 후회로 들어온다 - 교대 측정으로 고치려던
-        #    바로 그것이다. 고정팔도 **뒤 절반 라운드**의 블록만 쓴다(p11 의
-        #    rows[half:] 와 같은 뜻). 전 구간 값은 regret_full_ms 로 남긴다.
+        # Compare the same explicit late rounds for every arm, weighted equally.
+        # The old final-auto vs five-late-fixed-round comparison remains labelled.
+        try:
+            if set(arms) != {a[0] for a in FIXED}:
+                raise ValueError("missing fixed candidate")
+            if any(arms[a].get("n") != N or arms[a].get("err") for a in arms):
+                raise ValueError("missing fixed trials or client error")
+            if len(au["rounds"]) != rounds or any(h.get("n") != N or h.get("err") for h in au["rounds"]):
+                raise ValueError("missing auto rounds/trials or client error")
+            matched = PE.matched_diagnostics(
+                au["rounds"], {a: arms[a]["blocks"] for a in arms},
+                range(1, rounds // 2 + 1), range(rounds // 2 + 1, rounds + 1), "round",
+                family_size=len(FIXED) * len(CONDS))
+        except (KeyError, TypeError, ValueError) as exc:
+            out.setdefault("dropped", []).append(
+                {"cond": name, "cert": cert, "loss": loss, "why": str(exc)})
+            continue
+        late_ids = set(matched["evaluation_ids"])
         def _late_ms(a):
-            return [t for b_ in (arms[a].get("blocks") or [])
-                    if b_["round"] > rounds // 2 for t in (b_.get("ms") or [])]
-        fixed_means_late = {a: mean(_late_ms(a)) for a in fixed_means
-                            if _late_ms(a)}
-        if not fixed_means_late:
-            fixed_means_late = dict(fixed_means)
-        best = min(fixed_means_late, key=lambda a: fixed_means_late[a])
-        best_full = min(fixed_means, key=lambda a: fixed_means[a])
-        reg = fin["mean"] - fixed_means_late[best]
+            return PE.block_window(arms[a]["blocks"], matched["evaluation_ids"], "round")[1]
+        fixed_means_late = matched["fixed_means_ms"]
+        best = matched["best_observed"]
+        best_full = min(fixed_means, key=fixed_means.get)
+        auto_late_mean = matched["auto_mean_ms"]
+        reg = matched["observed_best_regret_ms"]
         reg_full = fin["mean"] - fixed_means[best_full]
+        legacy_fixed_late = {a: mean(_late_ms(a)) for a in arms}
+        legacy_best = min(legacy_fixed_late, key=legacy_fixed_late.get)
+        legacy_regret = fin["mean"] - legacy_fixed_late[legacy_best]
+        selected = matched["selected_fixed"]
+        reg_hold = matched["selected_fixed_contrast"]["mean_ms"]
 
-        # 🩸 2026-08-21 (0-c) - 탐색세 분리 (p11 과 같은 항등식).
-        #    마지막 라운드는 전부 수렴 후이므로 라운드 전체로 나눈다.
-        _mr = fin.get("ms_rows") or []
-        _pr = fin.get("probe_rows") or []
-        probe_tax = reg_sel = n_probe_fin = None
-        if _mr and len(_mr) == len(_pr):
-            _lp = [t for t, f_ in zip(_mr, _pr)
-                   if f_ and t is not None]
-            _ls = [t for t, f_ in zip(_mr, _pr)
-                   if not f_ and t is not None]
-            n_probe_fin = len(_lp)
-            if _lp and _ls:
-                _f = len(_lp) / float(len(_lp) + len(_ls))
-                probe_tax = _f * (mean(_lp) - mean(_ls))
-                reg_sel = reg - probe_tax
+        # This decomposition uses the same equal-round estimator as regret_ms.
+        n_probe_fin = sum(1 for t, probe in zip(fin.get("ms_rows", []), fin.get("probe_rows", []))
+                          if t is not None and probe)
+        probe_tax = reg_sel = None
+        taxes = []
+        for h in au["rounds"]:
+            if h["round"] not in late_ids:
+                continue
+            raw, flags = h.get("ms_rows", []), h.get("probe_rows", [])
+            if len(raw) != len(flags):
+                break
+            probes = [t for t, flag in zip(raw, flags) if flag and t is not None]
+            choices = [t for t, flag in zip(raw, flags) if not flag and t is not None]
+            if not choices:
+                break
+            taxes.append((len(probes) / (len(probes) + len(choices))) *
+                         (mean(probes) - mean(choices)) if probes else 0.0)
+        if len(taxes) == len(late_ids):
+            probe_tax = mean(taxes)
+            reg_sel = reg - probe_tax
 
-        # 🩸 2026-08-21 승자의 저주 보정 + 신뢰구간. p11 과 같은 처방이다.
-        sel, ev = {}, {}
-        for a in arms:
-            v = arms[a].get("ms") or []
-            h = len(v) // 2
-            if h >= 5:
-                sel[a] = mean(v[:h])
-                ev[a] = mean(v[h:])
-        reg_hold = None
-        if sel and ev:
-            bh = min(sel, key=lambda a: sel[a])
-            reg_hold = fin["mean"] - ev[bh]
-
-        # 🩸 2026-09-07 - 배치평균 SE (p11·p16 과 같은 자). 인계 §4b-4b 가 이
-        #    단계의 보고 반폭을 1.25 배 과소평가로 판정했다.
-        _se_methods = []
-
-        def _se(v):
-            se, method, kb = BST.batch_se_info(v)
-            _se_methods.append((method, kb))
-            return se
-
-        # 짝지은 후회 (정보). 교대 측정이라 라운드 r 의 auto 와 같은 라운드의
-        # 최선 고정팔 블록을 짝지을 수 있다 - 라운드 간 표류가 상쇄된다.
-        # 수렴 후 = 뒤쪽 절반 라운드. 헤드라인(regret_ms)의 정의는 그대로 둔다.
-        _late_r = [h for h in au["rounds"] if h["round"] > rounds // 2]
-        _bb = {b["round"]: b["mean"] for b in arms[best].get("blocks") or []}
-        _pd = [h["mean"] - _bb[h["round"]] for h in _late_r
-               if h["mean"] is not None and _bb.get(h["round"]) is not None]
-        reg_paired = mean(_pd)
-        reg_paired_half = None
-        if len(_pd) >= 2:
-            _mu = sum(_pd) / len(_pd)
-            _var = sum((x - _mu) ** 2 for x in _pd) / (len(_pd) - 1)
-            reg_paired_half = BST.t_crit(len(_pd) - 1) * (_var / len(_pd)) ** 0.5
-
-        sa = _se(fin.get("ms") or [])
-        sf = _se(_late_ms(best) or arms[best].get("ms") or [])
-        _methods = sorted(set(m for m, _k in _se_methods if m))
-        se_reg = ((sa ** 2 + sf ** 2) ** 0.5
-                  if sa is not None and sf is not None else None)
-        half_reg = BST.batch_diff_half(fin.get("ms") or [],
-                                       _late_ms(best) or arms[best].get("ms") or [])
+        late_auto, _ = PE.block_window(au["rounds"], matched["evaluation_ids"], "round")
+        late_fixed, _ = PE.block_window(arms[best]["blocks"], matched["evaluation_ids"], "round")
+        paired = PE.paired_contrast(late_auto, late_fixed)
+        reg_paired, reg_paired_half = paired["mean_ms"], paired["half_ms"]
+        se_reg, half_reg = paired["se_ms"], paired["half_ms"]
+        # Unadjusted selected-best t intervals are descriptive. The matched record
+        # also reports all candidate contrasts with a family-wise adjustment.
 
         # 🆕 수렴 판정. "몇 라운드 돌았으니 수렴했다"가 아니라 **직접 본다**:
         #    마지막 세 라운드의 p 추정이 상대 5% 안에서 안정적이고, 선택
@@ -402,7 +462,8 @@ def main():
         if len(rr) >= 3:
             _ms = [_modal(r_["m_used"]) for r_ in rr[-3:]]
             _is = [_modal(r_["ips_used"]) for r_ in rr[-3:]]
-            conv_ok = len(set(_ms)) == 1 and len(set(_is)) == 1
+            conv_ok = (all(v not in (None, "null", "None") for v in _ms + _is)
+                       and len(set(_ms)) == 1 and len(set(_is)) == 1)
             ps = [r_["p_est"] for r_ in rr[-3:]
                   if r_["p_est"] is not None]
             _dr = ((max(ps) - min(ps)) / max(ps)
@@ -418,27 +479,43 @@ def main():
             "best_fixed_full": best_full,
             "best_fixed_mean_full": fixed_means[best_full],
             "fixed_means_late": fixed_means_late,
-            "auto_final_mean": fin["mean"], "regret_ms": reg,
+            "auto_final_mean": fin["mean"], "auto_mean_late": auto_late_mean,
+            "regret_ms": reg, "matched_block_diagnostic": matched,
+            "best_fixed_holdout": selected,
+            "ci95_half_holdout_ms": matched["selected_fixed_contrast"]["half_ms"],
+            "legacy_final_vs_late": {"best_fixed": legacy_best,
+                                     "regret_ms": legacy_regret,
+                                     "fixed_mean": legacy_fixed_late[legacy_best],
+                                     "ci95_half_ms": BST.batch_diff_half(fin.get("ms") or [], _late_ms(legacy_best))},
             "regret_full_ms": reg_full,
-            "se_method": ("batch" if _methods == ["batch"]
-                          else "+".join(_methods) or None),
+            "regret_full_scope": "legacy final auto round vs pooled all fixed rounds",
+            "probe_tax_window": "same equally weighted late rounds as regret_ms",
+            "se_method": "paired_rounds",
             "regret_holdout_ms": reg_hold,
             "probe_rounds_final": n_probe_fin,
             "probe_tax_ms": probe_tax,
             "regret_sel_ms": reg_sel,
             "se_regret_ms": se_reg,
             "ci95_half_ms": half_reg,
-            "ci_method": "Welch-t on batch means (iid fallback for short samples)",
+            "ci_method": "paired t on matched round means; observed-best selection is descriptive",
             "regret_paired_late_ms": reg_paired,
             "regret_paired_late_ci95_half_ms": reg_paired_half,
-            "paired_rounds": len(_pd),
+            "paired_rounds": paired["blocks"],
             "converged": conv_ok, "converge_why": conv_why,
+            "convergence_scope": "separate IPS and m marginal modes over the final three rounds; not joint-choice, loss-estimator or optimal-policy convergence",
             "fixed_means": fixed_means,
             "auto_added_bytes": fin["added_bytes_mean"],
-            "best_added_bytes": arms[best]["added_bytes_mean"]})
+            "best_added_bytes": arms[best]["added_bytes_mean"],
+            "legacy_byte_windows": {"auto_added_bytes": [rounds],
+                                    "best_added_bytes": list(range(1, rounds + 1))},
+            "matched_added_bytes": {"round_ids": matched["evaluation_ids"],
+                                    "estimator": "equal round means of all returned trials; k=K baseline",
+                                    "auto": window_added_bytes(au["rounds"], matched["evaluation_ids"]),
+                                    "best_fixed": window_added_bytes(arms[best]["blocks"], matched["evaluation_ids"])},
+            "candidate_scope": "auto may use m3 or a padding/FEC combination outside the fixed m0/m1/m2/pad candidates; negative regret is not equal-resource adaptive gain"})
         print("    -> 최선 고정팔 %s (수렴후창 %.2f ms), auto 수렴후 %.2f ms, "
               "후회 %+.2f ms (전구간창 %+.2f, 홀드아웃 %s, ±%s ms) | 수렴 %s (%s)"
-              % (best, fixed_means_late[best], fin["mean"], reg, reg_full,
+              % (best, fixed_means_late[best], auto_late_mean, reg, reg_full,
                  ("%+.2f" % reg_hold) if reg_hold is not None else "-",
                  ("%.2f" % half_reg) if half_reg is not None else "-",
                  "예" if conv_ok else "**아니오**", conv_why),
@@ -455,9 +532,9 @@ def main():
         "%d/%d | 빠짐 %s" % (len(out["regret"]), len(CONDS),
                             [d["cond"] for d in out.get("dropped", [])]
                             or "없음"))
-    add("모든 고정팔에서 서버 통계가 실제로 있었다",
+    add("각 고정팔 행에 공유한 조건 서버 통계가 있었다 (연결 대응 검사가 아님)",
         all(r.get("srv_stats_present") for r in out["rows"]) and out["rows"],
-        "%d/%d 팔" % (sum(1 for r in out["rows"]
+        "%d/%d 행, 조건 합계를 각 팔에 공유" % (sum(1 for r in out["rows"]
                          if r.get("srv_stats_present")), len(out["rows"])))
 
     regs = [r["regret_ms"] for r in out["regret"]]
@@ -469,24 +546,24 @@ def main():
     out["worst_regret_ms"] = worst
     out["worst_regret_holdout_ms"] = max(regs_h) if regs_h else None
     out["worst_ci95_half_ms"] = max(cis) if cis else None
-    add("수렴 후 최악 후회 < 2 ms (p11 과 같은 자)",
+    add("후반 대응 라운드 최악 후회 점추정 < 2 ms",
         worst is not None and worst < 2.0,
         "최악 %s ms | 조건별 %s"
         % (("%+.2f" % worst) if worst is not None else "데이터 없음",
            ["%+.2f" % v for v in regs]))
-    add("수렴 후 최악 후회 < 2 ms (승자의 저주 보정)",
-        regs_h and max(regs_h) < 2.0,
+    add("후반 대응 라운드 최악 후회 < 2 ms (내부 시간분할 비교)",
+        len(regs_h) == len(CONDS) and max(regs_h) < 2.0,
         "최악 %s ms | 조건별 %s"
         % (("%+.2f" % max(regs_h)) if regs_h else "데이터 없음",
            ["%+.2f" % v for v in regs_h]))
     add("후회 추정의 95% 신뢰반폭이 1 ms 미만 (기준 2 ms 를 판정할 정밀도)",
-        cis and max(cis) < 1.0,
+        len(cis) == len(CONDS) and max(cis) < 1.0,
         "최대 반폭 %s ms | 조건별 %s"
         % (("%.2f" % max(cis)) if cis else "-",
            ["%.2f" % v for v in cis]))
     # 🆕 "수렴 후" 라고 부르려면 실제로 수렴했어야 한다.
     nconv = sum(1 for r in out["regret"] if r.get("converged"))
-    add("모든 조건이 실제로 수렴했다 (선언이 아니라 시험)",
+    add("모든 조건의 마지막 3라운드 IPS·m 각각의 최빈값이 안정적이었다",
         nconv == len(out["regret"]) and out["regret"],
         "%d/%d | %s" % (nconv, len(out["regret"]),
                         "; ".join("%s:%s" % (r["cond"], r["converge_why"])
@@ -499,7 +576,7 @@ def main():
     if conv and conv["final"]:
         fin = conv["final"]
         n1281 = fin["ips_used"].get(1281, fin["ips_used"].get("1281", 0))
-        add("임계사이/무손실: 수렴 후 평상시 선택이 pad(δ=1) (ips 1281 과반)",
+        add("임계사이/무손실: 마지막 라운드 IPS 1281이 과반 (FEC 결합 포함)",
             n1281 > N // 2, "ips 분포 %s | p추정 %s" % (fin["ips_used"],
                                                        fin["p_est"]))
         # 2026-08-21 정정. 예전 검사는 "auto 추가 바이트 < m1 의 10%",
@@ -545,11 +622,12 @@ def main():
     # 서버가 조건당 하나라 고정팔·auto 에 같은 수가 복사돼 있다 - 조건별 한 번.
     crc = sum(a.get("srv_crc_fail") or 0 for a in out["auto"])
     add("모든 팔에서 복구 CRC 실패 0", crc == 0, "총 %d 건 (조건별 합)" % crc)
-    _bad_se = [r["cond"] for r in out["regret"] if r.get("se_method") != "batch"]
-    add("모든 조건의 반폭이 배치평균(독립 가정 아님)으로 나왔다",
+    _bad_se = [r["cond"] for r in out["regret"] if r.get("se_method") != "paired_rounds"]
+    add("모든 조건의 반폭이 같은 후반 라운드의 대응 평균차로 나왔다",
         out["regret"] and not _bad_se,
-        "iid 로 되돌아간 조건: %s" % (_bad_se or "없음"))
+        "대응 라운드 대조가 없는 조건: %s" % (_bad_se or "없음"))
 
+    out["journal_provenance"] = jr.provenance()
     npass = sum(1 for c in out["checks"] if c["ok"])
     out["passed"] = npass
     out["total"] = len(out["checks"])

@@ -116,9 +116,13 @@ auto 의 목적지 캐시는 실행 내내 유지된다(그래야 적응을 잰�
   9. [부정] 무제한에서는 적응이 벌 것이 없다 (오라클 이득 상한 <= 탐색세)
  10. 복구 CRC 실패 0
 """
+import hashlib
+import json
 import math
 import os
+import statistics
 import sys
+from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -213,6 +217,104 @@ def mean(v):
 FEEDBACK = os.environ.get("PADFEC_FEEDBACK") == "1"
 
 
+def utc_now():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def cache_snapshot():
+    """Record the actual cache state around each arm, outside HCT timing."""
+    try:
+        with open(CACHE, "rb") as stream:
+            data = stream.read()
+    except FileNotFoundError:
+        return {"exists": False, "sha256": None, "state": None}
+    except OSError as exc:
+        return {"exists": None, "sha256": None, "state": None,
+                "error": str(exc)}
+    out = {"exists": True, "sha256": hashlib.sha256(data).hexdigest()}
+    try:
+        out["state"] = json.loads(data)
+    except (ValueError, UnicodeDecodeError):
+        out["state"] = None
+        out["error"] = "invalid cache JSON"
+    return out
+
+
+def trial_timeline(segment):
+    """Keep failed and missing attempts at their original trial indices.
+
+    Legacy success-only records are usable only if every trial succeeded.
+    Missing original indices cannot be reconstructed from a compressed list.
+    """
+    n = segment.get("n_expected", segment.get("n"))
+    if type(n) is not int or n <= 0:
+        return [], "invalid_count"
+    rows = segment.get("trial_records")
+    if rows is None:
+        mu = segment.get("m_used")
+        if (segment.get("ok") == n == segment.get("n")
+                and isinstance(mu, list) and len(mu) == n
+                and all(type(x) is int and 0 <= x <= POL.M_MAX_DEFAULT for x in mu)):
+            return list(mu), "legacy_all_success"
+        return [None] * n, "legacy_missing_trial_indices"
+    if not isinstance(rows, list):
+        return [None] * n, "invalid_trial_records"
+    choices = [None] * n
+    seen, invalid = set(), False
+    for row in rows:
+        i = row.get("i") if isinstance(row, dict) else None
+        if type(i) is not int or not 0 <= i < n:
+            invalid = True
+            continue
+        if i in seen:
+            invalid = True
+            choices[i] = None
+            continue
+        seen.add(i)
+        m = row.get("m_used")
+        if type(m) is int and 0 <= m <= POL.M_MAX_DEFAULT:
+            choices[i] = m
+        else:
+            invalid = True
+    complete = not invalid and len(rows) == n and all(x is not None for x in choices)
+    return choices, "all_attempts" if complete else "incomplete_trial_records"
+
+
+def unit_complete(rec):
+    """Accept exactly the planned segments and complete attempted-trial records."""
+    if not isinstance(rec, dict) or not isinstance(rec.get("segments"), list):
+        return False
+    expected = {(c, loss, a): n for c in range(CYCLES)
+                for loss, n in SCHEDULE for a, _f, _m in ARMS}
+    seen = set()
+    for s in rec.get("segments", []):
+        if not isinstance(s, dict) or type(s.get("cycle")) is not int:
+            return False
+        key = (s.get("cycle"), s.get("loss"), s.get("arm"))
+        if (key not in expected or key in seen or type(s.get("n")) is not int
+                or s["n"] != expected[key] or s.get("err")):
+            return False
+        seen.add(key)
+        if type(s.get("ok")) is not int or not 0 < s["ok"] <= s["n"]:
+            return False
+        if type(s.get("mean")) not in (int, float) or not math.isfinite(s["mean"]):
+            return False
+        choices, scope = trial_timeline(s)
+        if len(choices) != expected[key] or scope not in ("all_attempts", "legacy_all_success"):
+            return False
+        if "trial_records" in s:
+            rows = s["trial_records"]
+            if any(type(x.get("ok")) is not bool
+                   or type(x.get("ms")) not in (int, float)
+                   or not math.isfinite(x["ms"]) or x["ms"] < 0 for x in rows):
+                return False
+            if sum(x["ok"] for x in rows) != s["ok"]:
+                return False
+    return (seen == set(expected) and bool(rec.get("srv_stats_present"))
+            and type(rec.get("srv_crc_fail")) is int and rec["srv_crc_fail"] == 0
+            and not rec.get("err"))
+
+
 def unit_key(cond_name, rate, cert, rtt):
     """저널 키. 측정과 드라이런이 **같은 함수**로 키를 만들어야 한다.
 
@@ -242,7 +344,10 @@ def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
     #    이었다. 무제한은 큐가 안 쌓이므로 8 ms 그대로 둔다(실행 시간).
     key, gap_ms = unit_key(cond_name, rate, cert, rtt)
     if jr.has(key):
-        return jr.get(key)
+        cached = jr.get(key)
+        if unit_complete(cached) or DRYRUN:
+            return cached
+        print("   (저널 단위가 불완전해 다시 측정: %s)" % key)
     if DRYRUN:
         # 어느 N 의 단위가 있는지 보여 준다 - N 이 안 맞으면 「저널에 없음」만
         # 찍혀 이유를 알 수 없었다(--precise / PADFEC_P17_N).
@@ -256,6 +361,7 @@ def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
         pass
     acc = {a: [] for a, _f, _m in ARMS}
     seg, err = [], ""
+    started_at = utc_now()
     # C1: PADFEC_FEEDBACK=1 이면 서버·클라 양쪽에 -feedback 을 준다.
     # 끄고 켠 결과를 나란히 둬야 "피드백이 적응률을 고쳤다"고 말할 수 있다.
     FB = ["-feedback"] if FEEDBACK else []
@@ -272,6 +378,8 @@ def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
                 rot[loss] = rot.get(loss, 0) + 1
                 order = ARMS[r:] + ARMS[:r]
                 for pos, (aname, fec, m) in enumerate(order):
+                    before = cache_snapshot()
+                    segment_started_at = utc_now()
                     extra = (["-cache", CACHE, "-probe-every", "20"]
                              if fec == "auto" else []) + FB
                     rows, cs, e = B.run_client(
@@ -288,11 +396,17 @@ def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
                     #    분산 때문이다. 그런데 재려는 것은 "정책이 채널 변화를
                     #    따라가는가"이고, 그것은 **선택**을 보면 잡음 없이
                     #    판정된다 - 시간을 거칠 필요가 없다.
-                    mu = [x.get("m_used") for x in rows
-                          if x.get("ok") and x.get("m_used") is not None]
+                    mu = [x.get("m_used") for x in rows]
                     seg.append({"cycle": cyc, "loss": loss, "arm": aname,
                                 "pos": pos, "n": len(rows), "ok": len(ok),
-                                "mean": mean(ok), "m_used": mu})
+                                "n_expected": n_conn, "failed": len(rows) - len(ok),
+                                "mean": mean(ok), "m_used": mu,
+                                "trial_records": rows,
+                                "choice_scope": "all_attempts",
+                                "started_at": segment_started_at,
+                                "finished_at": utc_now(),
+                                "cache_before": before, "cache_after": cache_snapshot(),
+                                "client_stats": cs, "err": e})
 
                 print("   %-8s cyc%d 손실%-5g  %s" % (
                     cond_name, cyc, loss,
@@ -311,10 +425,20 @@ def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
     rec = {"cond": cond_name, "cert": cert, "rtt_ms": rtt,
            "up_policy": up_policy, "netem_rate_mbit": rate,
            "gap_ms": gap_ms, "feedback": FEEDBACK,
+           "started_at": started_at, "finished_at": utc_now(),
+           "protocol": {"version": 2, "group": GROUP, "expected_k": K,
+                        "n_per_segment": N, "cycles": CYCLES,
+                        "schedule": SCHEDULE, "arms": ARMS,
+                        "probe_every": 20, "cache_reset_per_condition": True,
+                        "choice_scope": "all_attempts",
+                        "latency_scope": "successful_attempts",
+                        "comparison_scope": "exploratory_same_data_labels"},
            "arms": {a: {"n": len(v), "mean": mean(v), "p50": B.pctl(v, 0.5),
                         "p95": B.pctl(v, 0.95), "ms": v}
                     for a, v in acc.items()},
            "segments": seg, "srv_recovered": ss.get("recovered"),
+           "server_stats": ss,
+           "server_statistics_scope": "one condition total; presence is not a connection matching check",
            "srv_crc_fail": ss.get("recover_crc_fail"),
            "srv_stats_present": bool(ss), "err": err}
     # 🩸 2026-09-07 감사 - **완전한 단위만 저널에 남긴다** (p11·p15 와 같은 가드).
@@ -322,9 +446,8 @@ def run_interleaved(cond_name, rate, up_policy, cert, rtt, jr):
     #    err="" 로 왔고, 그것이 저널에 박히면 이후 모든 실행(드라이런 포함)이
     #    측정 없이 그 불완전 단위를 되읽어 검사 1 이 영영 붉었다.
     n_seg = CYCLES * len(SCHEDULE) * len(ARMS)
-    complete = (len(seg) == n_seg and all(s["n"] == N for s in seg)
-                and (ss.get("recover_crc_fail") or 0) == 0)
-    if not err and bool(ss) and complete:
+    complete = unit_complete(rec)
+    if complete:
         jr.record(key, rec)
     else:
         print("   (저널에 안 남긴다: err=%r 구간 %d/%d crc실패 %s)"
@@ -426,7 +549,8 @@ def allowed_by_loss(rec, tol=TOL_MS, alpha=0.05):
             # 반폭이 없으면(블록 1 개) 통계 자는 말할 수 없다 -> 보수적으로 포함
             if half is None or (d - half) <= 0:
                 stat.append(a)
-        out[loss] = {"means": {a: round(v, 3) for a, v in fixed.items()},
+        out[loss] = {"means": fixed,
+                     "means_display_ms": {a: round(v, 3) for a, v in fixed.items()},
                      "best": best,
                      "allowed": sorted(a for a, v in fixed.items()
                                        if v - b < tol),
@@ -505,7 +629,11 @@ def oracle_gain(rec, alw, alpha=0.05):
         mu = sum(g) / len(g)
         var = sum((x - mu) ** 2 for x in g) / (len(g) - 1)
         half = BST.t_crit(len(g) - 1, alpha) * math.sqrt(var / len(g))
+    # The point estimate and its interval use the same matched cycles.
+    gain = mean(g) if g else None
     return gain, half, {"fixed_best": fixed_best,
+                        "point_scope": "unrounded matched cycle contrasts; same-data winner labels are exploratory",
+                        "matched_cycles": sorted(cyc or []),
                         "per_loss_best": {("%g" % l): per_loss_best[l]
                                           for l in ls}}
 
@@ -561,13 +689,16 @@ def adapt_stats(rec, up, alw):
                 for nm, _f, mm in ARMS:
                     if nm == a:
                         ok_ms.add(mm)
-        hits = tot = 0
+        hits = tot = unknown = 0
         lags = []
+        scopes = []
         for s in rec["segments"]:
             if s["arm"] != "auto" or s["loss"] != loss:
                 continue
-            mu = s.get("m_used") or []
+            mu, scope = trial_timeline(s)
+            scopes.append(scope)
             tot += len(mu)
+            unknown += sum(x is None for x in mu)
             hits += sum(1 for x in mu if x in ok_ms)
             lag, run = None, 0
             for i, x in enumerate(mu):
@@ -581,12 +712,39 @@ def adapt_stats(rec, up, alw):
                      "allowed_stat": (alw.get(loss) or {}).get("allowed_stat"),
                      "best_measured": (alw.get(loss) or {}).get("best"),
                      "hit_rate": (hits / tot) if tot else None,
+                     "timeline_complete": bool(scopes) and all(
+                         x in ("all_attempts", "legacy_all_success") for x in scopes),
+                     "timeline_scopes": scopes, "unknown_choices": unknown,
+                     "hit_rate_scope": "all_attempts_unknown_as_misses",
                      "n": tot, "lags": lags,
-                     "lag_med": (sorted([x for x in lags if x is not None])
-                                 [len([x for x in lags if x is not None]) // 2]
+                     "lag_med": (statistics.median(x for x in lags if x is not None)
                                  if any(x is not None for x in lags) else None),
+                     "lag_median_scope": "conditional on segments that adapted; never-adapted segments are not zero-lag observations",
+                     "adapted_segments": sum(x is not None for x in lags),
+                     "total_segments": len(lags),
                      "never_adapted": sum(1 for x in lags if x is None)}
     return out
+
+
+def trial_inventory(rec):
+    """Count actual k and current ACK observations independently of cached policy RTT."""
+    records = [r for segment in rec.get("segments", []) for r in segment.get("trial_records", [])]
+    expected = sum(segment.get("n_expected", segment.get("n", 0)) for segment in rec.get("segments", []))
+    counts = {}
+    valid = 0
+    for row in records:
+        k = row.get("first_flight_datagrams")
+        label = str(k) if type(k) is int and k > 0 else "unknown"
+        counts[label] = counts.get(label, 0) + 1
+        rtt = row.get("path_rtt_ms")
+        valid += int(row.get("path_rtt_valid") is True and
+                     type(rtt) in (int, float) and math.isfinite(rtt) and rtt > 0)
+    return {"n_expected": expected, "n_records": len(records),
+            "n_missing_records": max(0, expected - len(records)),
+            "actual_k_counts": counts, "current_ack_rtt_valid": valid,
+            "current_ack_rtt_missing_or_invalid": len(records) - valid,
+            "expected_k_scope": "flush hint, not a filter on actual observed k",
+            "rtt_scope": "current connection ACK observation only; absence does not establish cached RTT absence or connection failure"}
 
 
 def position_effect(rec):
@@ -609,6 +767,10 @@ def position_effect(rec):
 
 
 def main():
+    if FP_OVERRIDE and not DRYRUN:
+        print("PADFEC_P17_FP is allowed only with PADFEC_P17_DRYRUN=1; "
+              "live measurements must use the current source fingerprint.", file=sys.stderr)
+        return 2
     if not DRYRUN:
         B.harden()
         B.require_root()
@@ -622,7 +784,11 @@ def main():
          "experiments/quicbed/qamp.go",
          "experiments/quicbed/policy.go",
          "experiments/quicbed/pfail_table.go",
-         "experiments/padbed.py"], ROOT)
+         "experiments/quicbed/go.mod", "experiments/quicbed/go.sum",
+         "experiments/quicbed/build.sh", "experiments/_journal.py",
+         "experiments/blockstat.py", "experiments/padbed.py",
+         "padfec/policy.py", "padfec/quantum.py",
+         "experiments/results/p1_flight.json"], ROOT)
     jr = Journal(os.path.join(B.STATE, "p17_units.jsonl"), fp)
 
     out = {"rtt_ms": RTT_MS, "group": GROUP, "cert": CERT, "n_per_seg": N,
@@ -632,11 +798,14 @@ def main():
            "probe_tax_ms": PROBE_TAX_MS, "tol_ms": TOL_MS,
            "bought_hi": BOUGHT_HI, "bought_lo": BOUGHT_LO,
            "dryrun": DRYRUN, "journal_fp": fp, "feedback": FEEDBACK,
+           "analysis_scope": "exploratory_same_data_labels",
+           "confirmatory": False,
            "rows": [], "gain": [], "checks": []}
     checks = out["checks"]
 
-    def add(name, ok, detail):
-        checks.append({"check": name, "ok": bool(ok), "detail": detail})
+    def add(name, ok, detail, scope="existing_check"):
+        checks.append({"check": name, "ok": bool(ok), "detail": detail,
+                       "scope": scope, "confirmatory": False})
         print("[%s] %-64s %s" % ("통과" if ok else "실패", name, detail),
               flush=True)
 
@@ -736,6 +905,7 @@ def main():
             "oracle_verdict": oracle_verdict(og, og_half),
             "variance_inflation_pooled_over_paired": vi,
             "adapt": adapt_stats(rec, rec.get("up_policy"), alw),
+            "trial_inventory": trial_inventory(rec),
             "fixed_spread_ms": max(fixed.values()) - min(fixed.values()),
             "n_auto": am["auto"]["n"]})
         g = out["gain"][-1]
@@ -759,8 +929,9 @@ def main():
     n_seg = len(CONDS) * CYCLES * len(SCHEDULE) * len(ARMS)
     got = sum(len(r["segments"]) for r in out["rows"])
     add("1. 모든 팔·구간이 측정됐다", got == n_seg
-        and all(s["mean"] is not None for r in out["rows"]
-                for s in r["segments"]),
+        and {r["cond"] for r in out["rows"]} == {c[0] for c in CONDS}
+        and len(out["rows"]) == len(CONDS)
+        and all(unit_complete(r) for r in out["rows"]),
         "%d/%d 구간" % (got, n_seg))
     add("2. 모든 조건에서 서버 통계가 실제로 있었다",
         all(r["srv_stats_present"] for r in out["rows"]) and out["rows"],
@@ -861,6 +1032,10 @@ def main():
     need = [x for x in out["gain"] if x["adapt_needed"] is True]
     vac = not need
     tgt = need if need else out["gain"]
+    fallback_scope = "exploratory_all_conditions_no_required_adaptation" if vac else "required_adaptation_conditions_same_data_labels"
+    out["adaptation_check_scope"] = {"checks": [7, 8], "scope": fallback_scope,
+                                     "required_condition_count": len(need),
+                                     "targets": [x["cond"] for x in tgt], "confirmatory": False}
 
     def worst_hit_of(x):
         a = x["adapt"]
@@ -868,10 +1043,12 @@ def main():
         return min(hs) if hs else None
 
     hits = [(x["cond"], worst_hit_of(x)) for x in tgt]
+    timelines_complete = all(a["timeline_complete"] for x in tgt
+                             for a in x["adapt"].values())
     worst_hit = min([h for _c, h in hits if h is not None] or [0])
-    add("7. ⭐ 적응이 필요한 조건에서 auto 가 실측 허용집합 안의 m 을 과반 이상 고른다"
-        + ("  [공허: 적응이 필요한 조건이 없다]" if vac else ""),
-        tgt and worst_hit > 0.5,
+    add("7. auto가 실측 허용집합 안의 m을 과반 이상 고른다"
+        + ("  [탐색적 전체 조건 대체: 적응 필요 조건 없음]" if vac else " [적응 필요 조건]"),
+        tgt and timelines_complete and worst_hit > 0.5,
         ("최악 적중률 %.1f%% | " % (100 * worst_hit)
          + "  ".join("%s: %s" % (x["cond"], "  ".join(
              "손실%g%%: 허용 %s(최선 %s, 모형 m=%d) 적중 %.1f%% (n=%d)"
@@ -879,7 +1056,7 @@ def main():
                 x["adapt"][l]["want_m_model"],
                 100 * (x["adapt"][l]["hit_rate"] or 0), x["adapt"][l]["n"])
              for l in sorted(x["adapt"]))) for x in tgt))
-        if tgt else "자료 없음")
+        if tgt else "자료 없음", scope=fallback_scope)
 
     lag_rows = []
     never = 0
@@ -889,10 +1066,10 @@ def main():
         never += sum(a[l]["never_adapted"] for l in a)
     lags = [v for _c, vs in lag_rows for v in vs if v is not None]
     add("8. 적응이 필요한 조건에서 적응 지연이 구간 길이의 절반 미만이다"
-        + ("  [공허: 적응이 필요한 조건이 없다]" if vac else ""),
-        tgt and lags and max(lags) < N / 2 and never == 0,
-        ("구간별 중앙 지연 %s (구간 %d) | 끝까지 적응 못 한 구간 %d"
-         % (lag_rows, N, never)) if tgt else "자료 없음")
+        + ("  [탐색적 전체 조건 대체: 적응 필요 조건 없음]" if vac else ""),
+        tgt and timelines_complete and lags and max(lags) < N / 2 and never == 0,
+        ("적응한 구간에 한정한 중앙 지연 %s (구간 %d) | 끝까지 적응 못 한 구간 %d"
+         % (lag_rows, N, never)) if tgt else "자료 없음", scope=fallback_scope)
 
     # 검사 9: 무제한은 패리티가 공짜라 최대 m 이 늘 최적이고, 적응이 벌 것이
     # 0 이어야 한다. 오라클 이득의 **상한**(이득 + 반폭)이 탐색세 이하여야 한다.
@@ -933,6 +1110,7 @@ def main():
 
     npass = sum(1 for c in checks if c["ok"])
     out["passed"], out["total"] = npass, len(checks)
+    out["journal_provenance"] = jr.provenance()
     print("-" * 104)
     print("%d / %d 통과" % (npass, len(checks)))
     if DRYRUN:

@@ -34,6 +34,7 @@ import argparse
 import hashlib
 import html as html_escape
 import json
+import math
 from datetime import datetime, timezone
 import os
 import subprocess
@@ -378,18 +379,196 @@ def _match_check(checks, tag, vkey, v):
     return head[0] if len(head) == 1 else None
 
 
+def _is_diagnostic(check):
+    return (check.get("counted") is False or check.get("gating") is False
+            or check.get("kind") == "diagnostic"
+            or check.get("status") == "diagnostic")
+
+
+def _finite_number(value):
+    return type(value) in (int, float) and math.isfinite(value)
+
+
+def check_label(check):
+    if check.get("kind") == "판정불능" or check.get("status") == "indeterminate":
+        return "판정불능"
+    if _is_diagnostic(check):
+        return "진단"
+    if check.get("ok") is True:
+        return "통과"
+    if check.get("ok") is False:
+        return "미흡"
+    return "판정 없음"
+
+
+def p10_test_facts(result):
+    tests = [r for r in result.get("results", [])
+             if isinstance(r, dict) and r.get("kind") != "재고"]
+    counted = [r for r in tests if check_label(r) not in ("진단", "판정불능")]
+    return {"tests": tests, "counted": counted,
+            "passed": sum(r.get("ok") is True for r in counted), "total": len(counted),
+            "failed": [r for r in counted if r.get("ok") is False],
+            "excluded": [r for r in tests if r not in counted]}
+
+
+def p18_consumer_notes(result):
+    """Read new metadata and legacy values without inventing historical scope."""
+    facts = sample_facts(None, result) or {}
+    notes = []
+    levels = facts.get("p18_confidence_levels") or []
+    if levels:
+        notes.append("p18에 저장된 alpha/수준 기준 개별 명목 신뢰수준은 %s다. "
+                     "분석 가정과 구간 선택 규칙에 따른 범위이며 실제 포함확률의 보장이 아니다."
+                     % ", ".join("%s%%" % fmt(100*v, 2) for v in levels))
+    family = sorted({v["family_confidence_level"] for v in result.get("verdict", [])
+                     if _finite_number(v.get("family_confidence_level"))
+                     and 0 < v["family_confidence_level"] < 1})
+    if family:
+        notes.append("p18이 기록한 비교군 전체 명목 신뢰수준은 %s다. "
+                     "개별 구간 수준과 구분하며 분석 가정의 한계는 그대로 남는다."
+                     % ", ".join("%s%%" % fmt(100*v, 2) for v in family))
+    if "normal_iid" in facts.get("p18_connection_methods", []):
+        notes.append("normal_iid로 기록된 p18 연결 구간은 iid 정규근사이고, Latin 구간은 셀 평균의 t 구간이다. "
+                     "선택 구간은 저장된 decision_gain과 같은 중심으로 읽는다.")
+    elif facts.get("p18_has_legacy_ci_name"):
+        notes.append("옛 p18의 ci95/Welch 안내는 역사 출력 명칭이다. "
+                     "이 명칭만으로 95% 또는 Welch 구간이라고 단정하지 않는다.")
+    plugin = facts.get("p18_n_plugin")
+    if plugin:
+        notes.append("p18 판정불능 조건 %d/%d개 중 수치가 기록된 %d개 조건의 "
+                     "같은 자료 표본 대입값은 팔당 %s~%s다. 추가 표본이나 검정력을 보장하지 않는다."
+                     % (facts["p18_n_undecided"], facts["p18_n_conds"],
+                        facts["p18_n_plugin_condition_count"], fmt(plugin[0], 0), fmt(plugin[1], 0)))
+    cap = result.get("current_adaptive_default_m_max")
+    if type(cap) is int and cap > 0:
+        notes.append("p18이 기록한 적응 기본 m 상한은 %d다. 고정 m2-m4 대조를 "
+                     "적응 상한 개입의 직접 검증으로 해석하지 않는다." % cap)
+    elif result.get("verdict"):
+        notes.append("옛 p18 조건명의 m_max2는 현재 적응 상한의 근거가 아니다. "
+                     "현재 상한은 이 저장 결과에서 확인되지 않는다.")
+    coverage = result.get("trial_coverage") or {}
+    keys = ("planned_n", "recorded_n", "ok_n", "failed_n", "missing_n")
+    if all(_finite_number(coverage.get(k)) for k in keys):
+        notes.append("p18 계획 %s, 반환 %s, 성공 %s, 실패 %s, 누락 %s. "
+                     "HCT는 성공 시행 조건부이며 실패·누락은 완전성 검사에 남는다."
+                     % tuple(fmt(coverage[k], 0) for k in keys))
+    provenance = result.get("journal_provenance")
+    if isinstance(provenance, dict):
+        notes.append("p18 단위 출처는 재사용 %s, 신규 %s, 저널 미저장 %s로 기록됐다. "
+                     "단위 기록 시각은 개별 시행 시각이나 독립 반복의 증거가 아니다."
+                     % tuple(fmt(provenance.get(k), 0) for k in
+                             ("reused_units", "new_units", "unjournaled_units")))
+    elif result.get("rows") or result.get("verdict"):
+        notes.append("이 p18 결과에는 단위별 출처 요약이 없다. 새 코드의 기록 필드로 "
+                     "과거 run_id나 기록 시각을 복원하지 않는다.")
+    return notes
+
+
+def p20_consumer_notes(result):
+    """Keep plug-in target provenance separate from recorded sufficiency verdicts."""
+    pairs = [p for c in result.get("conds", []) for p in c.get("pairs", [])]
+    if not pairs and not result.get("input_coverage") and not result.get("input_provenance"):
+        return []
+    model = sum(p.get("n_target_source") == "model_delta" for p in pairs)
+    observed = sum(p.get("n_target_source") == "observed_same_data_delta" for p in pairs)
+    unknown = len(pairs)-model-observed
+    notes = ["p20 표본 대입값의 목표 출처는 모형차 %d쌍, 같은 자료 관측차 %d쌍, "
+             "미기록 %d쌍이다. 같은 자료 관측차는 고정된 독립 목표나 검정력 보장이 아니다. "
+             "기록된 표본 기준 판정은 그대로 두고 목표 출처를 함께 해석한다."
+             % (model, observed, unknown)]
+    coverage = result.get("input_coverage")
+    if not isinstance(coverage, dict):
+        notes.append("옛 p20 결과에는 전체 입력의 계획·반환·성공·실패 분모 확인 기록이 없다.")
+    else:
+        notes.append("p20 입력 완전성은 input_coverage에 저장된 분모와 누락 문제를 기준으로 읽는다. "
+                     "이 검사는 전송 계측의 완전성이나 모형 적합성을 뜻하지 않는다.")
+        expected = coverage.get("expected") or {}
+        arms = [a for c in expected.values() if isinstance(c, dict)
+                for a in c.values() if isinstance(a, dict)]
+        keys = ("requested_n", "recorded_n", "successful_n", "failed_n")
+        if arms and all(all(_finite_number(a.get(k)) for k in keys) for a in arms):
+            notes.append("p20 입력 분모 기록의 합은 요청 %s, 반환 %s, 성공 %s, 실패 %s다. "
+                         "계획 조건/팔 %s/%s, 분석 조건/팔 %s/%s, 누락·불일치 문제 %d건이다."
+                         % (tuple(fmt(sum(a[k] for a in arms), 0) for k in keys)
+                            + tuple(fmt(coverage.get(k), 0) for k in
+                                    ("expected_conditions", "expected_arms", "analysed_conditions", "analysed_arms"))
+                            + (len(coverage.get("problems") or []),)))
+    provenance = result.get("input_provenance")
+    if not isinstance(provenance, dict) or not provenance:
+        notes.append("옛 p20 입력 파일 SHA와 p17 저널 선택 출처는 이 결과에 기록되지 않았다.")
+    else:
+        notes.append("p20 입력 파일 SHA와 p17 저널 선택 출처는 input_provenance에 기록됐다. "
+                     "같은 입력을 다시 분석한 결과를 새 실측으로 세지 않는다.")
+        entries = [(k, v) for k, v in provenance.items() if isinstance(v, dict)]
+        notes.append("p20 파일별 출처: " + "; ".join(
+            "%s 가용 %s, SHA %s" % (name, value.get("available"), value.get("sha256") or "미기록")
+            for name, value in entries) + ".")
+        selection = (provenance.get("p17") or {}).get("journal_selection")
+        if isinstance(selection, dict):
+            units = selection.get("units") or []
+            notes.append("p20이 고른 p17 저널 지문은 %s, 단위 %d개이며 run_id 또는 "
+                         "기록 시각이 없는 단위 %d개다. 파일 SHA는 %s다."
+                         % (selection.get("fingerprint") or "미기록", len(units),
+                            sum(not u.get("run_id") or not u.get("recorded_at") for u in units),
+                            selection.get("sha256") or "미기록"))
+        else:
+            notes.append("p20 결과에 p17 저널 선택의 단위별 출처 기록은 없다.")
+    return notes
+
+
+def late_stage_summary(results):
+    """Surface late-stage failures even when the main report predates a stage."""
+    lines = ["", "## 후속 정책·모형 검증 기록", "",
+             "아래 표는 입력 결과의 기록이다. 이번 코드에서의 유효성은 출처 목록과 함께 확인한다.",
+             "통과 개수는 연구 가설의 확증 여부와 다르다. 누락·실패를 통과로 세지 않는다.", "",
+             "| 결과 파일 | 기록된 통과 수 | 미통과 검사 또는 누락 |",
+             "|---|---|---|"]
+    for name, result in results.items():
+        if not result:
+            lines.append("| %s | - | 결과 없음 또는 빈 결과 |" % cell(name))
+            continue
+        checks = result.get("checks")
+        inline_diagnostics = []
+        if isinstance(checks, list):
+            inline_diagnostics = [c for c in checks if isinstance(c, dict) and _is_diagnostic(c)]
+            checks = [c for c in checks if isinstance(c, dict) and not _is_diagnostic(c)]
+        if not isinstance(checks, list) or not checks:
+            summary, detail = "-", "검사 기록 없음"
+        else:
+            passed = sum(c.get("ok") is True for c in checks)
+            summary = "%d/%d" % (passed, len(checks))
+            detail = "; ".join(str(c.get("check", "이름 없음")) + ": " + str(c.get("detail", ""))
+                               for c in checks if c.get("ok") is not True) or "기록된 미통과 검사 없음"
+        diagnostics = result.get("diagnostics", [])
+        diagnostics = (diagnostics if isinstance(diagnostics, list) else []) + inline_diagnostics
+        if isinstance(diagnostics, list) and diagnostics:
+            detail += "; 합격 판정에서 제외한 진단: " + "; ".join(
+                str(d.get("check", d.get("name", "진단"))) + ": " + str(d.get("detail", ""))
+                for d in diagnostics if isinstance(d, dict))
+        lines.append("| %s | %s | %s |" % (cell(name), summary, cell(detail)))
+    lines.append("")
+    for name, reader in (("p18_mmax.json", p18_consumer_notes),
+                         ("p20_residual.json", p20_consumer_notes)):
+        result = results.get(name)
+        if isinstance(result, dict) and result:
+            lines.extend(reader(result))
+            lines.append("")
+    lines.extend(["", "정책 비교는 성공 조건부 지연과 실패율을 함께 해석한다. "
+                  "동일 실행을 시간순으로 나눈 비교는 독립 평가가 아니며, "
+                  "차이를 찾지 못했다는 결과는 동등성의 증명이 아니다.", ""])
+    return "\n".join(lines)
+
+
+def late_stage_html(results):
+    # Keep failure details in PDF as well as Markdown; escape data before HTML.
+    text = prose_style(late_stage_summary(results))
+    return ('<section style="break-before:page;font-size:9pt">'
+            '<pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-family:inherit">'
+            + html_escape.escape(text) + '</pre></section>')
+
+
 def adapt_value_facts(p17):
-    """p17 이 잰 **오라클 이득** — 적응이 벌 수 있는 것의 상한.
-
-    🩸 2026-08-26. 이 값이 보고서에 들어가야 하는 이유는 그것이 **0 이기
-       때문**이다. 연구 방향이 「PQC 의 손실 취약성을 FEC 로 보완한다」에서
-       「패딩을 FEC 로 바꿔 증폭 예산을 산다」로 바뀐 뒤(2026-08-19 변경보고),
-       이 0 은 실패가 아니라 **새 방향의 직접 증거**가 된다 — 패리티의 값어치가
-       손실 복구였다면 최적 m 이 손실률을 따라갔을 것이고 오라클 이득이 양수로
-       나왔을 것이다. 정확히 0 이라는 것은 값어치가 다른 데(왕복) 있다는 뜻이다.
-
-       그래서 이 절은 「검사 6 이 실패했다」로 쓰지 않고 **재서 보고한다**.
-    """
+    """Descriptive same-data candidate selection gain, not a true oracle bound."""
     if not p17:
         return None
     conds = []
@@ -416,61 +595,51 @@ def adapt_value_facts(p17):
 
 
 def ruler_facts(p11, p17):
-    """폐루프 검사의 **자**가 그 실험 자신의 오차막대보다 고운가.
-
-    🩸 2026-08-26. p11·p17 은 「최선 고정팔과 1 ms 안에 드는 팔」을 정답지로
-       삼는다(허용집합). 그런데 같은 판이 자기 정밀도를 함께 찍는다 — p11 은
-       후회 추정의 95% 신뢰반폭을, p17 은 라틴 방격이 상쇄하고 남은 자리
-       효과를. 그 둘이 1 ms 보다 크면 **정답지가 잡음에 뒤집힌다.** 그때 나오는
-       불일치는 정책의 결함이 아니라 자의 문제다.
-
-       도현님 지시(2026-08-26): 「자는 건드리지 말고 **한계로 적어라**」.
-       그래서 이 함수는 자를 고치지 않고 **실제 수를 읽어와 적기만** 한다.
-       수를 문장에 굳히지 않는 이유는 regret_facts 가 배운 것과 같다 —
-       굳히면 정밀도가 좋아진 판에도 낡은 한계를 인쇄한다. 오차막대가 자
-       아래로 내려가면 이 문단은 **스스로 사라진다.**
-    """
+    """Compare recorded CI widths with 1 ms; position ranges are diagnostics."""
     tol = 1.0
     bars = []
     half = (p11 or {}).get("worst_ci95_half_ms")
-    if isinstance(half, (int, float)):
+    if _finite_number(half) and half >= 0:
         bars.append(("p11 후회 추정의 95% 신뢰반폭", float(half)))
     pos = [g.get("pos_effect_ms") for g in ((p17 or {}).get("gain") or [])]
-    pos = [float(v) for v in pos if isinstance(v, (int, float))]
-    if pos:
-        bars.append(("p17 자리 효과(라틴 방격 잔차)", max(pos)))
-    if not bars:
+    pos = [float(v) for v in pos if _finite_number(v) and v >= 0]
+    if not bars and not pos:
         return None
     return {"tol": tol, "bars": bars,
-            "worst": max(v for _n, v in bars),
-            "finer": all(v > tol for _n, v in bars)}
+            "worst": max((v for _n, v in bars), default=None),
+            "p17_position_range_ms": max(pos) if pos else None,
+            "finer": bool(bars) and all(v > tol for _n, v in bars)}
 
 
 def sample_facts(p17, p18):
-    """「한계」절이 인용하는 표본 수와 m3-m2 부호를 **원자료에서** 뽑는다.
-
-    🩸 2026-09-07. 이 문장이 p6_report.py 에 손으로 박혀 있었다 -
-       *"팔당 8,544~12,404 판이 필요한데 지금은 1,000 판이다 ... 부호가
-       반대로 나온다(p17 +1.86 / p18 −1.26 ms)"*. 셋 다 낡았다: 지금 p18 은
-       조건당 500~8,999 판이고 스스로 계산한 필요 표본은 178 ~ 3,489,328 판,
-       그리고 08-30 자료에서는 p17 과 p18 의 m3-m2 부호가 **같다**(둘 다 m3 이
-       빠르다). 문서 머리가 *"숫자를 손으로 옮기지 않는다"* 인데 그 문장 하나가
-       예외였고, p18 이 p6 의 deps 에 없어서 아무도 무효화하지 못했다.
-       여기서는 값을 읽어 올 뿐 판정하지 않는다. 없으면 None 을 돌려 그 문장이
-       빠진다.
-    """
+    """Read sample diagnostics and stored contrasts without changing verdicts."""
     out = {}
     vs = (p18 or {}).get("verdict") or []
-    und = [v for v in vs if not v.get("significant")
-           and isinstance(v.get("n_needed_per_arm"), (int, float))]
+    und = [v for v in vs if v.get("significant") is not True]
+    values = [v.get("n_plugin_per_arm") if "n_plugin_per_arm" in v
+              else v.get("n_needed_per_arm") for v in und]
+    values = [v for v in values if _finite_number(v) and v >= 0]
     if vs:
-        out["p18_n_now"] = (min(v.get("n_per_arm") or 0 for v in vs),
-                            max(v.get("n_per_arm") or 0 for v in vs))
+        now = [v.get("n_per_arm") for v in vs if _finite_number(v.get("n_per_arm"))]
+        if now:
+            out["p18_n_now"] = (min(now), max(now))
         out["p18_n_undecided"] = len(und)
         out["p18_n_conds"] = len(vs)
-        if und:
-            out["p18_n_needed"] = (min(v["n_needed_per_arm"] for v in und),
-                                   max(v["n_needed_per_arm"] for v in und))
+        out["p18_n_plugin_condition_count"] = len(values)
+        if values:
+            out["p18_n_plugin"] = (min(values), max(values))
+        levels = []
+        for v in vs:
+            level = v.get("per_comparison_confidence_level")
+            if not (_finite_number(level) and 0 < level < 1):
+                alpha = v.get("alpha")
+                level = 1-alpha if _finite_number(alpha) and 0 < alpha < 1 else None
+            if level is not None:
+                levels.append(level)
+        out["p18_confidence_levels"] = sorted(set(levels))
+        out["p18_connection_methods"] = sorted({v["connection_ci_method"] for v in vs
+                                               if isinstance(v.get("connection_ci_method"), str)})
+        out["p18_has_legacy_ci_name"] = any("obs_gain_ci95_half" in v for v in vs)
 
     def _p17_m3m2():
         for g in (p17 or {}).get("gain") or []:
@@ -493,8 +662,9 @@ def sample_facts(p17, p18):
             c = v.get("cond") or ""
             if "2Mbps" in c and "15" in c:
                 o = v.get("obs") or {}
-                if "3" in o and "2" in o:
-                    return o["3"] - o["2"]
+                a, b = o.get("3", o.get(3)), o.get("2", o.get(2))
+                if _finite_number(a) and _finite_number(b):
+                    return a-b
         return None
 
     a, b = _p17_m3m2(), _p18_m3m2()
@@ -1253,12 +1423,12 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                   % (cell(g.get("item")), cell(g.get("designed")),
                      cell(g.get("implemented")), cell(g.get("why"))))
             A("")
-            A("이 중 **적응 정책의 폐루프**와 **제자리 배치**는 성격이 다르다. "
-              "앞의 것은 아직 안 한 일이고%s, 뒤의 것은 2 장이 보인 대로 "
-              "**못 하는 일**이다. 재고에 같이 적혀 있다고 같은 종류로 읽으면 "
-              "안 된다." % ("(다음 절이 그 후속이다)" if p11 else ""))
+            A("기능 목록은 소스 구현 여부를 기록한다. 해당 기능의 성능 검증은 "
+              "각 실험 단계의 결과로 확인해야 한다. 제자리 배치의 용량 위반도 "
+              "측정한 설정과 명시한 가정 안에서 해석한다.")
             A("")
-        tests = [r for r in p10.get("results", []) if r.get("kind") != "재고"]
+        _p10_facts = p10_test_facts(p10)
+        tests = _p10_facts["tests"]
         if tests:
             A("### 한 번도 안 해 본 영역")
             A("")
@@ -1266,19 +1436,22 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
             A("|---|---|---|")
             for r in tests:
                 A("| %s | %s | %s |"
-                  % (cell(r["check"]), "통과" if r["ok"] else "미흡",
+                  % (cell(r["check"]), check_label(r),
                      cell(r.get("detail"), 90)))
             A("")
             A("%s / %s 통과, 미해결 재고 %s 건."
-              % (fmt(p10.get("tests_passed"), 0), fmt(p10.get("tests_total"), 0),
+              % (fmt(_p10_facts["passed"], 0), fmt(_p10_facts["total"], 0),
                  fmt(p10.get("open_gaps"), 0)))
             A("")
-            bad = [r for r in tests if not r["ok"]]
+            bad = _p10_facts["failed"]
             if bad:
                 A("미흡한 항목을 지우지 않고 남긴다 — %s."
                   % "; ".join("**%s** (%s)" % (r["check"],
                                                cell(r.get("detail"), 60))
                               for r in bad))
+                A("")
+            if _p10_facts["excluded"]:
+                A("판정불능·진단 %d개는 통과 집계에서 제외했다." % len(_p10_facts["excluded"]))
                 A("")
 
     # ------------------------------------------------------ 폐루프 후회 (p11)
@@ -1374,11 +1547,10 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
     #    것이 있는가. 순서가 뒤집히면 0 이 실패처럼 읽힌다.
     _av = adapt_value_facts(p17)
     if _av:
-        sec("적응이 벌 수 있는 것은 얼마인가 — 오라클 이득 (p17)")
-        A("8 장은 폐루프가 **최선만큼 하는가**를 물었다. 그보다 앞선 질문이 "
-          "있다 — 애초에 적응해서 **벌 것이 있는가.** 손실률이 구간마다 바뀔 때 "
-          "구간마다 최선을 고르는 오라클이 **하나의** 최선 고정팔보다 버는 ms, "
-          "그것이 어떤 적응 정책도 넘을 수 없는 상한이다.")
+        sec("손실 구간별 후보 선택의 관측 이득 (p17)")
+        A("같은 측정 자료에서 손실 구간별 최선 후보와 전체 최선 고정 후보를 "
+          "골라 평균 차이를 계산했다. 선택에 쓴 자료로 이득도 평가했으므로 "
+          "독립 확증이나 모든 적응 정책에 대한 참상한이 아니다.")
         A("")
         A("cert %s B · RTT %s ms · 손실 스케줄 %s%% 를 50:50 으로 번갈아 걸고, "
           "팔을 구간 안에서 인터리브해 자리를 라틴 방격으로 회전시켜 쟀다"
@@ -1387,7 +1559,7 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
              " ↔ ".join(fmt(x, 0) for x in _av["schedule"]) or "-",
              fmt(_av["n"], 0)))
         A("")
-        A("| 조건 | 오라클 이득 | 구간별 최선 고정팔 |")
+        A("| 조건 | 같은 자료에서 선택한 이득 | 구간별 최선 고정팔 |")
         A("|---|---|---|")
         for c in _av["conds"]:
             A("| %s | **%s ms** | %s |"
@@ -1399,38 +1571,11 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                                 key=lambda kv: float(kv[0])))
                  or "-"))
         A("")
-        if _av["all_zero"]:
-            A("**어느 조건에서도 정확히 0 이다.** 두 손실 구간의 최선 고정팔이 "
-              "같기 때문이다 — 손실률이 7 배 넘게 변해도 답이 안 바뀐다. "
-              "p11 이 독립으로 잰 탐색세(0.42~0.51 ms)가 이 0 보다 크므로 "
-              "**어떤 적응 정책도 최선 고정팔을 이길 수 없다.**")
-            A("")
-            A("이것은 실패가 아니라 **이 연구가 방향을 바꾼 이유의 직접 "
-              "증거**다. 패리티의 값어치가 손실 복구였다면 최적 m 이 손실률을 "
-              "따라갔을 것이고 이득이 양수로 나왔을 것이다. 정확히 0 이라는 "
-              "것은 값어치가 다른 데 있다는 뜻이다 — **패리티가 일단 증폭 "
-              "예산을 사서 왕복 하나를 없애면, 그 값어치(≈1 RTT)가 패리티 "
-              "하나의 직렬화(수 ms)를 압도하므로 m 은 클수록 좋고 손실률이 "
-              "변해도 그 답이 안 바뀐다.** 적응할 대상 자체가 없다.")
-            A("")
-            A("따라서 「적응형 FEC 가 손실률을 따라간다」는 이 설계에서 "
-              "성립하지 않고, **성립할 필요도 없다.** 4 장이 보인 「하나의 "
-              "패리티로 두 이득을 동시에 가질 수 없다」와 같은 구조다.")
-            A("")
-            A("> 이득이 나는 자리가 없지는 않다. 설계 공간 전수 조사"
-              "(cert 3,000~30,000 × 업링크 0.25~10 Mbps·무제한 × RTT "
-              "20/50/100/200 × 손실쌍 24 종 = 23,328 조합)에서 이득이 나는 "
-              "영역은 전부 **cert 가 커서 왕복을 못 사는 자리**였다"
-              "(RTT 50 에서 최대 1.77 · RTT 200 에서 7.10 ms). 거기서 갈리는 "
-              "것은 왕복이 아니라 업링크 직렬화뿐이라 이 연구의 본 현상이 "
-              "아니다. 그래서 운용점을 그리로 옮기지 않았다 — 지금 운용점은 "
-              "m≥2 가 1-RTT 를 잡아 J 가 크게 떨어지는 자리다.")
-            A("")
-        else:
-            A("**이득이 0 이 아닌 조건이 있다**(최대 %s ms). p11 이 잰 "
-              "탐색세(0.42~0.51 ms)와 견줘 적응이 값을 하는지 판단해야 한다."
-              % fmt(_av["worst"], 3))
-            A("")
+        A("관측 이득이 0인 조건도 참이득이 0임을 증명하지 않는다. "
+          "자동 정책의 적중률·미적응 구간·실제 지연 차이는 별도로 확인해야 한다. "
+          "독립 평가 자료와 후보 전체의 불확실성을 고려하기 전에는 "
+          "적응이 불가능하거나 필요 없다는 결론으로 확대하지 않는다.")
+        A("")
 
     # ------------------------------------------- 양자 경계 절벽 (p12, 선택)
     if present(p12):
@@ -1731,28 +1876,31 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         #    읽는다(sample_facts). 없으면 그 문장은 빠진다.
         _sf = sample_facts(p17, p18) or {}
         _tail = ""
-        if _sf.get("p18_n_needed"):
-            _tail += (" 실제로 갈리는 크기(m 하나 차이의 1~2 ms)를 판정하려면 "
-                      "p18 이 스스로 계산한 필요 표본이 판정 불능 조건 %d/%d 개에서 "
-                      "팔당 %s~%s 판인데 지금은 %s~%s 판이다."
+        if _sf.get("p18_n_plugin") and _sf.get("p18_n_now"):
+            _tail += (" p18 판정불능 조건 %d/%d개에서 같은 자료의 역제곱 표본 "
+                      "대입값은 팔당 %s~%s이고 현재는 %s~%s다. "
+                      "이 진단값은 추가 표본이나 검정력을 보장하지 않는다."
                       % (_sf["p18_n_undecided"], _sf["p18_n_conds"],
-                         fmt(_sf["p18_n_needed"][0], 0),
-                         fmt(_sf["p18_n_needed"][1], 0),
+                         fmt(_sf["p18_n_plugin"][0], 0),
+                         fmt(_sf["p18_n_plugin"][1], 0),
                          fmt(_sf["p18_n_now"][0], 0),
                          fmt(_sf["p18_n_now"][1], 0)))
         if "m3m2_p17" in _sf:
             _tail += (" 같은 자리(cert 9,000 · 2 Mbps · 손실 15%%)를 두 단계가 "
-                      "독립으로 재면 m3−m2 가 p17 %s / p18 %s ms 로 부호가 %s."
+                      "각각 기록한 m3-m2는 p17 %s / p18 %s ms로 부호가 %s. "
+                      "두 기록의 통계적 독립성은 확인되지 않았다."
                       % (sgn(_sf["m3m2_p17"], 2), sgn(_sf["m3m2_p18"], 2),
                          "같다" if _sf["m3m2_same_sign"] else "반대다"))
-        A("- **폐루프 검사(p11·p17)의 「허용집합」은 그 실험 자신의 오차막대보다 "
-          "곱다.** 두 단계는 「최선 고정팔과 %s ms 안에 드는 팔」을 정답으로 삼는데, "
-          "같은 판이 함께 찍은 정밀도는 %s 다. 정답지가 잡음에 뒤집히므로 "
-          "**이 검사의 불일치는 정책 결함의 증거가 아니다** — 자를 넓혀 초록으로 "
-          "만들지 않고 한계로 남긴다.%s"
-          % (fmt(_rk["tol"], 0),
-             " · ".join("%s %s ms" % (n, fmt(v, 2)) for n, v in _rk["bars"]),
+        A("- 기록된 p11 후회 반폭 %s는 허용집합 폭 %s ms보다 크다. "
+          "이 불확실성은 고정팔 선택의 해석에 남으며, 불일치 원인을 정책 결함이나 "
+          "측정 흔들림 하나로 확정하지 않는다. 기존 허용집합 기준은 유지한다.%s"
+          % (" · ".join("%s %s ms" % (n, fmt(v, 2)) for n, v in _rk["bars"]),
+             fmt(_rk["tol"], 0),
              _tail))
+    if _rk and _rk.get("p17_position_range_ms") is not None:
+        A("- p17 자리별 구간 평균의 최대 범위는 %s ms다. "
+          "이 값은 잔차 표준오차나 신뢰반폭이 아니며, 독립성이나 인과적 순서 효과를 확증하지 않는다."
+          % fmt(_rk["p17_position_range_ms"], 2))
     if p10 and p10.get("open_gaps"):
         A("- 설계했지만 구현하지 않은 항목이 %d 건 남아 있다(위 재고 표)."
           % p10["open_gaps"])
@@ -1981,10 +2129,13 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
           % (sgn(rf["all"]["value"], 2), _crit(rf["all"]),
              sgn(rf["late"]["value"], 2), _crit(rf["late"]), big))
     if p10:
+        _p10_facts = p10_test_facts(p10)
         A('<li>완성도 — 새 영역 시험 <b>%s / %s 통과</b>(동시연결·극단 RTT·'
           '손실 20%%·악성 패리티·600 연결), <b class="b">미해결 재고 %s 건</b></li>'
-          % (fmt(p10.get("tests_passed"), 0), fmt(p10.get("tests_total"), 0),
+          % (fmt(_p10_facts["passed"], 0), fmt(_p10_facts["total"], 0),
              fmt(p10.get("open_gaps"), 0)))
+        if _p10_facts["excluded"]:
+            A('<li>판정불능·진단 %d개는 통과 집계에서 제외했다</li>' % len(_p10_facts["excluded"]))
     if p4:
         h = p4.get("threshold_hits")
         mf1 = model_facts(p4, p2)
@@ -2044,7 +2195,9 @@ def source_manifest():
              "p4_model.json", "p5_audit.json", "p7_verify.json",
              "p8_stability.json", "p9_crossenv.json", "p10_completeness.json",
              "p11_adaptive.json", "p12_quantum.json", "p17_adaptive_value.json",
-             "p18_mmax.json", "e21_budget_trace.json"] + list(CLIFF_FILES)
+             "p18_mmax.json", "p15_v2policy.json", "p16_uplink.json",
+             "p13_beff.json", "p19_provenance.json", "p20_residual.json",
+             "e21_budget_trace.json"] + list(CLIFF_FILES)
     rows = []
     for name in names:
         path = os.path.join(RESULTS, name)
@@ -2185,6 +2338,11 @@ def main(argv=None):
     os.makedirs(output_dir, exist_ok=True)
     md = build_markdown(p1, p2, p3, p4, p5, p7, p8, p9, p10, p11, p12, e21,
                         cliff, p17=p17, p18=p18)
+    late_inputs = {name: load(name) for name in (
+        "p13_beff.json", "p19_provenance.json",
+        "p15_v2policy.json", "p16_uplink.json", "p17_adaptive_value.json",
+        "p18_mmax.json", "p20_residual.json")}
+    md += late_stage_summary(late_inputs)
     manifest = source_manifest()
     header, body = md.split("\n", 1)
     md = prose_style(header + "\n\n" + manifest_markdown(manifest) + "\n" + body)
@@ -2197,6 +2355,7 @@ def main(argv=None):
 
     html = build_onepager(p1, p2, p3, p4, p5, p7, p8, p9, p10, p11, p12, e21,
                           cliff)
+    html += late_stage_html(late_inputs)
     html = prose_style(html)
     if "@@" in html:
         print("치환되지 않은 자리표시자가 남았다")

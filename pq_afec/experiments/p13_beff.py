@@ -48,6 +48,8 @@ from __future__ import annotations
 import math
 import os
 import sys
+import datetime as dt
+import uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -156,14 +158,66 @@ def cp_lower(x, n, alpha=0.05):
     return 0.5 * (lo + hi)
 
 
+def late_parity_assessment(n_req, n_ok, n_conns, credited, err=""):
+    """Separate observed server records from complete requested-trial coverage."""
+    counts_valid = (
+        all(type(n) is int for n in (n_req, n_ok, n_conns, credited))
+        and n_req > 0 and 0 <= n_ok <= n_req
+        and 0 <= credited <= n_conns <= n_req)
+    complete = (counts_valid and not err
+                and n_ok == n_req and n_conns == n_req)
+    frac = credited / float(n_conns) if counts_valid and n_conns else None
+    observed_lo = cp_lower(credited, n_conns) if counts_valid else None
+    # A bound over surviving/merged server records is not a bound over trials.
+    lo = observed_lo if complete else None
+    verdict = "inconclusive"
+    if complete:
+        if lo is not None and lo >= LATE_CRED_MIN:
+            verdict = "refuted"
+        elif frac is not None and frac <= 0.1:
+            verdict = "confirmed"
+    return {
+        "frac": frac,
+        "frac_scope": "observed_server_records",
+        "observed_cred_ci95_lo": observed_lo,
+        "cred_ci95_lo": lo,
+        "coverage_complete": bool(complete),
+        "server_coverage_frac": n_conns / float(n_req) if counts_valid else None,
+        "n_missing_server": n_req - n_conns if counts_valid else None,
+        "coverage_reason": (
+            "요청·성공·서버 기록 수 일치" if complete else
+            "요청 %s, 성공 %s, 서버 기록 %s, 오류 %s. 전체 시행의 신용률 판정 불가"
+            % (n_req, n_ok, n_conns, err or "없음")),
+        "verdict": verdict,
+    }
+
+
+def collection_evidence(rows, cs, ss, err, n_req):
+    """Retain returned rows and successful-trial denominators separately."""
+    n_ok = sum(1 for row in rows if row.get("ok"))
+    return {"n_req": n_req, "n_rows": len(rows), "n_ok": n_ok,
+            "n_failed": len(rows) - n_ok, "n_missing": max(0, n_req - len(rows)),
+            "client_rows": rows, "client_stats": cs, "server_stats": ss,
+            "client_coverage_complete": len(rows) == n_req and n_ok == n_req and not err,
+            "recording_scope": "returned client JSON rows and available server statistics; counts do not establish connection matching"}
+
+
 def run_cond(group, k, fec, m, cert, n):
     """조건 하나를 돌리고 (클라 행들, 클라 통계, 서버 보고)를 준다."""
+    started = dt.datetime.now(dt.timezone.utc).isoformat()
+    collection_id = uuid.uuid4().hex
     srv_mode = "on" if fec == "on" else "off"
     p, sp = B.start_server(cert, fec=srv_mode)
     rows, cs, err = B.run_client(group, n, fec=fec, m=max(m, 1), gap_ms=15,
                                  timeout_s=12, expect_k=k)
     B.stop_server(p)
     ss = B.read_server_stats(sp)
+    cs["collection_provenance"] = {
+        "collection_id": collection_id, "started_at": started,
+        "finished_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "group": group, "expected_k_flush_hint": k, "fec": fec, "m": m,
+        "cert": cert, "n_req": n, "requested_rtt_ms": RTT_MS,
+        "time_scope": "collection interval, not individual connection timestamps"}
     return rows, cs, ss, err
 
 
@@ -269,7 +323,8 @@ def main():
                 ffb = [r.get("first_flight_bytes") or 0 for r in rows]
                 ffp = [r.get("first_flight_parity_bytes") or 0 for r in rows]
                 lo, hi = req_interval(BIN_OF[(group, arm)])
-                rec = {"group": group, "arm": arm, "m": m, "cert": cert,
+                rec = {**collection_evidence(rows, cs, ss, err, N_BEFF),
+                       "group": group, "arm": arm, "m": m, "cert": cert,
                        "n_conns": len(conns), "n_rows": len(rows),
                        "merged_suspect": merged_n,
                        "err": err,
@@ -435,33 +490,35 @@ def main():
     _lpar = [c.get("beff_parity", 0) for c in _lconns]
     _lcred = sum(1 for v in _lpar if v > 0)
     _lsum = B.summarize(_lrows, rtt_ms=RTT_MS)
-    _llo = cp_lower(_lcred, len(_lconns)) if _lconns else None
+    _late = late_parity_assessment(N_LATE, _lsum.get("ok"),
+                                   len(_lconns), _lcred, _lerr)
+    _llo = _late["cred_ci95_lo"]
     out["late_parity"] = {
         "cert": _lcert, "n_req": N_LATE, "n_conns": len(_lconns),
         "credited": _lcred, "err": _lerr,
-        "frac": (_lcred / float(len(_lconns))) if _lconns else None,
-        "cred_ci95_lo": _llo,
         "two_rtt_rate": _lsum.get("two_rtt_rate"),
-        "p50": _lsum.get("p50"), "n_ok": _lsum.get("n"),
+        "p50": _lsum.get("p50"),
+        **collection_evidence(_lrows, _lcs, _lss, _lerr, N_LATE),
+        **_late,
     }
-    print("   신용 %d/%d (하한 %s) | 2-RTT %s"
+    print("   관측 기록 신용 %d/%d (전체 시행 하한 %s) | 2-RTT %s"
           % (_lcred, len(_lconns),
              "-" if _llo is None else "%.4f" % _llo,
              out["late_parity"]["two_rtt_rate"]), flush=True)
-    refuted = _llo is not None and _llo >= LATE_CRED_MIN
-    _frac = out["late_parity"]["frac"]
-    out["late_parity_verdict"] = (
-        "refuted" if refuted else
-        ("confirmed" if _frac is not None and _frac <= 0.1
-         else "inconclusive"))
-    add("5. late-parity: 신용률 95%% 하한 >= %.2f (= 늦은 패리티 < %.0f%%)"
-        % (LATE_CRED_MIN, 100 * (1 - LATE_CRED_MIN)),
+    out["late_parity_verdict"] = _late["verdict"]
+    add("5a. late-parity: 요청 시행의 성공·서버 기록이 빠짐없이 있다",
+        _late["coverage_complete"],
+        "%s | 서버 기록 누락 %s"
+        % (_late["coverage_reason"], _late["n_missing_server"]))
+    add("5. late-parity: 완전한 시행 표본으로 가설을 판정했다",
         out["late_parity_verdict"] != "inconclusive",
-        "%d/%d 신용, 하한 %s -> %s (표본 %d 로는 하한이 %s 까지만 간다)"
+        "관측 신용 %d/%d, 전체 시행 95%% 하한 %s -> %s"
+        " (refuted 기준 %.2f; 관측 기록만의 하한 %s)"
         % (_lcred, len(_lconns),
            "-" if _llo is None else "%.4f" % _llo,
-           out["late_parity_verdict"], len(_lconns),
-           "-" if not _lconns else "%.4f" % (0.05 ** (1.0 / len(_lconns)))))
+           out["late_parity_verdict"], LATE_CRED_MIN,
+           "-" if _late["observed_cred_ci95_lo"] is None
+           else "%.4f" % _late["observed_cred_ci95_lo"]))
 
     # ---- 검사 6: 뒤 비행(ACK 비행)의 바이트가 B_eff 에 안 섞였다
     ack_bad = []
@@ -528,7 +585,8 @@ def main():
             #    재 본 적이 한 번도 없었다.
             srvb = [r.get("server_bytes") or 0 for r in rows
                     if r.get("ok")]
-            rec = {"group": group, "arm": arm, "cert": cert, "err": err,
+            rec = {**collection_evidence(rows, cs, ss, err, N_SWEEP),
+                   "group": group, "arm": arm, "cert": cert, "err": err,
                    "n_conns": len(conns), "n_valid": valid,
                    "two_rtt_rate": two,
                    "n_flight_med": median(nfl), "flight_bytes_med": median(sfl),
