@@ -1,0 +1,39 @@
+{
+ "schema": "padfec3.m1confirm_seal.v1",
+ "sealed_utc": "2026-10-02T01:52:58Z",
+ "stage": "PAD-FEC v3 M1 re-confirmation (g3/PROTOCOL_m1confirm.md)",
+ "sha256": {
+  "g3/PROTOCOL_m1confirm.md": "24ae673418f72dc7e196b90bdfbc0c74af656d4c60d35270cbd1696e28c24459",
+  "g3/m1confirm_predictions.json": "03c3aef099296623fdbeea8c37b9adc73810dd6e4484178a0ffb9bbaf64866dd",
+  "experiments/g3_m1confirm.py": "7cdff0b68b60cddb731a798fd733a505b69f83cb280c59fd370b492cc5c19a8e",
+  "experiments/g3_stage0.py": "76b1dd776b68186c81b4c303759f50df20e6db38b719f0e1aa3a4c698e9866b4",
+  "experiments/g3bed.py": "b3f68c1ca2e129a7def1e467072ccae713122677b378165f874b497e16df4ed1",
+  "experiments/padbed.py": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+  "experiments/_journal.py": "903c0117ffe0ecb7b855591a5697906c566b00342a94c84f1e826683f72d5281",
+  "experiments/blockstat.py": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f"
+ },
+ "also_recorded_sha256": {
+  "g3/seal_m1confirm.py": "496d413ade8cdcac6b281ea8c58195373210721b901da021b7bfa0697ab2bcaa",
+  "tests/test_g3_m1confirm.py": "5a2a1314cd15ff2e7274153682be05437d6cb45f763c0e559e65d5ac02ba0433",
+  "tests/test_g3_stage0.py": "2e3d22278820b752a2605792fe7efd3fa13a59d75423b4e39993b35c2aa6ebbd",
+  "g3/RESULT_stage0.md": "7c4167b46f9ea7097c910917caddd68fc1bd6091142823ef88b025529dfe481e",
+  "g3/stage0_predictions.json": "9df45d84f68b610fb9cc233c701d614ee513bdba1736a66e766fae39325b1db3",
+  "g3/SEAL_stage0.json": "6f1cb9d98d58c514e020de849b39e1f7862a91ed437a67368feb2e28478c3784",
+  "g3/PROTOCOL_stage0.md": "025b4a5e21588112ebb9ac83b9cc82c7130fa44966c0a01fbe708d5022f54339"
+ },
+ "predictions_copied_from": {
+  "path": "g3/stage0_predictions.json",
+  "sha256": "9df45d84f68b610fb9cc233c701d614ee513bdba1736a66e766fae39325b1db3",
+  "generated_utc": "2026-10-02T00:13:02Z",
+  "sealed_by": "g3/SEAL_stage0.json",
+  "sealed_utc": "2026-10-02T00:45:16Z",
+  "keys": [
+   "one_rtt_definition",
+   "conditions.bigcert_loss2 without arms",
+   "conditions.bigcert_loss2.arms.v2-m1",
+   "conditions.bigcert_loss2.arms.m4L3",
+   "decision_rules.M1"
+  ]
+ },
+ "check": "python -B g3/seal_m1confirm.py --check"
+}

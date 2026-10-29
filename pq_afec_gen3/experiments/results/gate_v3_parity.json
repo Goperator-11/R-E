@@ -1,0 +1,923 @@
+{
+ "schema": "padfec3.gate_v3_parity/1",
+ "started_utc": "2026-10-02T03:00:21.126208+00:00",
+ "label": "deterministic cross-language parity check of experiments/quicbed/policy3.go against padfec3/learn3.py + decide3.py + layout.py; no network, no measurement data",
+ "verdict": "C:/dev/codex_handoff/state/evo/verdict_v3.md section 3 C",
+ "criteria": {
+  "decision": "action, mode, n_need, n_cands, cand_hash, n_tied identical",
+  "j_abs_tol_ms": 1e-09,
+  "posterior_rel_tol": 1e-12,
+  "trajectory": "every step: action, why, y, updated identical; ej abs <= 1e-9; step p_mean rel <= 1e-12; snapshots: post_h, w, combined, state.post, state.w rel <= 1e-12, windows and counters identical"
+ },
+ "host": {
+  "python": "3.14.4",
+  "platform": "Linux-6.18.35.2-microsoft-standard-WSL2-x86_64-with-glibc2.43"
+ },
+ "binary": {
+  "path": "/home/scien/quicbed_g3b/bin/qamp",
+  "exists": true,
+  "sha256": "ad5246f361ababca2f477724b047d4db75c3e95412368428c793c008b3f9c31e",
+  "sha256_file": "ad5246f361ababca2f477724b047d4db75c3e95412368428c793c008b3f9c31e",
+  "srcsha": "1d331c2fb3944c2ae416ee0e6f9a0616c7b431248dd3bf9cc59d1ed70417a85f",
+  "source_fingerprint_now": "1d331c2fb3944c2ae416ee0e6f9a0616c7b431248dd3bf9cc59d1ed70417a85f"
+ },
+ "reference": {
+  "path": "g3/policy3_reference.json",
+  "sha256": "34d90dfb665ca7b12f7e7ce97857def3a9e8c2d21a11f258df4ae254d9a945f1",
+  "schema": "padfec3.policy3_reference/1",
+  "seeds": {
+   "decisions": 20261002,
+   "primitives": 20261003,
+   "trajectories": [
+    31,
+    32,
+    33,
+    34
+   ]
+  },
+  "sources": {
+   "g3/policy3_reference_gen.py": {
+    "recorded": "4eb2ad160ea1d3b88792a1498317029d5bdd54d1790fc5e405cff65f4050cb47",
+    "now": "4eb2ad160ea1d3b88792a1498317029d5bdd54d1790fc5e405cff65f4050cb47",
+    "same": true
+   },
+   "padfec/policy.py": {
+    "recorded": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+    "now": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+    "same": true
+   },
+   "padfec/quantum.py": {
+    "recorded": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "now": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "same": true
+   },
+   "padfec/table.py": {
+    "recorded": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "now": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "same": true
+   },
+   "padfec3/decide3.py": {
+    "recorded": "db3d4db64fe2ef1e2ae270182a290f215095c6d3a9360480077788e98755340c",
+    "now": "db3d4db64fe2ef1e2ae270182a290f215095c6d3a9360480077788e98755340c",
+    "same": true
+   },
+   "padfec3/layout.py": {
+    "recorded": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+    "now": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+    "same": true
+   },
+   "padfec3/learn3.py": {
+    "recorded": "17d2714ec9970c23f0f3e5f2a62f3fa00588f5b037909ca7f1bf70f38bec98b6",
+    "now": "17d2714ec9970c23f0f3e5f2a62f3fa00588f5b037909ca7f1bf70f38bec98b6",
+    "same": true
+   }
+  }
+ },
+ "coverage_reference": {
+  "n": 6720,
+  "k": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "W": [
+   1200,
+   1280,
+   1350
+  ],
+  "cert": [
+   1000,
+   2308,
+   3000,
+   3200,
+   4032,
+   5609,
+   5800,
+   6500,
+   8000,
+   9000,
+   10800,
+   12000,
+   14000,
+   16000
+  ],
+  "s0_base": [
+   382.45,
+   1472.0
+  ],
+  "rtt": [
+   10.0,
+   50.0,
+   100.0,
+   200.0
+  ],
+  "u": [
+   0.0,
+   2.0,
+   5.0,
+   10.0,
+   100.0
+  ],
+  "distinct_contexts": 6720,
+  "post_kinds": {
+   "full": 338,
+   "mix2": 1015,
+   "mix4": 654,
+   "point": 4713
+  },
+  "point_posterior_grid_points": 26,
+  "grid_points": 26,
+  "distinct_actions": 159,
+  "tied_decisions": 1293,
+  "lead_not_legacy": 5849,
+  "modes": {
+   "combo": 987,
+   "none": 108,
+   "pad": 20,
+   "parity": 5605
+  }
+ },
+ "go_timing_s": {
+  "wall": 2.4965968132019043,
+  "inner": {
+   "decisions": 1.09827108,
+   "primitives": 0.086927338,
+   "trajectories": 1.259596171
+  }
+ },
+ "constants": {
+  "pass": true,
+  "differences": {}
+ },
+ "primitives": {
+  "count_python": 2000,
+  "count_go": 2000,
+  "ids": {
+   "n": 2000,
+   "mismatches": 0,
+   "first_mismatch": null
+  },
+  "fields": {
+   "J": {
+    "n": 2000,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 2000,
+    "first_over": null
+   },
+   "e": {
+    "n": 2000,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 2000,
+    "first_over": null
+   },
+   "p_two_rtt": {
+    "n": 2000,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 2000,
+    "first_over": null
+   },
+   "p_fail": {
+    "n": 2000,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 2000,
+    "first_over": null
+   },
+   "p_one_rtt": {
+    "n": 2000,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 2000,
+    "first_over": null
+   }
+  },
+  "pass": true
+ },
+ "decisions": {
+  "count_python": 6720,
+  "count_go": 6720,
+  "errors": {
+   "n": 6720,
+   "mismatches": 0,
+   "first_mismatch": null
+  },
+  "exact": {
+   "action": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "mode": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "n_need": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "n_cands": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "cand_hash": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "n_tied": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   }
+  },
+  "close": {
+   "ej": {
+    "n": 6720,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 6720,
+    "first_over": null
+   },
+   "jmin": {
+    "n": 6720,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 6720,
+    "first_over": null
+   }
+  },
+  "candidate_lists": {
+   "records": 672,
+   "order": {
+    "n": 672,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "ej": {
+    "n": 11928,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 11928,
+    "first_over": null
+   }
+  },
+  "pass": true
+ },
+ "trajectories": {
+  "count_python": 4,
+  "count_go": 4,
+  "each": [
+   {
+    "id": "T1_bigcert",
+    "steps_python": 10000,
+    "steps_go": 10000,
+    "decisions": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "why": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "y": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "updated": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 10000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "step_p_mean": {
+     "n": 10000,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "snapshots_python": 10,
+    "snapshots_go": 10,
+    "snapshot_exact": {
+     "n": 110,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "posterior": {
+     "n": 2970,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2970,
+     "first_over": null
+    },
+    "pass": true
+   },
+   {
+    "id": "T2_rtt200",
+    "steps_python": 10000,
+    "steps_go": 10000,
+    "decisions": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "why": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "y": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "updated": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 10000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "step_p_mean": {
+     "n": 10000,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "snapshots_python": 10,
+    "snapshots_go": 10,
+    "snapshot_exact": {
+     "n": 110,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "posterior": {
+     "n": 2970,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2970,
+     "first_over": null
+    },
+    "pass": true
+   },
+   {
+    "id": "T3_x25519_unlimited",
+    "steps_python": 10000,
+    "steps_go": 10000,
+    "decisions": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "why": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "y": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "updated": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 10000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "step_p_mean": {
+     "n": 10000,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "snapshots_python": 10,
+    "snapshots_go": 10,
+    "snapshot_exact": {
+     "n": 110,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "posterior": {
+     "n": 2970,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2970,
+     "first_over": null
+    },
+    "pass": true
+   },
+   {
+    "id": "T4_shielded_rtt200",
+    "steps_python": 10000,
+    "steps_go": 10000,
+    "decisions": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "why": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "y": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "updated": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 10000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "step_p_mean": {
+     "n": 10000,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "snapshots_python": 10,
+    "snapshots_go": 10,
+    "snapshot_exact": {
+     "n": 110,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "posterior": {
+     "n": 2970,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2970,
+     "first_over": null
+    },
+    "pass": true
+   }
+  ],
+  "pass": true
+ },
+ "fresh": {
+  "seed": 20261005,
+  "python_s": 38.12197208404541,
+  "go_wall_s": 1.623124122619629,
+  "coverage": {
+   "n": 5000,
+   "k": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "W": [
+    1200,
+    1280,
+    1350
+   ],
+   "cert": [
+    1000,
+    2308,
+    3000,
+    3200,
+    4032,
+    5609,
+    5800,
+    6500,
+    8000,
+    9000,
+    10800,
+    12000,
+    14000,
+    16000
+   ],
+   "s0_base": [
+    382.45,
+    1472.0
+   ],
+   "rtt": [
+    10.0,
+    50.0,
+    100.0,
+    200.0
+   ],
+   "u": [
+    0.0,
+    2.0,
+    5.0,
+    10.0,
+    100.0
+   ],
+   "distinct_contexts": 3482,
+   "post_kinds": {
+    "full": 207,
+    "mix2": 738,
+    "mix4": 536,
+    "point": 3519
+   },
+   "point_posterior_grid_points": 26,
+   "grid_points": 26,
+   "distinct_actions": 138,
+   "tied_decisions": 944,
+   "lead_not_legacy": 4376,
+   "modes": {
+    "combo": 788,
+    "none": 65,
+    "pad": 12,
+    "parity": 4135
+   }
+  },
+  "primitives": {
+   "count_python": 2000,
+   "count_go": 2000,
+   "ids": {
+    "n": 2000,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "fields": {
+    "J": {
+     "n": 2000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2000,
+     "first_over": null
+    },
+    "e": {
+     "n": 2000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2000,
+     "first_over": null
+    },
+    "p_two_rtt": {
+     "n": 2000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2000,
+     "first_over": null
+    },
+    "p_fail": {
+     "n": 2000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2000,
+     "first_over": null
+    },
+    "p_one_rtt": {
+     "n": 2000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2000,
+     "first_over": null
+    }
+   },
+   "pass": true
+  },
+  "decisions": {
+   "count_python": 5000,
+   "count_go": 5000,
+   "errors": {
+    "n": 5000,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "exact": {
+    "action": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "mode": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "n_need": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "n_cands": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "cand_hash": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "n_tied": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    }
+   },
+   "close": {
+    "ej": {
+     "n": 5000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 5000,
+     "first_over": null
+    },
+    "jmin": {
+     "n": 5000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 5000,
+     "first_over": null
+    }
+   },
+   "candidate_lists": {
+    "records": 500,
+    "order": {
+     "n": 500,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 9087,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 9087,
+     "first_over": null
+    }
+   },
+   "pass": true
+  },
+  "trajectories": {
+   "count_python": 2,
+   "count_go": 2,
+   "each": [
+    {
+     "id": "F1_cert12000_k3",
+     "steps_python": 10000,
+     "steps_go": 10000,
+     "decisions": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "why": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "y": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "updated": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "step_p_mean": {
+      "n": 10000,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "snapshots_python": 10,
+     "snapshots_go": 10,
+     "snapshot_exact": {
+      "n": 110,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "posterior": {
+      "n": 2970,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 2970,
+      "first_over": null
+     },
+     "pass": true
+    },
+    {
+     "id": "F2_cert6000_rtt20",
+     "steps_python": 10000,
+     "steps_go": 10000,
+     "decisions": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "why": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "y": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "updated": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "step_p_mean": {
+      "n": 10000,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "snapshots_python": 10,
+     "snapshots_go": 10,
+     "snapshot_exact": {
+      "n": 110,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "posterior": {
+      "n": 2970,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 2970,
+      "first_over": null
+     },
+     "pass": true
+    }
+   ],
+   "pass": true
+  },
+  "trajectory_specs": [
+   {
+    "id": "F1_cert12000_k3",
+    "seed": 35,
+    "cert": 12000,
+    "s0_base": 1472.0,
+    "k": 3,
+    "W": 1350,
+    "u": 5.0,
+    "rtt_true": 100.0,
+    "schedule": [
+     [
+      0.01,
+      300
+     ],
+     [
+      0.08,
+      300
+     ]
+    ]
+   },
+   {
+    "id": "F2_cert6000_rtt20",
+    "seed": 36,
+    "cert": 6000,
+    "s0_base": 1472.0,
+    "k": 2,
+    "W": 1280,
+    "u": 1.0,
+    "rtt_true": 20.0,
+    "schedule": [
+     [
+      0.0,
+      400
+     ],
+     [
+      0.12,
+      200
+     ]
+    ]
+   }
+  ],
+  "pass": true
+ },
+ "sections": {
+  "constants": true,
+  "primitives": true,
+  "decisions": true,
+  "trajectories": true,
+  "fresh": true
+ },
+ "problems": [],
+ "pass": true,
+ "elapsed_s": 42.73423767089844,
+ "finished_utc": "2026-10-02T03:01:03.860447+00:00"
+}

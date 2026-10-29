@@ -1,0 +1,1845 @@
+{
+ "schema": "p21_gencompare.result.v1",
+ "run": "run2",
+ "verdict": "C:/dev/codex_handoff/state/evo/verdict_v3.md sections 4.1, 4.3, 4.4, 4.5",
+ "protocol": "g3/PROTOCOL_stage2.md",
+ "generated_at": "2026-10-02T08:35:28.981789+00:00",
+ "label": "confirmatory",
+ "confirmatory": true,
+ "seal_sha256": "6573a1e53def7d886b0b43d8a8237671cc55f35bdd78e3a05acc6d9ebb103ed7",
+ "plan": {
+  "alpha": 0.05,
+  "arms": {
+   "g2auto": {
+    "bin": "g2",
+    "extra": [],
+    "fec": "auto",
+    "flags": [
+     "-fec",
+     "auto",
+     "-m",
+     "1",
+     "-cache",
+     "<cache>",
+     "-probe-every",
+     "20"
+    ],
+    "kind": "auto2",
+    "label": "g2-auto",
+    "m": 1,
+    "slot": "A"
+   },
+   "g3auto": {
+    "bin": "g3b",
+    "extra": [],
+    "fec": "auto3",
+    "flags": [
+     "-fec",
+     "auto3",
+     "-m",
+     "1",
+     "-cache3",
+     "<cache>"
+    ],
+    "kind": "auto3",
+    "label": "g3-auto",
+    "m": 1,
+    "slot": "B"
+   }
+  },
+  "bins": {
+   "g2": "/tmp/qamp_g3/g2/qamp",
+   "g3b": "/tmp/qamp_g3/g3b/qamp"
+  },
+  "cache_rule": "each auto arm has its own cache file per run and condition, deleted at the condition start and carried across all blocks (p17/p11/p15 semantics); cold conditions delete both caches before every 8-connection segment; on resume the caches are restored from the last journaled block",
+  "conds": [
+   {
+    "arms": [
+     "g2auto",
+     "g3auto"
+    ],
+    "batch": "S run 2",
+    "cond": "S_bigcert",
+    "contrasts": [
+     {
+      "id": "g2-g3",
+      "use": [
+       "H1",
+       "H2"
+      ],
+      "x": "g2auto",
+      "y": "g3auto"
+     }
+    ],
+    "cycles": 5,
+    "design": "sched",
+    "family": "S",
+    "losses": [
+     2.0,
+     15.0
+    ],
+    "mirrors": "p17 큰cert",
+    "n_per_arm": 4500,
+    "profile": {
+     "burst": 1.0,
+     "cert": 16000,
+     "expect_k": 2,
+     "gap_ms": 50,
+     "group": "X25519MLKEM768",
+     "name": "bigcert",
+     "netem_rate_mbit": 2.0,
+     "rtt_ms": 50.0,
+     "throughput_ref": "bigcert",
+     "uplink_policy_mbps": 2.0
+    },
+    "segment_n": 450,
+    "servers": {
+     "A": "g2",
+     "B": "g3b"
+    }
+   },
+   {
+    "arms": [
+     "g2auto",
+     "g3auto"
+    ],
+    "batch": "S run 2",
+    "cond": "S_rtt200",
+    "contrasts": [
+     {
+      "id": "g2-g3",
+      "use": [
+       "H1",
+       "H2"
+      ],
+      "x": "g2auto",
+      "y": "g3auto"
+     }
+    ],
+    "cycles": 5,
+    "design": "sched",
+    "family": "S",
+    "losses": [
+     2.0,
+     15.0
+    ],
+    "mirrors": "p17 RTT200",
+    "n_per_arm": 4500,
+    "profile": {
+     "burst": 1.0,
+     "cert": 9000,
+     "expect_k": 2,
+     "gap_ms": 50,
+     "group": "X25519MLKEM768",
+     "name": "rtt200",
+     "netem_rate_mbit": 2.0,
+     "rtt_ms": 200.0,
+     "throughput_ref": "rtt200",
+     "uplink_policy_mbps": 2.0
+    },
+    "segment_n": 450,
+    "servers": {
+     "A": "g2",
+     "B": "g3b"
+    }
+   }
+  ],
+  "imputation": "primary metric = mean over all planned trials; failed or missing trials count as 10000 ms (client timeout)",
+  "impute_ms": 10000.0,
+  "loss_direction": "client_to_server_only",
+  "netem": "padbed.set_netem(rtt/2, loss_c2s=loss, burst_len=burst, rate_up_mbit=rate)",
+  "ordering": "Williams sets W2=(AB,BA), W3=(ABC,BCA,CAB,CBA,BAC,ACB). Schedule conditions: block (cycle c, stratum s) uses W[(s*cycles+c) mod |W|], run cycle-major like p17. Block and cold conditions: block b uses W[b mod |W|] (AB/BA alternation).",
+  "protocol": "g3/PROTOCOL_stage2.md",
+  "run": "run2",
+  "schedule": [
+   {
+    "block": 0,
+    "clear_cache": false,
+    "cond": "S_bigcert",
+    "cycle": 0,
+    "loss": 2.0,
+    "order": [
+     "g2auto",
+     "g3auto"
+    ],
+    "seq_index": 0,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 0
+   },
+   {
+    "block": 1,
+    "clear_cache": false,
+    "cond": "S_bigcert",
+    "cycle": 0,
+    "loss": 15.0,
+    "order": [
+     "g3auto",
+     "g2auto"
+    ],
+    "seq_index": 5,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 1
+   },
+   {
+    "block": 2,
+    "clear_cache": false,
+    "cond": "S_bigcert",
+    "cycle": 1,
+    "loss": 2.0,
+    "order": [
+     "g3auto",
+     "g2auto"
+    ],
+    "seq_index": 1,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 0
+   },
+   {
+    "block": 3,
+    "clear_cache": false,
+    "cond": "S_bigcert",
+    "cycle": 1,
+    "loss": 15.0,
+    "order": [
+     "g2auto",
+     "g3auto"
+    ],
+    "seq_index": 6,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 1
+   },
+   {
+    "block": 4,
+    "clear_cache": false,
+    "cond": "S_bigcert",
+    "cycle": 2,
+    "loss": 2.0,
+    "order": [
+     "g2auto",
+     "g3auto"
+    ],
+    "seq_index": 2,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 0
+   },
+   {
+    "block": 5,
+    "clear_cache": false,
+    "cond": "S_bigcert",
+    "cycle": 2,
+    "loss": 15.0,
+    "order": [
+     "g3auto",
+     "g2auto"
+    ],
+    "seq_index": 7,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 1
+   },
+   {
+    "block": 6,
+    "clear_cache": false,
+    "cond": "S_bigcert",
+    "cycle": 3,
+    "loss": 2.0,
+    "order": [
+     "g3auto",
+     "g2auto"
+    ],
+    "seq_index": 3,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 0
+   },
+   {
+    "block": 7,
+    "clear_cache": false,
+    "cond": "S_bigcert",
+    "cycle": 3,
+    "loss": 15.0,
+    "order": [
+     "g2auto",
+     "g3auto"
+    ],
+    "seq_index": 8,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 1
+   },
+   {
+    "block": 8,
+    "clear_cache": false,
+    "cond": "S_bigcert",
+    "cycle": 4,
+    "loss": 2.0,
+    "order": [
+     "g2auto",
+     "g3auto"
+    ],
+    "seq_index": 4,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 0
+   },
+   {
+    "block": 9,
+    "clear_cache": false,
+    "cond": "S_bigcert",
+    "cycle": 4,
+    "loss": 15.0,
+    "order": [
+     "g3auto",
+     "g2auto"
+    ],
+    "seq_index": 9,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 1
+   },
+   {
+    "block": 0,
+    "clear_cache": false,
+    "cond": "S_rtt200",
+    "cycle": 0,
+    "loss": 2.0,
+    "order": [
+     "g2auto",
+     "g3auto"
+    ],
+    "seq_index": 0,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 0
+   },
+   {
+    "block": 1,
+    "clear_cache": false,
+    "cond": "S_rtt200",
+    "cycle": 0,
+    "loss": 15.0,
+    "order": [
+     "g3auto",
+     "g2auto"
+    ],
+    "seq_index": 5,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 1
+   },
+   {
+    "block": 2,
+    "clear_cache": false,
+    "cond": "S_rtt200",
+    "cycle": 1,
+    "loss": 2.0,
+    "order": [
+     "g3auto",
+     "g2auto"
+    ],
+    "seq_index": 1,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 0
+   },
+   {
+    "block": 3,
+    "clear_cache": false,
+    "cond": "S_rtt200",
+    "cycle": 1,
+    "loss": 15.0,
+    "order": [
+     "g2auto",
+     "g3auto"
+    ],
+    "seq_index": 6,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 1
+   },
+   {
+    "block": 4,
+    "clear_cache": false,
+    "cond": "S_rtt200",
+    "cycle": 2,
+    "loss": 2.0,
+    "order": [
+     "g2auto",
+     "g3auto"
+    ],
+    "seq_index": 2,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 0
+   },
+   {
+    "block": 5,
+    "clear_cache": false,
+    "cond": "S_rtt200",
+    "cycle": 2,
+    "loss": 15.0,
+    "order": [
+     "g3auto",
+     "g2auto"
+    ],
+    "seq_index": 7,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 1
+   },
+   {
+    "block": 6,
+    "clear_cache": false,
+    "cond": "S_rtt200",
+    "cycle": 3,
+    "loss": 2.0,
+    "order": [
+     "g3auto",
+     "g2auto"
+    ],
+    "seq_index": 3,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 0
+   },
+   {
+    "block": 7,
+    "clear_cache": false,
+    "cond": "S_rtt200",
+    "cycle": 3,
+    "loss": 15.0,
+    "order": [
+     "g2auto",
+     "g3auto"
+    ],
+    "seq_index": 8,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 1
+   },
+   {
+    "block": 8,
+    "clear_cache": false,
+    "cond": "S_rtt200",
+    "cycle": 4,
+    "loss": 2.0,
+    "order": [
+     "g2auto",
+     "g3auto"
+    ],
+    "seq_index": 4,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 0
+   },
+   {
+    "block": 9,
+    "clear_cache": false,
+    "cond": "S_rtt200",
+    "cycle": 4,
+    "loss": 15.0,
+    "order": [
+     "g3auto",
+     "g2auto"
+    ],
+    "seq_index": 9,
+    "sizes": {
+     "g2auto": 450,
+     "g3auto": 450
+    },
+    "stratum": 1
+   }
+  ],
+  "schema": "p21_gencompare.plan.v1",
+  "server_fec": "on",
+  "slots": {
+   "A": 44433,
+   "B": 44434,
+   "C": 44435
+  },
+  "timeout_s": 10,
+  "verdict": "C:/dev/codex_handoff/state/evo/verdict_v3.md sections 4.1, 4.3, 4.4, 4.5",
+  "work": "/tmp/padfec_p21"
+ },
+ "env_starts": [
+  {
+   "uname_r": "6.18.35.2-microsoft-standard-WSL2",
+   "python3_V": "Python 3.14.4",
+   "python_running": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+   "tc_V": "tc utility, iproute2-6.19.0, libbpf 1.6.3",
+   "ip_V": "ip utility, iproute2-6.19.0, libbpf 1.6.3",
+   "cpu_list": "0,1,2,3",
+   "taskset": [
+    "taskset",
+    "-c",
+    "0,1,2,3"
+   ],
+   "cpu_count": 28,
+   "work": "/tmp/padfec_p21",
+   "bins": {
+    "g2": "/tmp/qamp_g3/g2/qamp",
+    "g3b": "/tmp/qamp_g3/g3b/qamp"
+   },
+   "netns": "peer",
+   "devs": [
+    "v0",
+    "v1"
+   ],
+   "addrs": [
+    "10.9.0.1",
+    "10.9.0.2"
+   ],
+   "runtime_context": {
+    "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+    "executable": "/usr/bin/python3",
+    "platform": "Linux-6.18.35.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "machine": "x86_64",
+    "cpu_count": 28,
+    "affinity": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27
+    ],
+    "padfec_env": {
+     "PADFEC_GEN": "g3eval_20261002"
+    }
+   },
+   "quicbed_sources_sha256": {
+    "build.sh": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+    "build_g3.sh": "ead59e44b9594510031a0e195613ad860a5dc9e343cce982c429ebaa0af61150",
+    "build_g3b.sh": "e7260311ea73ddfdebd1f82ccbaa8b4d66ac2ec319fdde543e3304a80097c82b",
+    "build_server.sh": "b45c178423b4aaa9183fa52959e120a37c3fb106a46e705486f64191aecb90c2",
+    "client.go": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+    "dataapp.go": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+    "diag.sh": "e52009f1631c9e918f7e5915b14498a23620c84d4ffe3855f64f997d0b01851b",
+    "go.mod": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+    "go.sum": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+    "live_demo.sh": "6adc66f809867d81d9ed856b4f072e47516350f302fd918a9664919180b49ac5",
+    "mlkem_interop.sh": "1bf6ad02fc216428582527423474104ed851315d5ff8bae57fc868a62e29df0f",
+    "mlkemcheck.go": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+    "netbed_spec.sh": "54cac826d4740f6be44aef6537b64e2ad4e22e4be0d1b8a257da91885b55179f",
+    "pfail_table.go": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+    "policy.go": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+    "policy3.go": "a53a58221ad697d561d407a2a38d1c685cf00efc2a2ac315f7eb7dea940c4055",
+    "policy3_test.go": "456ae0ff3fcfa7f8e521c55a82e05796af24eaed4a28be12bf206e8e11b372da",
+    "policy_adaptation_test.go": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+    "policy_rtt_test.go": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+    "qamp.go": "5d0bcabca268da898d1607602d840e9a7f4695b2b4d324bdf1932ff12fc95dc5",
+    "qamp_accounting_test.go": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+    "qamp_audit_test.go": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+    "qamp_lead_test.go": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+    "server.go": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+    "setup.sh": "4eec31865d6ca32aaed66deb3544e4ea4df6181a2f4a21f64270b8731109d913",
+    "smoke.sh": "09ec12d25157e35124c32a7d09e75e35980f1a459b12b555f489e749e476bf65"
+   },
+   "quicbed_build_style_fingerprint": "1d331c2fb3944c2ae416ee0e6f9a0616c7b431248dd3bf9cc59d1ed70417a85f",
+   "slots": {
+    "A": 44433,
+    "B": 44434,
+    "C": 44435
+   },
+   "bins_sha256": {
+    "g2": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+    "g3b": "ad5246f361ababca2f477724b047d4db75c3e95412368428c793c008b3f9c31e"
+   },
+   "binaries": {
+    "g2": {
+     "path": "/tmp/qamp_g3/g2/qamp",
+     "exists": true,
+     "sha256": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+     "executable": true,
+     "srcsha": null,
+     "sha256_file": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213"
+    },
+    "g3b": {
+     "path": "/tmp/qamp_g3/g3b/qamp",
+     "exists": true,
+     "sha256": "ad5246f361ababca2f477724b047d4db75c3e95412368428c793c008b3f9c31e",
+     "executable": true,
+     "srcsha": "1d331c2fb3944c2ae416ee0e6f9a0616c7b431248dd3bf9cc59d1ed70417a85f",
+     "sha256_file": "ad5246f361ababca2f477724b047d4db75c3e95412368428c793c008b3f9c31e",
+     "source_fingerprint_now": "1d331c2fb3944c2ae416ee0e6f9a0616c7b431248dd3bf9cc59d1ed70417a85f"
+    },
+    "stage0_g3": {
+     "path": "/tmp/qamp_g3/g3/qamp",
+     "sha256": null,
+     "note": "recorded only; p21 never runs or writes it"
+    },
+    "frozen_g2_sha256": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+    "quicbed_sources": {
+     "build.sh": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+     "build_g3.sh": "ead59e44b9594510031a0e195613ad860a5dc9e343cce982c429ebaa0af61150",
+     "build_g3b.sh": "e7260311ea73ddfdebd1f82ccbaa8b4d66ac2ec319fdde543e3304a80097c82b",
+     "build_server.sh": "b45c178423b4aaa9183fa52959e120a37c3fb106a46e705486f64191aecb90c2",
+     "client.go": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+     "dataapp.go": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+     "diag.sh": "e52009f1631c9e918f7e5915b14498a23620c84d4ffe3855f64f997d0b01851b",
+     "go.mod": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+     "go.sum": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+     "live_demo.sh": "6adc66f809867d81d9ed856b4f072e47516350f302fd918a9664919180b49ac5",
+     "mlkem_interop.sh": "1bf6ad02fc216428582527423474104ed851315d5ff8bae57fc868a62e29df0f",
+     "mlkemcheck.go": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+     "netbed_spec.sh": "54cac826d4740f6be44aef6537b64e2ad4e22e4be0d1b8a257da91885b55179f",
+     "pfail_table.go": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+     "policy.go": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+     "policy3.go": "a53a58221ad697d561d407a2a38d1c685cf00efc2a2ac315f7eb7dea940c4055",
+     "policy3_test.go": "456ae0ff3fcfa7f8e521c55a82e05796af24eaed4a28be12bf206e8e11b372da",
+     "policy_adaptation_test.go": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+     "policy_rtt_test.go": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+     "qamp.go": "5d0bcabca268da898d1607602d840e9a7f4695b2b4d324bdf1932ff12fc95dc5",
+     "qamp_accounting_test.go": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+     "qamp_audit_test.go": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+     "qamp_lead_test.go": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+     "server.go": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+     "setup.sh": "4eec31865d6ca32aaed66deb3544e4ea4df6181a2f4a21f64270b8731109d913",
+     "smoke.sh": "09ec12d25157e35124c32a7d09e75e35980f1a459b12b555f489e749e476bf65"
+    }
+   },
+   "help_flags": {
+    "g2": {
+     "flags": [
+      "addr",
+      "cache",
+      "certsize",
+      "cold-m",
+      "corrupt-parity",
+      "drop-initial",
+      "drop-parity",
+      "dump-flight",
+      "expect-k",
+      "fec",
+      "feedback",
+      "gap",
+      "group",
+      "ips",
+      "m",
+      "m-max",
+      "mode",
+      "n",
+      "parity-delay-us",
+      "probe-every",
+      "stats",
+      "timeout",
+      "uplink-mbps"
+     ],
+     "error": "",
+     "mentions_auto3": false
+    },
+    "g3b": {
+     "flags": [
+      "addr",
+      "cache",
+      "cache3",
+      "certsize",
+      "cold-m",
+      "corrupt-parity",
+      "drop-initial",
+      "drop-parity",
+      "dump-flight",
+      "expect-k",
+      "fec",
+      "feedback",
+      "gap",
+      "group",
+      "ips",
+      "layout",
+      "lead",
+      "m",
+      "m-max",
+      "mode",
+      "n",
+      "parity-delay-us",
+      "probe-every",
+      "stats",
+      "timeout",
+      "uplink-mbps"
+     ],
+     "error": "",
+     "mentions_auto3": true
+    }
+   },
+   "mirror_check": {
+    "sources": {
+     "p17": {
+      "path": "experiments/p17_adaptive_value.py",
+      "sha256": "e871ce216bcecdad039e551d2b69606fb4bdd3a2feba6cda5686a3ffe8fa3fa1"
+     },
+     "p11": {
+      "path": "experiments/p11_adaptive.py",
+      "sha256": "eb3cf95c436a69bf7cfa942b622e0470dc65cf62fd48f612ef98de82c6f1e206"
+     },
+     "p15": {
+      "path": "experiments/p15_v2policy.py",
+      "sha256": "e7ab0987d729da48d6b03206a65f86cd1434eb775574d72372ba30f9122e2542"
+     },
+     "p18": {
+      "path": "experiments/p18_mmax.py",
+      "sha256": "2074793eb943865c2366362939964ed95f627105195eaacd580d3411348c31a2"
+     },
+     "policy": {
+      "path": "padfec/policy.py",
+      "sha256": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c"
+     },
+     "qamp": {
+      "path": "experiments/quicbed/qamp.go",
+      "sha256": "5d0bcabca268da898d1607602d840e9a7f4695b2b4d324bdf1932ff12fc95dc5"
+     }
+    },
+    "facts": {
+     "p17_group_k": true,
+     "p17_segment_450": true,
+     "p17_losses": true,
+     "p17_auto_flags": true,
+     "p17_auto_m1": true,
+     "p17_gap_rule": true,
+     "p17_timeout_10": true,
+     "p17_server_fec_on": true,
+     "p17_netem_call": true,
+     "p11_conds": true,
+     "p11_blocks_10": true,
+     "p11_group_k_rtt_uplink": true,
+     "p11_auto_flags": true,
+     "p11_gap_8": true,
+     "qamp_probe_every_default_20": true,
+     "p15_conds": true,
+     "p15_group_k_rtt_uplink": true,
+     "p15_auto_flags": true,
+     "p15_gap_8": true,
+     "p15_l540_threshold_0_7_of_m2": true,
+     "p18_burst3_cond": true,
+     "p18_group_k_rtt": true,
+     "p18_gap_rule": true,
+     "p18_netem_burst": true
+    },
+    "differences": [],
+    "ok": true,
+    "notes": [
+     "p11 passes only -cache; qamp's -probe-every default is 20, so p17's explicit -probe-every 20 gives the same g2 client in every condition",
+     "p15 used 1600 fixed-arm trials and 10 auto rounds of 1600; here both auto arms get 1600 in 10 AB/BA blocks like p11",
+     "p18 measured fixed m1..m4 only; here the two auto arms run its burst-3 condition"
+    ]
+   },
+   "seal_check": {
+    "path": "g3/SEAL_stage2.json",
+    "sha256": "6573a1e53def7d886b0b43d8a8237671cc55f35bdd78e3a05acc6d9ebb103ed7",
+    "changed": [],
+    "missing": [],
+    "unsealed_new": [],
+    "ok": true,
+    "sealed_utc": "2026-10-02T03:27:08Z",
+    "binaries": {
+     "g2": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+     "g3b": "ad5246f361ababca2f477724b047d4db75c3e95412368428c793c008b3f9c31e",
+     "g3b_srcsha": "1d331c2fb3944c2ae416ee0e6f9a0616c7b431248dd3bf9cc59d1ed70417a85f"
+    },
+    "h_cells": [
+     "h_c8000_r120_u5",
+     "h_c6000_r80_u10",
+     "h_c6000_r80_u0",
+     "h_c6000_r120_u0"
+    ]
+   },
+   "h_draw": {
+    "path": "g3/stage2_h_draw.json",
+    "exists": true,
+    "ok": true,
+    "cells": [
+     {
+      "cell": "h_c8000_r120_u5",
+      "cert": 8000,
+      "rtt_ms": 120,
+      "uplink_mbps": 5
+     },
+     {
+      "cell": "h_c6000_r80_u10",
+      "cert": 6000,
+      "rtt_ms": 80,
+      "uplink_mbps": 10
+     },
+     {
+      "cell": "h_c6000_r80_u0",
+      "cert": 6000,
+      "rtt_ms": 80,
+      "uplink_mbps": 0
+     },
+     {
+      "cell": "h_c6000_r120_u0",
+      "cert": 6000,
+      "rtt_ms": 120,
+      "uplink_mbps": 0
+     }
+    ],
+    "problems": [],
+    "source_fingerprint": "1d331c2fb3944c2ae416ee0e6f9a0616c7b431248dd3bf9cc59d1ed70417a85f"
+   },
+   "h_predictions": null,
+   "arm_flag_validation": {
+    "g2auto": {
+     "ok": true,
+     "argv": [
+      "/tmp/qamp_g3/g2/qamp",
+      "-mode",
+      "client",
+      "-addr",
+      "10.9.0.2:44433",
+      "-n",
+      "0",
+      "-fec",
+      "auto",
+      "-m",
+      "1",
+      "-cache",
+      "/tmp/padfec_p21/validate/g2auto.json",
+      "-probe-every",
+      "20"
+     ],
+     "output_tail": "DONE flights 0 parity 0 sizes []"
+    },
+    "g3auto": {
+     "ok": true,
+     "argv": [
+      "/tmp/qamp_g3/g3b/qamp",
+      "-mode",
+      "client",
+      "-addr",
+      "10.9.0.2:44434",
+      "-n",
+      "0",
+      "-fec",
+      "auto3",
+      "-m",
+      "1",
+      "-cache3",
+      "/tmp/padfec_p21/validate/g3auto.json"
+     ],
+     "output_tail": "DONE flights 0 parity 0 sizes []"
+    }
+   },
+   "source_hashes": {
+    "padfec3/__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+    "padfec3/decide3.py": "db3d4db64fe2ef1e2ae270182a290f215095c6d3a9360480077788e98755340c",
+    "padfec3/layout.py": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+    "padfec3/learn3.py": "17d2714ec9970c23f0f3e5f2a62f3fa00588f5b037909ca7f1bf70f38bec98b6",
+    "experiments/quicbed/client.go": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+    "experiments/quicbed/dataapp.go": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+    "experiments/quicbed/mlkemcheck.go": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+    "experiments/quicbed/pfail_table.go": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+    "experiments/quicbed/policy.go": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+    "experiments/quicbed/policy3.go": "a53a58221ad697d561d407a2a38d1c685cf00efc2a2ac315f7eb7dea940c4055",
+    "experiments/quicbed/policy3_test.go": "456ae0ff3fcfa7f8e521c55a82e05796af24eaed4a28be12bf206e8e11b372da",
+    "experiments/quicbed/policy_adaptation_test.go": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+    "experiments/quicbed/policy_rtt_test.go": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+    "experiments/quicbed/qamp.go": "5d0bcabca268da898d1607602d840e9a7f4695b2b4d324bdf1932ff12fc95dc5",
+    "experiments/quicbed/qamp_accounting_test.go": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+    "experiments/quicbed/qamp_audit_test.go": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+    "experiments/quicbed/qamp_lead_test.go": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+    "experiments/quicbed/server.go": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+    "experiments/quicbed/build.sh": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+    "experiments/quicbed/build_g3.sh": "ead59e44b9594510031a0e195613ad860a5dc9e343cce982c429ebaa0af61150",
+    "experiments/quicbed/build_g3b.sh": "e7260311ea73ddfdebd1f82ccbaa8b4d66ac2ec319fdde543e3304a80097c82b",
+    "experiments/quicbed/build_server.sh": "b45c178423b4aaa9183fa52959e120a37c3fb106a46e705486f64191aecb90c2",
+    "experiments/quicbed/diag.sh": "e52009f1631c9e918f7e5915b14498a23620c84d4ffe3855f64f997d0b01851b",
+    "experiments/quicbed/live_demo.sh": "6adc66f809867d81d9ed856b4f072e47516350f302fd918a9664919180b49ac5",
+    "experiments/quicbed/mlkem_interop.sh": "1bf6ad02fc216428582527423474104ed851315d5ff8bae57fc868a62e29df0f",
+    "experiments/quicbed/netbed_spec.sh": "54cac826d4740f6be44aef6537b64e2ad4e22e4be0d1b8a257da91885b55179f",
+    "experiments/quicbed/setup.sh": "4eec31865d6ca32aaed66deb3544e4ea4df6181a2f4a21f64270b8731109d913",
+    "experiments/quicbed/smoke.sh": "09ec12d25157e35124c32a7d09e75e35980f1a459b12b555f489e749e476bf65",
+    "experiments/quicbed/go.mod": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+    "experiments/quicbed/go.sum": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+    "experiments/p21_gencompare.py": "0732439939793ba11ea6a8129de9ef5a8d3ae16fbd72addeec490245a8486683",
+    "experiments/g3bed.py": "b3f68c1ca2e129a7def1e467072ccae713122677b378165f874b497e16df4ed1",
+    "experiments/padbed.py": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+    "experiments/_journal.py": "903c0117ffe0ecb7b855591a5697906c566b00342a94c84f1e826683f72d5281",
+    "experiments/blockstat.py": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f"
+   },
+   "runner_sha256": "0732439939793ba11ea6a8129de9ef5a8d3ae16fbd72addeec490245a8486683",
+   "argv": [
+    "experiments/p21_gencompare.py",
+    "--run2"
+   ],
+   "started_at": "2026-10-02T07:26:34.857495+00:00",
+   "pid": 712,
+   "padfec_gen": "g3eval_20261002",
+   "journal_run_ids": {
+    "S_bigcert": "d0d428eaf5b14399812f90dd08cc6527",
+    "S_rtt200": "15fcd36be40b46cc91e4b3c8eb5ca393"
+   }
+  }
+ ],
+ "finished": {
+  "at": "2026-10-02T08:35:27.451794+00:00",
+  "source_hashes": {
+   "padfec3/__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+   "padfec3/decide3.py": "db3d4db64fe2ef1e2ae270182a290f215095c6d3a9360480077788e98755340c",
+   "padfec3/layout.py": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+   "padfec3/learn3.py": "17d2714ec9970c23f0f3e5f2a62f3fa00588f5b037909ca7f1bf70f38bec98b6",
+   "experiments/quicbed/client.go": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+   "experiments/quicbed/dataapp.go": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+   "experiments/quicbed/mlkemcheck.go": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+   "experiments/quicbed/pfail_table.go": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+   "experiments/quicbed/policy.go": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+   "experiments/quicbed/policy3.go": "a53a58221ad697d561d407a2a38d1c685cf00efc2a2ac315f7eb7dea940c4055",
+   "experiments/quicbed/policy3_test.go": "456ae0ff3fcfa7f8e521c55a82e05796af24eaed4a28be12bf206e8e11b372da",
+   "experiments/quicbed/policy_adaptation_test.go": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+   "experiments/quicbed/policy_rtt_test.go": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+   "experiments/quicbed/qamp.go": "5d0bcabca268da898d1607602d840e9a7f4695b2b4d324bdf1932ff12fc95dc5",
+   "experiments/quicbed/qamp_accounting_test.go": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+   "experiments/quicbed/qamp_audit_test.go": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+   "experiments/quicbed/qamp_lead_test.go": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+   "experiments/quicbed/server.go": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+   "experiments/quicbed/build.sh": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+   "experiments/quicbed/build_g3.sh": "ead59e44b9594510031a0e195613ad860a5dc9e343cce982c429ebaa0af61150",
+   "experiments/quicbed/build_g3b.sh": "e7260311ea73ddfdebd1f82ccbaa8b4d66ac2ec319fdde543e3304a80097c82b",
+   "experiments/quicbed/build_server.sh": "b45c178423b4aaa9183fa52959e120a37c3fb106a46e705486f64191aecb90c2",
+   "experiments/quicbed/diag.sh": "e52009f1631c9e918f7e5915b14498a23620c84d4ffe3855f64f997d0b01851b",
+   "experiments/quicbed/live_demo.sh": "6adc66f809867d81d9ed856b4f072e47516350f302fd918a9664919180b49ac5",
+   "experiments/quicbed/mlkem_interop.sh": "1bf6ad02fc216428582527423474104ed851315d5ff8bae57fc868a62e29df0f",
+   "experiments/quicbed/netbed_spec.sh": "54cac826d4740f6be44aef6537b64e2ad4e22e4be0d1b8a257da91885b55179f",
+   "experiments/quicbed/setup.sh": "4eec31865d6ca32aaed66deb3544e4ea4df6181a2f4a21f64270b8731109d913",
+   "experiments/quicbed/smoke.sh": "09ec12d25157e35124c32a7d09e75e35980f1a459b12b555f489e749e476bf65",
+   "experiments/quicbed/go.mod": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+   "experiments/quicbed/go.sum": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+   "experiments/p21_gencompare.py": "0732439939793ba11ea6a8129de9ef5a8d3ae16fbd72addeec490245a8486683",
+   "experiments/g3bed.py": "b3f68c1ca2e129a7def1e467072ccae713122677b378165f874b497e16df4ed1",
+   "experiments/padbed.py": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+   "experiments/_journal.py": "903c0117ffe0ecb7b855591a5697906c566b00342a94c84f1e826683f72d5281",
+   "experiments/blockstat.py": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f"
+  },
+  "bins_sha256": {
+   "g2": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+   "g3b": "ad5246f361ababca2f477724b047d4db75c3e95412368428c793c008b3f9c31e"
+  }
+ },
+ "estimate": {
+  "conds": [
+   {
+    "cond": "S_bigcert",
+    "batch": "S run 2",
+    "connections": 9000,
+    "segments": 20,
+    "s_per_conn": 0.192,
+    "s_per_conn_source": "p17 measured s/conn (bigcert)",
+    "seconds": 1747.0
+   },
+   {
+    "cond": "S_rtt200",
+    "batch": "S run 2",
+    "connections": 9000,
+    "segments": 20,
+    "s_per_conn": 0.366,
+    "s_per_conn_source": "p17 measured s/conn (rtt200)",
+    "seconds": 3319.0
+   }
+  ],
+  "batches": {
+   "S run 2": 5066.0
+  },
+  "total_s": 5066.0,
+  "assumptions": {
+   "p17_s_per_conn": {
+    "bigcert": 0.192,
+    "rtt200": 0.366,
+    "mbps2": 0.156,
+    "unlimited": 0.086
+   },
+   "conn_overhead_ms": 25.0,
+   "segment_fixed_s": 0.35,
+   "settle_s": "0.3 + 2*RTT per segment",
+   "server_start_s": "2 per server per condition"
+  }
+ },
+ "conds": [
+  {
+   "cond": "S_bigcert",
+   "batch": "S run 2",
+   "family": "S",
+   "design": "sched",
+   "mirrors": "p17 큰cert",
+   "profile": {
+    "burst": 1.0,
+    "cert": 16000,
+    "expect_k": 2,
+    "gap_ms": 50,
+    "group": "X25519MLKEM768",
+    "name": "bigcert",
+    "netem_rate_mbit": 2.0,
+    "rtt_ms": 50.0,
+    "throughput_ref": "bigcert",
+    "uplink_policy_mbps": 2.0
+   },
+   "servers": {
+    "A": "g2",
+    "B": "g3b"
+   },
+   "losses": [
+    2.0,
+    15.0
+   ],
+   "h_cell": null,
+   "placeholder": false,
+   "blocks_planned": 10,
+   "blocks_done": 10,
+   "complete": true,
+   "netem_first_block": {
+    "c2s": "netem delay 25.000ms rate 2mbit loss 2.0000%",
+    "s2c": "netem delay 25.000ms",
+    "tc_c2s": "qdisc netem 8001: root refcnt 29 limit 1000 delay 25ms loss 2% rate 2Mbit seed 14373707124992368881",
+    "tc_s2c": "qdisc netem 8002: root refcnt 29 limit 1000 delay 25ms seed 12663038551462678273"
+   },
+   "arms": {
+    "g2auto": {
+     "label": "g2-auto",
+     "binary": "g2",
+     "binary_path": "/tmp/qamp_g3/g2/qamp",
+     "slot": "A",
+     "port": 44433,
+     "server_binary": "g2",
+     "flags": [
+      "-fec",
+      "auto",
+      "-m",
+      "1",
+      "-cache",
+      "<cache>",
+      "-probe-every",
+      "20"
+     ],
+     "n_requested": 4500,
+     "n_returned": 4500,
+     "ok": 4500,
+     "failed": 0,
+     "timeouts": 0,
+     "missing": 0,
+     "fail_errors": {},
+     "mean_planned_imputed_ms": 132.62165911111111,
+     "mean_ok_ms": 132.62165911111111,
+     "median_ok_ms": 131.666,
+     "p90_ok_ms": 133.929,
+     "p99_ok_ms": 286.58,
+     "one_rtt_rate": 0.00044444444444444447,
+     "one_rtt_rule": "ok and ms < 1.5*RTT + tau(first_flight_bytes + lead*parity size)",
+     "ff_uplink_bytes_mean": 5918.752888888889,
+     "uplink_bytes_per_conn": 10593.157777777778,
+     "uplink_bytes_note": "client counters; bytes_parity is counted where parity_sent is, which stage 0 found undercounts later-flight parity after 1-RTT handshakes; server_bytes_in_per_conn is the server-side cross-check (after loss)",
+     "server_bytes_in_per_conn": 9914.005111111112,
+     "parity_sent_per_conn": 5.070888888888889,
+     "m_ips_hist": {
+      "m0/ips1280": 53,
+      "m1/ips1280": 996,
+      "m3/ips1280": 3451
+     },
+     "lead_hist": {
+      "None": 4500
+     },
+     "action_rows": 0,
+     "j3_rows": 0,
+     "pmean_rows": 0,
+     "by_loss": {
+      "2.0": {
+       "planned": 2250,
+       "returned": 2250,
+       "mean_planned_imputed_ms": 130.145952,
+       "one_rtt_rate": 0.00044444444444444447,
+       "m_ips_hist": {
+        "m0/ips1280": 28,
+        "m1/ips1280": 482,
+        "m3/ips1280": 1740
+       },
+       "action_hist": {},
+       "post_mean_p_median": null,
+       "j3_mean_ms": null
+      },
+      "15.0": {
+       "planned": 2250,
+       "returned": 2250,
+       "mean_planned_imputed_ms": 135.09736622222223,
+       "one_rtt_rate": 0.00044444444444444447,
+       "m_ips_hist": {
+        "m0/ips1280": 25,
+        "m1/ips1280": 514,
+        "m3/ips1280": 1711
+       },
+       "action_hist": {},
+       "post_mean_p_median": null,
+       "j3_mean_ms": null
+      }
+     },
+     "cold": null,
+     "server_counters": {
+      "originals": 20873,
+      "parities": 20867,
+      "recovered": 1054,
+      "recover_events": 1019,
+      "premature_recovered": 0,
+      "recover_crc_fail": 0,
+      "late_recovered": 0,
+      "recover_refused_by_accounting": 0,
+      "credit_parities": 6343,
+      "unrecoverable_seen": 57,
+      "bytes_in": 44613023,
+      "bytes_to_stack": 44534958,
+      "conn_acct_dropped": 1720,
+      "conn_acct_unmapped_rx": 3768,
+      "conn_acct_unmapped_tx": 14256,
+      "conn_acct_unmapped_stack_bytes": 4100905,
+      "conn_acct_alias_conflicts": 0,
+      "conn_acct_alias_dropped": 0,
+      "hdr_initial": 33328,
+      "hdr_handshake": 8409,
+      "hdr_short": 3,
+      "fb_sent": 0,
+      "fb_write_err": 0,
+      "hdr_coalesced_hs": 12503
+     },
+     "crc_fail": 0,
+     "acct_violation_segments": 0,
+     "cross_traffic_segments": 0,
+     "client_stats_sum": {
+      "flights": 9081,
+      "parity_sent": 22819,
+      "parity_fail": 0,
+      "dropped_originals": 0,
+      "dropped_parities": 0,
+      "corrupted_parities": 0,
+      "bytes_orig": 17457920,
+      "bytes_parity": 30211290,
+      "initial_datagrams": 13639,
+      "fb_recv": 0,
+      "fb_magic_seen": 0,
+      "rx_calls": 71987,
+      "fb_waits": 0,
+      "fb_rx_orig": 0,
+      "fb_rx_parity": 0,
+      "fb_rx_retx": 0,
+      "fb_raw_orig": 0,
+      "fb_raw_parity": 0,
+      "fb_recovered": 0,
+      "first_flight_datagrams": 20,
+      "first_flight_bytes": 25600,
+      "first_flight_parity_dgrams": 26,
+      "first_flight_parity_bytes": 34606
+     },
+     "flag_mismatches": {
+      "layout": 0,
+      "m_used": 0,
+      "lead": 0,
+      "action_fields_missing": 0
+     },
+     "client_error_segments": []
+    },
+    "g3auto": {
+     "label": "g3-auto",
+     "binary": "g3b",
+     "binary_path": "/tmp/qamp_g3/g3b/qamp",
+     "slot": "B",
+     "port": 44434,
+     "server_binary": "g3b",
+     "flags": [
+      "-fec",
+      "auto3",
+      "-m",
+      "1",
+      "-cache3",
+      "<cache>"
+     ],
+     "n_requested": 4500,
+     "n_returned": 4500,
+     "ok": 4500,
+     "failed": 0,
+     "timeouts": 0,
+     "missing": 0,
+     "fail_errors": {},
+     "mean_planned_imputed_ms": 102.77109133333335,
+     "mean_ok_ms": 102.77109133333335,
+     "median_ok_ms": 81.711,
+     "p90_ok_ms": 130.711,
+     "p99_ok_ms": 280.854,
+     "one_rtt_rate": 0.568,
+     "one_rtt_rule": "ok and ms < 1.5*RTT + tau(first_flight_bytes + lead*parity size)",
+     "ff_uplink_bytes_mean": 7885.960888888889,
+     "uplink_bytes_per_conn": 10011.542222222222,
+     "uplink_bytes_note": "client counters; bytes_parity is counted where parity_sent is, which stage 0 found undercounts later-flight parity after 1-RTT handshakes; server_bytes_in_per_conn is the server-side cross-check (after loss)",
+     "server_bytes_in_per_conn": 9818.899555555556,
+     "parity_sent_per_conn": 4.614222222222222,
+     "m_ips_hist": {
+      "m0/ips1280": 1,
+      "m4/ips1280": 4499
+     },
+     "lead_hist": {
+      "0": 1366,
+      "3": 3134
+     },
+     "action_rows": 4500,
+     "j3_rows": 4499,
+     "pmean_rows": 4500,
+     "by_loss": {
+      "2.0": {
+       "planned": 2250,
+       "returned": 2250,
+       "mean_planned_imputed_ms": 86.23286044444444,
+       "one_rtt_rate": 0.88,
+       "m_ips_hist": {
+        "m0/ips1280": 1,
+        "m4/ips1280": 2249
+       },
+       "action_hist": {
+        "0,0,0": 1,
+        "0,0,4": 124,
+        "0,3,1": 2125
+       },
+       "post_mean_p_median": 0.02120937468115043,
+       "j3_mean_ms": 84.22259593403699
+      },
+      "15.0": {
+       "planned": 2250,
+       "returned": 2250,
+       "mean_planned_imputed_ms": 119.3093222222222,
+       "one_rtt_rate": 0.256,
+       "m_ips_hist": {
+        "m4/ips1280": 2250
+       },
+       "action_hist": {
+        "0,0,4": 1241,
+        "0,3,1": 1009
+       },
+       "post_mean_p_median": 0.20063043087632265,
+       "j3_mean_ms": 110.64132103966546
+      }
+     },
+     "cold": null,
+     "server_counters": {
+      "originals": 18382,
+      "parities": 20825,
+      "recovered": 1031,
+      "recover_events": 995,
+      "premature_recovered": 0,
+      "recover_crc_fail": 0,
+      "late_recovered": 0,
+      "recover_refused_by_accounting": 0,
+      "credit_parities": 8968,
+      "credit_parities_v3": 8968,
+      "unrecoverable_seen": 64,
+      "bytes_in": 44185048,
+      "bytes_to_stack": 44099102,
+      "conn_acct_dropped": 2054,
+      "conn_acct_unmapped_rx": 3415,
+      "conn_acct_unmapped_tx": 14486,
+      "conn_acct_unmapped_stack_bytes": 3695359,
+      "conn_acct_alias_conflicts": 0,
+      "conn_acct_alias_dropped": 0,
+      "hdr_initial": 33260,
+      "hdr_handshake": 5940,
+      "hdr_short": 7,
+      "fb_sent": 0,
+      "fb_write_err": 0,
+      "hdr_coalesced_hs": 10066
+     },
+     "crc_fail": 0,
+     "acct_violation_segments": 0,
+     "cross_traffic_segments": 0,
+     "client_stats_sum": {
+      "flights": 7195,
+      "parity_sent": 20764,
+      "parity_fail": 0,
+      "dropped_originals": 0,
+      "dropped_parities": 0,
+      "corrupted_parities": 0,
+      "bytes_orig": 17437440,
+      "bytes_parity": 27614500,
+      "initial_datagrams": 13623,
+      "fb_recv": 0,
+      "fb_magic_seen": 0,
+      "rx_calls": 72026,
+      "fb_waits": 0,
+      "fb_rx_orig": 0,
+      "fb_rx_parity": 0,
+      "fb_rx_retx": 0,
+      "fb_raw_orig": 0,
+      "fb_raw_parity": 0,
+      "fb_recovered": 0,
+      "first_flight_datagrams": 20,
+      "first_flight_bytes": 25600,
+      "first_flight_parity_dgrams": 40,
+      "first_flight_parity_bytes": 53420,
+      "lead": 24,
+      "first_flight_lead_dgrams": 9402,
+      "later_parity_sent": 2768
+     },
+     "flag_mismatches": {
+      "layout": 0,
+      "m_used": 0,
+      "lead": 0,
+      "action_fields_missing": 0
+     },
+     "client_error_segments": []
+    }
+   },
+   "contrasts": [
+    {
+     "method": "stratified_welch",
+     "est": 29.850567777777783,
+     "se": 1.819334951753953,
+     "df": 5.713126068656188,
+     "n_units": 10,
+     "by_stratum": {
+      "0": {
+       "weight": 0.5,
+       "n": 5,
+       "mean": 43.91309155555556,
+       "var": 12.158212382119517,
+       "d": [
+        43.57939111111112,
+        40.97294888888888,
+        49.672353333333334,
+        44.015615555555556,
+        41.32514888888889
+       ]
+      },
+      "1": {
+       "weight": 0.5,
+       "n": 5,
+       "mean": 15.788044000000008,
+       "var": 54.041380951351655,
+       "d": [
+        20.02516222222222,
+        26.36284222222224,
+        9.86553111111111,
+        8.914444444444456,
+        13.77224000000001
+       ]
+      }
+     },
+     "id": "g2-g3",
+     "x": "g2auto",
+     "y": "g3auto",
+     "use": [
+      "H1",
+      "H2"
+     ],
+     "lo95": 25.34406410558811,
+     "hi95": 34.35707144996746,
+     "sign": "positive = g2auto slower than g3auto",
+     "overall_diff_ms": 29.85056777777777
+    }
+   ],
+   "position_effect_ms": {
+    "0": 2.0601341111111084,
+    "1": -2.060134111111118
+   },
+   "order_balance": {
+    "positions": {
+     "g2auto": {
+      "0": 5,
+      "1": 5
+     },
+     "g3auto": {
+      "0": 5,
+      "1": 5
+     }
+    },
+    "precedence": {
+     "g2-g3|g2auto before g3auto": 5,
+     "g2-g3|g3auto before g2auto": 5
+    }
+   }
+  },
+  {
+   "cond": "S_rtt200",
+   "batch": "S run 2",
+   "family": "S",
+   "design": "sched",
+   "mirrors": "p17 RTT200",
+   "profile": {
+    "burst": 1.0,
+    "cert": 9000,
+    "expect_k": 2,
+    "gap_ms": 50,
+    "group": "X25519MLKEM768",
+    "name": "rtt200",
+    "netem_rate_mbit": 2.0,
+    "rtt_ms": 200.0,
+    "throughput_ref": "rtt200",
+    "uplink_policy_mbps": 2.0
+   },
+   "servers": {
+    "A": "g2",
+    "B": "g3b"
+   },
+   "losses": [
+    2.0,
+    15.0
+   ],
+   "h_cell": null,
+   "placeholder": false,
+   "blocks_planned": 10,
+   "blocks_done": 10,
+   "complete": true,
+   "netem_first_block": {
+    "c2s": "netem delay 100.000ms rate 2mbit loss 2.0000%",
+    "s2c": "netem delay 100.000ms",
+    "tc_c2s": "qdisc netem 8015: root refcnt 29 limit 1000 delay 100ms loss 2% rate 2Mbit seed 4707465475716071520",
+    "tc_s2c": "qdisc netem 8016: root refcnt 29 limit 1000 delay 100ms seed 7895722368486294393"
+   },
+   "arms": {
+    "g2auto": {
+     "label": "g2-auto",
+     "binary": "g2",
+     "binary_path": "/tmp/qamp_g3/g2/qamp",
+     "slot": "A",
+     "port": 44433,
+     "server_binary": "g2",
+     "flags": [
+      "-fec",
+      "auto",
+      "-m",
+      "1",
+      "-cache",
+      "<cache>",
+      "-probe-every",
+      "20"
+     ],
+     "n_requested": 4500,
+     "n_returned": 4500,
+     "ok": 4500,
+     "failed": 0,
+     "timeouts": 0,
+     "missing": 0,
+     "fail_errors": {},
+     "mean_planned_imputed_ms": 238.79044644444446,
+     "mean_ok_ms": 238.79044644444446,
+     "median_ok_ms": 219.952,
+     "p90_ok_ms": 229.496,
+     "p99_ok_ms": 415.318,
+     "one_rtt_rate": 0.9026666666666666,
+     "one_rtt_rule": "ok and ms < 1.5*RTT + tau(first_flight_bytes + lead*parity size)",
+     "ff_uplink_bytes_mean": 6521.061555555556,
+     "uplink_bytes_per_conn": 15117.316222222222,
+     "uplink_bytes_note": "client counters; bytes_parity is counted where parity_sent is, which stage 0 found undercounts later-flight parity after 1-RTT handshakes; server_bytes_in_per_conn is the server-side cross-check (after loss)",
+     "server_bytes_in_per_conn": 16695.890888888887,
+     "parity_sent_per_conn": 6.552888888888889,
+     "m_ips_hist": {
+      "m0/ips1280": 39,
+      "m3/ips1280": 4460,
+      "m3/ips1406": 1
+     },
+     "lead_hist": {
+      "None": 4500
+     },
+     "action_rows": 0,
+     "j3_rows": 0,
+     "pmean_rows": 0,
+     "by_loss": {
+      "2.0": {
+       "planned": 2250,
+       "returned": 2250,
+       "mean_planned_imputed_ms": 224.89344977777776,
+       "one_rtt_rate": 0.9746666666666667,
+       "m_ips_hist": {
+        "m0/ips1280": 19,
+        "m3/ips1280": 2231
+       },
+       "action_hist": {},
+       "post_mean_p_median": null,
+       "j3_mean_ms": null
+      },
+      "15.0": {
+       "planned": 2250,
+       "returned": 2250,
+       "mean_planned_imputed_ms": 252.6874431111111,
+       "one_rtt_rate": 0.8306666666666667,
+       "m_ips_hist": {
+        "m0/ips1280": 20,
+        "m3/ips1280": 2229,
+        "m3/ips1406": 1
+       },
+       "action_hist": {},
+       "post_mean_p_median": null,
+       "j3_mean_ms": null
+      }
+     },
+     "cold": null,
+     "server_counters": {
+      "originals": 25246,
+      "parities": 36582,
+      "recovered": 1850,
+      "recover_events": 1773,
+      "premature_recovered": 0,
+      "recover_crc_fail": 0,
+      "late_recovered": 0,
+      "recover_refused_by_accounting": 0,
+      "credit_parities": 12266,
+      "unrecoverable_seen": 103,
+      "bytes_in": 75131509,
+      "bytes_to_stack": 75006421,
+      "conn_acct_dropped": 3430,
+      "conn_acct_unmapped_rx": 5238,
+      "conn_acct_unmapped_tx": 12283,
+      "conn_acct_unmapped_stack_bytes": 6275684,
+      "conn_acct_alias_conflicts": 0,
+      "conn_acct_alias_dropped": 0,
+      "hdr_initial": 57077,
+      "hdr_handshake": 4614,
+      "hdr_short": 137,
+      "fb_sent": 0,
+      "fb_write_err": 0,
+      "hdr_coalesced_hs": 8666
+     },
+     "crc_fail": 0,
+     "acct_violation_segments": 0,
+     "cross_traffic_segments": 0,
+     "client_stats_sum": {
+      "flights": 10134,
+      "parity_sent": 29488,
+      "parity_fail": 0,
+      "dropped_originals": 0,
+      "dropped_parities": 0,
+      "corrupted_parities": 0,
+      "bytes_orig": 28794230,
+      "bytes_parity": 39233693,
+      "initial_datagrams": 22495,
+      "fb_recv": 0,
+      "fb_magic_seen": 0,
+      "rx_calls": 45586,
+      "fb_waits": 0,
+      "fb_rx_orig": 0,
+      "fb_rx_parity": 0,
+      "fb_rx_retx": 0,
+      "fb_raw_orig": 0,
+      "fb_raw_parity": 0,
+      "fb_recovered": 0,
+      "first_flight_datagrams": 20,
+      "first_flight_bytes": 25600,
+      "first_flight_parity_dgrams": 30,
+      "first_flight_parity_bytes": 40038
+     },
+     "flag_mismatches": {
+      "layout": 0,
+      "m_used": 0,
+      "lead": 0,
+      "action_fields_missing": 0
+     },
+     "client_error_segments": []
+    },
+    "g3auto": {
+     "label": "g3-auto",
+     "binary": "g3b",
+     "binary_path": "/tmp/qamp_g3/g3b/qamp",
+     "slot": "B",
+     "port": 44434,
+     "server_binary": "g3b",
+     "flags": [
+      "-fec",
+      "auto3",
+      "-m",
+      "1",
+      "-cache3",
+      "<cache>"
+     ],
+     "n_requested": 4500,
+     "n_returned": 4500,
+     "ok": 4500,
+     "failed": 0,
+     "timeouts": 0,
+     "missing": 0,
+     "fail_errors": {},
+     "mean_planned_imputed_ms": 227.5623357777778,
+     "mean_ok_ms": 227.5623357777778,
+     "median_ok_ms": 224.9305,
+     "p90_ok_ms": 226.492,
+     "p99_ok_ms": 414.078,
+     "one_rtt_rate": 0.9811111111111112,
+     "one_rtt_rule": "ok and ms < 1.5*RTT + tau(first_flight_bytes + lead*parity size)",
+     "ff_uplink_bytes_mean": 7886.784888888889,
+     "uplink_bytes_per_conn": 17359.478222222224,
+     "uplink_bytes_note": "client counters; bytes_parity is counted where parity_sent is, which stage 0 found undercounts later-flight parity after 1-RTT handshakes; server_bytes_in_per_conn is the server-side cross-check (after loss)",
+     "server_bytes_in_per_conn": 16866.365333333335,
+     "parity_sent_per_conn": 8.231555555555556,
+     "m_ips_hist": {
+      "m0/ips1280": 1,
+      "m4/ips1280": 4499
+     },
+     "lead_hist": {
+      "0": 1,
+      "1": 480,
+      "2": 4019
+     },
+     "action_rows": 4500,
+     "j3_rows": 4499,
+     "pmean_rows": 4500,
+     "by_loss": {
+      "2.0": {
+       "planned": 2250,
+       "returned": 2250,
+       "mean_planned_imputed_ms": 225.12072799999999,
+       "one_rtt_rate": 0.9951111111111111,
+       "m_ips_hist": {
+        "m0/ips1280": 1,
+        "m4/ips1280": 2249
+       },
+       "action_hist": {
+        "0,0,0": 1,
+        "0,1,3": 466,
+        "0,2,2": 1783
+       },
+       "post_mean_p_median": 0.032608166359410336,
+       "j3_mean_ms": 231.65216665066174
+      },
+      "15.0": {
+       "planned": 2250,
+       "returned": 2250,
+       "mean_planned_imputed_ms": 230.00394355555557,
+       "one_rtt_rate": 0.9671111111111111,
+       "m_ips_hist": {
+        "m4/ips1280": 2250
+       },
+       "action_hist": {
+        "0,1,3": 14,
+        "0,2,2": 2236
+       },
+       "post_mean_p_median": 0.08430601547316621,
+       "j3_mean_ms": 234.03991158393035
+      }
+     },
+     "cold": null,
+     "server_counters": {
+      "originals": 24805,
+      "parities": 37083,
+      "recovered": 1838,
+      "recover_events": 1767,
+      "premature_recovered": 0,
+      "recover_crc_fail": 0,
+      "late_recovered": 0,
+      "recover_refused_by_accounting": 0,
+      "credit_parities": 15536,
+      "credit_parities_v3": 15536,
+      "unrecoverable_seen": 95,
+      "bytes_in": 75898644,
+      "bytes_to_stack": 75776859,
+      "conn_acct_dropped": 4111,
+      "conn_acct_unmapped_rx": 5148,
+      "conn_acct_unmapped_tx": 12658,
+      "conn_acct_unmapped_stack_bytes": 6288792,
+      "conn_acct_alias_conflicts": 0,
+      "conn_acct_alias_dropped": 0,
+      "hdr_initial": 57603,
+      "hdr_handshake": 4252,
+      "hdr_short": 33,
+      "fb_sent": 0,
+      "fb_write_err": 0,
+      "hdr_coalesced_hs": 8312
+     },
+     "crc_fail": 0,
+     "acct_violation_segments": 0,
+     "cross_traffic_segments": 0,
+     "client_stats_sum": {
+      "flights": 10293,
+      "parity_sent": 37042,
+      "parity_fail": 0,
+      "dropped_originals": 0,
+      "dropped_parities": 0,
+      "corrupted_parities": 0,
+      "bytes_orig": 28794880,
+      "bytes_parity": 49322772,
+      "initial_datagrams": 22496,
+      "fb_recv": 0,
+      "fb_magic_seen": 0,
+      "rx_calls": 45072,
+      "fb_waits": 0,
+      "fb_rx_orig": 0,
+      "fb_rx_parity": 0,
+      "fb_rx_retx": 0,
+      "fb_raw_orig": 0,
+      "fb_raw_parity": 0,
+      "fb_recovered": 0,
+      "first_flight_datagrams": 20,
+      "first_flight_bytes": 25600,
+      "first_flight_parity_dgrams": 40,
+      "first_flight_parity_bytes": 53232,
+      "lead": 18,
+      "first_flight_lead_dgrams": 8518,
+      "later_parity_sent": 19046
+     },
+     "flag_mismatches": {
+      "layout": 0,
+      "m_used": 0,
+      "lead": 0,
+      "action_fields_missing": 0
+     },
+     "client_error_segments": []
+    }
+   },
+   "contrasts": [
+    {
+     "method": "stratified_welch",
+     "est": 11.228110666666664,
+     "se": 0.7430893170714099,
+     "df": 5.035636852602507,
+     "n_units": 10,
+     "by_stratum": {
+      "0": {
+       "weight": 0.5,
+       "n": 5,
+       "mean": -0.22727822222221902,
+       "var": 1.2851873360133768,
+       "d": [
+        0.3966666666666754,
+        0.39894666666668854,
+        -1.4325222222222465,
+        -1.4550755555555668,
+        0.9555933333333542
+       ]
+      },
+      "1": {
+       "weight": 0.5,
+       "n": 5,
+       "mean": 22.683499555555546,
+       "var": 9.75844732689971,
+       "d": [
+        21.530495555555547,
+        21.75783111111113,
+        23.44253999999998,
+        27.550491111111086,
+        19.136139999999983
+       ]
+      }
+     },
+     "id": "g2-g3",
+     "x": "g2auto",
+     "y": "g3auto",
+     "use": [
+      "H1",
+      "H2"
+     ],
+     "lo95": 9.32199756697068,
+     "hi95": 13.134223766362648,
+     "sign": "positive = g2auto slower than g3auto",
+     "overall_diff_ms": 11.228110666666652
+    }
+   ],
+   "position_effect_ms": {
+    "0": -0.6912493333333487,
+    "1": 0.6912493333333145
+   },
+   "order_balance": {
+    "positions": {
+     "g2auto": {
+      "0": 5,
+      "1": 5
+     },
+     "g3auto": {
+      "0": 5,
+      "1": 5
+     }
+    },
+    "precedence": {
+     "g2-g3|g2auto before g3auto": 5,
+     "g2-g3|g3auto before g2auto": 5
+    }
+   }
+  }
+ ],
+ "integrity": {
+  "crc_fail_total": 0,
+  "acct_violation_segments": 0,
+  "cross_traffic_segments": 0,
+  "timeouts_total": 0,
+  "missing_trials": 0,
+  "client_error_segments": 0,
+  "attempts_gt_1": 0,
+  "flag_mismatches": {},
+  "g3_rows_with_action_j3_pmean": {
+   "rows": 9000,
+   "action": 9000,
+   "j3": 8998,
+   "post_mean_p": 9000
+  },
+  "binaries_constant": true,
+  "binaries_seen": [
+   {
+    "g2": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+    "g3b": "ad5246f361ababca2f477724b047d4db75c3e95412368428c793c008b3f9c31e"
+   }
+  ],
+  "sources_unchanged": true,
+  "seal_ok_at_every_start": [
+   true
+  ],
+  "journal": {
+   "used_units": 20,
+   "reused_units": 0,
+   "reused_keys": [],
+   "invocations": 1,
+   "rule": "reused = journaled by an invocation that this run's meta does not list"
+  },
+  "load_processes_seen": [],
+  "incidents": []
+ }
+}

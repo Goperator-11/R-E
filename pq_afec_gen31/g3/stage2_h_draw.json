@@ -1,0 +1,38 @@
+{
+ "source_fingerprint": "1d331c2fb3944c2ae416ee0e6f9a0616c7b431248dd3bf9cc59d1ed70417a85f",
+ "seed": "a0641eb26d25c88d6c5d582f034e83b04bb7c54d476a4dbe8256c2495a3b68de",
+ "cells": [
+  "h_c8000_r120_u5",
+  "h_c6000_r80_u10",
+  "h_c6000_r80_u0",
+  "h_c6000_r120_u0"
+ ],
+ "rule": "seed = sha256(g3b qamp.srcsha as ASCII); rank every grid cell by sha256(seed + '|' + cell id); take the 4 lowest; no model prediction is consulted",
+ "schema": "padfec3.stage2_h_draw.v1",
+ "drawn_utc": "2026-10-02T03:26:24.405186+00:00",
+ "grid": {
+  "cert": [
+   6000,
+   8000,
+   10000,
+   12000,
+   14000
+  ],
+  "rtt_ms": [
+   20,
+   80,
+   120
+  ],
+  "uplink_mbps": [
+   0,
+   1,
+   5,
+   10
+  ]
+ },
+ "g3b_sha256": "ad5246f361ababca2f477724b047d4db75c3e95412368428c793c008b3f9c31e",
+ "gate_evidence": {
+  "path": "experiments/results/gate_v3_parity.json",
+  "sha256": "2c2cbda55351e36d19b68353f636128a58d91ce80cc1a3f028fd2de99f4601b5"
+ }
+}

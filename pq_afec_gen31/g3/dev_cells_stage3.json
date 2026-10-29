@@ -1,0 +1,10 @@
+{
+ "schema": "padfec3.stage3_dev_cells.v1",
+ "cells": [
+  "h_c8000_r120_u5",
+  "h_c6000_r80_u10",
+  "h_c6000_r80_u0",
+  "h_c6000_r120_u0"
+ ],
+ "note": "H-grid cells whose measurements have been used for v3/v3.1 development, so the next held-out draw must exclude them. The four stage-2 H cells come from g3/stage2_h_draw.json and were measured in the p21 stage-2 run. experiments/g31_probe.py (development, not confirmatory) measures c6000/RTT80/10 Mbit uplink (h_c6000_r80_u10, 0% and 1% client-to-server loss) and c6000/RTT80/no rate (h_c6000_r80_u0); both are already listed. Its third cell, cert 16000/RTT50/2 Mbit (bigcert), is outside the grid. Earlier development conditions (p11, p15, p17, p18, stage 0, m1confirm) use cert 2955, 4032, 9000 or 16000 or RTT 50/200, so none of them is a grid cell. Written 2026-10-02."
+}

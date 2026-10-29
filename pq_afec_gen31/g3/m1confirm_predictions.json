@@ -1,0 +1,202 @@
+{
+ "schema": "padfec3.m1confirm_predictions.v1",
+ "status": "stage-0 sealed predictions for v2-m1 and m4L3 at bigcert_loss2, copied key by key without recomputation; decision_rule adds the M1' thresholds of g3/PROTOCOL_m1confirm.md",
+ "copied_from": {
+  "path": "g3/stage0_predictions.json",
+  "sha256": "9df45d84f68b610fb9cc233c701d614ee513bdba1736a66e766fae39325b1db3",
+  "generated_utc": "2026-10-02T00:13:02Z",
+  "sealed_by": "g3/SEAL_stage0.json",
+  "sealed_utc": "2026-10-02T00:45:16Z",
+  "keys": [
+   "one_rtt_definition",
+   "conditions.bigcert_loss2 without arms",
+   "conditions.bigcert_loss2.arms.v2-m1",
+   "conditions.bigcert_loss2.arms.m4L3",
+   "decision_rules.M1"
+  ]
+ },
+ "one_rtt_definition": "HCT < 1.5*RTT + tau(pre_decision_bytes), pre_decision_bytes = lead*parity(W,k) + k*W, tau(b) = 8b/(1000*u) ms",
+ "conditions": {
+  "bigcert_loss2": {
+   "label": "bigcert 2%",
+   "group": "X25519MLKEM768",
+   "cert": 16000,
+   "rtt_ms": 50.0,
+   "uplink_mbps": 2.0,
+   "loss_pct": 2.0,
+   "p": 0.02,
+   "burst": 1.0,
+   "k": 2,
+   "W": 1280,
+   "delta": 0,
+   "n_need": 15,
+   "offset_ms": 6.72089013237363,
+   "offset_terms": {
+    "m1": {
+     "p17_cond": "p17|큰cert|loss2",
+     "obs_mean_ms": 122.56681022222222,
+     "obs_n": 2250,
+     "model": {
+      "m": 1,
+      "lead": 0,
+      "later": "g2"
+     },
+     "J_ms": 115.79947571105987,
+     "residual_ms": 6.767334511162346
+    },
+    "m2": {
+     "p17_cond": "p17|큰cert|loss2",
+     "obs_mean_ms": 133.02597955555558,
+     "obs_n": 2250,
+     "model": {
+      "m": 2,
+      "lead": 1,
+      "later": "g2"
+     },
+     "J_ms": 126.30863835199524,
+     "residual_ms": 6.717341203560338
+    },
+    "m3": {
+     "p17_cond": "p17|큰cert|loss2",
+     "obs_mean_ms": 132.8671822222222,
+     "obs_n": 2250,
+     "model": {
+      "m": 3,
+      "lead": 1,
+      "later": "g2"
+     },
+     "J_ms": 126.18918753982399,
+     "residual_ms": 6.677994682398207
+    }
+   },
+   "arms": {
+    "v2-m1": {
+     "binary": "g2",
+     "client_flags": "-fec fec -m 1",
+     "n_planned": 400,
+     "model": {
+      "k": 2,
+      "w": 1280,
+      "m": 1,
+      "lead": 0,
+      "trail": 1,
+      "later": "g2",
+      "response_term_ms": 5.42
+     },
+     "J_ms": 115.79947571105987,
+     "offset_ms": 6.72089013237363,
+     "pred_mean_hct_ms": 122.5203658434335,
+     "pred_mean_hct_ms_1dp": 122.5,
+     "pred_one_rtt_frac": 0.0,
+     "pred_two_rtt_frac": 0.9988159999999999,
+     "pred_fail_frac": 0.001184,
+     "pred_fail_split": {
+      "pto": 0.00039999999999999996,
+      "pto_sampled": 0.000392,
+      "ack": 0.000392
+     },
+     "event_prob_e": 0.9999999999999999,
+     "round_mult_M": 1.001185403517765,
+     "client_bytes": 3891,
+     "pre_decision_bytes": 2560,
+     "one_rtt_cutoff_ms": 85.24,
+     "verdict_table_ms": 122.5,
+     "verdict_table_p1": null
+    },
+    "m4L3": {
+     "binary": "g3",
+     "client_flags": "-fec fec -m 4 -layout v3 -lead 3",
+     "n_planned": 400,
+     "model": {
+      "k": 2,
+      "w": 1280,
+      "m": 4,
+      "lead": 3,
+      "trail": 1,
+      "later": "v3",
+      "response_term_ms": 5.12
+     },
+     "J_ms": 79.29212707992696,
+     "offset_ms": 6.72089013237363,
+     "pred_mean_hct_ms": 86.01301721230058,
+     "pred_mean_hct_ms_1dp": 86.0,
+     "pred_one_rtt_frac": 0.9400776286719998,
+     "pred_two_rtt_frac": 0.058738371327999986,
+     "pred_fail_frac": 0.0011839999999999997,
+     "pred_fail_split": {
+      "pto": 0.00039999999999999996,
+      "pto_sampled": 0.00039199999999999993,
+      "ack": 0.00039199999999999993
+     },
+     "event_prob_e": 0.05992237132799998,
+     "round_mult_M": 1.001185403517765,
+     "client_bytes": 7884,
+     "pre_decision_bytes": 6553,
+     "one_rtt_cutoff_ms": 101.212,
+     "verdict_table_ms": 86.0,
+     "verdict_table_p1": 0.94
+    }
+   }
+  }
+ },
+ "stage0_decision_rule_M1": {
+  "name": "multiple leading credit",
+  "condition": "bigcert_loss2",
+  "criteria": [
+   {
+    "quantity": "one_rtt_frac(m4L3)",
+    "op": ">=",
+    "threshold": 0.85,
+    "predicted": 0.9400776286719998,
+    "predicted_pass": true
+   },
+   {
+    "quantity": "mean_hct(m4L3) - mean_hct(v2-m1) [ms]",
+    "op": "<=",
+    "threshold": -18.0,
+    "predicted": -36.50734863113291,
+    "predicted_pass": true
+   },
+   {
+    "quantity": "server stats: all lead datagrams of m4L3 handed to the stack as credit",
+    "op": "all",
+    "threshold": null,
+    "predicted": "not a model quantity; expected true under the ver-3 server rule index < lead",
+    "predicted_pass": null
+   }
+  ],
+  "on_fail": "withdraw lead>=2; v3 shrinks to legacy layout + F2 + learning; withdraw the large-gain claim"
+ },
+ "decision_rule": {
+  "name": "M1'",
+  "condition": "bigcert_loss2",
+  "a": {
+   "quantity": "one_rtt_frac(m4L3), denominator = planned trials",
+   "op": ">=",
+   "threshold": 0.85,
+   "predicted": 0.9400776286719998,
+   "predicted_source": "stage0_decision_rule_M1.criteria[0].predicted"
+  },
+  "b": {
+   "quantity": "mean_hct(m4L3) - mean_hct(v2-m1) [ms], every planned trial, failed or missing trials imputed at 10000 ms",
+   "op": "<=",
+   "threshold": -18.0,
+   "predicted": -36.50734863113291,
+   "predicted_source": "stage0_decision_rule_M1.criteria[1].predicted"
+  },
+  "c_prime": {
+   "quantity": "g3 server, m4L3 connections with tx_dgrams > 0: share whose beff_credit == 3 (missing beff_credit counts as not 3)",
+   "op": ">=",
+   "threshold": 0.9,
+   "reference_binomial": 0.9411919999999999,
+   "reference_note": "0.98**3, all three leading datagrams survive 2% independent loss; written for this protocol, not a stage-0 model output. The 0.90 threshold was chosen after stage 0 observed 0.9325 (373/400); 0.9412 minus about 3.5 binomial standard errors at n=400 is 0.900",
+   "also_required": [
+    "credit_parities_v3 == credit_parities in every m4L3 segment",
+    "zero m4L3 client flag mismatches (m_used, layout, lead, first_flight_lead_dgrams)"
+   ]
+  },
+  "pass": "a and b and c_prime",
+  "on_pass": "the lead>=2 claim may be written again, citing this run; stage-0 M1 stays recorded as FAIL",
+  "on_fail": "the lead>=2 claim stays withdrawn (stage-0 branch: withdraw lead>=2 and the large-gain claim)"
+ }
+}

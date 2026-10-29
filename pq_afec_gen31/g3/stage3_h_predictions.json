@@ -1,0 +1,501 @@
+{
+ "schema": "padfec3.stage3_h_predictions.v1",
+ "generated_utc": "2026-10-02T10:33:31.163838+00:00",
+ "generator": "experiments/p21_gencompare.py h_predictions (--draw-h, --predict-h)",
+ "draw_sha256": "132b5b409633f05e29dea362a0b6e2137d452593988c2cbd47536f2adb1451be",
+ "layout_py_sha256": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+ "code_sha256": {
+  "padfec3/layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+  "padfec3/decide3.py": "64db68dd44470816f02dcf391fd8affafa2462a8c56d7d354b1c0e1e683a60b1",
+  "padfec3/learn3.py": "0828e8d27eded31fdd05fbf73fed877f931ca01c7033861e521a9b2e01464094",
+  "padfec/policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+  "padfec/quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+  "experiments/p21_gencompare.py": "969d5cde0fe83212ee7a1a060e155ed64c84989a72135f78727a5f4529659e3c"
+ },
+ "definition": "structure only, no learning: for each drawn cell and each loss p of its schedule (1% and 8%), Delta(p) = min over gen-2-representable actions of J3 minus min over the full v3 candidate set of J3, both from padfec3/layout.py at the exact p (the v3.1 completion rule 3B - A_pre > 1280*(n_need - 1), A_pre = 41*(k - 1) B if the uplink rate > 0 else 0, applies to both sets alike; no learning, guard or re-evaluation); gen-2 actions = the candidates policy.decide_v2 keeps from quantum.levers (delta from the gen-2 levers, m <= 3, lead = [m>=2]) scored with later='g2'; v3 actions = decide3.candidates3 scored with later='v3'; common inputs k=2 (ML-KEM, ClientHello 2308 B), W=1280, the cell's cert, RTT and uplink, n_need = layout.n_need(cert, S0_BASE_MLKEM, C_PKT_POLICY_DEFAULT), and for candidates3 the server-bytes equivalent S = cert + s0_at(bin_index(k*W)) that gives the same n_need; delta_hat_ms = 0.5*Delta(1%) + 0.5*Delta(8%) (equal time at both losses)",
+ "losses_pct": [
+  1.0,
+  8.0
+ ],
+ "weights": [
+  0.5,
+  0.5
+ ],
+ "h3_min_pred_ms": 2.0,
+ "cells": {
+  "h_c6000_r120_u10": {
+   "cell": "h_c6000_r120_u10",
+   "inputs": {
+    "k": 2,
+    "W": 1280,
+    "cert": 6000,
+    "rtt_ms": 120.0,
+    "uplink_mbps": 10.0,
+    "n_need": 7,
+    "server_bytes_equiv": 7723.898,
+    "s0_base": 1472.0,
+    "c_pkt": 41.983
+   },
+   "n_actions_g2": 8,
+   "n_actions_g3": 30,
+   "actions_g2": [
+    [
+     1,
+     0,
+     1
+    ],
+    [
+     1,
+     1,
+     2
+    ],
+    [
+     1,
+     1,
+     1
+    ],
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     0,
+     1,
+     1
+    ],
+    [
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     0
+    ]
+   ],
+   "delta_hat_ms": 4.069709092835225,
+   "h3_target": true,
+   "j_g2": {
+    "1": 124.32194229747051,
+    "8": 133.20112071186918
+   },
+   "j_g3": {
+    "1": 124.1700502248243,
+    "8": 125.21359459884495
+   },
+   "argmin_g2": {
+    "1": [
+     0,
+     1,
+     2
+    ],
+    "8": [
+     0,
+     1,
+     2
+    ]
+   },
+   "argmin_g3": {
+    "1": [
+     0,
+     2,
+     2
+    ],
+    "8": [
+     0,
+     2,
+     2
+    ]
+   },
+   "by_loss": {
+    "1": {
+     "p": 0.01,
+     "j_g2": 124.32194229747051,
+     "j_g3": 124.1700502248243,
+     "delta_ms": 0.15189207264621984,
+     "argmin_g2": [
+      0,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      0,
+      2,
+      2
+     ]
+    },
+    "8": {
+     "p": 0.08,
+     "j_g2": 133.20112071186918,
+     "j_g3": 125.21359459884495,
+     "delta_ms": 7.987526113024231,
+     "argmin_g2": [
+      0,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      0,
+      2,
+      2
+     ]
+    }
+   }
+  },
+  "h_c8000_r120_u10": {
+   "cell": "h_c8000_r120_u10",
+   "inputs": {
+    "k": 2,
+    "W": 1280,
+    "cert": 8000,
+    "rtt_ms": 120.0,
+    "uplink_mbps": 10.0,
+    "n_need": 8,
+    "server_bytes_equiv": 9723.898,
+    "s0_base": 1472.0,
+    "c_pkt": 41.983
+   },
+   "n_actions_g2": 5,
+   "n_actions_g3": 16,
+   "actions_g2": [
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     0,
+     0
+    ]
+   ],
+   "delta_hat_ms": 4.069709092835225,
+   "h3_target": true,
+   "j_g2": {
+    "1": 124.32194229747051,
+    "8": 133.20112071186918
+   },
+   "j_g3": {
+    "1": 124.1700502248243,
+    "8": 125.21359459884495
+   },
+   "argmin_g2": {
+    "1": [
+     0,
+     1,
+     2
+    ],
+    "8": [
+     0,
+     1,
+     2
+    ]
+   },
+   "argmin_g3": {
+    "1": [
+     0,
+     2,
+     2
+    ],
+    "8": [
+     0,
+     2,
+     2
+    ]
+   },
+   "by_loss": {
+    "1": {
+     "p": 0.01,
+     "j_g2": 124.32194229747051,
+     "j_g3": 124.1700502248243,
+     "delta_ms": 0.15189207264621984,
+     "argmin_g2": [
+      0,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      0,
+      2,
+      2
+     ]
+    },
+    "8": {
+     "p": 0.08,
+     "j_g2": 133.20112071186918,
+     "j_g3": 125.21359459884495,
+     "delta_ms": 7.987526113024231,
+     "argmin_g2": [
+      0,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      0,
+      2,
+      2
+     ]
+    }
+   }
+  },
+  "h_c12000_r120_u5": {
+   "cell": "h_c12000_r120_u5",
+   "inputs": {
+    "k": 2,
+    "W": 1280,
+    "cert": 12000,
+    "rtt_ms": 120.0,
+    "uplink_mbps": 5.0,
+    "n_need": 11,
+    "server_bytes_equiv": 13723.898,
+    "s0_base": 1472.0,
+    "c_pkt": 41.983
+   },
+   "n_actions_g2": 8,
+   "n_actions_g3": 30,
+   "actions_g2": [
+    [
+     126,
+     1,
+     2
+    ],
+    [
+     126,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1
+    ],
+    [
+     126,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     0,
+     0
+    ]
+   ],
+   "delta_hat_ms": 114.74629988998952,
+   "h3_target": true,
+   "j_g2": {
+    "1": 246.50176491369936,
+    "8": 249.97408351573893
+   },
+   "j_g3": {
+    "1": 130.52710396545493,
+    "8": 136.45614468400433
+   },
+   "argmin_g2": {
+    "1": [
+     0,
+     0,
+     1
+    ],
+    "8": [
+     0,
+     0,
+     1
+    ]
+   },
+   "argmin_g3": {
+    "1": [
+     0,
+     3,
+     1
+    ],
+    "8": [
+     0,
+     3,
+     1
+    ]
+   },
+   "by_loss": {
+    "1": {
+     "p": 0.01,
+     "j_g2": 246.50176491369936,
+     "j_g3": 130.52710396545493,
+     "delta_ms": 115.97466094824443,
+     "argmin_g2": [
+      0,
+      0,
+      1
+     ],
+     "argmin_g3": [
+      0,
+      3,
+      1
+     ]
+    },
+    "8": {
+     "p": 0.08,
+     "j_g2": 249.97408351573893,
+     "j_g3": 136.45614468400433,
+     "delta_ms": 113.5179388317346,
+     "argmin_g2": [
+      0,
+      0,
+      1
+     ],
+     "argmin_g3": [
+      0,
+      3,
+      1
+     ]
+    }
+   }
+  },
+  "h_c14000_r120_u5": {
+   "cell": "h_c14000_r120_u5",
+   "inputs": {
+    "k": 2,
+    "W": 1280,
+    "cert": 14000,
+    "rtt_ms": 120.0,
+    "uplink_mbps": 5.0,
+    "n_need": 13,
+    "server_bytes_equiv": 15723.898,
+    "s0_base": 1472.0,
+    "c_pkt": 41.983
+   },
+   "n_actions_g2": 5,
+   "n_actions_g3": 16,
+   "actions_g2": [
+    [
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     0,
+     0
+    ]
+   ],
+   "delta_hat_ms": 114.74629988998952,
+   "h3_target": true,
+   "j_g2": {
+    "1": 246.50176491369936,
+    "8": 249.97408351573893
+   },
+   "j_g3": {
+    "1": 130.52710396545493,
+    "8": 136.45614468400433
+   },
+   "argmin_g2": {
+    "1": [
+     0,
+     0,
+     1
+    ],
+    "8": [
+     0,
+     0,
+     1
+    ]
+   },
+   "argmin_g3": {
+    "1": [
+     0,
+     3,
+     1
+    ],
+    "8": [
+     0,
+     3,
+     1
+    ]
+   },
+   "by_loss": {
+    "1": {
+     "p": 0.01,
+     "j_g2": 246.50176491369936,
+     "j_g3": 130.52710396545493,
+     "delta_ms": 115.97466094824443,
+     "argmin_g2": [
+      0,
+      0,
+      1
+     ],
+     "argmin_g3": [
+      0,
+      3,
+      1
+     ]
+    },
+    "8": {
+     "p": 0.08,
+     "j_g2": 249.97408351573893,
+     "j_g3": 136.45614468400433,
+     "delta_ms": 113.5179388317346,
+     "argmin_g2": [
+      0,
+      0,
+      1
+     ],
+     "argmin_g3": [
+      0,
+      3,
+      1
+     ]
+    }
+   }
+  }
+ }
+}

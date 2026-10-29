@@ -1,0 +1,516 @@
+{
+ "schema": "padfec3.stage2_h_predictions.v1",
+ "generated_utc": "2026-10-02T03:26:24.411252+00:00",
+ "generator": "experiments/p21_gencompare.py h_predictions (--draw-h, --predict-h)",
+ "draw_sha256": "61075c9b535c306f5066adf1b47cf5fce494e441177586d40cb7f69a4a0afb69",
+ "layout_py_sha256": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+ "code_sha256": {
+  "padfec3/layout.py": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+  "padfec3/decide3.py": "db3d4db64fe2ef1e2ae270182a290f215095c6d3a9360480077788e98755340c",
+  "padfec3/learn3.py": "17d2714ec9970c23f0f3e5f2a62f3fa00588f5b037909ca7f1bf70f38bec98b6",
+  "padfec/policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+  "padfec/quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+  "experiments/p21_gencompare.py": "0732439939793ba11ea6a8129de9ef5a8d3ae16fbd72addeec490245a8486683"
+ },
+ "definition": "structure only, no learning: for each drawn cell and each loss p of its schedule (1% and 8%), Delta(p) = min over gen-2-representable actions of J3 minus min over the full v3 candidate set of J3, both from padfec3/layout.py at the exact p; gen-2 actions = the candidates policy.decide_v2 keeps from quantum.levers (delta from the gen-2 levers, m <= 3, lead = [m>=2]) scored with later='g2'; v3 actions = decide3.candidates3 scored with later='v3'; common inputs k=2 (ML-KEM, ClientHello 2308 B), W=1280, the cell's cert, RTT and uplink, n_need = layout.n_need(cert, S0_BASE_MLKEM, C_PKT_POLICY_DEFAULT), and for candidates3 the server-bytes equivalent S = cert + s0_at(bin_index(k*W)) that gives the same n_need; delta_hat_ms = 0.5*Delta(1%) + 0.5*Delta(8%) (equal time at both losses)",
+ "losses_pct": [
+  1.0,
+  8.0
+ ],
+ "weights": [
+  0.5,
+  0.5
+ ],
+ "h3_min_pred_ms": 2.0,
+ "cells": {
+  "h_c8000_r120_u5": {
+   "cell": "h_c8000_r120_u5",
+   "inputs": {
+    "k": 2,
+    "W": 1280,
+    "cert": 8000,
+    "rtt_ms": 120.0,
+    "uplink_mbps": 5.0,
+    "n_need": 8,
+    "server_bytes_equiv": 9723.898,
+    "s0_base": 1472.0,
+    "c_pkt": 41.983
+   },
+   "n_actions_g2": 5,
+   "n_actions_g3": 16,
+   "actions_g2": [
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     0,
+     0
+    ]
+   ],
+   "delta_hat_ms": 3.6173816607930434,
+   "h3_target": true,
+   "j_g2": {
+    "1": 127.4514958743832,
+    "8": 136.44410895252503
+   },
+   "j_g3": {
+    "1": 127.42642675359374,
+    "8": 129.2344147517284
+   },
+   "argmin_g2": {
+    "1": [
+     0,
+     1,
+     2
+    ],
+    "8": [
+     0,
+     1,
+     2
+    ]
+   },
+   "argmin_g3": {
+    "1": [
+     0,
+     1,
+     3
+    ],
+    "8": [
+     0,
+     2,
+     2
+    ]
+   },
+   "by_loss": {
+    "1": {
+     "p": 0.01,
+     "j_g2": 127.4514958743832,
+     "j_g3": 127.42642675359374,
+     "delta_ms": 0.025069120789453336,
+     "argmin_g2": [
+      0,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      0,
+      1,
+      3
+     ]
+    },
+    "8": {
+     "p": 0.08,
+     "j_g2": 136.44410895252503,
+     "j_g3": 129.2344147517284,
+     "delta_ms": 7.209694200796633,
+     "argmin_g2": [
+      0,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      0,
+      2,
+      2
+     ]
+    }
+   }
+  },
+  "h_c6000_r80_u10": {
+   "cell": "h_c6000_r80_u10",
+   "inputs": {
+    "k": 2,
+    "W": 1280,
+    "cert": 6000,
+    "rtt_ms": 80.0,
+    "uplink_mbps": 10.0,
+    "n_need": 7,
+    "server_bytes_equiv": 7723.898,
+    "s0_base": 1472.0,
+    "c_pkt": 41.983
+   },
+   "n_actions_g2": 8,
+   "n_actions_g3": 30,
+   "actions_g2": [
+    [
+     1,
+     0,
+     1
+    ],
+    [
+     1,
+     1,
+     2
+    ],
+    [
+     1,
+     1,
+     1
+    ],
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     0,
+     1,
+     1
+    ],
+    [
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     0
+    ]
+   ],
+   "delta_hat_ms": 0.6910461429411185,
+   "h3_target": false,
+   "j_g2": {
+    "1": 82.10311682321702,
+    "8": 83.38898611483778
+   },
+   "j_g3": {
+    "1": 82.05041611230901,
+    "8": 82.05959453986355
+   },
+   "argmin_g2": {
+    "1": [
+     1,
+     0,
+     1
+    ],
+    "8": [
+     1,
+     1,
+     2
+    ]
+   },
+   "argmin_g3": {
+    "1": [
+     1,
+     0,
+     4
+    ],
+    "8": [
+     1,
+     0,
+     4
+    ]
+   },
+   "by_loss": {
+    "1": {
+     "p": 0.01,
+     "j_g2": 82.10311682321702,
+     "j_g3": 82.05041611230901,
+     "delta_ms": 0.05270071090801309,
+     "argmin_g2": [
+      1,
+      0,
+      1
+     ],
+     "argmin_g3": [
+      1,
+      0,
+      4
+     ]
+    },
+    "8": {
+     "p": 0.08,
+     "j_g2": 83.38898611483778,
+     "j_g3": 82.05959453986355,
+     "delta_ms": 1.329391574974224,
+     "argmin_g2": [
+      1,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      1,
+      0,
+      4
+     ]
+    }
+   }
+  },
+  "h_c6000_r80_u0": {
+   "cell": "h_c6000_r80_u0",
+   "inputs": {
+    "k": 2,
+    "W": 1280,
+    "cert": 6000,
+    "rtt_ms": 80.0,
+    "uplink_mbps": 0.0,
+    "n_need": 7,
+    "server_bytes_equiv": 7723.898,
+    "s0_base": 1472.0,
+    "c_pkt": 41.983
+   },
+   "n_actions_g2": 8,
+   "n_actions_g3": 30,
+   "actions_g2": [
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     1,
+     1,
+     2
+    ],
+    [
+     1,
+     0,
+     1
+    ],
+    [
+     1,
+     1,
+     1
+    ],
+    [
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1
+    ],
+    [
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0
+    ]
+   ],
+   "delta_hat_ms": 0.17590007498063187,
+   "h3_target": false,
+   "j_g2": {
+    "1": 80.00072782531034,
+    "8": 80.35454640669965
+   },
+   "j_g3": {
+    "1": 80.00000011255241,
+    "8": 80.00347396949631
+   },
+   "argmin_g2": {
+    "1": [
+     1,
+     1,
+     2
+    ],
+    "8": [
+     1,
+     1,
+     2
+    ]
+   },
+   "argmin_g3": {
+    "1": [
+     1,
+     0,
+     4
+    ],
+    "8": [
+     1,
+     0,
+     4
+    ]
+   },
+   "by_loss": {
+    "1": {
+     "p": 0.01,
+     "j_g2": 80.00072782531034,
+     "j_g3": 80.00000011255241,
+     "delta_ms": 0.0007277127579214948,
+     "argmin_g2": [
+      1,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      1,
+      0,
+      4
+     ]
+    },
+    "8": {
+     "p": 0.08,
+     "j_g2": 80.35454640669965,
+     "j_g3": 80.00347396949631,
+     "delta_ms": 0.35107243720334225,
+     "argmin_g2": [
+      1,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      1,
+      0,
+      4
+     ]
+    }
+   }
+  },
+  "h_c6000_r120_u0": {
+   "cell": "h_c6000_r120_u0",
+   "inputs": {
+    "k": 2,
+    "W": 1280,
+    "cert": 6000,
+    "rtt_ms": 120.0,
+    "uplink_mbps": 0.0,
+    "n_need": 7,
+    "server_bytes_equiv": 7723.898,
+    "s0_base": 1472.0,
+    "c_pkt": 41.983
+   },
+   "n_actions_g2": 8,
+   "n_actions_g3": 30,
+   "actions_g2": [
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     1,
+     1,
+     2
+    ],
+    [
+     1,
+     0,
+     1
+    ],
+    [
+     1,
+     1,
+     1
+    ],
+    [
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1
+    ],
+    [
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0
+    ]
+   ],
+   "delta_hat_ms": 0.214743042745404,
+   "h3_target": false,
+   "j_g2": {
+    "1": 120.00089117658926,
+    "8": 120.43256644812233
+   },
+   "j_g3": {
+    "1": 120.0000001288874,
+    "8": 120.00397141033339
+   },
+   "argmin_g2": {
+    "1": [
+     1,
+     1,
+     2
+    ],
+    "8": [
+     1,
+     1,
+     2
+    ]
+   },
+   "argmin_g3": {
+    "1": [
+     1,
+     0,
+     4
+    ],
+    "8": [
+     1,
+     0,
+     4
+    ]
+   },
+   "by_loss": {
+    "1": {
+     "p": 0.01,
+     "j_g2": 120.00089117658926,
+     "j_g3": 120.0000001288874,
+     "delta_ms": 0.0008910477018702068,
+     "argmin_g2": [
+      1,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      1,
+      0,
+      4
+     ]
+    },
+    "8": {
+     "p": 0.08,
+     "j_g2": 120.43256644812233,
+     "j_g3": 120.00397141033339,
+     "delta_ms": 0.4285950377889378,
+     "argmin_g2": [
+      1,
+      1,
+      2
+     ],
+     "argmin_g3": [
+      1,
+      0,
+      4
+     ]
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,48 @@
+{
+ "source_fingerprint": "6284fdcf2d324bae4aee6aef56d7f339aa01c3b267e3aa3225277e7c87b3ade4",
+ "seed": "c3b52877b51029b765f2aef18223f7f6e1a3a136678a2d6ab8f82e6d0a5d0aff",
+ "cells": [
+  "h_c6000_r120_u10",
+  "h_c8000_r120_u10",
+  "h_c12000_r120_u5",
+  "h_c14000_r120_u5"
+ ],
+ "excluded_cells": [
+  "h_c6000_r120_u0",
+  "h_c6000_r80_u0",
+  "h_c6000_r80_u10",
+  "h_c8000_r120_u5"
+ ],
+ "eligible_count": 56,
+ "grid_count": 60,
+ "dev_cells_path": "g3/dev_cells_stage3.json",
+ "dev_cells_sha256": "ef630b0446eff705b81387ff74a6c1d47a9d3e9bcfefae198ccc6585775745b0",
+ "rule": "seed = sha256(g3c qamp.srcsha as ASCII); exclude development cells, rank eligible grid cells by sha256(seed + '|' + cell id); take the 4 lowest; no model prediction is consulted",
+ "schema": "padfec3.stage3_h_draw.v1",
+ "drawn_utc": "2026-10-02T10:33:31.156698+00:00",
+ "grid": {
+  "cert": [
+   6000,
+   8000,
+   10000,
+   12000,
+   14000
+  ],
+  "rtt_ms": [
+   20,
+   80,
+   120
+  ],
+  "uplink_mbps": [
+   0,
+   1,
+   5,
+   10
+  ]
+ },
+ "g3c_sha256": "6baf2b5235d9906062d524af708ee28f06b2c20fa11c64fbc8bb51bc7f274d9b",
+ "gate_evidence": {
+  "path": "experiments/results/gate_v3_parity.json",
+  "sha256": "ae6c97af8a56f0780e41279d6b7b47810c6f201eeeb950d1c576506e6aa395d6"
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "schema": "padfec3.stage0_seal.v1",
+ "sealed_utc": "2026-10-02T00:45:16Z",
+ "stage": "PAD-FEC v3 stage 0 (verdict_v3.md section 4.2)",
+ "sha256": {
+  "g3/stage0_predictions.json": "9df45d84f68b610fb9cc233c701d614ee513bdba1736a66e766fae39325b1db3",
+  "g3/PROTOCOL_stage0.md": "025b4a5e21588112ebb9ac83b9cc82c7130fa44966c0a01fbe708d5022f54339",
+  "padfec3/layout.py": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346"
+ },
+ "also_recorded_sha256": {
+  "g3/stage0_predict.py": "d3556d8669f7c9d0df43af925d8226cc1b36578abb2a3cb555629adc6785797f",
+  "tests/test_padfec3_layout.py": "eac9e75b6454c28e33028491119206ebbd7262e110270dfaf8725acba71f089a",
+  "padfec3/__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+  "padfec/policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+  "padfec/quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+  "afec/channel.py": "2b5de59b0ef68cbb0cdfa2f03efd8040e268ad26cd4a8c9f728fa4bd9eb9a1f3"
+ },
+ "predictions_generated_utc": "2026-10-02T00:13:02Z",
+ "check": "python -B g3/seal_stage0.py --check"
+}

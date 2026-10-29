@@ -1,0 +1,431 @@
+{
+ "schema": "padfec3.dev_v31_redecide/1",
+ "label": "development, in-sample (not confirmatory)",
+ "status": "development (not confirmatory)",
+ "confirmatory": false,
+ "generated_at": "2026-10-02T09:32:12.872210+00:00",
+ "question": "which action the v3.1 completion rule alone would choose, given the exact context, candidate set and full posterior that each recorded v3 decision used (stage-2 run1 journals, re-analyzed after the fact)",
+ "method": "replay the sealed v3 learner (C:/dev/pq_afec_gen3 padfec3, imported read-only) in journal order, assert that every decision and j3_ms match the journal bit for bit, then call gen31 decide3.decide_core on the same posterior, k_hat, s_hat, policy RTT and uplink with no guard penalty and no re-evaluation. Only the completion rule differs from v3. v3.1 learning (nominal-2 skip, guard, re-evaluation) is not applied to the posterior, so this is not a v3.1 trajectory.",
+ "one_rtt_rule": "ms < 1.5*rtt_true + tau(pre-decision bytes), as the stage-2 runner",
+ "guard_passive_note": "guard windows fed with the residual ms - EJ_v3.1(v3 action) along the recorded v3 actions; actions are not changed by alarms, so alarm counts describe the residual stream only",
+ "code": {
+  "gen31": {
+   "padfec3/layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+   "padfec3/learn3.py": "0828e8d27eded31fdd05fbf73fed877f931ca01c7033861e521a9b2e01464094",
+   "padfec3/decide3.py": "64db68dd44470816f02dcf391fd8affafa2462a8c56d7d354b1c0e1e683a60b1",
+   "padfec/policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+   "padfec/quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+   "padfec/table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+   "g3/dev_v31_redecide.py": "fba2217d0f256cf56ac41e4c5aaad7948daa05a4e76bae1045638d4c65f5ac36"
+  },
+  "gen3_v3": {
+   "padfec3/layout.py": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+   "padfec3/learn3.py": "17d2714ec9970c23f0f3e5f2a62f3fa00588f5b037909ca7f1bf70f38bec98b6",
+   "padfec3/decide3.py": "db3d4db64fe2ef1e2ae270182a290f215095c6d3a9360480077788e98755340c"
+  }
+ },
+ "constants": {
+  "preflight_ack_bytes": 41,
+  "c_pkt": 41.983,
+  "W": 1280
+ },
+ "cells": {
+  "H_h_c6000_r80_u10": {
+   "journal": "C:/dev/pq_afec_gen3/experiments/state/p21_run1_H_h_c6000_r80_u10_units.jsonl",
+   "journal_sha256": "64833992f78d7d088492d852d8c6bb3aaf3d009e531b19934cd6968376bc8710",
+   "cert": 6000,
+   "rtt_true_ms": 80.0,
+   "uplink_mbps": 10.0,
+   "blocks": 6,
+   "replay_bit_exact": true,
+   "decisions_ej": 1799,
+   "decisions_other": {
+    "cold": 1
+   },
+   "context": {
+    "k_hat": [
+     2
+    ],
+    "n_need": [
+     7
+    ],
+    "s_hat_range": [
+     7904.0,
+     7915.5
+    ],
+    "a_pre": 41
+   },
+   "all": {
+    "n": 1799,
+    "v3_actions": {
+     "1,0,4": 1799
+    },
+    "v31_actions": {
+     "0,2,2": 1799
+    },
+    "transitions": {
+     "1,0,4 -> 0,2,2": 1799
+    },
+    "changed": 1799,
+    "changed_frac": 1.0,
+    "by_v3_action": {
+     "1,0,4": {
+      "n": 1799,
+      "measured_ms_mean": 140.12681600889383,
+      "measured_one_rtt": 0.34185658699277377,
+      "measured_ok": 1.0,
+      "pred_v3_ms_mean": 84.97872610057937,
+      "pred_v31_same_action_ms_mean": 166.72745700556678,
+      "pred_v31_one_rtt_same_action_mean": 0.004026230897176139,
+      "v31_nominal2_frac": 1.0
+     }
+    },
+    "by_v31_action": {
+     "0,2,2": {
+      "n": 1799,
+      "pred_v31_ms_mean": 102.7684853092213,
+      "pred_v31_one_rtt_mean": 0.8797323077554714
+     }
+    }
+   },
+   "by_loss": {
+    "1.0": {
+     "n": 899,
+     "v3_actions": {
+      "1,0,4": 899
+     },
+     "v31_actions": {
+      "0,2,2": 899
+     },
+     "transitions": {
+      "1,0,4 -> 0,2,2": 899
+     },
+     "changed": 899,
+     "changed_frac": 1.0,
+     "by_v3_action": {
+      "1,0,4": {
+       "n": 899,
+       "measured_ms_mean": 136.02707341490546,
+       "measured_one_rtt": 0.39043381535038935,
+       "measured_ok": 1.0,
+       "pred_v3_ms_mean": 85.18662756129805,
+       "pred_v31_same_action_ms_mean": 166.89788346719897,
+       "pred_v31_one_rtt_same_action_mean": 0.004000106467011844,
+       "v31_nominal2_frac": 1.0
+      }
+     },
+     "by_v31_action": {
+      "0,2,2": {
+       "n": 899,
+       "pred_v31_ms_mean": 104.81171725810036,
+       "pred_v31_one_rtt_mean": 0.8661203490140577
+      }
+     }
+    },
+    "8.0": {
+     "n": 900,
+     "v3_actions": {
+      "1,0,4": 900
+     },
+     "v31_actions": {
+      "0,2,2": 900
+     },
+     "transitions": {
+      "1,0,4 -> 0,2,2": 900
+     },
+     "changed": 900,
+     "changed_frac": 1.0,
+     "by_v3_action": {
+      "1,0,4": {
+       "n": 900,
+       "measured_ms_mean": 144.22200333333333,
+       "measured_one_rtt": 0.29333333333333333,
+       "measured_ok": 1.0,
+       "pred_v3_ms_mean": 84.77105564148371,
+       "pred_v31_same_action_ms_mean": 166.55721990666976,
+       "pred_v31_one_rtt_same_action_mean": 0.0040523263001958085,
+       "v31_nominal2_frac": 1.0
+      }
+     },
+     "by_v31_action": {
+      "0,2,2": {
+       "n": 900,
+       "pred_v31_ms_mean": 100.72752361806323,
+       "pred_v31_one_rtt_mean": 0.8933291420982834
+      }
+     }
+    }
+   },
+   "v31_choice_nominal2_frac": 0.0,
+   "v31_reeval_condition_frac": 0.0,
+   "guard_passive": {
+    "rows": 1799,
+    "rows_on_alarmed_action": 192,
+    "alarms_raised": 3,
+    "alarms_by_action": {
+     "1,0,4": 3
+    },
+    "alarms_by_loss": {
+     "1.0": 2,
+     "8.0": 1
+    },
+    "penalty_ms_mean_when_alarmed": 44.652008507492695,
+    "first_alarms": [
+     {
+      "row": 746,
+      "action": "1,0,4",
+      "loss": 1.0
+     },
+     {
+      "row": 862,
+      "action": "1,0,4",
+      "loss": 1.0
+     },
+     {
+      "row": 1048,
+      "action": "1,0,4",
+      "loss": 8.0
+     }
+    ]
+   }
+  },
+  "S_bigcert": {
+   "journal": "C:/dev/pq_afec_gen3/experiments/state/p21_run1_S_bigcert_units.jsonl",
+   "journal_sha256": "5221c445d3789eece72654f5dddd0b10677ed90a6a999cd87943ea08e41d4801",
+   "cert": 16000,
+   "rtt_true_ms": 50.0,
+   "uplink_mbps": 2.0,
+   "blocks": 10,
+   "replay_bit_exact": true,
+   "decisions_ej": 4499,
+   "decisions_other": {
+    "cold": 1
+   },
+   "context": {
+    "k_hat": [
+     2
+    ],
+    "n_need": [
+     15
+    ],
+    "s_hat_range": [
+     18224.0,
+     18239.5
+    ],
+    "a_pre": 41
+   },
+   "all": {
+    "n": 4499,
+    "v3_actions": {
+     "0,0,4": 1325,
+     "0,3,1": 3174
+    },
+    "v31_actions": {
+     "0,0,4": 1325,
+     "0,3,1": 3174
+    },
+    "transitions": {
+     "0,0,4 -> 0,0,4": 1325,
+     "0,3,1 -> 0,3,1": 3174
+    },
+    "changed": 0,
+    "changed_frac": 0.0,
+    "by_v3_action": {
+     "0,0,4": {
+      "n": 1325,
+      "measured_ms_mean": 123.09931018867925,
+      "measured_one_rtt": 0.0,
+      "measured_ok": 1.0,
+      "pred_v3_ms_mean": 118.30455603189247,
+      "pred_v31_same_action_ms_mean": 118.30455603189247,
+      "pred_v31_one_rtt_same_action_mean": 9.885587082440503e-17,
+      "v31_nominal2_frac": 1.0
+     },
+     "0,3,1": {
+      "n": 3174,
+      "measured_ms_mean": 90.95945746691872,
+      "measured_one_rtt": 0.8304977945809704,
+      "measured_ok": 1.0,
+      "pred_v3_ms_mean": 89.0035884497995,
+      "pred_v31_same_action_ms_mean": 89.0035884497995,
+      "pred_v31_one_rtt_same_action_mean": 0.8309004476511672,
+      "v31_nominal2_frac": 0.0
+     }
+    },
+    "by_v31_action": {
+     "0,0,4": {
+      "n": 1325,
+      "pred_v31_ms_mean": 118.30455603189247,
+      "pred_v31_one_rtt_mean": 9.885587082440503e-17
+     },
+     "0,3,1": {
+      "n": 3174,
+      "pred_v31_ms_mean": 89.0035884497995,
+      "pred_v31_one_rtt_mean": 0.8309004476511672
+     }
+    }
+   },
+   "by_loss": {
+    "2.0": {
+     "n": 2249,
+     "v3_actions": {
+      "0,0,4": 67,
+      "0,3,1": 2182
+     },
+     "v31_actions": {
+      "0,0,4": 67,
+      "0,3,1": 2182
+     },
+     "transitions": {
+      "0,0,4 -> 0,0,4": 67,
+      "0,3,1 -> 0,3,1": 2182
+     },
+     "changed": 0,
+     "changed_frac": 0.0,
+     "by_v3_action": {
+      "0,0,4": {
+       "n": 67,
+       "measured_ms_mean": 119.3499552238806,
+       "measured_one_rtt": 0.0,
+       "measured_ok": 1.0,
+       "pred_v3_ms_mean": 117.53372103067272,
+       "pred_v31_same_action_ms_mean": 117.53372103067272,
+       "pred_v31_one_rtt_same_action_mean": 1.480589343991901e-16,
+       "v31_nominal2_frac": 1.0
+      },
+      "0,3,1": {
+       "n": 2182,
+       "measured_ms_mean": 82.88924106324473,
+       "measured_one_rtt": 0.9422548120989918,
+       "measured_ok": 1.0,
+       "pred_v3_ms_mean": 82.57262129679758,
+       "pred_v31_same_action_ms_mean": 82.57262129679758,
+       "pred_v31_one_rtt_same_action_mean": 0.9245584165060658,
+       "v31_nominal2_frac": 0.0
+      }
+     },
+     "by_v31_action": {
+      "0,0,4": {
+       "n": 67,
+       "pred_v31_ms_mean": 117.53372103067272,
+       "pred_v31_one_rtt_mean": 1.480589343991901e-16
+      },
+      "0,3,1": {
+       "n": 2182,
+       "pred_v31_ms_mean": 82.57262129679758,
+       "pred_v31_one_rtt_mean": 0.9245584165060658
+      }
+     }
+    },
+    "15.0": {
+     "n": 2250,
+     "v3_actions": {
+      "0,0,4": 1258,
+      "0,3,1": 992
+     },
+     "v31_actions": {
+      "0,0,4": 1258,
+      "0,3,1": 992
+     },
+     "transitions": {
+      "0,0,4 -> 0,0,4": 1258,
+      "0,3,1 -> 0,3,1": 992
+     },
+     "changed": 0,
+     "changed_frac": 0.0,
+     "by_v3_action": {
+      "0,0,4": {
+       "n": 1258,
+       "measured_ms_mean": 123.29899761526232,
+       "measured_one_rtt": 0.0,
+       "measured_ok": 1.0,
+       "pred_v3_ms_mean": 118.3456100422913,
+       "pred_v31_same_action_ms_mean": 118.3456100422913,
+       "pred_v31_one_rtt_same_action_mean": 9.623535789951584e-17,
+       "v31_nominal2_frac": 1.0
+      },
+      "0,3,1": {
+       "n": 992,
+       "measured_ms_mean": 108.71067943548388,
+       "measured_one_rtt": 0.5846774193548387,
+       "measured_ok": 1.0,
+       "pred_v3_ms_mean": 103.14912305448713,
+       "pred_v31_same_action_ms_mean": 103.14912305448713,
+       "pred_v31_one_rtt_same_action_mean": 0.6248906814804123,
+       "v31_nominal2_frac": 0.0
+      }
+     },
+     "by_v31_action": {
+      "0,0,4": {
+       "n": 1258,
+       "pred_v31_ms_mean": 118.3456100422913,
+       "pred_v31_one_rtt_mean": 9.623535789951584e-17
+      },
+      "0,3,1": {
+       "n": 992,
+       "pred_v31_ms_mean": 103.14912305448713,
+       "pred_v31_one_rtt_mean": 0.6248906814804123
+      }
+     }
+    }
+   },
+   "v31_choice_nominal2_frac": 0.2945098910869082,
+   "v31_reeval_condition_frac": 0.2945098910869082,
+   "guard_passive": {
+    "rows": 4499,
+    "rows_on_alarmed_action": 507,
+    "alarms_raised": 8,
+    "alarms_by_action": {
+     "0,3,1": 8
+    },
+    "alarms_by_loss": {
+     "15.0": 8
+    },
+    "penalty_ms_mean_when_alarmed": 28.24791123929657,
+    "first_alarms": [
+     {
+      "row": 612,
+      "action": "0,3,1",
+      "loss": 15.0
+     },
+     {
+      "row": 685,
+      "action": "0,3,1",
+      "loss": 15.0
+     },
+     {
+      "row": 757,
+      "action": "0,3,1",
+      "loss": 15.0
+     },
+     {
+      "row": 848,
+      "action": "0,3,1",
+      "loss": 15.0
+     },
+     {
+      "row": 1737,
+      "action": "0,3,1",
+      "loss": 15.0
+     },
+     {
+      "row": 2372,
+      "action": "0,3,1",
+      "loss": 15.0
+     },
+     {
+      "row": 2491,
+      "action": "0,3,1",
+      "loss": 15.0
+     },
+     {
+      "row": 2640,
+      "action": "0,3,1",
+      "loss": 15.0
+     }
+    ]
+   }
+  }
+ },
+ "elapsed_s": 4.703318119049072
+}
