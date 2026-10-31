@@ -1,1 +1,7 @@
-mlkem-quic-amplification/src/*.sh text eol=lf
+* text=auto eol=lf
+*.png binary
+*.xlsx binary
+*.docx binary
+*.pdf binary
+*.pptx binary
+*.gz binary
