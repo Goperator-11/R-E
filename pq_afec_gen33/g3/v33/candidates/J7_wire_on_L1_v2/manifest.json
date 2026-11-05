@@ -1,0 +1,98 @@
+{
+  "schema": "padfec.v33.j7_candidate/2",
+  "base_commit": "ffd9f45ec0547d0d878222cc6bbb9447e1917b5b",
+  "files": [
+    {
+      "path": "experiments/quicbed/policy.go",
+      "snapshot": "files/experiments/quicbed/policy.go",
+      "sha256": "d1a3ff6caa4e7da0992f09938b6e82e517c8d72e8f8b2cfe813193ac1557381e",
+      "baseline_sha256": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+      "tracked_before": true
+    },
+    {
+      "path": "experiments/quicbed/policy3.go",
+      "snapshot": "files/experiments/quicbed/policy3.go",
+      "sha256": "536e99ca5f093985ef72e6c264690875ee4a3f217d3c47aa1dabeb0944a8778d",
+      "baseline_sha256": "c73fb89bd0bf14a6d423a3ee37b8043a9818005d93f1ac64737ce9fda9b42f01",
+      "tracked_before": true
+    },
+    {
+      "path": "experiments/quicbed/policy3_test.go",
+      "snapshot": "files/experiments/quicbed/policy3_test.go",
+      "sha256": "9378a3f31eaec480543183e1d51cb4eea24f18fb9190cd2dd96e407df9d1fe1a",
+      "baseline_sha256": "4152a3db4a503aa49de9eca662a92e8e2064374f49819c6ef7a042c7c9f00c32",
+      "tracked_before": true
+    },
+    {
+      "path": "experiments/quicbed/qamp.go",
+      "snapshot": "files/experiments/quicbed/qamp.go",
+      "sha256": "b49f3427c87b52186b3457a8ac42fbba0f5ef5256298022e6cf9d5af14c6acdd",
+      "baseline_sha256": "0d099a46498ae87ea887ce979c1fd1215928d52c0c7d764e7f74e0d62e724ce7",
+      "tracked_before": true
+    },
+    {
+      "path": "experiments/quicbed/qamp_audit_test.go",
+      "snapshot": "files/experiments/quicbed/qamp_audit_test.go",
+      "sha256": "50df8c4b3581703a04e7d5552557e0497bad3e9d9c73d40e06b5ea9e2e1f0dcd",
+      "baseline_sha256": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+      "tracked_before": true
+    },
+    {
+      "path": "experiments/quicbed/qamp_lead_test.go",
+      "snapshot": "files/experiments/quicbed/qamp_lead_test.go",
+      "sha256": "779ad9d8fe260dadb8868eb6d388010123cc60ac05fd78ea161c0ea700454468",
+      "baseline_sha256": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+      "tracked_before": true
+    },
+    {
+      "path": "padfec/policy.py",
+      "snapshot": "files/padfec/policy.py",
+      "sha256": "67b27c1dcb50dd4170eee393520818f32ef20e68c4173ae2e0a26b14e64f34e8",
+      "baseline_sha256": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+      "tracked_before": true
+    },
+    {
+      "path": "padfec3/decide3.py",
+      "snapshot": "files/padfec3/decide3.py",
+      "sha256": "23666fd47babdb8364d877a8d51f703b068dffb2a40f650b362dfa6fccc52c33",
+      "baseline_sha256": "72e6f388651df35d2e70cb52c65c71e5ec6a0d496ad95400e623544a3fb880ba",
+      "tracked_before": true
+    },
+    {
+      "path": "tests/test_core_regressions.py",
+      "snapshot": "files/tests/test_core_regressions.py",
+      "sha256": "d03beefa960d8443a704bec967f110ff0c3ec8d832fa114f803b6de2a2f95140",
+      "baseline_sha256": "288733d386b958ac9f830fea076baf86ff0539cfe0ce213539c9dbd2f274ac20",
+      "tracked_before": true
+    },
+    {
+      "path": "tests/test_padfec3_layout.py",
+      "snapshot": "files/tests/test_padfec3_layout.py",
+      "sha256": "9bd24d391605c68846907484f45af037c1df67b71bd35493d6c4e67a205eca0a",
+      "baseline_sha256": "c32cd11619123daee0afa82f39745817e623a1bee02eb255196f1d731f058270",
+      "tracked_before": true
+    },
+    {
+      "path": "experiments/quicbed/qamp_j7_test.go",
+      "snapshot": "files/experiments/quicbed/qamp_j7_test.go",
+      "sha256": "4fab7ddcc5de744f60ff3524aa9d33f9ae203e69acd7058433b677b932d3b188",
+      "baseline_sha256": null,
+      "tracked_before": false
+    },
+    {
+      "path": "tests/test_v33_j7_wire.py",
+      "snapshot": "files/tests/test_v33_j7_wire.py",
+      "sha256": "49f0771e9673ade559d00265911a80c57fdef826d2f0536597545545d47e9000",
+      "baseline_sha256": null,
+      "tracked_before": false
+    }
+  ],
+  "patch_sha256": "b6cd727d18dca958c710baffd5824f04311338af2392d3a4a1ad1c043ad9d1d1",
+  "policy_state_version": 4,
+  "L1_Go_mirror_preserved": true,
+  "full_gate_pass": true,
+  "supplementary_bit_exact_values": 415654,
+  "candidate_adopted": false,
+  "performance_status": "pending_fixed_MC",
+  "script_sha256": "dad123e47a3055668770176fc491a70ee5f21720567b91e68d7c9aaab8c91af3"
+}

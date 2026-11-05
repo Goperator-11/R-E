@@ -1,0 +1,903 @@
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16007 bytes
+2026/10/31 23:25:41 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1224] drop:payload_decrypt_error:1338 drop:payload_decrypt_error:1338 drop:payload_decrypt_error:1338 received:initial:1:[crypto:1224:218] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4014 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1338 drop:payload_decrypt_error:1338 received:initial:1:[crypto:1224:222] received:initial:0:[crypto:0:1224] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2676 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1234] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:211] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2656 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1232] drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 received:initial:1:[crypto:1232:213] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3990 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1329 drop:payload_decrypt_error:1329 received:initial:1:[crypto:1233:216] received:initial:0:[crypto:0:1233] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2658 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1227:225] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1231] drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:212] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3993 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:223] received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2664 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:216] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2670 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1232] drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 received:initial:1:[crypto:1232:222] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3990 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:231] received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2674 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1228] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1228:218] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1234] drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:212] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3984 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1329 drop:payload_decrypt_error:1329 received:initial:1:[crypto:1233:220] received:initial:0:[crypto:0:1233] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2658 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1231] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:224] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2662 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1231] drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:220] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3993 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:230] received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2674 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1234] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1234:214] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1228] drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 received:initial:1:[crypto:1228:224] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4002 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1333 drop:payload_decrypt_error:1333 received:initial:1:[crypto:1229:228] received:initial:0:[crypto:0:1229] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2666 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1229] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1333 drop:payload_decrypt_error:1333 received:initial:1:[crypto:1229:213] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2666 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1233] drop:payload_decrypt_error:1329 drop:payload_decrypt_error:1329 drop:payload_decrypt_error:1329 received:initial:1:[crypto:1233:216] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3987 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1338 drop:payload_decrypt_error:1338 received:initial:1:[crypto:1224:232] received:initial:0:[crypto:0:1224] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2676 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1228] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1228:219] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1228] drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 received:initial:1:[crypto:1228:217] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4002 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:225] received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2664 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1236] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 received:initial:1:[crypto:1236:220] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2652 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.02s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1234] drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:216] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3984 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1329 drop:payload_decrypt_error:1329 received:initial:1:[crypto:1233:217] received:initial:0:[crypto:0:1233] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2658 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1226] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1226:226] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1226] drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:217] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4008 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:212] received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2664 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1235] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1327 drop:payload_decrypt_error:1327 received:initial:1:[crypto:1235:212] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=6
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2654 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4005 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:227] received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2664 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1228] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1228:220] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1232] drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 received:initial:1:[crypto:1232:220] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3990 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:230] received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2674 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1229] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1333 drop:payload_decrypt_error:1333 received:initial:1:[crypto:1229:215] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2666 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1231] drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:213] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3993 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:222] received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2674 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1231] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1231:224] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.01s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:218] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4005 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 received:initial:1:[crypto:1236:217] received:initial:0:[crypto:0:1236] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2652 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:221] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2664 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1226] drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:229] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4008 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 received:initial:1:[crypto:1232:221] received:initial:0:[crypto:0:1232] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2660 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1233] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1233:209] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.01s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1234] drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:223] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3984 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1338 drop:payload_decrypt_error:1338 received:initial:1:[crypto:1224:230] received:initial:0:[crypto:0:1224] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2676 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:212] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2664 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.02s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1231] drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:216] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3993 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:222] received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2664 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1229] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1229:223] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.01s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:218] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4005 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 received:initial:1:[crypto:1236:218] received:initial:0:[crypto:0:1236] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2652 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:227] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=6
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2674 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.02s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1225] drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4011 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:221] received:initial:0:[crypto:0:1234] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2656 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1226] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1226:231] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1225] drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:231] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4011 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 received:initial:1:[crypto:1228:216] received:initial:0:[crypto:0:1228] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2668 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1232] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 received:initial:1:[crypto:1232:210] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=6
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2660 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.02s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16009 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1236] drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 received:initial:1:[crypto:1236:209] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3978 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1338 drop:payload_decrypt_error:1338 received:initial:1:[crypto:1224:218] received:initial:0:[crypto:0:1224] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2676 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1227:220] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1235] drop:payload_decrypt_error:1327 drop:payload_decrypt_error:1327 drop:payload_decrypt_error:1327 received:initial:1:[crypto:1235:216] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3981 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:230] received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2674 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1229] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1333 drop:payload_decrypt_error:1333 received:initial:1:[crypto:1229:226] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2666 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.02s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1231] drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:221] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3993 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:222] received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2664 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1229] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1229:227] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1234] drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:209] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3984 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:219] received:initial:0:[crypto:0:1234] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2656 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:214] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2664 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1226] drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4008 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:220] received:initial:0:[crypto:0:1227] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2670 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1224] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1224:227] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1236] drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 received:initial:1:[crypto:1236:217] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3978 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:219] received:initial:0:[crypto:0:1226] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2672 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:223] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2674 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1228] drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 received:initial:1:[crypto:1228:215] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4002 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:218] received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2674 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1231] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1231:211] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:228] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4005 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 received:initial:1:[crypto:1236:221] received:initial:0:[crypto:0:1236] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2652 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1231] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:221] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=6
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2662 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1228] drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 received:initial:1:[crypto:1228:219] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4002 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:228] received:initial:0:[crypto:0:1227] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2670 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16009 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1230:214] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:224] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4005 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:214] received:initial:0:[crypto:0:1234] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2656 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1234] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:216] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2656 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16009 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1230] drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:217] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3996 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1327 drop:payload_decrypt_error:1327 received:initial:1:[crypto:1235:221] received:initial:0:[crypto:0:1235] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2654 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1228] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1228:229] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1226] drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:221] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4008 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:220] received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2664 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:229] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2670 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1232] drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 received:initial:1:[crypto:1232:210] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3990 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:228] received:initial:0:[crypto:0:1226] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2672 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1230:224] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1226] drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4008 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:214] received:initial:0:[crypto:0:1234] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2656 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1224] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1338 drop:payload_decrypt_error:1338 received:initial:1:[crypto:1224:226] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=6
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2676 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1234] drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:221] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3984 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:223] received:initial:0:[crypto:0:1231] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2662 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1225:220] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16009 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1236] drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 received:initial:1:[crypto:1236:217] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3978 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:216] received:initial:0:[crypto:0:1231] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2662 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1224] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1338 drop:payload_decrypt_error:1338 received:initial:1:[crypto:1224:223] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2676 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1226] drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:217] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4008 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:217] received:initial:0:[crypto:0:1231] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2662 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1225:224] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1233] drop:payload_decrypt_error:1329 drop:payload_decrypt_error:1329 drop:payload_decrypt_error:1329 received:initial:1:[crypto:1233:220] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3987 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1327 drop:payload_decrypt_error:1327 received:initial:1:[crypto:1235:221] received:initial:0:[crypto:0:1235] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2654 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1235] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1327 drop:payload_decrypt_error:1327 received:initial:1:[crypto:1235:219] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2654 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.02s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1225] drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4011 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1326 drop:payload_decrypt_error:1326 received:initial:1:[crypto:1236:210] received:initial:0:[crypto:0:1236] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2652 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1232] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1232:220] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1228] drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 drop:payload_decrypt_error:1334 received:initial:1:[crypto:1228:220] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4002 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:228] received:initial:0:[crypto:0:1226] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2672 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1235] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1327 drop:payload_decrypt_error:1327 received:initial:1:[crypto:1235:216] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2654 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1232] drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 received:initial:1:[crypto:1232:225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3990 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:227] received:initial:0:[crypto:0:1226] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2672 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1235] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1235:210] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1232] drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 received:initial:1:[crypto:1232:223] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3990 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1333 drop:payload_decrypt_error:1333 received:initial:1:[crypto:1229:218] received:initial:0:[crypto:0:1229] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2666 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1234] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:211] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2656 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.02s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1230] drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:227] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3996 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:231] received:initial:0:[crypto:0:1226] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2672 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1230:214] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:215] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4005 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:227] received:initial:0:[crypto:0:1230] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2664 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1231] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1331 drop:payload_decrypt_error:1331 received:initial:1:[crypto:1231:213] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2662 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1225] drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:226] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4011 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 received:initial:1:[crypto:1232:216] received:initial:0:[crypto:0:1232] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2660 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16005 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1234] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1234:208] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1230] drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:226] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3996 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1337 drop:payload_decrypt_error:1337 received:initial:1:[crypto:1225:219] received:initial:0:[crypto:0:1225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2674 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1227] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:223] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2670 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.03s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1235] drop:payload_decrypt_error:1327 drop:payload_decrypt_error:1327 drop:payload_decrypt_error:1327 received:initial:1:[crypto:1235:210] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3981 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1335 drop:payload_decrypt_error:1335 received:initial:1:[crypto:1227:215] received:initial:0:[crypto:0:1227] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2670 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1228] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1228:226] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+=== RUN   TestHoldQUICTraceCountsOnlySentCrypto
+--- PASS: TestHoldQUICTraceCountsOnlySentCrypto (0.00s)
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1226] drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 drop:payload_decrypt_error:1336 received:initial:1:[crypto:1226:222] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=4008 recovered=0
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1330 drop:payload_decrypt_error:1330 received:initial:1:[crypto:1232:210] received:initial:0:[crypto:0:1232] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2660 recovered=1
+=== RUN   TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original
+cert DER = 16006 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1229] sent:initial:0:[*wire.AckFrame] drop:payload_decrypt_error:1333 drop:payload_decrypt_error:1333 received:initial:1:[crypto:1229:226] sent:initial:1:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=8
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=2 bytes=2666 recovered=1
+--- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto (0.03s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/none (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/first_original (0.00s)
+    --- PASS: TestHoldQUICUnusedParityProcessedBeforeFirstCrypto/last_original (0.02s)
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/none
+cert DER = 16008 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1230] drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 drop:payload_decrypt_error:1332 received:initial:1:[crypto:1230:225] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=1 dropped_original=0 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=-1 first_crypto_unused_parities=3 bytes=3996 recovered=0
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original
+cert DER = 16007 bytes
+    qamp_hold_quic_test.go:185: events=[drop:payload_decrypt_error:1328 drop:payload_decrypt_error:1328 received:initial:1:[crypto:1234:220] received:initial:0:[crypto:0:1234] sent:initial:0:[*wire.AckFrame crypto:0:1178]] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=0 first_crypto_unused_parities=2 bytes=2656 recovered=1
+=== RUN   TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original
+cert DER = 16009 bytes
+    qamp_hold_quic_test.go:185: events=[received:initial:0:[crypto:0:1226] sent:initial:0:[*wire.AckFrame] received:initial:2:[crypto:1226:218] sent:initial:1:[*wire.AckFrame crypto:0:1178] drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322 drop:payload_decrypt_error:1322] flights=2 dropped_original=1 suppressed_later_initial=0
+    qamp_hold_quic_test.go:199: loss=1 first_crypto_unused_parities=0 bytes=0 recovered=0
+--- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting (0.01s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/none (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/first_original (0.00s)
+    --- PASS: TestHoldQUICLiveRetransmissionsPreserveAccounting/last_original (0.00s)
+PASS
+ok  	pqafec/quicbed/cmd/qamp	0.995s

@@ -13,6 +13,7 @@
 | [pq_afec_gen3](pq_afec_gen3/) | v3.0. 첫 비행의 선행 신용 데이터그램과 복구 패리티를 따로 고르는 정책, 0·2단계 봉인 측정 |
 | [pq_afec_gen31](pq_afec_gen31/) | v3.1. 완료 판정 수정, 명목 2-RTT 관측의 학습 제외, 잔차 감시층 추가. 3단계 봉인 측정 |
 | [pq_afec_gen32](pq_afec_gen32/) | v3.2 개발본. 학습·후보·캐시 수정, 구현 대조와 합성 적응 벤치. 실측 없음 |
+| [pq_afec_gen33](pq_afec_gen33/) | v3.3.1 개발본. C1 회신을 본 목적지만 데이터그램 단위 증거로 학습, 패리티 1452 B 상한, 테스트베드 회신 판본과 연결별 서버 기록. 독립 세계 시뮬레이터. 실측 없음 |
 | [docs/audit-2026-09-14](docs/audit-2026-09-14/) | 2026-09-14 추가 감사의 근거표와 출처 점검 |
 
 세대마다 폴더를 따로 둔다. 다음 세대는 앞 세대 폴더의 사본을 떠서 고치므로 `afec/`, `padfec/` 같은 공통 코드가 폴더마다 겹친다. 같은 실행 안에서 두 세대를 나란히 재려고 이렇게 했다.
@@ -25,6 +26,7 @@
 | v3.0 (`pq_afec_gen3`) | 2단계, 2026-10-02 두 회차 | H1 개선 주장 성립(큰cert +28.18 ms, RTT200 +11.35 ms). H2 실패(보류 셀 1개 열등), H3 통과, H4 적응 기여 확인 안 됨 |
 | v3.1 (`pq_afec_gen31`) | 3단계, 2026-10-02~10-03 두 회차 | H1 개선 주장 성립(큰cert +28.01 ms, RTT200 +12.38 ms). H2 실패(판정불능 1), H3 실패, H4 적응 기여 확인 안 됨 |
 | v3.2-dev (`pq_afec_gen32`) | 없음 | 구현 검사만 통과. [v3.2 검증 기록](pq_afec_gen32/g3/development_validation/README.md) |
+| v3.3.1-dev (`pq_afec_gen33`) | 없음 | 시뮬레이션과 구현 대조만. C1 회신이 없는 경로는 v3.2-dev와 결정이 같다. [정책 수정 기록](pq_afec_gen33/docs/V33FIX_policy.md), [주장 범위](pq_afec_gen33/docs/REPORT_CLAIMS_v33.md) |
 
 판정 근거는 각 폴더의 `g3/RESULT_*.md`와 `experiments/results/*_decisions.json`이다. 앞 세대의 판정을 다음 세대 개발본의 성능으로 쓰지 않는다. v3.1 폴더의 `SEAL_stage0.json`과 `SEAL_stage2.json`은 v3.0에서 물려받은 봉인이라 v3.1에서 고친 파일과 해시가 다르다. 그 두 봉인은 `pq_afec_gen3`에서 대조한다.
 
@@ -48,8 +50,11 @@ quic-go v0.61.0에서 `InitialPacketSize`를 1280에서 1281로 올린 과거 �
 | `pq_afec_gen3` | `C:\dev\pq_afec_gen3` |
 | `pq_afec_gen31` | `C:\dev\pq_afec_gen31` |
 | `pq_afec_gen32` | `C:\dev\pq_afec_gen32` |
+| `pq_afec_gen33` | `C:\dev\pq_afec_gen33` (git 브랜치 `v33`, 커밋 `feb0b1850`) |
 
-v3 세대 폴더에는 측정 원자료(`experiments/state/`의 저널)와 그림을 올리지 않았다. 판정 파일과 봉인에 들어간 결과만 있다. `pq_afec`는 원자료까지 올리며, `results/*.json`에 여러 날짜의 결과가 함께 있으므로 실행 기록과 소스 지문을 함께 확인해야 한다. `pq_afec/experiments/results/p17_adaptive_value.json`은 58.6 MB다.
+`pq_afec_gen33`의 파일은 로컬 원본 `feb0b1850`의 같은 경로 파일과 바이트 단위로 같다. 검증 묶음 `g3/v33/validation`(파일 약 11만 개, 약 4.1 GB)은 올리지 않았고, 기본 시험이 불러오는 분석 스크립트(J1·J6·L1_precision·L2·L3·L5 분석 묶음의 `.py`)와 `M1_stage2_validation`만 넣었다. 이 폴더만으로 pytest 1862개가 통과한다. M1 wire 관문은 올리지 않은 `M1_stage1` 기준 자료를 읽는다. 시험용 개인키가 들어 있던 로컬 git 이력도 올리지 않았다.
+
+v3.0~v3.2 세대 폴더에는 측정 원자료(`experiments/state/`의 저널)와 그림을 올리지 않았다. 판정 파일과 봉인에 들어간 결과만 있다. `pq_afec`는 원자료까지 올리며, `results/*.json`에 여러 날짜의 결과가 함께 있으므로 실행 기록과 소스 지문을 함께 확인해야 한다. `pq_afec/experiments/results/p17_adaptive_value.json`은 58.6 MB다.
 
 ```powershell
 python pq_afec/experiments/loop2.py --status

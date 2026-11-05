@@ -1,0 +1,200 @@
+{
+  "schema": "j5-known-loss-world-diagnostic/1",
+  "data_kind": "development_independent_event_world",
+  "source_sha256": {
+    "experiments/v33/ge_world_diagnostic.py": "fc49385faa64ef02cf995d58ed0dd373b429f17ca0594fc98b586b0c29b2e440",
+    "experiments/v33/ge_reference.py": "c065a2a66432a4dda7edce4be98502287bf1b3eacae616f537167876ae38fe6e",
+    "experiments/v33/worldsim.py": "8f86bb520af2d18d03f9188f14104bc988af680665f705dbe0121b83d391e374",
+    "experiments/v33/worldparams.json": "57e9352c5ff778fd278772e496fbbfe74a685ef7ba49b3849b40df45648db6ed",
+    "experiments/v33/bench_metrics.py": "1316c407308656affee6a45c7b5985eada7496a0c3274b4f677c96b78e94d06e",
+    "g3/v33/bench_protocol.json": "10cf3aa16b460054b533f03170b7c8718a21450eba39359525dbdba098583305",
+    "docs/J5_world_diagnostic_plan.md": "b8a6f6ab547b73936391825ae6d42f4bb8cc404b6dd39d62bf4fc4290e8f9978",
+    "padfec/__init__.py": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+    "padfec/amplif.py": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+    "padfec/capacity.py": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+    "padfec/codec.py": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+    "padfec/policy.py": "abfb04a8019e0a443e94d28063be1643d3438fd8865122a70c96195f8f69c016",
+    "padfec/quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "padfec/table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "padfec3/__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+    "padfec3/decide3.py": "72e6f388651df35d2e70cb52c65c71e5ec6a0d496ad95400e623544a3fb880ba",
+    "padfec3/layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+    "padfec3/learn3.py": "80f924c67b28b5030de4195fa2856c655a3c5a59fe34780f34d98518a0ae4452"
+  },
+  "scenarios": [
+    {
+      "id": "B1",
+      "family": "B1",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 16000
+      },
+      "phases": [
+        {
+          "length": 450,
+          "p": 0.02
+        },
+        {
+          "length": 450,
+          "p": 0.15
+        },
+        {
+          "length": 450,
+          "p": 0.02
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B2",
+      "family": "B2",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 16000
+      },
+      "phases": [
+        {
+          "length": 450,
+          "p": 0.02
+        },
+        {
+          "length": 450,
+          "p": 0.25
+        },
+        {
+          "length": 450,
+          "p": 0.02
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B3_u0",
+      "family": "B3",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 0,
+        "cert_bytes": 2955
+      },
+      "phases": [
+        {
+          "length": 1600,
+          "p": 0
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B3_u2",
+      "family": "B3",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 2955
+      },
+      "phases": [
+        {
+          "length": 1600,
+          "p": 0
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B4",
+      "family": "B4",
+      "context": {
+        "k": 1,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 0,
+        "cert_bytes": 4032
+      },
+      "phases": [
+        {
+          "length": 1600,
+          "p": 0
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B10",
+      "family": "B10",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 0,
+        "cert_bytes": 4032
+      },
+      "phases": [
+        {
+          "length": 1350,
+          "p": 0.15,
+          "loss_model": "ge",
+          "burst_length": 3
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    }
+  ],
+  "seeds": [
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50
+  ],
+  "c_pkt": 41.983,
+  "family_size": 18,
+  "seed_runs": 120,
+  "connection_contexts": 177000,
+  "arms": [
+    "iid",
+    "known_burst",
+    "forced_burst3",
+    "fixed_trailing4"
+  ],
+  "noninferiority_ms": 0.5,
+  "active_policy_changed": false,
+  "learning_connected": false,
+  "full_w1_adoption_gate": false
+}

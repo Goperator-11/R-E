@@ -1,0 +1,26 @@
+{
+  "exit_code": 0,
+  "source_sha256": {
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\oracle_m1.py": "54ed35c320a33714fcc8dff8633116bfb9a135d4a813ea2c7debdce78acb84b1",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_oracles_m1.py": "d81e7c3bcfb1417402be2dbed4d7064664291aa217a643997a836e80bb92e591",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_action_pool_m1.py": "8896b245cc31a7b34449a509c17cd8683529be34239cc65009920b4aaca1461c",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_m1_family.py": "c985fc84d46caded08e04ee56c421aceb7f502b18bb1b1814e7d07c725dbfa7f",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_m1_report.py": "390f0c5ce927e748ab713a4f4ee0b428489360aa564624389e78302cd8bb3b1a",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\m1_pool_validation.py": "721b7d37c7525d2517da1b047ac89d1718fd2201bbeaa301f4ff1507246409e8",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\worldsim_m1.py": "fc427330be779d5a09e4de59dee9971276b9b0ffcc6831bb93eb67e53dd878c7",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\world_receiver_m1.py": "ca05209f80beb2a7bfffb05569dbc81da39a95736bc3f7ca70870876b95beab3",
+    "C:\\dev\\pq_afec_gen33\\tests\\test_v33_m1_mc.py": "9ae7c66e9fbe1e4836e36cc7520e1ed74ab4a95046cd458de47c88e704de8398",
+    "C:\\dev\\pq_afec_gen33\\docs\\M1_mc_contract.md": "f0732cef8bf5923bb20827c8af51206931ee2cc50654b3c606e6a55f1133a8aa"
+  },
+  "command": [
+    "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+    "-I",
+    "-B",
+    "-c",
+    "import sys;sys.dont_write_bytecode=True;sys.path.insert(0,sys.argv[1]);import pytest;raise SystemExit(pytest.main(['-q','-p','no:cacheprovider','tests/test_v33_m1_mc.py']))",
+    "C:\\dev\\pq_afec_gen33"
+  ],
+  "elapsed_seconds": 1.3751399000029778,
+  "log_sha256": "1b2f5d88896d8f687e32c91e815b0ad11778b6d1d3a8a5e6c35e2f037fff8bc7",
+  "unchanged": true
+}

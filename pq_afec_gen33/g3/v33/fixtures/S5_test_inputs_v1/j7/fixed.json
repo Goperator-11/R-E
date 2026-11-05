@@ -1,0 +1,30 @@
+{
+  "schema": "padfec.v33.j7_factorial/1",
+  "profile": "wire39",
+  "scenario": "B1",
+  "seed": 31,
+  "n": 1350,
+  "action_counts": [
+    {
+      "context_id": "9edb1cc507fc88ba18b3",
+      "action": [
+        0,
+        0,
+        0
+      ],
+      "n": 900
+    },
+    {
+      "context_id": "b0d183dfe2bf9c398c6e",
+      "action": [
+        0,
+        0,
+        0
+      ],
+      "n": 450
+    }
+  ],
+  "trace_path": "C:\\dev\\codex_handoff\\v33\\runs\\J7_counterfactuals_v1\\wire39\\B1\\seed00031.jsonl.gz",
+  "trace_sha256": "6dedf510f119ab28e573398632c197e9a962c3100db4fe364c3db5af38dc2c06",
+  "protocol_sha256": "59d679a4f4a4210da8ce200eb6defd9e52d5a4e8edd4f3a25030e1abb6c51eb9"
+}

@@ -1,0 +1,84 @@
+{
+  "schema": "m4-revisit-guard-smoke/1",
+  "label": "development",
+  "purpose": "Fixed-arm wire invariants; no HCT performance inference",
+  "cases": [
+    {
+      "name": "parity_token",
+      "kind": "parity",
+      "support": "supported",
+      "token": true
+    },
+    {
+      "name": "parity_retry_token",
+      "kind": "parity",
+      "support": "supported",
+      "token": true,
+      "verify": true
+    },
+    {
+      "name": "parity_retry_cold",
+      "kind": "parity",
+      "support": "supported",
+      "verify": true
+    },
+    {
+      "name": "parity_token_all_lead",
+      "kind": "parity",
+      "support": "supported",
+      "token": true,
+      "lead": 3
+    },
+    {
+      "name": "dup_unknown_token",
+      "kind": "dup",
+      "support": "unknown",
+      "token": true
+    },
+    {
+      "name": "dup_unsupported_retry_token",
+      "kind": "dup",
+      "support": "unsupported",
+      "token": true,
+      "verify": true,
+      "server_fec": false
+    },
+    {
+      "name": "pad_unknown_token",
+      "kind": "pad_junk",
+      "support": "unknown",
+      "token": true
+    },
+    {
+      "name": "pad_unsupported_retry_token",
+      "kind": "pad_junk",
+      "support": "unsupported",
+      "token": true,
+      "verify": true,
+      "server_fec": false
+    },
+    {
+      "name": "parity_token_resume_rtt200",
+      "kind": "parity",
+      "support": "supported",
+      "token": true,
+      "resume": true,
+      "delay_ms": 100
+    },
+    {
+      "name": "dup_unknown_retry_resume_rtt200",
+      "kind": "dup",
+      "support": "unknown",
+      "verify": true,
+      "resume": true,
+      "delay_ms": 100
+    }
+  ],
+  "connections_per_case": 3,
+  "udp_path": "oob",
+  "binary": "/home/scien/quicbed_gen33/bin/qamp",
+  "binary_sha256": "41424293588fde08d02a8821b4945ac07f4d0016c61480e0ee2db78936323dae",
+  "script_sha256": "006861aa9f1a8a17990315594095468af8713160b7410f754d0e352d911b1a21",
+  "revisit_script_sha256": "2bbb8c5f35c2c243f6dfc34b4e793d11ab27015a761e41ae015b7b6bf4b1ece0",
+  "relay_sha256": "65e73c80ffff6ee21f987e4538077f75f075869215aedb032706aefb3dbcfcf6"
+}

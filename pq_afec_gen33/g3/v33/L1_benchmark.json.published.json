@@ -1,0 +1,15 @@
+{
+  "schema": "padfec.v33.learning_publication/1",
+  "status": "complete",
+  "published_ns": 1793309811272929800,
+  "artifacts_sha256": {
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\L1_benchmark.json": "c89026795ce3e04fb35dfc19d4bf01d0700571fc7fae1330a6caa065dc5616cb",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_bench.md": "1dbf192306ce90526e601ede78bf56ace8f41b49095bddf69a4aa67e9910c4d4"
+  },
+  "family_plan_path": "C:\\dev\\codex_handoff\\v33\\runs\\L1_action_family_v1.json",
+  "family_plan_sha256": "e315280cf0199ab36a77f2f8a6d5289bf80dc00553aae4b0599610e2a5ff5e35",
+  "input_inventory_sha256": "900ece55ea8fab7c700c88396e0eb6f07dd095a4f4dd2b8cdb75c3aced203d14",
+  "pool_attestation_sha256": "c536907b3abbb6c9c0337d4c7b3f08cc9ceb82cc8d487305c9d9f67358a11769",
+  "execution_content_sha256": "bc89dfa191a0e213afe58156cdabfba4689970decbfc7cba52028475c1c76e1d",
+  "reporter_sha256": "9f480a41f456101e74461d2e8a3509625e3be148dda686eea752c1ce92a39c49"
+}

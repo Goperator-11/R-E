@@ -1,0 +1,180 @@
+{
+  "schema": "padfec.v33.a0/1",
+  "generated_kst": "2026-10-30T01:48:46+09:00",
+  "root": "C:\\dev\\pq_afec_gen33",
+  "inputs": [
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_H_h_c12000_r120_u5_units.jsonl",
+      "sha256": "dbcc6c90e677aff406014219f5ec8ca1f19a7b2a63b795cf62ef67921d08bece",
+      "bytes": 3578460,
+      "fingerprints": [
+        "d222b2ab166a9089"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 6,
+      "selected_units": 6
+    }
+  ],
+  "source_sha256": {
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\01_posterior_trajectories.py": "5262de065cfd3d86c8c92bb02b421ae92d0a73769803cd9a306e2d9e6eaf0d5f",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\02_baseline_contamination.py": "4c0dcb6baa20aeb74b8117e4935dd543b8e3ce3912ed94bf9309b065adcfecc9",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\03_j3_decomposition.py": "d9d8c4037f0f34620bf04ecace9580867e6ad35935b1bb98e70a57217ed10032",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\04_burst_model.py": "acfef5e66a428907253f3d1260b8bf2d53e8e42423e9eb91f9813dcd172e3f20",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\05_server_accounting.py": "2b2f26c23717ac03138e887fc1adb249273d1383c6cad12e1831165a6890d895",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\06_server_size_bins.py": "dca5aaa3dfc4dff1c130cbe0822c42096b8c9b4852277033a031e6b183bbbd5a",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\07_rtt200_probes.py": "1e1037cc8271dce95415646b1943f5a8978a8f743b616589ce8bbe3b7264e821",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\common.py": "836059cc6cf71db8b7fdb14ce620663a47eed9a8810a7a57eda8871b72ede216",
+    "C:\\dev\\pq_afec_gen33\\padfec\\policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+    "C:\\dev\\pq_afec_gen33\\padfec\\quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "C:\\dev\\pq_afec_gen33\\padfec\\table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\decide3.py": "72e6f388651df35d2e70cb52c65c71e5ec6a0d496ad95400e623544a3fb880ba",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\learn3.py": "a78a69b057179e633b9dbc8cbfac57bbfc9a68b25ecc47853c9e6f6b42b9044e"
+  },
+  "item": "A0-6",
+  "data_kind": "measurement_reanalysis_and_model_world",
+  "source_scripts": [
+    "audit-gen2-foundation/s01_nneed_journals.py"
+  ],
+  "definition": "관측 server_bytes를 유효 S 입력으로 간주하는 기존 bin_needed_s와 cert=12000 B에 맞춘 유효 quantum.bin_needed를 나란히 계산한다. 새 보정식을 제안하거나 적용하지 않는다.",
+  "missing_optional_run_files": [
+    "p31_run2_H_h_c12000_r120_u5_units.jsonl"
+  ],
+  "results": [
+    {
+      "run": "run1",
+      "arm": "g2auto",
+      "rows": 1800,
+      "group": {
+        "\"X25519MLKEM768\"": 1800
+      },
+      "recorded_k_hat": {
+        "null": 1800
+      },
+      "recorded_n_need": {
+        "null": 1800
+      },
+      "recorded_s_hat": {
+        "count": 1800,
+        "numeric_count": 0,
+        "missing_count": 1800,
+        "min": null,
+        "max": null,
+        "mean": null,
+        "median": null
+      },
+      "observed_server_bytes": {
+        "count": 1800,
+        "numeric_count": 1800,
+        "missing_count": 0,
+        "min": 14018,
+        "max": 16689,
+        "mean": 14081.891111111112,
+        "median": 14070.0
+      },
+      "n_need_from_observed_server_bytes": {
+        "12": 1792,
+        "14": 8
+      },
+      "effective_model_n_need": 11,
+      "input": {
+        "cert_B": 12000,
+        "k": 2,
+        "w_B": 1280,
+        "base_bin": 6,
+        "s0_base_B": 1472.0,
+        "c_pkt_B": 41.983
+      },
+      "effective_S_at_base_B": 13723.898,
+      "expected": {
+        "effective_n_need": {
+          "actual": 11,
+          "expected_from_source": 11,
+          "difference": 0,
+          "exact_match": true,
+          "definition": "cert=12000 B의 유효 모형을 기존 식으로 계산"
+        }
+      }
+    },
+    {
+      "run": "run1",
+      "arm": "g3auto",
+      "rows": 1800,
+      "group": {
+        "\"X25519MLKEM768\"": 1800
+      },
+      "recorded_k_hat": {
+        "2": 1799,
+        "null": 1
+      },
+      "recorded_n_need": {
+        "12": 1799,
+        "null": 1
+      },
+      "recorded_s_hat": {
+        "count": 1800,
+        "numeric_count": 1799,
+        "missing_count": 1,
+        "min": 14067.5,
+        "max": 14082,
+        "mean": 14072.428015564203,
+        "median": 14072.5
+      },
+      "observed_server_bytes": {
+        "count": 1800,
+        "numeric_count": 1800,
+        "missing_count": 0,
+        "min": 14058,
+        "max": 14114,
+        "mean": 14072.397222222222,
+        "median": 14072.0
+      },
+      "n_need_from_observed_server_bytes": {
+        "12": 1800
+      },
+      "effective_model_n_need": 11,
+      "input": {
+        "cert_B": 12000,
+        "k": 2,
+        "w_B": 1280,
+        "base_bin": 6,
+        "s0_base_B": 1472.0,
+        "c_pkt_B": 41.983
+      },
+      "effective_S_at_base_B": 13723.898,
+      "expected": {
+        "effective_n_need": {
+          "actual": 11,
+          "expected_from_source": 11,
+          "difference": 0,
+          "exact_match": true,
+          "definition": "cert=12000 B의 유효 모형을 기존 식으로 계산"
+        },
+        "recorded_n12_count": {
+          "actual": 1799,
+          "expected_from_source": 1799,
+          "difference": 0,
+          "exact_match": true,
+          "definition": "cold 결정을 제외한 기록 n_need=12 행"
+        },
+        "min_observed_server_bytes": {
+          "actual": 14058,
+          "expected_from_source": 14058,
+          "difference": 0,
+          "exact_match": true,
+          "definition": "배경 문서의 관측 S 최솟값 B"
+        },
+        "max_observed_server_bytes": {
+          "actual": 14114,
+          "expected_from_source": 14114,
+          "difference": 0,
+          "exact_match": true,
+          "definition": "배경 문서의 관측 S 최댓값 B"
+        }
+      }
+    }
+  ],
+  "status": "calculated"
+}

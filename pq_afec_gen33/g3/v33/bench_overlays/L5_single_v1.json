@@ -1,0 +1,148 @@
+{
+  "schema": "padfec.v33.learning_benchmark/l5-1",
+  "base_protocol_path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\bench_protocol.json",
+  "base_protocol_sha256": "10cf3aa16b460054b533f03170b7c8718a21450eba39359525dbdba098583305",
+  "source_sha256": {
+    "bench_learning_l5.py": "293cb5cc2e66109e0d0e03d0cfbffe8aaa38acfcbbc4790c79b2ff2db43bf1d8",
+    "first_flight_observer.py": "fccc8f4df3bf8448586c7a2ed41982cf91d65f1c585492fa43a36794b60aa64c",
+    "bench.py": "58db05857c0e6b230e0e0290ca4328c3ebdba289d3837c4f4957a3702f43c396",
+    "bench_metrics.py": "1316c407308656affee6a45c7b5985eada7496a0c3274b4f677c96b78e94d06e",
+    "policy_worker_l5.py": "72a447a9d927ef96f3a17fe702b31a795b0c315768c47f96b7a4c1b18a2b4a9c",
+    "policy_bridge_l5.py": "84c6a80c61ca2af3ffe2345aa939c167357a7f9b267f5b45a48532ba32a4bce7",
+    "server_response_observer.py": "f7f8271f6d092c23095586e5386ee0aa392674f0e73cb3cfd12e3041a4ac9234",
+    "worldsim.py": "8f86bb520af2d18d03f9188f14104bc988af680665f705dbe0121b83d391e374",
+    "worldparams.json": "57e9352c5ff778fd278772e496fbbfe74a685ef7ba49b3849b40df45648db6ed",
+    "oracle.py": "84e9feb6d880e176dc82af8f6e33d42f7a6d3b97dadcd17b21ccd7f1e198592c",
+    "bench_oracles.py": "ecaa601217c9a6df74c903d0e1cc0572ea4f565cf44deec73eb2a039f43bfba9",
+    "bench_action_pool.py": "b3601f7887265c7769ea655cfa15ccce072eada0375a28264f9c2bd1af7463d5",
+    "bench_report.py": "7c53c630bb33df9f697fd8dac9c0d3447f0b315d7c5c31fb0769086ed59fcfaa"
+  },
+  "policy": {
+    "fingerprint": {
+      "source_root": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\L5_single_v1",
+      "files": {
+        "afec/__init__.py": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+        "afec/cache.py": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+        "afec/channel.py": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7",
+        "afec/controller.py": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+        "afec/estimator.py": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+        "afec/handshake.py": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+        "afec/rs.py": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f",
+        "afec/sim.py": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+        "padfec/__init__.py": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+        "padfec/amplif.py": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+        "padfec/capacity.py": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+        "padfec/codec.py": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+        "padfec/policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+        "padfec/quantum.py": "6d6bcf0b5f81e4a6f7515bc7306346419d96f3ded7cb2978836841bf20ba2339",
+        "padfec/table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+        "padfec3/__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+        "padfec3/decide3.py": "f511cea301a79be666243ae18b87fd9b9282a3e45f7b54615e6550c3616e3d6b",
+        "padfec3/layout.py": "3b748b15c98817a3b74d3109ac193dea436edc3d2d1dfacaaa7bd9dcb1780201",
+        "padfec3/learn3.py": "086e0a5495888a380d7c5a31cd84431f61141187e853bb74ce183ec879cdb871",
+        "padfec3/server_size.py": "b8369e826b35a09e3ed382d6ecbe57d1bc24b85fbc825a1ff8411415510b2a7d"
+      }
+    },
+    "receipt_path": "C:\\dev\\codex_handoff\\v33\\runs\\L5_single_v1_snapshot_receipt.json",
+    "receipt_sha256": "7126f3ea25c3385c1db2e66bc22c055b639be38f9350f50978975d3f960438f5",
+    "policy_version": "v3.3-dev",
+    "state_version": 9,
+    "size_variant": "single"
+  },
+  "modes": [
+    "none",
+    "c1",
+    "ideal"
+  ],
+  "observer": {
+    "feedback_loss": "context.s2c_loss_when_world_feature_enabled",
+    "receiver_limit": "world.params.server.decoder_max_datagram_bytes",
+    "feedback_grace_ms": 200,
+    "crc_list_limit": 64,
+    "passive": true,
+    "server_response": "all_modes_completed_received_index_proxy",
+    "response_deduplication": "stable_response_index",
+    "response_order": "index_not_arrival",
+    "response_scope": "complete_before_handshake_event_excluding_ACK_retry_duplicates_and_late_receipts",
+    "a_pre": "legacy41_per_prior_original_once",
+    "candidate_margin_server_bytes": 0
+  },
+  "comparisons": [
+    [
+      "none",
+      "v32"
+    ],
+    [
+      "none",
+      "v31"
+    ],
+    [
+      "c1",
+      "v32"
+    ],
+    [
+      "c1",
+      "v31"
+    ],
+    [
+      "ideal",
+      "v32"
+    ],
+    [
+      "ideal",
+      "v31"
+    ],
+    [
+      "c1",
+      "none"
+    ]
+  ],
+  "primary_mode": "c1",
+  "ideal_is_privileged_diagnostic": true,
+  "import_receipt_path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\bench_overlays\\L5_single_v1_import.json",
+  "import_receipt_sha256": "e979fa69de9663b4f437cd071930ac4002b2768a852fc7212a81bf7b84aa5b46",
+  "seeds": [
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50
+  ],
+  "scenarios": [
+    "B1",
+    "B2",
+    "B3_u0",
+    "B3_u2",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8_j10",
+    "B8_j20",
+    "B9",
+    "B10",
+    "B11",
+    "B12_c6000",
+    "B12_c12000"
+  ],
+  "contexts_sha256": "009d190c4d3521a2238932a1729bced1486707a4e3ebbdb447fd28749d81b7a7",
+  "smoke_connections": "first_four_per_phase_using_original_full_connection_index",
+  "counterfactuals": "import_validated_same_seed_v32_b0_and_031_traces",
+  "data_kind": "development",
+  "observation_has_no_world_cost": true
+}

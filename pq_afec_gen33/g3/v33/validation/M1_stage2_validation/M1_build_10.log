@@ -1,0 +1,9 @@
+preserved build stage /home/scien/quicbed_gen33/stage.zJV3Mg
+WORK=/home/scien/quicbed_gen33/stage.zJV3Mg/go-work/go-build1373586806
+gen33 vet passed
+gen33 race passed
+WORK=/home/scien/quicbed_gen33/stage.zJV3Mg/go-work/go-build1603552318
+gen33 build passed
+gen33 tests 122
+ok  	pqafec/quicbed/cmd/qamp	5.966s
+development binary /tmp/qamp_gen33/qamp

@@ -1,0 +1,2 @@
+WORK=/home/scien/quicbed_gen33/stage.zJV3Mg/go-work/go-build2185215281
+ok  	pqafec/quicbed/cmd/qamp	76.110s

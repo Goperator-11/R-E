@@ -1,0 +1,521 @@
+{
+  "schema": "padfec.v33.world_validation/1",
+  "frozen_kst": "2026-10-30T01:57:44+09:00",
+  "data_kind": "development_simulation_validation",
+  "seed": 20261030,
+  "samples_per_case": 100000,
+  "no_retuning": "실행 결과를 보고 seed, 문턱, 손실 일정, 세계 매개변수를 바꾸지 않는다. 구현 오류 수정은 이유와 전후 결과를 남기고 같은 프로토콜로 재실행한다.",
+  "equivalence": {
+    "contexts": [
+      {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50.7,
+        "uplink_mbps": 2.0,
+        "n_need": 15
+      },
+      {
+        "k": 2,
+        "w": 1280,
+        "p": 0.15,
+        "rtt_ms": 50.7,
+        "uplink_mbps": 2.0,
+        "n_need": 15
+      }
+    ],
+    "actions": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        3
+      ],
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        0,
+        2,
+        1
+      ],
+      [
+        0,
+        3,
+        0
+      ],
+      [
+        0,
+        0,
+        4
+      ],
+      [
+        0,
+        1,
+        3
+      ],
+      [
+        0,
+        2,
+        2
+      ],
+      [
+        0,
+        3,
+        1
+      ],
+      [
+        0,
+        4,
+        0
+      ]
+    ],
+    "mode": "policy_equivalent",
+    "mean_tolerance_standard_errors": 3.0,
+    "exact_mean_abs_tolerance_ms": 1e-10,
+    "repeats": 1,
+    "note": "모형 동치 검사는 구현 검산이며 기본 세계의 타당성을 뜻하지 않는다. 3sigma 밖 표본은 숨기거나 seed를 바꿔 지우지 않는다."
+  },
+  "loss": {
+    "boundary_tests": [
+      "iid has L=1/(1-p)",
+      "L=1 forbids BB",
+      "p=0",
+      "p=1",
+      "invalid transition probabilities rejected"
+    ],
+    "exact_tolerance": 1e-12,
+    "monte_carlo_sigma": 3.0,
+    "literature_status": "지정 로컬 폴더에 Bolot/Boutremans 원문 식을 찾지 못함. 카드가 허용한 Markov 전수 열거와 별도 Monte Carlo 대조 사용.",
+    "cases": [
+      {
+        "p": 0.02,
+        "L": 3.0,
+        "k": 2,
+        "lead": 0,
+        "trailing": 1,
+        "lead_mode": "credit_only",
+        "kind": "ge",
+        "seed": 531000
+      },
+      {
+        "p": 0.02,
+        "L": 3.0,
+        "k": 2,
+        "lead": 0,
+        "trailing": 4,
+        "lead_mode": "credit_only",
+        "kind": "ge",
+        "seed": 531001
+      },
+      {
+        "p": 0.02,
+        "L": 3.0,
+        "k": 2,
+        "lead": 3,
+        "trailing": 1,
+        "lead_mode": "credit_only",
+        "kind": "ge",
+        "seed": 531002
+      },
+      {
+        "p": 0.02,
+        "L": 3.0,
+        "k": 2,
+        "lead": 3,
+        "trailing": 1,
+        "lead_mode": "buffered",
+        "kind": "ge",
+        "seed": 531003
+      },
+      {
+        "p": 0.15,
+        "L": 3.0,
+        "k": 2,
+        "lead": 0,
+        "trailing": 1,
+        "lead_mode": "credit_only",
+        "kind": "ge",
+        "seed": 531004
+      },
+      {
+        "p": 0.15,
+        "L": 3.0,
+        "k": 2,
+        "lead": 0,
+        "trailing": 4,
+        "lead_mode": "credit_only",
+        "kind": "ge",
+        "seed": 531005
+      },
+      {
+        "p": 0.15,
+        "L": 3.0,
+        "k": 2,
+        "lead": 3,
+        "trailing": 1,
+        "lead_mode": "credit_only",
+        "kind": "ge",
+        "seed": 531006
+      },
+      {
+        "p": 0.15,
+        "L": 3.0,
+        "k": 2,
+        "lead": 3,
+        "trailing": 1,
+        "lead_mode": "buffered",
+        "kind": "ge",
+        "seed": 531007
+      },
+      {
+        "p": 0.3,
+        "L": 3.0,
+        "k": 2,
+        "lead": 0,
+        "trailing": 1,
+        "lead_mode": "credit_only",
+        "kind": "ge",
+        "seed": 531008
+      },
+      {
+        "p": 0.3,
+        "L": 3.0,
+        "k": 2,
+        "lead": 0,
+        "trailing": 4,
+        "lead_mode": "credit_only",
+        "kind": "ge",
+        "seed": 531009
+      },
+      {
+        "p": 0.3,
+        "L": 3.0,
+        "k": 2,
+        "lead": 3,
+        "trailing": 1,
+        "lead_mode": "credit_only",
+        "kind": "ge",
+        "seed": 531010
+      },
+      {
+        "p": 0.3,
+        "L": 3.0,
+        "k": 2,
+        "lead": 3,
+        "trailing": 1,
+        "lead_mode": "buffered",
+        "kind": "ge",
+        "seed": 531011
+      },
+      {
+        "p": 0.02,
+        "L": 1.0204081632653061,
+        "k": 2,
+        "lead": 0,
+        "trailing": 4,
+        "lead_mode": "credit_only",
+        "kind": "iid_boundary",
+        "seed": 531012
+      },
+      {
+        "p": 0.15,
+        "L": 1.1764705882352942,
+        "k": 2,
+        "lead": 0,
+        "trailing": 4,
+        "lead_mode": "credit_only",
+        "kind": "iid_boundary",
+        "seed": 531013
+      },
+      {
+        "p": 0.3,
+        "L": 1.4285714285714286,
+        "k": 2,
+        "lead": 0,
+        "trailing": 4,
+        "lead_mode": "credit_only",
+        "kind": "iid_boundary",
+        "seed": 531014
+      },
+      {
+        "p": 0.0,
+        "L": 3.0,
+        "k": 2,
+        "lead": 0,
+        "trailing": 4,
+        "lead_mode": "credit_only",
+        "kind": "endpoint",
+        "seed": 531015
+      },
+      {
+        "p": 1.0,
+        "L": 3.0,
+        "k": 2,
+        "lead": 0,
+        "trailing": 4,
+        "lead_mode": "credit_only",
+        "kind": "endpoint",
+        "seed": 531016
+      }
+    ],
+    "monte_carlo_methods": [
+      "independent_run_length",
+      "engine_loss_pattern"
+    ],
+    "pre_execution_detail_note": "실행 전에 담당자가 중복 모드 조합을 줄여 17점을 명시했다. 동일 표본수와 3sigma, exact1e-12를 유지했다. 아직 시뮬레이션 결과를 보지 않았다."
+  },
+  "calibration": {
+    "cases": [
+      {
+        "id": "bigcert_2_g3fixL3_3",
+        "kind": "bigcert",
+        "action": [
+          0,
+          3,
+          1
+        ],
+        "context": {
+          "k": 2,
+          "w": 1280,
+          "p": 0.02,
+          "rtt_ms": 50.0,
+          "uplink_mbps": 2.0,
+          "cert_bytes": 16000,
+          "n_need": 15,
+          "loss_model": "iid"
+        },
+        "observed": {
+          "n": 2250,
+          "mean_ms": 83.06209777777778,
+          "class_fractions": {
+            "one": 0.9453333333333334,
+            "two": 0.052444444444444446,
+            "tail": 0.0,
+            "failure_or_initial_retransmission": 0.0022222222222222222,
+            "unclassified": 0.0
+          }
+        },
+        "source": "03_j3_decomposition.json"
+      },
+      {
+        "id": "bigcert_2_g3auto_0",
+        "kind": "bigcert",
+        "action": [
+          0,
+          0,
+          4
+        ],
+        "context": {
+          "k": 2,
+          "w": 1280,
+          "p": 0.02,
+          "rtt_ms": 50.0,
+          "uplink_mbps": 2.0,
+          "cert_bytes": 16000,
+          "n_need": 15,
+          "loss_model": "iid"
+        },
+        "observed": {
+          "n": 90,
+          "mean_ms": 119.72021111111111,
+          "class_fractions": {
+            "one": 0.0,
+            "two": 1.0,
+            "tail": 0.0,
+            "failure_or_initial_retransmission": 0.0,
+            "unclassified": 0.0
+          }
+        },
+        "source": "03_j3_decomposition.json"
+      },
+      {
+        "id": "bigcert_15_g3fixL3_3",
+        "kind": "bigcert",
+        "action": [
+          0,
+          3,
+          1
+        ],
+        "context": {
+          "k": 2,
+          "w": 1280,
+          "p": 0.15,
+          "rtt_ms": 50.0,
+          "uplink_mbps": 2.0,
+          "cert_bytes": 16000,
+          "n_need": 15,
+          "loss_model": "iid"
+        },
+        "observed": {
+          "n": 2250,
+          "mean_ms": 110.26264666666667,
+          "class_fractions": {
+            "one": 0.576,
+            "two": 0.3586666666666667,
+            "tail": 0.007555555555555556,
+            "failure_or_initial_retransmission": 0.057777777777777775,
+            "unclassified": 0.0
+          }
+        },
+        "source": "03_j3_decomposition.json"
+      },
+      {
+        "id": "bigcert_15_g3auto_0",
+        "kind": "bigcert",
+        "action": [
+          0,
+          0,
+          4
+        ],
+        "context": {
+          "k": 2,
+          "w": 1280,
+          "p": 0.15,
+          "rtt_ms": 50.0,
+          "uplink_mbps": 2.0,
+          "cert_bytes": 16000,
+          "n_need": 15,
+          "loss_model": "iid"
+        },
+        "observed": {
+          "n": 1885,
+          "mean_ms": 123.61882440318303,
+          "class_fractions": {
+            "one": 0.0,
+            "two": 0.9708222811671088,
+            "tail": 0.028116710875331564,
+            "failure_or_initial_retransmission": 0.0010610079575596816,
+            "unclassified": 0.0
+          }
+        },
+        "source": "03_j3_decomposition.json"
+      },
+      {
+        "id": "p18_burst3",
+        "kind": "p18",
+        "action": [
+          0,
+          0,
+          4
+        ],
+        "context": {
+          "k": 2,
+          "w": 1280,
+          "p": 0.15,
+          "rtt_ms": 50.0,
+          "uplink_mbps": 0.0,
+          "cert_bytes": 4032,
+          "n_need": 5,
+          "loss_model": "ge",
+          "burst_length": 3.0
+        },
+        "observed": {
+          "n": 1368,
+          "mean_ms": 60.97579824561404,
+          "failure_fraction": 0.04093567251461988
+        },
+        "source": "04_burst_model.json"
+      },
+      {
+        "id": "rtt200_2",
+        "kind": "rtt200",
+        "action": [
+          0,
+          2,
+          2
+        ],
+        "context": {
+          "k": 2,
+          "w": 1280,
+          "p": 0.02,
+          "rtt_ms": 200.0,
+          "uplink_mbps": 2.0,
+          "cert_bytes": 9000,
+          "n_need": 9,
+          "loss_model": "iid"
+        },
+        "observed": {
+          "n": 3874,
+          "initial_datagrams": {
+            "5": 3874
+          },
+          "initial_5_fraction": 1.0
+        },
+        "source": "07_rtt200_probes.json"
+      },
+      {
+        "id": "rtt200_15",
+        "kind": "rtt200",
+        "action": [
+          0,
+          2,
+          2
+        ],
+        "context": {
+          "k": 2,
+          "w": 1280,
+          "p": 0.15,
+          "rtt_ms": 200.0,
+          "uplink_mbps": 2.0,
+          "cert_bytes": 9000,
+          "n_need": 9,
+          "loss_model": "iid"
+        },
+        "observed": {
+          "n": 4451,
+          "initial_datagrams": {
+            "5": 4451
+          },
+          "initial_5_fraction": 1.0
+        },
+        "source": "07_rtt200_probes.json"
+      }
+    ],
+    "tolerances": {
+      "mean_abs_ms": 5.0,
+      "class_fraction_abs": 0.02,
+      "failure_fraction_abs": 0.01,
+      "initial_5_fraction_abs": 0.02
+    },
+    "failure_handling": "허용 오차를 벗어난 항목은 세계 모형 한계로 공개한다. default 세계를 정책 변경에 유리하게 맞추지 않는다.",
+    "server_size_note": "서버 데이터그램은 cert와 세계의 s0/c_pkt로 구성한다. n_need는 모형 동치 입력이며 기본 세계는 실제 구성 바이트로 회계한다.",
+    "rtt_note": "기본 세계는 netem RTT50/200을 쓴다. 동치 검사는 A0의 비교 입력50.7을 쓴다."
+  },
+  "source_sha256": {
+    "03_j3_decomposition.json": "eff592a0c1d11103c1614f69785e804b3400ca75b7404627915f0f1ce7448887",
+    "04_burst_model.json": "df7a2d78f16f48870a1058f1648def65a03f966a00706665846c686a7779c55f",
+    "07_rtt200_probes.json": "0671a7b366d1c0f4112628b7c6723d1f193cf2f8268bf14973d0a98425627329"
+  }
+}

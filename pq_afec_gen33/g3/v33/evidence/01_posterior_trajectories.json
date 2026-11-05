@@ -1,0 +1,190 @@
+{
+  "schema": "padfec.v33.a0/1",
+  "generated_kst": "2026-10-30T01:48:41+09:00",
+  "root": "C:\\dev\\pq_afec_gen33",
+  "inputs": [
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p11_2955_l0_units.jsonl",
+      "sha256": "790ac491313b04f0b69c8d42c49e60aac696d2110e8f8f0c067fde2f3fdd1f6a",
+      "bytes": 3189293,
+      "fingerprints": [
+        "1dd012fc2b193922"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p11_2955_l2_units.jsonl",
+      "sha256": "0a4ae914becb95ff319b670b5a89b593aabf1d7f807e47174a8e032b2ebe8aa5",
+      "bytes": 3192953,
+      "fingerprints": [
+        "0ebfac73c031e650"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p11_2955_l5_units.jsonl",
+      "sha256": "e93ca4fe80b3bfb6d4b42ee0243144685cba94a13e0672c2c376a2cd48bc1a52",
+      "bytes": 3193488,
+      "fingerprints": [
+        "a4678bd17ca70ad7"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    }
+  ],
+  "source_sha256": {
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\01_posterior_trajectories.py": "5262de065cfd3d86c8c92bb02b421ae92d0a73769803cd9a306e2d9e6eaf0d5f",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\02_baseline_contamination.py": "4c0dcb6baa20aeb74b8117e4935dd543b8e3ce3912ed94bf9309b065adcfecc9",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\03_j3_decomposition.py": "d9d8c4037f0f34620bf04ecace9580867e6ad35935b1bb98e70a57217ed10032",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\04_burst_model.py": "acfef5e66a428907253f3d1260b8bf2d53e8e42423e9eb91f9813dcd172e3f20",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\05_server_accounting.py": "2b2f26c23717ac03138e887fc1adb249273d1383c6cad12e1831165a6890d895",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\06_server_size_bins.py": "dca5aaa3dfc4dff1c130cbe0822c42096b8c9b4852277033a031e6b183bbbd5a",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\07_rtt200_probes.py": "1e1037cc8271dce95415646b1943f5a8978a8f743b616589ce8bbe3b7264e821",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\common.py": "836059cc6cf71db8b7fdb14ce620663a47eed9a8810a7a57eda8871b72ede216",
+    "C:\\dev\\pq_afec_gen33\\padfec\\policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+    "C:\\dev\\pq_afec_gen33\\padfec\\quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "C:\\dev\\pq_afec_gen33\\padfec\\table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\decide3.py": "72e6f388651df35d2e70cb52c65c71e5ec6a0d496ad95400e623544a3fb880ba",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\learn3.py": "a78a69b057179e633b9dbc8cbfac57bbfc9a68b25ecc47853c9e6f6b42b9044e"
+  },
+  "item": "A0-1",
+  "data_kind": "measurement_reanalysis",
+  "definition": "같은 fingerprint와 key의 마지막 기록을 채택하고 block, 원래 segment/row 순서로 비교한다. p_mean_after와 m_why는 비교값이 아니다.",
+  "source_scripts": [
+    "verify-A7/journals.py"
+  ],
+  "summary": {
+    "l0": {
+      "rows": 1600,
+      "p_mean": {
+        "count": 1600,
+        "numeric_count": 1600,
+        "missing_count": 0,
+        "min": 0.08477032344552572,
+        "max": 0.13776923076923075,
+        "mean": 0.10009138685900966,
+        "median": 0.09719128347151992
+      },
+      "actions": {
+        "[0,0,0]": 1,
+        "[0,0,4]": 1599
+      },
+      "obs_y": {
+        "0": 1591,
+        "null": 9
+      },
+      "obs_updated": {
+        "false": 9,
+        "true": 1591
+      },
+      "obs_skip": {
+        "null": 1600
+      }
+    },
+    "l2": {
+      "rows": 1600,
+      "p_mean": {
+        "count": 1600,
+        "numeric_count": 1600,
+        "missing_count": 0,
+        "min": 0.08477032344552572,
+        "max": 0.13776923076923075,
+        "mean": 0.10009138685900966,
+        "median": 0.09719128347151992
+      },
+      "actions": {
+        "[0,0,0]": 1,
+        "[0,0,4]": 1599
+      },
+      "obs_y": {
+        "0": 1591,
+        "null": 9
+      },
+      "obs_updated": {
+        "false": 9,
+        "true": 1591
+      },
+      "obs_skip": {
+        "null": 1600
+      }
+    },
+    "l5": {
+      "rows": 1600,
+      "p_mean": {
+        "count": 1600,
+        "numeric_count": 1600,
+        "missing_count": 0,
+        "min": 0.08477032344552572,
+        "max": 0.13776923076923075,
+        "mean": 0.10009138685900966,
+        "median": 0.09719128347151992
+      },
+      "actions": {
+        "[0,0,0]": 1,
+        "[0,0,4]": 1599
+      },
+      "obs_y": {
+        "0": 1591,
+        "null": 9
+      },
+      "obs_updated": {
+        "false": 9,
+        "true": 1591
+      },
+      "obs_skip": {
+        "null": 1600
+      }
+    }
+  },
+  "comparisons": {
+    "l2": {
+      "lengths": [
+        1600,
+        1600
+      ],
+      "same_length": true,
+      "exact_equal_positions": 1600,
+      "max_abs_difference": 0.0,
+      "mismatch_count": 0,
+      "mismatch_examples": [],
+      "expected": {
+        "actual": 1600,
+        "expected_from_source": 1600,
+        "difference": 0,
+        "exact_match": true,
+        "definition": "동일 길이 1,600행의 결정 전 전체 정밀도 p_mean을 위치별 대조"
+      }
+    },
+    "l5": {
+      "lengths": [
+        1600,
+        1600
+      ],
+      "same_length": true,
+      "exact_equal_positions": 1600,
+      "max_abs_difference": 0.0,
+      "mismatch_count": 0,
+      "mismatch_examples": [],
+      "expected": {
+        "actual": 1600,
+        "expected_from_source": 1600,
+        "difference": 0,
+        "exact_match": true,
+        "definition": "동일 길이 1,600행의 결정 전 전체 정밀도 p_mean을 위치별 대조"
+      }
+    }
+  },
+  "status": "calculated"
+}

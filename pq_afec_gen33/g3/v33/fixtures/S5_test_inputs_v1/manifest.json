@@ -1,0 +1,326 @@
+{
+  "schema": "padfec.s5.test_inputs/1",
+  "kind": "test_only_extracts",
+  "files": [
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\afec\\__init__.py",
+      "stored": "policies/v31/afec/__init__.py",
+      "sha256": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+      "bytes": 730,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\afec\\cache.py",
+      "stored": "policies/v31/afec/cache.py",
+      "sha256": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+      "bytes": 9402,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\afec\\channel.py",
+      "stored": "policies/v31/afec/channel.py",
+      "sha256": "2b5de59b0ef68cbb0cdfa2f03efd8040e268ad26cd4a8c9f728fa4bd9eb9a1f3",
+      "bytes": 14864,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\afec\\controller.py",
+      "stored": "policies/v31/afec/controller.py",
+      "sha256": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "bytes": 13663,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\afec\\estimator.py",
+      "stored": "policies/v31/afec/estimator.py",
+      "sha256": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+      "bytes": 23567,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\afec\\handshake.py",
+      "stored": "policies/v31/afec/handshake.py",
+      "sha256": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+      "bytes": 13500,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\afec\\rs.py",
+      "stored": "policies/v31/afec/rs.py",
+      "sha256": "c136aa3fce99b95376333102b2de52909bea36e14cadeb1e79f11aa8c133f4a3",
+      "bytes": 6356,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\afec\\sim.py",
+      "stored": "policies/v31/afec/sim.py",
+      "sha256": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+      "bytes": 19277,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec\\__init__.py",
+      "stored": "policies/v31/padfec/__init__.py",
+      "sha256": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+      "bytes": 1091,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec\\amplif.py",
+      "stored": "policies/v31/padfec/amplif.py",
+      "sha256": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+      "bytes": 4131,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec\\capacity.py",
+      "stored": "policies/v31/padfec/capacity.py",
+      "sha256": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+      "bytes": 5975,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec\\codec.py",
+      "stored": "policies/v31/padfec/codec.py",
+      "sha256": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+      "bytes": 6600,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec\\policy.py",
+      "stored": "policies/v31/padfec/policy.py",
+      "sha256": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+      "bytes": 150689,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec\\quantum.py",
+      "stored": "policies/v31/padfec/quantum.py",
+      "sha256": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "bytes": 77662,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec\\table.py",
+      "stored": "policies/v31/padfec/table.py",
+      "sha256": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+      "bytes": 28628,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec3\\__init__.py",
+      "stored": "policies/v31/padfec3/__init__.py",
+      "sha256": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+      "bytes": 21,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec3\\decide3.py",
+      "stored": "policies/v31/padfec3/decide3.py",
+      "sha256": "64db68dd44470816f02dcf391fd8affafa2462a8c56d7d354b1c0e1e683a60b1",
+      "bytes": 8614,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec3\\layout.py",
+      "stored": "policies/v31/padfec3/layout.py",
+      "sha256": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+      "bytes": 8210,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\padfec3\\learn3.py",
+      "stored": "policies/v31/padfec3/learn3.py",
+      "sha256": "0828e8d27eded31fdd05fbf73fed877f931ca01c7033861e521a9b2e01464094",
+      "bytes": 13149,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\afec\\__init__.py",
+      "stored": "policies/v32/afec/__init__.py",
+      "sha256": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+      "bytes": 730,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\afec\\cache.py",
+      "stored": "policies/v32/afec/cache.py",
+      "sha256": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+      "bytes": 9402,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\afec\\channel.py",
+      "stored": "policies/v32/afec/channel.py",
+      "sha256": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7",
+      "bytes": 14863,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\afec\\controller.py",
+      "stored": "policies/v32/afec/controller.py",
+      "sha256": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "bytes": 13663,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\afec\\estimator.py",
+      "stored": "policies/v32/afec/estimator.py",
+      "sha256": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+      "bytes": 23567,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\afec\\handshake.py",
+      "stored": "policies/v32/afec/handshake.py",
+      "sha256": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+      "bytes": 13500,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\afec\\rs.py",
+      "stored": "policies/v32/afec/rs.py",
+      "sha256": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f",
+      "bytes": 6210,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\afec\\sim.py",
+      "stored": "policies/v32/afec/sim.py",
+      "sha256": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+      "bytes": 19277,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec\\__init__.py",
+      "stored": "policies/v32/padfec/__init__.py",
+      "sha256": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+      "bytes": 1091,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec\\amplif.py",
+      "stored": "policies/v32/padfec/amplif.py",
+      "sha256": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+      "bytes": 4131,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec\\capacity.py",
+      "stored": "policies/v32/padfec/capacity.py",
+      "sha256": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+      "bytes": 5975,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec\\codec.py",
+      "stored": "policies/v32/padfec/codec.py",
+      "sha256": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+      "bytes": 6600,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec\\policy.py",
+      "stored": "policies/v32/padfec/policy.py",
+      "sha256": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+      "bytes": 150689,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec\\quantum.py",
+      "stored": "policies/v32/padfec/quantum.py",
+      "sha256": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "bytes": 77662,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec\\table.py",
+      "stored": "policies/v32/padfec/table.py",
+      "sha256": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+      "bytes": 28628,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec3\\__init__.py",
+      "stored": "policies/v32/padfec3/__init__.py",
+      "sha256": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+      "bytes": 21,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec3\\decide3.py",
+      "stored": "policies/v32/padfec3/decide3.py",
+      "sha256": "72e6f388651df35d2e70cb52c65c71e5ec6a0d496ad95400e623544a3fb880ba",
+      "bytes": 10902,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec3\\layout.py",
+      "stored": "policies/v32/padfec3/layout.py",
+      "sha256": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+      "bytes": 8210,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen32\\padfec3\\learn3.py",
+      "stored": "policies/v32/padfec3/learn3.py",
+      "sha256": "a78a69b057179e633b9dbc8cbfac57bbfc9a68b25ecc47853c9e6f6b42b9044e",
+      "bytes": 20858,
+      "transform": "none"
+    },
+    {
+      "stored": "authenticated_initial.json",
+      "sha256": "bc46a25097b05e329186bd24ea718cb7c617f7b8b65ff555bb130a82adc68d16",
+      "bytes": 27857,
+      "sources": {
+        "C:\\dev\\codex_handoff\\v33\\runs\\T3_inflate_inflation_basic_v1\\mlkem_ips0.stdout": "a58b38b7680a1eb525a5ff3cc4a41b73ea4c4c315fdee7da5fe1b471f2f26806",
+        "C:\\dev\\codex_handoff\\v33\\runs\\T3_inflate_inflation_basic_v1\\mlkem_ips0.relay.json": "2c631b57c2c767ca1868215e94edbe95fc081781007e592863f016d753def93b"
+      },
+      "transform": {
+        "row": 0,
+        "peer_port": 32941
+      }
+    },
+    {
+      "stored": "coalesced_initial.json",
+      "sha256": "cc099feecf90e88f7376219a51de884fb2ede2c4287061725bf3e61a446e6f34",
+      "bytes": 30813,
+      "sources": {
+        "C:\\dev\\codex_handoff\\v33\\runs\\T2_revisit_basic_v1\\retry_token_resume_rtt200.stdout": "c9f221d5e7268ee6d7ec61f9956dc0e83a29a0039b304c3a1f38e1f77dccbf12",
+        "C:\\dev\\codex_handoff\\v33\\runs\\T2_revisit_basic_v1\\retry_token_resume_rtt200.relay.json": "4e1f8ab19f0b6b377adf6a0f96e462b366bf99a49909ed414926736cef7348bb"
+      },
+      "transform": {
+        "row": 1,
+        "peer_port": 47641
+      }
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\J7_factorial_raw_v1\\wire39_j7_c1_B1\\seed00031.json",
+      "stored": "j7/run.json",
+      "sha256": "d25fb2762e896ee4df321e40a1ca7771cb4c57cdcaf343cb19114979e5850121",
+      "bytes": 28705,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\J7_factorial_raw_v1\\wire39_j7_c1_B1\\seed00031.jsonl.gz",
+      "stored": "j7/run.jsonl.gz",
+      "sha256": "eaa609e723d371c77dc56dfb7e11bb62d7500e0f9887c6ab81edd3d2415e0027",
+      "bytes": 260547,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\J7_counterfactuals_v1\\wire39\\B1\\seed00031.json",
+      "stored": "j7/fixed.json",
+      "sha256": "12bb45ca999ee0132d68fe992cfcda331732c6dc33ea039d4e10a4fa58c32539",
+      "bytes": 684,
+      "transform": "none"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\J7_counterfactuals_v1\\wire39\\B1\\seed00031.jsonl.gz",
+      "stored": "j7/fixed.jsonl.gz",
+      "sha256": "6dedf510f119ab28e573398632c197e9a962c3100db4fe364c3db5af38dc2c06",
+      "bytes": 32771,
+      "transform": "none"
+    }
+  ]
+}

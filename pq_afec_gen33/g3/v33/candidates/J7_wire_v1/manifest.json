@@ -1,0 +1,51 @@
+{
+  "status": "deferred_not_adopted",
+  "created_kst": "2026-10-31T20:37:32.842973+09:00",
+  "base_commit": "739e6d347709fc861d8217df111a780adcba4040",
+  "reason": "Full policy gate requires the pre-existing L1 Go mirror. Preserve J7 candidate while completing that prerequisite.",
+  "candidate_root": "C:\\dev\\pq_afec_gen33\\g3\\v33\\candidates\\J7_wire_v1",
+  "candidate_files_sha256": {
+    "experiments/quicbed/policy.go": "d1a3ff6caa4e7da0992f09938b6e82e517c8d72e8f8b2cfe813193ac1557381e",
+    "experiments/quicbed/policy3.go": "f1f6aa34fdbc09302d44b7c13875123341d821b41266217e586b1d30027a03f1",
+    "experiments/quicbed/qamp.go": "b49f3427c87b52186b3457a8ac42fbba0f5ef5256298022e6cf9d5af14c6acdd",
+    "experiments/quicbed/policy3_test.go": "11c2ec0d80bb19183e34e791bb31ae703836220b92b82a02e463e73388df5476",
+    "experiments/quicbed/qamp_audit_test.go": "50df8c4b3581703a04e7d5552557e0497bad3e9d9c73d40e06b5ea9e2e1f0dcd",
+    "experiments/quicbed/qamp_lead_test.go": "779ad9d8fe260dadb8868eb6d388010123cc60ac05fd78ea161c0ea700454468",
+    "padfec/policy.py": "67b27c1dcb50dd4170eee393520818f32ef20e68c4173ae2e0a26b14e64f34e8",
+    "padfec3/decide3.py": "23666fd47babdb8364d877a8d51f703b068dffb2a40f650b362dfa6fccc52c33",
+    "tests/test_core_regressions.py": "d03beefa960d8443a704bec967f110ff0c3ec8d832fa114f803b6de2a2f95140",
+    "tests/test_padfec3_layout.py": "9bd24d391605c68846907484f45af037c1df67b71bd35493d6c4e67a205eca0a",
+    "experiments/quicbed/qamp_j7_test.go": "4fab7ddcc5de744f60ff3524aa9d33f9ae203e69acd7058433b677b932d3b188",
+    "tests/test_v33_j7_wire.py": "49f0771e9673ade559d00265911a80c57fdef826d2f0536597545545d47e9000"
+  },
+  "new_working_files_moved_to": "C:\\dev\\codex_handoff\\v33\\runs\\J7_deferred_working_files_v1",
+  "patch_path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\candidates\\J7_wire_v1\\wire_changes.patch",
+  "patch_sha256": "3360da17a0a791acff34fbecfaa050f1e6eecb133c1e7197baa6ef7ac29eaea1",
+  "restored_active_python_equals_L1": true,
+  "preservation_infrastructure_retained": true,
+  "collection_uses_immutable_snapshot": {
+    "source_root": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1",
+    "files": {
+      "afec/__init__.py": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+      "afec/cache.py": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+      "afec/channel.py": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7",
+      "afec/controller.py": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "afec/estimator.py": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+      "afec/handshake.py": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+      "afec/rs.py": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f",
+      "afec/sim.py": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+      "padfec/__init__.py": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+      "padfec/amplif.py": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+      "padfec/capacity.py": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+      "padfec/codec.py": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+      "padfec/policy.py": "67b27c1dcb50dd4170eee393520818f32ef20e68c4173ae2e0a26b14e64f34e8",
+      "padfec/quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "padfec/table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+      "padfec3/__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+      "padfec3/decide3.py": "23666fd47babdb8364d877a8d51f703b068dffb2a40f650b362dfa6fccc52c33",
+      "padfec3/layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+      "padfec3/learn3.py": "80f924c67b28b5030de4195fa2856c655a3c5a59fe34780f34d98518a0ae4452"
+    }
+  },
+  "script_sha256": "10bd3210ebc673195e65a4a038a936d6dd6d09e60738606842f225c0f5d3d08a"
+}

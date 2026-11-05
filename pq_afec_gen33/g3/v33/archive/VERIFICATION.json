@@ -1,0 +1,41 @@
+{
+  "schema": "padfec.v33.archive_verification/1",
+  "passed": true,
+  "files": 378,
+  "verified_files": 378,
+  "original_bytes": 782982028,
+  "stored_bytes": 307939606,
+  "unpacked_directory": "C:\\dev\\codex_handoff\\v33\\runs\\s1_verify\\check-qkjquw1x",
+  "seal_checks": {
+    "v31_stage3/g3/SEAL_stage3.json": {
+      "sha256": {
+        "passed": 31,
+        "total": 31
+      },
+      "also_recorded_sha256": {
+        "passed": 14,
+        "total": 14
+      },
+      "development_data_sha256": {
+        "passed": 89,
+        "total": 89
+      }
+    },
+    "v30_stage2/g3/SEAL_stage2.json": {
+      "sha256": {
+        "passed": 29,
+        "total": 29
+      },
+      "also_recorded_sha256": {
+        "passed": 9,
+        "total": 9
+      },
+      "development_data_sha256": {
+        "passed": 23,
+        "total": 23
+      }
+    }
+  },
+  "failures": [],
+  "temporary_outputs_preserved": true
+}

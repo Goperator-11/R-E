@@ -1,0 +1,190 @@
+{
+  "schema": "padfec-shared-drift/1",
+  "created_kst": "2026-11-01T00:59:24.414380+09:00",
+  "scope": "Local read-only declaration of five preserved generation trees. Hashes identify reviewed versions; matching a declaration does not prove semantic equivalence. Changes require a separately reviewed declaration update; this tool never accepts differences automatically.",
+  "patterns": [
+    "afec/*.py",
+    "padfec/*.py",
+    "experiments/quicbed/policy.go",
+    "experiments/quicbed/qamp.go"
+  ],
+  "roots": {
+    "pq_afec": "C:\\dev\\pq_afec",
+    "pq_afec_gen3": "C:\\dev\\pq_afec_gen3",
+    "pq_afec_gen31": "C:\\dev\\pq_afec_gen31",
+    "pq_afec_gen32": "C:\\dev\\pq_afec_gen32",
+    "pq_afec_gen33": "."
+  },
+  "files": {
+    "afec/__init__.py": {
+      "sha256_by_root": {
+        "pq_afec": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+        "pq_afec_gen3": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+        "pq_afec_gen31": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+        "pq_afec_gen32": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+        "pq_afec_gen33": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "afec/cache.py": {
+      "sha256_by_root": {
+        "pq_afec": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+        "pq_afec_gen3": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+        "pq_afec_gen31": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+        "pq_afec_gen32": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+        "pq_afec_gen33": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "afec/channel.py": {
+      "sha256_by_root": {
+        "pq_afec": "4c816737dede30cdc5e9eecb6e9dec124c85d3a28b316185b62c63b3a7299287",
+        "pq_afec_gen3": "2b5de59b0ef68cbb0cdfa2f03efd8040e268ad26cd4a8c9f728fa4bd9eb9a1f3",
+        "pq_afec_gen31": "2b5de59b0ef68cbb0cdfa2f03efd8040e268ad26cd4a8c9f728fa4bd9eb9a1f3",
+        "pq_afec_gen32": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7",
+        "pq_afec_gen33": "7d0dace1e53cf566016401dd688a9d27765241c03edeeaa8aaa2fbcc4368de2d"
+      },
+      "reason": "gen2와gen33은 for_prior, 동결gen3/gen31/gen32는 from_burst. 기존 세대별 공백 차이도 정규화 범위에서 숨기지 않고 별도 지문으로 선언한다."
+    },
+    "afec/controller.py": {
+      "sha256_by_root": {
+        "pq_afec": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+        "pq_afec_gen3": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+        "pq_afec_gen31": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+        "pq_afec_gen32": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+        "pq_afec_gen33": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "afec/estimator.py": {
+      "sha256_by_root": {
+        "pq_afec": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+        "pq_afec_gen3": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+        "pq_afec_gen31": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+        "pq_afec_gen32": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+        "pq_afec_gen33": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "afec/handshake.py": {
+      "sha256_by_root": {
+        "pq_afec": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+        "pq_afec_gen3": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+        "pq_afec_gen31": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+        "pq_afec_gen32": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+        "pq_afec_gen33": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "afec/rs.py": {
+      "sha256_by_root": {
+        "pq_afec": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f",
+        "pq_afec_gen3": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f",
+        "pq_afec_gen31": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f",
+        "pq_afec_gen32": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f",
+        "pq_afec_gen33": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "afec/sim.py": {
+      "sha256_by_root": {
+        "pq_afec": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+        "pq_afec_gen3": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+        "pq_afec_gen31": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+        "pq_afec_gen32": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+        "pq_afec_gen33": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "experiments/quicbed/policy.go": {
+      "sha256_by_root": {
+        "pq_afec": "1892af71411753a86fdd0247e0de1bed24c42643cda54c877931e0ee0c153e7b",
+        "pq_afec_gen3": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+        "pq_afec_gen31": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+        "pq_afec_gen32": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+        "pq_afec_gen33": "019b74f6086564180d836d0bd5a418aa3a232977983db3b8b86eb46720ddc7e5"
+      },
+      "reason": "gen2는73aa420수정, gen3/gen31/gen32는수정전. gen33은73aa420과D21명시캐시판본1·이전map변환을 합친 판."
+    },
+    "experiments/quicbed/qamp.go": {
+      "sha256_by_root": {
+        "pq_afec": "13273ea1d18fdbce3468784a67bfc323e0f480dab03491cd7272e9e1f5a156e4",
+        "pq_afec_gen3": "5d0bcabca268da898d1607602d840e9a7f4695b2b4d324bdf1932ff12fc95dc5",
+        "pq_afec_gen31": "0d099a46498ae87ea887ce979c1fd1215928d52c0c7d764e7f74e0d62e724ce7",
+        "pq_afec_gen32": "0d099a46498ae87ea887ce979c1fd1215928d52c0c7d764e7f74e0d62e724ce7",
+        "pq_afec_gen33": "a382abba78ba2815c30a9c761e3dea45fe26cf0808512351d14b6a1265b3e1c5"
+      },
+      "reason": "세대별v3배치·lead·C1·회계의기존차이. gen33은M1보류수신기·실제copy계상과S4만료·metadata(ver/lead포함)수정. gen3및gen31/gen32와gen2의기존차이는보존한다. T1은 결정적 P-256 인증서 생성과 파일 공유를 certificate.go로 분리하고 CLI·서버 metadata에 연결했다. 정책·수신기 산술은 바꾸지 않았다. T4는 C1 판본3·복원 Handshake 회신·도착 증거 연결·수신/qlog 관측·TTL 종료 계수를 추가했다. D13에 따라 회신 없는 전멸 추정을 제거하고 D23의 수집 한도를 분리했다. 정책 산술은 유지한다. T5 첫 단계는 peer·자체 발급 CID 검사, 최초 송신 경계, 계정 LRU·실제 완료 후10초 수명과 주기 통계 축소를 추가했다. 정책 산술과 복호 경로는 유지한다. T5 두 번째 단계는 DCID·계정별 복호 색인, 원본·비행·payload 상한, 중복과 만료·종료 정리를 추가했다. hold의 수신 기한과 기록 정리는 별도 heap으로 처리한다. 정책 산술은 유지한다. T5 UDP 단계는 OOB·ReadBatch 복호 연결, 패킷별 packet-info·ECN 출처, GSO segment 회계와 실패 복구, basic/oob 명시 선택을 추가했다. 정책 산술은 유지한다. T5 E17은 auto3의 기존 k를 첫 묶음 해제 입력으로 연결하고 명시 expect-k 우선순위·출처·범위를 기록한다. 정책 산술과 수신기는 유지한다. T5 E18은 묶음 입력·해제·완료 시각과 k 불일치·송신량을 기록하고 오래된 타이머 콜백을 세대별로 차단한다. 정책 산술과 수신기는 유지한다. T6은 v3 응답 전 후속 묶음을 원본 우선과 뒤 XOR1개로 보내며 repeat_first 비교 옵션·모양·전체 패리티 바이트를 기록한다. 정책 산술과 수신기는 유지한다. T3의 pad-junk·dup 고정 비교 팔과 별도 추가 송신·패리티 대조 바이트 계수를 추가한다. 정책 산술과 수신기는 유지한다. T3의 k-inflate 고정 개발 훅과 ClientHello TP 길이·실제 Initial 크기 기록을 추가한다. 정책 산술과 수신기는 유지한다. T2의 토큰·TLS 재개 고정 팔, 수집 대기, 서버 검증·재개 기록을 추가한다. 정책 산술과 기본 옵션을 유지한다. M4 기본 off 개발 옵션에서 실제 첫 토큰·수락 Retry·연결당 추가 묶음 제한을 연결한다. 활성 정책과 기존 기본값은 유지한다."
+    },
+    "padfec/__init__.py": {
+      "sha256_by_root": {
+        "pq_afec": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+        "pq_afec_gen3": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+        "pq_afec_gen31": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+        "pq_afec_gen32": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+        "pq_afec_gen33": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "padfec/amplif.py": {
+      "sha256_by_root": {
+        "pq_afec": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+        "pq_afec_gen3": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+        "pq_afec_gen31": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+        "pq_afec_gen32": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+        "pq_afec_gen33": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "padfec/capacity.py": {
+      "sha256_by_root": {
+        "pq_afec": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+        "pq_afec_gen3": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+        "pq_afec_gen31": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+        "pq_afec_gen32": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+        "pq_afec_gen33": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "padfec/codec.py": {
+      "sha256_by_root": {
+        "pq_afec": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+        "pq_afec_gen3": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+        "pq_afec_gen31": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+        "pq_afec_gen32": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+        "pq_afec_gen33": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "padfec/policy.py": {
+      "sha256_by_root": {
+        "pq_afec": "abfb04a8019e0a443e94d28063be1643d3438fd8865122a70c96195f8f69c016",
+        "pq_afec_gen3": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+        "pq_afec_gen31": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+        "pq_afec_gen32": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+        "pq_afec_gen33": "abfb04a8019e0a443e94d28063be1643d3438fd8865122a70c96195f8f69c016"
+      },
+      "reason": "gen2와gen33의 expected_rounds512항목 LRU. 동결gen3/gen31/gen32에는 없음."
+    },
+    "padfec/quantum.py": {
+      "sha256_by_root": {
+        "pq_afec": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+        "pq_afec_gen3": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+        "pq_afec_gen31": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+        "pq_afec_gen32": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+        "pq_afec_gen33": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    },
+    "padfec/table.py": {
+      "sha256_by_root": {
+        "pq_afec": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+        "pq_afec_gen3": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+        "pq_afec_gen31": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+        "pq_afec_gen32": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+        "pq_afec_gen33": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb"
+      },
+      "reason": "모든 다섯 세대에서 CRLF 정규화 후 같다."
+    }
+  }
+}

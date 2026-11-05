@@ -1,0 +1,257 @@
+{
+  "M1_fixed_checks_01.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_fixed_checks_01.json",
+    "sha256": "44840f6762c44ab1c76daea2c7605abf9293838c93abd1a26950580082628866",
+    "bytes": 74039
+  },
+  "m1_family_command_v1.py": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\m1_family_command_v1.py",
+    "sha256": "54af37e0b3a0902058d19eb70a19b0abc69c89baf0295d079de118efe005f0f8",
+    "bytes": 5172
+  },
+  "m1_prepare_mc_v1.py": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\m1_prepare_mc_v1.py",
+    "sha256": "3355ce886578279038674f2bf62942c4014d48c9ed995435a95d25afcfda97a3",
+    "bytes": 3160
+  },
+  "m1_historical_check_v1.py": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\m1_historical_check_v1.py",
+    "sha256": "926789d286e0f08842944a886305bc074b801774cd209bf43cf4985d873ce351",
+    "bytes": 1155
+  },
+  "m1_historical_check_v2.py": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\m1_historical_check_v2.py",
+    "sha256": "dfab0dfab8197f59b4d623d192a9867c6f0b3a4b2f36d3030bce3aa9480b21b4",
+    "bytes": 1214
+  },
+  "M1_historical_check_01.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_historical_check_01.json",
+    "sha256": "48911fe87c03b1cafd2d1ae268bab9dfadce51d623f5cf182cccb5078462e833",
+    "bytes": 204561
+  },
+  "M1_historical_check_02.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_historical_check_02.json",
+    "sha256": "39b2f33435ae3cb81b0b21297e79603b7076b359facb3723c0b4687f3d1d9670",
+    "bytes": 204559
+  },
+  "M1_family_fixed_context_before.py": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_family_fixed_context_before.py",
+    "sha256": "4eb8b4cd541c8de6cf0ab5249639fca3c0c9bc8f8d342883dd56c3b15666b902",
+    "bytes": 18831
+  },
+  "M1_quic_failed_07_test.go": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_quic_failed_07_test.go",
+    "sha256": "66acbda15e4c3b7fe53831c241321bbf701b93ac8cc214d04a2f5824eb7a60de",
+    "bytes": 4124
+  },
+  "M1_quic_diagnostic_08_test.go": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_quic_diagnostic_08_test.go",
+    "sha256": "9b9345f788350ef17fa67adf93c57040fe38cd137871f02d0ceb8a2bda731b78",
+    "bytes": 4528
+  },
+  "M1_quic_failed_09_test.go": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_quic_failed_09_test.go",
+    "sha256": "f7f5c1efa3fc8f19275fc59009971b0356774bc349096a275669ab79e2ec4002",
+    "bytes": 6335
+  },
+  "m1_quic_repeat_v1.sh": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\m1_quic_repeat_v1.sh",
+    "sha256": "68300952d289ea99a27b15b491fe25a7a831ca75bfa63573da39f35916227e3e",
+    "bytes": 362
+  },
+  "j7_command_v1.py": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\j7_command_v1.py",
+    "sha256": "317f0dd288d51b3edc79a27138aad6dac0660cd82da2cd078733ce1becfa3840",
+    "bytes": 2216
+  },
+  "M1_build_07_go_test.txt": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_07_go_test.txt",
+    "sha256": "bf99244f38fa79e77ee4d2c6cf331a35bf22f36f9c40851719ea333b116543b0",
+    "bytes": 43466
+  },
+  "M1_build_08_go_test.txt": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_08_go_test.txt",
+    "sha256": "996db74061e6a21ed24401c0d54467afa1ec36ee4772916a82aa050daf077d91",
+    "bytes": 55297
+  },
+  "M1_build_09_go_test.txt": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_09_go_test.txt",
+    "sha256": "f857109aacd0aa499521ecb69a367e752ad455ba39ab72a05fc69f6eae5b222f",
+    "bytes": 45719
+  },
+  "M1_build_10_go_test.txt": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_10_go_test.txt",
+    "sha256": "0075dfb54000995d6335dd0f454fe07629655e9dcc538a2f0c9be383ac3fc7d9",
+    "bytes": 46327
+  },
+  "M1_build_10_go_race.txt": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_10_go_race.txt",
+    "sha256": "e940a4482097695388cb17d46184237a22c50b9b21805243738fca1aa8b95034",
+    "bytes": 108
+  },
+  "M1_build_10_qamp.sha256": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_10_qamp.sha256",
+    "sha256": "283be6f369ce2614334d999b4106e0e7b6ac41850f3d38dfdbdcce5bd3d261bc",
+    "bytes": 71
+  },
+  "M1_build_10_qamp.srcsha": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_10_qamp.srcsha",
+    "sha256": "76fa9bdb923d46c5d0ef7fc3a96a36bc69eab39491791462444548a7cd51c19f",
+    "bytes": 65
+  },
+  "M1_build_10_qamp.buildinfo": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_10_qamp.buildinfo",
+    "sha256": "7cdc18e383ce5ed4103ddf586b7866cccd1cf48b8c1ac9d83a91be965bbfaac5",
+    "bytes": 592
+  },
+  "M1_counterfactuals_01.started.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_counterfactuals_01.started.json",
+    "sha256": "e5d9a795955a2000a06e04f7a9860b6080ee0091027cab48e1a3b478e90889e4",
+    "bytes": 2725
+  },
+  "M1_counterfactuals_01.finished.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_counterfactuals_01.finished.json",
+    "sha256": "9a4321a6497aa8653f031e605483f5ae369ee4278da5e271818eb401dfa67a7d",
+    "bytes": 2963
+  },
+  "M1_counterfactuals_01.log": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_counterfactuals_01.log",
+    "sha256": "68bccfd4529845121d25357a65ebb46ddf2620bea2e9b730eee9b71aa9b7c83c",
+    "bytes": 36
+  },
+  "M1_collector_smoke_01.started.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_collector_smoke_01.started.json",
+    "sha256": "c443510f880e10530303a8e9a4893856ff927714ab4716fb30a65026873f0d55",
+    "bytes": 2717
+  },
+  "M1_collector_smoke_01.finished.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_collector_smoke_01.finished.json",
+    "sha256": "17a8125631e105226fe963782b74cf738a254e8d365c426fdf3e6a621404b5a8",
+    "bytes": 2955
+  },
+  "M1_collector_smoke_01.log": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_collector_smoke_01.log",
+    "sha256": "e6a1535a3d3d1335a6efdd6577b5402a7abb22bbcd30fd944ad263d2237eac59",
+    "bytes": 1420
+  },
+  "m1_mc_tests_v1.py": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\m1_mc_tests_v1.py",
+    "sha256": "286149b0132fff1ec71e117de6ab1ea23aa2aa919af1ce0e37a1807c21242e13",
+    "bytes": 1507
+  },
+  "M1_mc_tests_01.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_mc_tests_01.json",
+    "sha256": "87d0cacfeee14418519383627e5549fec2840df5b9c041dd2284e1b6a72697be",
+    "bytes": 1868
+  },
+  "M1_mc_tests_01.log": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_mc_tests_01.log",
+    "sha256": "9ba081880e51bdfef80694dbd655cd5b4e5753da3eebefbbe9fc562ba50a56f4",
+    "bytes": 100
+  },
+  "m1_mc_tests_v2.py": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\m1_mc_tests_v2.py",
+    "sha256": "dba10dcde5bb9a63e4a62da49097539669fb3bedc595e91ef8cc23393dc0c451",
+    "bytes": 1507
+  },
+  "M1_mc_tests_02.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_mc_tests_02.json",
+    "sha256": "26eaaef5ded7372bc5202fe4c82a3aea6c5bfd2576614ed6e6a66182a3cc9e0a",
+    "bytes": 1868
+  },
+  "M1_mc_tests_02.log": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_mc_tests_02.log",
+    "sha256": "1b2f5d88896d8f687e32c91e815b0ad11778b6d1d3a8a5e6c35e2f037fff8bc7",
+    "bytes": 100
+  },
+  "m1_mc_tests_v3.py": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\m1_mc_tests_v3.py",
+    "sha256": "52be1e83214df3283e94489c3db594034997e5866820571aae8bbadb1717117c",
+    "bytes": 1507
+  },
+  "M1_mc_tests_03.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_mc_tests_03.json",
+    "sha256": "62c9fdc64009d556057090ceffa82344854dac85fa77f4d4447a4e6675a2e5d3",
+    "bytes": 1868
+  },
+  "M1_mc_tests_03.log": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_mc_tests_03.log",
+    "sha256": "fb85ce868dcc2d480c760b3b48b9f422c2b952ec0e57cb5f37884318e86041e9",
+    "bytes": 100
+  },
+  "M1_build_07.started.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_07.started.json",
+    "sha256": "50f84b58c07f8b9230c249739f59bc6b18c3d9ca21be333318f910236270c845",
+    "bytes": 6540
+  },
+  "M1_build_07.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_07.json",
+    "sha256": "b6f5e12b3f30fb7bb148c53ff6da158c17c65e2816f29a8b71d46f6cf008f646",
+    "bytes": 12968
+  },
+  "M1_build_07.log": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_07.log",
+    "sha256": "f9a2fa9617fa497c33071b028aced9c39239cb94d4cebe7b376a91e907a07746",
+    "bytes": 2545
+  },
+  "M1_build_08.started.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_08.started.json",
+    "sha256": "e7c4f0a4025b977b217109dee19d3e0f74fefc936bf3fceb49a42f5661115394",
+    "bytes": 6526
+  },
+  "M1_build_08.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_08.json",
+    "sha256": "bda112833d82d893e387d68a6638b1724dc5f314c688fe1292ebbfc6efdf2f31",
+    "bytes": 12955
+  },
+  "M1_build_08.log": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_08.log",
+    "sha256": "6dfc18adcd406a22ea6f33b5335a1cb73aeee9f1c47da6515da6e5dead727b30",
+    "bytes": 2545
+  },
+  "M1_build_09.started.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_09.started.json",
+    "sha256": "c415bf580c5ef802fcfed69df8ff47d01d34f133394d41e9b2c32c10d86ecf04",
+    "bytes": 6540
+  },
+  "M1_build_09.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_09.json",
+    "sha256": "d95f43e0f1728b82a730d4dd92ed1b18e4eb046f4e2003593f0b170b225d209d",
+    "bytes": 12968
+  },
+  "M1_build_09.log": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_09.log",
+    "sha256": "ec5d51d204379e4db05680b787d7b9dce1124af6137bf26798475f6641a212e7",
+    "bytes": 2544
+  },
+  "M1_build_10.started.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_10.started.json",
+    "sha256": "82d1a355156eb918e66db33b0f4d6abf8c2d8f596a4b39475288296bf2053c41",
+    "bytes": 6540
+  },
+  "M1_build_10.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_10.json",
+    "sha256": "0aa54634391a63535a8e016ece90132339e472976aca4ba092e78221ffe99225",
+    "bytes": 12969
+  },
+  "M1_build_10.log": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_build_10.log",
+    "sha256": "399eee8038b012911cdbc8bbf43960bbd93e78feb167c9c4b2fed184cdc4d5be",
+    "bytes": 349
+  },
+  "M1_quic_repeat_01.started.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_quic_repeat_01.started.json",
+    "sha256": "fad1b0328480f768a5cdd88cb7eb7fa41ccee6896926394040dcb8e4a2c6aeb9",
+    "bytes": 6521
+  },
+  "M1_quic_repeat_01.json": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_quic_repeat_01.json",
+    "sha256": "b4083bf27be9cc4666e3747fcb09a1758deb1acca12a42561efd4783d52b35e0",
+    "bytes": 12950
+  },
+  "M1_quic_repeat_01.log": {
+    "source": "C:\\dev\\codex_handoff\\v33\\runs\\M1_quic_repeat_01.log",
+    "sha256": "1ef45b0fc934986e80b65fd10efb62c50a728fa2ccca2decff93d7e512cae945",
+    "bytes": 95838
+  }
+}

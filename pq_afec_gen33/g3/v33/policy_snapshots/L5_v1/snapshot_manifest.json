@@ -1,0 +1,33 @@
+{
+  "schema": "padfec.v33.policy_snapshot/1",
+  "source_root": "C:\\dev\\pq_afec_gen33",
+  "snapshot_root": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\L5_v1",
+  "files": {
+    "afec/__init__.py": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+    "afec/cache.py": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+    "afec/channel.py": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7",
+    "afec/controller.py": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+    "afec/estimator.py": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+    "afec/handshake.py": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+    "afec/rs.py": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f",
+    "afec/sim.py": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+    "padfec/__init__.py": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+    "padfec/amplif.py": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+    "padfec/capacity.py": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+    "padfec/codec.py": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+    "padfec/policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+    "padfec/quantum.py": "6d6bcf0b5f81e4a6f7515bc7306346419d96f3ded7cb2978836841bf20ba2339",
+    "padfec/table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "padfec3/__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+    "padfec3/decide3.py": "f511cea301a79be666243ae18b87fd9b9282a3e45f7b54615e6550c3616e3d6b",
+    "padfec3/layout.py": "3b748b15c98817a3b74d3109ac193dea436edc3d2d1dfacaaa7bd9dcb1780201",
+    "padfec3/learn3.py": "058d8fc4ea3dcbc43028121ea1dfc2eb361413b6cb27804e2a45e5b213a61c6b",
+    "padfec3/server_size.py": "b8369e826b35a09e3ed382d6ecbe57d1bc24b85fbc825a1ff8411415510b2a7d"
+  },
+  "source_and_snapshot_byte_identical": true,
+  "size_variant": "full",
+  "created_kst": "2026-10-31T18:42:00.128044+09:00",
+  "state_version": 9,
+  "script_path": "C:\\dev\\codex_handoff\\v33\\runs\\l5_prepare_snapshots_v1.py",
+  "script_sha256": "a1d7415d764f4f57ebf635034418709c36ed174a71bf7ddf874a721f0df19390"
+}

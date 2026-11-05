@@ -1,0 +1,274 @@
+{
+  "schema": "padfec.v33.a0/1",
+  "generated_kst": "2026-10-30T01:48:46+09:00",
+  "root": "C:\\dev\\pq_afec_gen33",
+  "inputs": [
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p18_burst3_units.jsonl",
+      "sha256": "3310740813a8d999b70f8927dcbb60bf17360ab146272810d63437361a4ee71e",
+      "bytes": 3211958,
+      "fingerprints": [
+        "2669569e56660312"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    }
+  ],
+  "source_sha256": {
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\01_posterior_trajectories.py": "5262de065cfd3d86c8c92bb02b421ae92d0a73769803cd9a306e2d9e6eaf0d5f",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\02_baseline_contamination.py": "4c0dcb6baa20aeb74b8117e4935dd543b8e3ce3912ed94bf9309b065adcfecc9",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\03_j3_decomposition.py": "d9d8c4037f0f34620bf04ecace9580867e6ad35935b1bb98e70a57217ed10032",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\04_burst_model.py": "acfef5e66a428907253f3d1260b8bf2d53e8e42423e9eb91f9813dcd172e3f20",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\05_server_accounting.py": "2b2f26c23717ac03138e887fc1adb249273d1383c6cad12e1831165a6890d895",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\06_server_size_bins.py": "dca5aaa3dfc4dff1c130cbe0822c42096b8c9b4852277033a031e6b183bbbd5a",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\07_rtt200_probes.py": "1e1037cc8271dce95415646b1943f5a8978a8f743b616589ce8bbe3b7264e821",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\common.py": "836059cc6cf71db8b7fdb14ce620663a47eed9a8810a7a57eda8871b72ede216",
+    "C:\\dev\\pq_afec_gen33\\padfec\\policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+    "C:\\dev\\pq_afec_gen33\\padfec\\quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "C:\\dev\\pq_afec_gen33\\padfec\\table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\decide3.py": "72e6f388651df35d2e70cb52c65c71e5ec6a0d496ad95400e623544a3fb880ba",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\learn3.py": "a78a69b057179e633b9dbc8cbfac57bbfc9a68b25ecc47853c9e6f6b42b9044e"
+  },
+  "item": "A0-4",
+  "data_kind": "measurement_reanalysis_and_model_world",
+  "source_scripts": [
+    "verify-A1/v04_ge.py",
+    "verify-A1/vgen.py",
+    "audit-cost-model/s26_p18.py"
+  ],
+  "model_scope": "정책의 layout.outcomes와 경주·비용식을 재사용하고 패턴 확률만 iid/GE로 바꾼 모형 재현이다. W0 독립 세계 시뮬레이터가 아니다.",
+  "input": {
+    "k": 2,
+    "w_B": 1280,
+    "p": 0.15,
+    "GE_mean_bad_run": 3.0,
+    "GE_bad_to_good": 0.3333333333333333,
+    "GE_good_to_bad": 0.058823529411764705,
+    "GE_initial_distribution": "stationary",
+    "rtt_ms": 50.0,
+    "uplink_Mbps": 0.0,
+    "observed_server_bytes_upper_median": 5822,
+    "observed_server_bytes_median": 5822.0,
+    "n_need": 5
+  },
+  "failure_definition": "ok=false 또는 initial_datagrams>=4. 실제 연결 전체 실패율과 첫 비행 복구 실패를 구분한다.",
+  "processing_note": "2.6 ms는 추가 보정 예시이며 이번 결과에 맞춰 재추정하지 않는다. 기본 GE 결과와 별도 열이다.",
+  "iid_consistency": [
+    {
+      "context": [
+        2,
+        1280,
+        2.0,
+        50.7,
+        15
+      ],
+      "comparisons": 60,
+      "max_abs_J_difference_ms": 5.684341886080802e-14
+    },
+    {
+      "context": [
+        2,
+        1280,
+        0.0,
+        50.0,
+        4
+      ],
+      "comparisons": 60,
+      "max_abs_J_difference_ms": 0.0
+    },
+    {
+      "context": [
+        2,
+        1280,
+        10.0,
+        120.0,
+        7
+      ],
+      "comparisons": 60,
+      "max_abs_J_difference_ms": 5.684341886080802e-14
+    },
+    {
+      "context": [
+        1,
+        1280,
+        0.0,
+        50.0,
+        6
+      ],
+      "comparisons": 60,
+      "max_abs_J_difference_ms": 0.0
+    }
+  ],
+  "results": [
+    {
+      "action": [
+        0,
+        0,
+        0
+      ],
+      "n": 1,
+      "observed": {
+        "mean_hct_ms": 205.744,
+        "failure_or_initial_retransmission_count": 1,
+        "failure_or_initial_retransmission_fraction": 1.0,
+        "server_bytes": {
+          "count": 1,
+          "numeric_count": 1,
+          "missing_count": 0,
+          "min": 5863,
+          "max": 5863,
+          "mean": 5863,
+          "median": 5863
+        }
+      },
+      "iid_model": {
+        "J_ms": 98.23266089965398,
+        "p_one_rtt": 0.7224999999999999,
+        "p_two_rtt": 0.0,
+        "p_fail": 0.2775,
+        "probability_sum": 0.9999999999999999
+      },
+      "ge_model": {
+        "J_ms": 90.587125,
+        "p_one_rtt": 0.7999999999999999,
+        "p_two_rtt": 0.0,
+        "p_fail": 0.2,
+        "probability_sum": 0.9999999999999999
+      },
+      "iid_minus_layout_J_ms": 0.0,
+      "ge_plus_processing_2_6_ms": 93.187125
+    },
+    {
+      "action": [
+        0,
+        0,
+        3
+      ],
+      "n": 231,
+      "observed": {
+        "mean_hct_ms": 61.357238095238095,
+        "failure_or_initial_retransmission_count": 11,
+        "failure_or_initial_retransmission_fraction": 0.047619047619047616,
+        "server_bytes": {
+          "count": 231,
+          "numeric_count": 231,
+          "missing_count": 0,
+          "min": 5807,
+          "max": 5913,
+          "mean": 5822.930735930736,
+          "median": 5822
+        }
+      },
+      "iid_model": {
+        "J_ms": 50.364976303152766,
+        "p_one_rtt": 0.9977724999999998,
+        "p_two_rtt": 0.0,
+        "p_fail": 0.0022275,
+        "probability_sum": 0.9999999999999998
+      },
+      "ge_model": {
+        "J_ms": 62.7553316289203,
+        "p_one_rtt": 0.9368191721132896,
+        "p_two_rtt": 0.0,
+        "p_fail": 0.06318082788671026,
+        "probability_sum": 0.9999999999999998
+      },
+      "iid_minus_layout_J_ms": 0.0,
+      "ge_plus_processing_2_6_ms": 65.3553316289203
+    },
+    {
+      "action": [
+        0,
+        0,
+        4
+      ],
+      "n": 1368,
+      "observed": {
+        "mean_hct_ms": 60.97579824561404,
+        "failure_or_initial_retransmission_count": 56,
+        "failure_or_initial_retransmission_fraction": 0.04093567251461988,
+        "server_bytes": {
+          "count": 1368,
+          "numeric_count": 1368,
+          "missing_count": 0,
+          "min": 5807,
+          "max": 5918,
+          "mean": 5822.289473684211,
+          "median": 5822.0
+        }
+      },
+      "iid_model": {
+        "J_ms": 50.06758706193013,
+        "p_one_rtt": 0.9996013281249997,
+        "p_two_rtt": 0.0,
+        "p_fail": 0.00039867187499999994,
+        "probability_sum": 0.9999999999999997
+      },
+      "ge_model": {
+        "J_ms": 58.46459944938048,
+        "p_one_rtt": 0.9570079883805372,
+        "p_two_rtt": 0.0,
+        "p_fail": 0.042992011619462624,
+        "probability_sum": 0.9999999999999998
+      },
+      "iid_minus_layout_J_ms": 0.0,
+      "ge_plus_processing_2_6_ms": 61.06459944938048,
+      "expected": {
+        "n": {
+          "actual": 1368,
+          "expected_from_source": 1368,
+          "difference": 0,
+          "exact_match": true,
+          "definition": "g3auto (0,0,4)"
+        },
+        "observed_mean_ms": {
+          "actual": 60.97579824561404,
+          "expected_from_source": 60.98,
+          "difference": -0.004201754385960044,
+          "exact_match": false,
+          "definition": "소수 둘째 자리 반올림값"
+        },
+        "observed_failure_fraction": {
+          "actual": 0.04093567251461988,
+          "expected_from_source": 0.0409,
+          "difference": 3.567251461988191e-05,
+          "exact_match": false,
+          "definition": "소수 넷째 자리 반올림값"
+        },
+        "iid_J_ms": {
+          "actual": 50.06758706193013,
+          "expected_from_source": 50.07,
+          "difference": -0.0024129380698667546,
+          "exact_match": false,
+          "definition": "반올림값"
+        },
+        "iid_p_fail": {
+          "actual": 0.00039867187499999994,
+          "expected_from_source": 0.0004,
+          "difference": -1.3281250000000814e-06,
+          "exact_match": false,
+          "definition": "반올림값"
+        },
+        "ge_J_ms": {
+          "actual": 58.46459944938048,
+          "expected_from_source": 58.46,
+          "difference": 0.004599449380478404,
+          "exact_match": false,
+          "definition": "반올림값"
+        },
+        "ge_p_fail": {
+          "actual": 0.042992011619462624,
+          "expected_from_source": 0.043,
+          "difference": -7.988380537372886e-06,
+          "exact_match": false,
+          "definition": "반올림값"
+        }
+      }
+    }
+  ],
+  "status": "calculated"
+}

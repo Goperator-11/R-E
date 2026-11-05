@@ -1,0 +1,23 @@
+{
+  "gen32_files": 226,
+  "gen33_files": 227,
+  "normalization": "CRLF -> LF",
+  "differences": [
+    {
+      "path": "experiments/quicbed/build_gen32.sh",
+      "old_sha256": "07326adfa0a21f2ac9f7df25b2aec3a2aed6944672fcd8cfe8b80bbdf7ba5f7d",
+      "new_sha256": null
+    },
+    {
+      "path": "experiments/quicbed/build_gen33.sh",
+      "old_sha256": null,
+      "new_sha256": "7baa1c3685513a21cd80b0e7da8a1797aae694b20ceeb0bdf69f7922e08519c9"
+    },
+    {
+      "path": "g3/gen33_parity_baseline.json",
+      "old_sha256": null,
+      "new_sha256": "fe400a6f03616de258f23366f36f8da46237dafa022b40c321059bd1d0e40558"
+    }
+  ],
+  "unexpected": []
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "padfec.v33.benchmark_reporting_rules/1",
+  "frozen_before_reading_numerical_raw_results": true,
+  "data_kind": "development_independent_world_simulation",
+  "grouping": "generation, variant, scenario; full and diagnostic variants never pooled",
+  "raw_completeness": "Every supplied raw directory must be complete; every present run group must contain exactly the frozen protocol seeds. Missing baseline cells are partial, never silently dropped.",
+  "provenance": "Validate protocol file SHA256, embedded protocol, run identity and trace SHA256, worker policy fingerprint, frozen producer source hashes, oracle context/reference identities and action-table source hashes.",
+  "expected_cost": {
+    "seed_mean": "sum action_count / connections * independently evaluated action minus frozen-reference mean gap; negative estimates retained",
+    "seed_interval": "Two-sided Student t interval on independent seed means, confidence from protocol.metrics.paired_confidence",
+    "shared_mc_bound": "sum across context/action of mean action weight across seeds times action gap half-width; no division by sqrt(seed count)",
+    "selection_gap_bound": "sum across contexts of mean context weight times frozen-reference selection gap upper bound",
+    "unresolved": "Missing action/reference or unresolved distinct-action zero observed variance yields null bounds and no PASS; no numerical regret is fabricated.",
+    "absolute_regret": "Reported mean is the estimated gap to the frozen selected reference. True-world optimum regret lies above it by an unknown nonnegative selection gap. Add selection bound only to upper limit."
+  },
+  "thresholds": {
+    "B1_regret_ms": "strictly below protocol B1 threshold including seed interval, shared MC and selection bounds",
+    "B2_regret_ms": "strictly below protocol B2 threshold including seed interval, shared MC and selection bounds",
+    "B1_p_bias": "absolute signed pre-decision high-phase tail bias; whole seed interval must lie inside both protocol limits",
+    "B4_extra_bytes": "whole-connection server-counted extra bytes against paired b0, strict protocol limit; first-flight server and client counters remain separate",
+    "B5_adaptation": "Every protocol seed must have a confirmed two-decision near-optimal run starting after at most two new-chain observations. Unknown predicates cannot prove failure or PASS. Report start and confirmation lags, censoring and all-seed distribution.",
+    "baseline_regression": "All full-variant scenario cells must have candidate minus v31 upper limit <= protocol max_regression_vs_v31_ms. No averaging away a bad cell."
+  },
+  "trace_metrics": {
+    "near_optimal": "True if action gap upper plus reference selection-gap bound <= protocol adaptation_near_optimal_ms; False if action gap lower exceeds it; otherwise unknown.",
+    "adaptation_index": "The first decision after a certificate change has seen zero new-chain observations. Consecutive decisions may not cross the next change boundary.",
+    "suboptimal_episode": "Longest consecutive row sequence with action gap lower > protocol adaptation_near_optimal_ms. Unknown rows break confirmed episodes and are reported separately, with a possible-episode upper length.",
+    "fixed_comparators": "Read existing trace counterfactual b0 and global fixed(0,3,1) HCT and server-counted bytes, aggregate per seed, retain failures. These realized paired contrasts are diagnostic and are not expected oracle regret.",
+    "transition_display": "Show signed p bias, MAE, alarm rate, guard occupancy and detection start/confirmation means. Detection delay means use only detected seeds; show detected denominator, right censoring and prechange-unqualified counts. This display addition does not change thresholds or inference."
+  },
+  "direct_baseline_comparison": {
+    "estimate": "For each paired seed, sum differences of candidate and v31 action weights times common action gap estimates. Reference/oracle term cancels because context weights match.",
+    "shared_mc_bound": "Sum absolute mean action-weight differences times action gap half-width. Skip exactly zero coefficients before consulting missing or unresolved action intervals.",
+    "reference_cancellation": "No selection-gap bound added to the direct contrast; reject mismatched context weights.",
+    "fallback": "Realized HCT paired seed difference is a separate diagnostic if expected tables are missing, never substituted for expected regret."
+  },
+  "pending": "With --allow-pending write status partial, explicit missing artifacts and null unavailable metrics. Without it reject an incomplete report.",
+  "inference_scope": "Seed Student t intervals are 95%. MC normal bounds are 99% within each oracle context or action job family. Combining these separately scoped bounds does not provide an overall simultaneous 95% guarantee. MC intervals are heuristic, not distribution-free finite-sample guarantees. Reused development seeds and historically held-out cells are not confirmatory evidence."
+}

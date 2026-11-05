@@ -1,0 +1,7 @@
+{
+  "gen_id": "v3.3-dev",
+  "build_script": "build_gen33.sh",
+  "binary": "~/quicbed_gen33/bin/qamp",
+  "install_binary": "/tmp/qamp_gen33/qamp",
+  "wsl_root": "/mnt/c/dev/pq_afec_gen33"
+}

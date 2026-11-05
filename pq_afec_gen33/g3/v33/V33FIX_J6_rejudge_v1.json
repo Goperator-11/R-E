@@ -1,0 +1,2906 @@
+{
+ "benchmark_sha256": "35fa5ff2878af2712ab290e4c984cc7dd91149ec8df35cf52078b10500ea4851",
+ "comparisons": [
+  {
+   "baseline": "v32",
+   "candidate": "j6_none",
+   "lower_bound_ms": -2.549763272239651,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3333333333333333
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.3333333333333333
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.6659259259259259
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.6659259259259259
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.11722727975093353,
+    "interval_available": true,
+    "lower": -2.5194183871583413,
+    "mean": -2.4021911074074076,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.25047793004421604,
+    "se": 0.056008567844230396,
+    "upper": -2.284963827656474
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.549763272239651,
+    "adjusted_upper": -2.397197648265495,
+    "estimate": -2.473480460252573,
+    "inclusive": true,
+    "lower": -2.473480460252573,
+    "mc_bound": 0.07628281198707802,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.473480460252573
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.0,
+    "interval_available": true,
+    "lower": -2.473480460252573,
+    "mean": -2.473480460252573,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.0,
+    "se": 0.0,
+    "upper": -2.473480460252573
+   },
+   "shared_mc_bound_ms": 0.07628281198707802,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": -2.397197648265495,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "v31",
+   "candidate": "j6_none",
+   "lower_bound_ms": -2.549763272239651,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3333333333333333
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.3333333333333333
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.6659259259259259
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.6659259259259259
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.11722727975093353,
+    "interval_available": true,
+    "lower": -2.5194183871583413,
+    "mean": -2.4021911074074076,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.25047793004421604,
+    "se": 0.056008567844230396,
+    "upper": -2.284963827656474
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.549763272239651,
+    "adjusted_upper": -2.397197648265495,
+    "estimate": -2.473480460252573,
+    "inclusive": true,
+    "lower": -2.473480460252573,
+    "mc_bound": 0.07628281198707802,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.473480460252573
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.0,
+    "interval_available": true,
+    "lower": -2.473480460252573,
+    "mean": -2.473480460252573,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.0,
+    "se": 0.0,
+    "upper": -2.473480460252573
+   },
+   "shared_mc_bound_ms": 0.07628281198707802,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": -2.397197648265495,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "v32",
+   "candidate": "j6_c1",
+   "lower_bound_ms": -2.5477154786756646,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3333333333333333
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      2
+     ],
+     0.003
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      3
+     ],
+     0.004925925925925926
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.3254074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.6659259259259259
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ],
+     0.4294074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      3
+     ],
+     0.175
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.06151851851851852
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.11888441894104232,
+    "interval_available": true,
+    "lower": -2.516072252274376,
+    "mean": -2.3971878333333336,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.2540187167537216,
+    "se": 0.05680031182185862,
+    "upper": -2.2783034143922913
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.5477154786756646,
+    "adjusted_upper": -2.394893082825665,
+    "estimate": -2.471304280750665,
+    "inclusive": true,
+    "lower": -2.471891982076468,
+    "mc_bound": 0.07582349659919663,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.470716579424862
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.0005877013258030934,
+    "interval_available": true,
+    "lower": -2.471891982076468,
+    "mean": -2.471304280750665,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.001255733408504926,
+    "se": 0.0002807905263034527,
+    "upper": -2.470716579424862
+   },
+   "shared_mc_bound_ms": 0.07582349659919663,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": -2.394893082825665,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "v31",
+   "candidate": "j6_c1",
+   "lower_bound_ms": -2.5477154786756646,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3333333333333333
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      2
+     ],
+     0.003
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      3
+     ],
+     0.004925925925925926
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.3254074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.6659259259259259
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ],
+     0.4294074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      3
+     ],
+     0.175
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.06151851851851852
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.11888441894104232,
+    "interval_available": true,
+    "lower": -2.516072252274376,
+    "mean": -2.3971878333333336,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.2540187167537216,
+    "se": 0.05680031182185862,
+    "upper": -2.2783034143922913
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.5477154786756646,
+    "adjusted_upper": -2.394893082825665,
+    "estimate": -2.471304280750665,
+    "inclusive": true,
+    "lower": -2.471891982076468,
+    "mc_bound": 0.07582349659919663,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.470716579424862
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.0005877013258030934,
+    "interval_available": true,
+    "lower": -2.471891982076468,
+    "mean": -2.471304280750665,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.001255733408504926,
+    "se": 0.0002807905263034527,
+    "upper": -2.470716579424862
+   },
+   "shared_mc_bound_ms": 0.07582349659919663,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": -2.394893082825665,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "v32",
+   "candidate": "j6_ideal",
+   "lower_bound_ms": -2.5476741855749703,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3333333333333333
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      2
+     ],
+     0.0028888888888888888
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      3
+     ],
+     0.003925925925925926
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.32651851851851854
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.6659259259259259
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ],
+     0.4361851851851852
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      3
+     ],
+     0.16796296296296295
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.06177777777777778
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.11888441894104232,
+    "interval_available": true,
+    "lower": -2.516072252274376,
+    "mean": -2.3971878333333336,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.2540187167537216,
+    "se": 0.05680031182185862,
+    "upper": -2.2783034143922913
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.5476741855749703,
+    "adjusted_upper": -2.395088665034975,
+    "estimate": -2.4713814253049726,
+    "inclusive": true,
+    "lower": -2.4718867353306946,
+    "mc_bound": 0.07578745024427547,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.4708761152792507
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.0005053100257219359,
+    "interval_available": true,
+    "lower": -2.4718867353306946,
+    "mean": -2.4713814253049726,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.001079689041171427,
+    "se": 0.00024142580906208797,
+    "upper": -2.4708761152792507
+   },
+   "shared_mc_bound_ms": 0.07578745024427547,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": -2.395088665034975,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "v31",
+   "candidate": "j6_ideal",
+   "lower_bound_ms": -2.5476741855749703,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3333333333333333
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      2
+     ],
+     0.0028888888888888888
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      3
+     ],
+     0.003925925925925926
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.32651851851851854
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.6659259259259259
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ],
+     0.4361851851851852
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      3
+     ],
+     0.16796296296296295
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.06177777777777778
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.11888441894104232,
+    "interval_available": true,
+    "lower": -2.516072252274376,
+    "mean": -2.3971878333333336,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.2540187167537216,
+    "se": 0.05680031182185862,
+    "upper": -2.2783034143922913
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.5476741855749703,
+    "adjusted_upper": -2.395088665034975,
+    "estimate": -2.4713814253049726,
+    "inclusive": true,
+    "lower": -2.4718867353306946,
+    "mc_bound": 0.07578745024427547,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.4708761152792507
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.0005053100257219359,
+    "interval_available": true,
+    "lower": -2.4718867353306946,
+    "mean": -2.4713814253049726,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.001079689041171427,
+    "se": 0.00024142580906208797,
+    "upper": -2.4708761152792507
+   },
+   "shared_mc_bound_ms": 0.07578745024427547,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": -2.395088665034975,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "j6_none",
+   "candidate": "j6_c1",
+   "lower_bound_ms": -0.005524855886384897,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      2
+     ],
+     0.003
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      3
+     ],
+     0.004925925925925926
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     -0.007925925925925927
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ],
+     0.4294074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      3
+     ],
+     0.175
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     -0.6044074074074074
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.010471972987834243,
+    "interval_available": true,
+    "lower": -0.005468698913760272,
+    "mean": 0.005003274074073971,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.022375321879383434,
+    "se": 0.00500327407407397,
+    "upper": 0.015475247061908214
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -0.005524855886384897,
+    "adjusted_upper": 0.009877214890200662,
+    "estimate": 0.002176179501907882,
+    "inclusive": true,
+    "lower": 0.0015884781761048123,
+    "mc_bound": 0.007113334062489709,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": 0.0027638808277109517
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.0005877013258030696,
+    "interval_available": true,
+    "lower": 0.0015884781761048123,
+    "mean": 0.002176179501907882,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.001255733408504875,
+    "se": 0.0002807905263034413,
+    "upper": 0.0027638808277109517
+   },
+   "shared_mc_bound_ms": 0.007113334062489709,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": 0.009877214890200662,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "l1_none",
+   "candidate": "j6_none",
+   "lower_bound_ms": -2.549763272239651,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3333333333333333
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.3333333333333333
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.6659259259259259
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.6659259259259259
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": true,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.11722727975093353,
+    "interval_available": true,
+    "lower": -2.5194183871583413,
+    "mean": -2.4021911074074076,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.25047793004421604,
+    "se": 0.056008567844230396,
+    "upper": -2.284963827656474
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.549763272239651,
+    "adjusted_upper": -2.397197648265495,
+    "estimate": -2.473480460252573,
+    "inclusive": true,
+    "lower": -2.473480460252573,
+    "mc_bound": 0.07628281198707802,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.473480460252573
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.0,
+    "interval_available": true,
+    "lower": -2.473480460252573,
+    "mean": -2.473480460252573,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.0,
+    "se": 0.0,
+    "upper": -2.473480460252573
+   },
+   "shared_mc_bound_ms": 0.07628281198707802,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": -2.397197648265495,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "l1_c1",
+   "candidate": "j6_c1",
+   "lower_bound_ms": -2.615221706571046,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      1,
+      2
+     ],
+     -0.00014814814814814815
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3331851851851852
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      2
+     ],
+     0.003
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      3
+     ],
+     0.004925925925925926
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.3254074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      1,
+      2
+     ],
+     -0.16825925925925925
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      1,
+      3
+     ],
+     -0.015074074074074075
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.4825925925925926
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ],
+     0.4294074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      3
+     ],
+     0.175
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.06151851851851852
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": true,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.12316962142177944,
+    "interval_available": true,
+    "lower": -2.6020175140143715,
+    "mean": -2.4788478925925923,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.26317485045805955,
+    "se": 0.05884768555925628,
+    "upper": -2.355678271170813
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.615221706571046,
+    "adjusted_upper": -2.3977178579472227,
+    "estimate": -2.5064697822591344,
+    "inclusive": true,
+    "lower": -2.518012956257555,
+    "mc_bound": 0.09720875031349129,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.4949266082607138
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.01154317399842068,
+    "interval_available": true,
+    "lower": -2.518012956257555,
+    "mean": -2.5064697822591344,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.024664142470998556,
+    "se": 0.00551506991718924,
+    "upper": -2.4949266082607138
+   },
+   "shared_mc_bound_ms": 0.09720875031349129,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": -2.3977178579472227,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "l1_ideal",
+   "candidate": "j6_ideal",
+   "lower_bound_ms": -2.615109235867023,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      1,
+      2
+     ],
+     -0.00014814814814814815
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3331851851851852
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      2
+     ],
+     0.0028888888888888888
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      3
+     ],
+     0.003925925925925926
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.32651851851851854
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      1,
+      2
+     ],
+     -0.17007407407407407
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      1,
+      3
+     ],
+     -0.014407407407407407
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.48144444444444445
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ],
+     0.4361851851851852
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      3
+     ],
+     0.16796296296296295
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.06177777777777778
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.131801537663209,
+    "interval_available": true,
+    "lower": -2.6228315339595034,
+    "mean": -2.4910299962962945,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.28161854817980175,
+    "se": 0.06297182174548363,
+    "upper": -2.3592284586330856
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.615109235867023,
+    "adjusted_upper": -2.398410112418155,
+    "estimate": -2.506759674142589,
+    "inclusive": true,
+    "lower": -2.5178028105238797,
+    "mc_bound": 0.09730642534314356,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.4957165377612984
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.011043136381290574,
+    "interval_available": true,
+    "lower": -2.5178028105238797,
+    "mean": -2.506759674142589,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.023595718913366752,
+    "se": 0.005276163146826552,
+    "upper": -2.4957165377612984
+   },
+   "shared_mc_bound_ms": 0.09730642534314356,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": -2.398410112418155,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "zero_none",
+   "candidate": "j6_none",
+   "lower_bound_ms": -0.006960084181181915,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      7,
+      0,
+      4
+     ],
+     -0.3333333333333333
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.3333333333333333
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      7,
+      0,
+      4
+     ],
+     -0.6659259259259259
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.6659259259259259
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 1.4871830376309713e-15,
+    "interval_available": true,
+    "lower": 0.007994074074074509,
+    "mean": 0.007994074074075996,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 3.1776437161565094e-15,
+    "se": 7.105427357601001e-16,
+    "upper": 0.007994074074077482
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -0.006960084181181915,
+    "adjusted_upper": 0.0229482323293345,
+    "estimate": 0.007994074074076292,
+    "inclusive": true,
+    "lower": 0.007994074074076292,
+    "mc_bound": 0.014954158255258207,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": 0.007994074074076292
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.0,
+    "interval_available": true,
+    "lower": 0.007994074074076292,
+    "mean": 0.007994074074076292,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.0,
+    "se": 0.0,
+    "upper": 0.007994074074076292
+   },
+   "shared_mc_bound_ms": 0.014954158255258207,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": 0.0229482323293345,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "zero_c1",
+   "candidate": "j6_c1",
+   "lower_bound_ms": -0.004440063368628072,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      7,
+      0,
+      2
+     ],
+     -0.003
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      7,
+      0,
+      3
+     ],
+     -0.004925925925925926
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      7,
+      0,
+      4
+     ],
+     -0.3254074074074074
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      2
+     ],
+     0.003
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      3
+     ],
+     0.004925925925925926
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ],
+     0.3254074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      7,
+      0,
+      2
+     ],
+     -0.4294074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      7,
+      0,
+      3
+     ],
+     -0.175
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      7,
+      0,
+      4
+     ],
+     -0.06151851851851852
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ],
+     0.4294074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      3
+     ],
+     0.175
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      4
+     ],
+     0.06151851851851852
+    ]
+   ],
+   "original_shared_mc_bound_ms": null,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 3.87597035349809e-08,
+    "interval_available": true,
+    "lower": 0.007994053832890381,
+    "mean": 0.007994092592593916,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 8.281732998664234e-08,
+    "se": 1.8518517956516403e-08,
+    "upper": 0.007994131352297451
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -0.004440063368628072,
+    "adjusted_upper": 0.020428254048111986,
+    "estimate": 0.007994095339741956,
+    "inclusive": true,
+    "lower": 0.007994087057249938,
+    "mc_bound": 0.01243415042587801,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": 0.007994103622233975
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 8.282492017993419e-09,
+    "interval_available": true,
+    "lower": 0.007994087057249938,
+    "mean": 0.007994095339741956,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 1.7697087748538435e-08,
+    "se": 3.957189120951064e-09,
+    "upper": 0.007994103622233975
+   },
+   "shared_mc_bound_ms": 0.01243415042587801,
+   "stored_status": "inconclusive",
+   "upper_bound_ms": 0.020428254048111986,
+   "z1_resolved_terms": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      12,
+      0,
+      4
+     ]
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      12,
+      0,
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "baseline": "l1_none",
+   "candidate": "zero_none",
+   "lower_bound_ms": -2.5507810780447224,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3333333333333333
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      7,
+      0,
+      4
+     ],
+     0.3333333333333333
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.6659259259259259
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      7,
+      0,
+      4
+     ],
+     0.6659259259259259
+    ]
+   ],
+   "original_shared_mc_bound_ms": 0.06930654371807321,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.11722727975093344,
+    "interval_available": true,
+    "lower": -2.5274124612324167,
+    "mean": -2.4101851814814834,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.25047793004421587,
+    "se": 0.056008567844230354,
+    "upper": -2.29295790173055
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.5507810780447224,
+    "adjusted_upper": -2.412167990608576,
+    "estimate": -2.481474534326649,
+    "inclusive": true,
+    "lower": -2.481474534326649,
+    "mc_bound": 0.06930654371807321,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.481474534326649
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.0,
+    "interval_available": true,
+    "lower": -2.481474534326649,
+    "mean": -2.481474534326649,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.0,
+    "se": 0.0,
+    "upper": -2.481474534326649
+   },
+   "shared_mc_bound_ms": 0.06930654371807321,
+   "stored_status": "pass",
+   "upper_bound_ms": -2.412167990608576,
+   "z1_resolved_terms": []
+  },
+  {
+   "baseline": "l1_c1",
+   "candidate": "zero_c1",
+   "lower_bound_ms": -2.614638153880262,
+   "nonzero_coefficients": [
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      1,
+      2
+     ],
+     -0.00014814814814814815
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.3331851851851852
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      7,
+      0,
+      2
+     ],
+     0.003
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      7,
+      0,
+      3
+     ],
+     0.004925925925925926
+    ],
+    [
+     "0d4cd14cd8ac65a43314",
+     [
+      7,
+      0,
+      4
+     ],
+     0.3254074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      1,
+      2
+     ],
+     -0.16825925925925925
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      1,
+      3
+     ],
+     -0.015074074074074075
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      0,
+      2,
+      2
+     ],
+     -0.4825925925925926
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      7,
+      0,
+      2
+     ],
+     0.4294074074074074
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      7,
+      0,
+      3
+     ],
+     0.175
+    ],
+    [
+     "25b8f9c00a6e624fb79f",
+     [
+      7,
+      0,
+      4
+     ],
+     0.06151851851851852
+    ]
+   ],
+   "original_shared_mc_bound_ms": 0.08863110499086906,
+   "primary": false,
+   "realized_hct_diagnostic": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.1231696101413887,
+    "interval_available": true,
+    "lower": -2.610011595326575,
+    "mean": -2.486841985185186,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.2631748263554025,
+    "se": 0.05884768016973832,
+    "upper": -2.363672375043797
+   },
+   "regression_gate": {
+    "absolute": false,
+    "adjusted_lower": -2.614638153880262,
+    "adjusted_upper": -2.4142896013174906,
+    "estimate": -2.5144638775988764,
+    "inclusive": true,
+    "lower": -2.526007048889393,
+    "mc_bound": 0.08863110499086906,
+    "point_pass": true,
+    "selection_gap": 0.0,
+    "status": "pass",
+    "threshold": 0.5,
+    "upper": -2.50292070630836
+   },
+   "scenario": "B12_c6000",
+   "seed_summary": {
+    "confidence": 0.95,
+    "critical": 2.0930240544083016,
+    "df": 19,
+    "half_width": 0.01154317129051638,
+    "interval_available": true,
+    "lower": -2.526007048889393,
+    "mean": -2.5144638775988764,
+    "method": "two-sided Student t on independent seed differences",
+    "n": 20,
+    "sd": 0.024664136685056362,
+    "se": 0.005515068623413235,
+    "upper": -2.50292070630836
+   },
+   "shared_mc_bound_ms": 0.08863110499086906,
+   "stored_status": "pass",
+   "upper_bound_ms": -2.4142896013174906,
+   "z1_resolved_terms": []
+  }
+ ],
+ "data_kind": "development_independent_world_simulation",
+ "finished_kst": "2026-11-02T01:50:49.666306+09:00",
+ "forward_rule": {
+  "adopt_under_forward_rule": false,
+  "cells": [
+   {
+    "adjusted_lower_ms": -0.36715377115125725,
+    "adjusted_upper_ms": 1.3768355591196904,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B1",
+    "status": "inconclusive"
+   },
+   {
+    "adjusted_lower_ms": -1.8154896492589814,
+    "adjusted_upper_ms": -0.35390607470207036,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B2",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.0,
+    "adjusted_upper_ms": 0.0,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B3_u0",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.0,
+    "adjusted_upper_ms": 0.0,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B3_u2",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.0,
+    "adjusted_upper_ms": 0.0,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B4",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.046093711483980886,
+    "adjusted_upper_ms": 0.6724314580157333,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B5",
+    "status": "inconclusive"
+   },
+   {
+    "adjusted_lower_ms": 5.121543751077592,
+    "adjusted_upper_ms": 7.606734143403163,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B6",
+    "status": "fail"
+   },
+   {
+    "adjusted_lower_ms": 0.10948083597729638,
+    "adjusted_upper_ms": 0.40669681091178556,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B7",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -2.1369730382841388,
+    "adjusted_upper_ms": 6.031243590345777,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B8_j10",
+    "status": "inconclusive"
+   },
+   {
+    "adjusted_lower_ms": 0.2298488588810167,
+    "adjusted_upper_ms": 18.62394568452718,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B8_j20",
+    "status": "inconclusive"
+   },
+   {
+    "adjusted_lower_ms": 0.0,
+    "adjusted_upper_ms": 0.0,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B9",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.0,
+    "adjusted_upper_ms": 0.0,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B10",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -0.14555402394357211,
+    "adjusted_upper_ms": 0.07692809388484989,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B11",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -2.549763272239651,
+    "adjusted_upper_ms": -2.397197648265495,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B12_c6000",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -0.09773656171522024,
+    "adjusted_upper_ms": -0.009923641416109297,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B12_c12000",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -1.1369190662745172,
+    "adjusted_upper_ms": -0.1746322519635629,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B1",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -2.7923488798345883,
+    "adjusted_upper_ms": -1.4450686865038842,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B2",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.0,
+    "adjusted_upper_ms": 0.0,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B3_u0",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.0,
+    "adjusted_upper_ms": 0.0,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B3_u2",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.0,
+    "adjusted_upper_ms": 0.0,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B4",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -1.0099487392578612,
+    "adjusted_upper_ms": -0.30631580095332167,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B5",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -0.5935499745857112,
+    "adjusted_upper_ms": 0.5745126220162011,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B6",
+    "status": "inconclusive"
+   },
+   {
+    "adjusted_lower_ms": -3.9996488434730173,
+    "adjusted_upper_ms": -3.2848291616005314,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B7",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.0,
+    "adjusted_upper_ms": 0.0,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B8_j10",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -0.1995916691920898,
+    "adjusted_upper_ms": 0.009024731510613648,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B8_j20",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.0,
+    "adjusted_upper_ms": 0.0,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B9",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": 0.12111533894304273,
+    "adjusted_upper_ms": 0.2070737479710254,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B10",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -0.13102774043025198,
+    "adjusted_upper_ms": 0.09519221192631745,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B11",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -2.5477154786756646,
+    "adjusted_upper_ms": -2.394893082825665,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B12_c6000",
+    "status": "pass"
+   },
+   {
+    "adjusted_lower_ms": -0.11180727385245783,
+    "adjusted_upper_ms": 0.039806418394216454,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B12_c12000",
+    "status": "pass"
+   }
+  ],
+  "not_passing": [
+   {
+    "adjusted_lower_ms": -0.36715377115125725,
+    "adjusted_upper_ms": 1.3768355591196904,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B1",
+    "status": "inconclusive"
+   },
+   {
+    "adjusted_lower_ms": 0.046093711483980886,
+    "adjusted_upper_ms": 0.6724314580157333,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B5",
+    "status": "inconclusive"
+   },
+   {
+    "adjusted_lower_ms": 5.121543751077592,
+    "adjusted_upper_ms": 7.606734143403163,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B6",
+    "status": "fail"
+   },
+   {
+    "adjusted_lower_ms": -2.1369730382841388,
+    "adjusted_upper_ms": 6.031243590345777,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B8_j10",
+    "status": "inconclusive"
+   },
+   {
+    "adjusted_lower_ms": 0.2298488588810167,
+    "adjusted_upper_ms": 18.62394568452718,
+    "baseline": "v32",
+    "candidate": "j6_none",
+    "scenario": "B8_j20",
+    "status": "inconclusive"
+   },
+   {
+    "adjusted_lower_ms": -0.5935499745857112,
+    "adjusted_upper_ms": 0.5745126220162011,
+    "baseline": "v32",
+    "candidate": "j6_c1",
+    "scenario": "B6",
+    "status": "inconclusive"
+   }
+  ],
+  "rule": "docs/V33FIX_bench_rules.md 2.1: every deployment path, none included, must be noninferior to v32"
+ },
+ "inputs_sha256": {
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0d4cd14cd8ac65a43314_0_1_2.json": "67c091fa7fffe5b983ac02fba09397a2c81464b693960b7f6d5a174258353ab5",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0d4cd14cd8ac65a43314_0_2_2.json": "762773c106ee6a09867accd3f6273520ad6b7d894fa8fc94f7021354c1b3b10f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0d4cd14cd8ac65a43314_12_0_2.json": "0478f008a190b617de0b01d178093fa835b550ab0f7aa8698cdc90430eb533a2",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0d4cd14cd8ac65a43314_12_0_3.json": "e9ea160f28f6867b3b357d5358bc71bbb0773faf6da7d06877c92b3751724cf4",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0d4cd14cd8ac65a43314_12_0_4.json": "e2010dff0d2d94f0b2f38f26b98395ad504f4d2e35b7801367bb10c4c9cf2d37",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0d4cd14cd8ac65a43314_7_0_2.json": "e70d61869fb5c1eccf297d6d408082b33674915c413881e49e0a8e188ce6f6a1",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0d4cd14cd8ac65a43314_7_0_3.json": "3fc37c49e2325ef7bfe0406681b97f56bbc87dd5762acb3f72b4fd2d14d3a3c7",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0d4cd14cd8ac65a43314_7_0_4.json": "33fbf385a71a02d1613474b200e2b13bee7fa52497028c64fb8699ed892dd063",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\25b8f9c00a6e624fb79f_0_0_0.json": "2e8b19725ce39ff3ac20f76dda6ff39ad13ec1fc746ead8b47797fc51eb3dfec",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\25b8f9c00a6e624fb79f_0_1_2.json": "7642046abdffaeb95dd6ecaa2189c43236158592f8fc3e91d75c15009a052c40",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\25b8f9c00a6e624fb79f_0_1_3.json": "a48b31d32522740d32f587d0150e379a006b4d3fc73106075be6cd36728283b3",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\25b8f9c00a6e624fb79f_0_2_2.json": "fc2bc3c0b996ee8326e4a8e35d320c8a60c573617898a409eba95638c833719c",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\25b8f9c00a6e624fb79f_12_0_2.json": "1e5f008b307bd9aeb71d8019758ac462fcbaa64389d9dec6fe4a0fbae9954d9e",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\25b8f9c00a6e624fb79f_12_0_3.json": "97d1b462220fb6adffa6d4f4ad58823a66bed00bbf5d6401803dd315fd18727f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\25b8f9c00a6e624fb79f_12_0_4.json": "d733ed078a04dba44b6b5fda5f1fbd33fac9c666fe907d9755561ba5036aed0f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\25b8f9c00a6e624fb79f_7_0_2.json": "028ca03b400e79dfd6aa02619fd5843e7460829fcef6fc5a7ba4667aa4408e7c",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\25b8f9c00a6e624fb79f_7_0_3.json": "a984a770186f68a50b1c3772fdb422a6952463bc4b2dc7ae5fd879a59a26bfa1",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\25b8f9c00a6e624fb79f_7_0_4.json": "d90db7729c06104b79e5992adc1af1060aee40d5c353a7d7a95a002daf906877",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00031.json": "568f8a0e6fe48324263859cdd518129b600a6a71a4f7892a3298c86ead9e9a34",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00032.json": "a4d4f0ae9bf39ba923988c130d9760e04d4ebebba713430d527029decc4ac8bb",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00033.json": "d712e972ef850600e3f4acbde90591063bf70315ec2e03332baabfda342b691e",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00034.json": "f3eb6a9fe9eb1ab230317908fb59ce36764b44682967ed5651a808bae9f49408",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00035.json": "a5479244fdb6d353cf813525163736e529d482984569394a0bbd98258c625841",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00036.json": "ea775b6d5f86a80a66858a001561584433a936da44733e250cc252dea6026e05",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00037.json": "0f85517d35f7cb31a1a2f3f68b862e1cbd57c2c5e0eb04c74bdff3a173260ab0",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00038.json": "48da4af6ed6f0edc29ad187a1924ab9d0b5be204f4cff2e09e6b8ec02839e70c",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00039.json": "d947a09421ea0ed89753dcffbdf0a887da4dcae62cc45617ac8605688ed7de4f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00040.json": "a336bf8b6727495caf982676892e6cae0254e1437b05ed6e7da8cb1191526089",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00041.json": "77d61a9dac0caac1f3f75284d8ec8ffc009ceb368ad3284857761a5249485a4e",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00042.json": "b5a35dd720e5f01ae958bc98916c8066ee0c4ab35dae03a81cc43e9bd4eed839",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00043.json": "76745a864c8f533e05e2c4238a4b636ae749c064bfccc830365af1153898326e",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00044.json": "376022bb79a36f9c46ce435e3ec94dc5a1078a817d3f155b4ee19754ccad66ab",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00045.json": "cc26691df6a4ed90fdeab6b4c4a51c21690bf4812f7e86f2925523c3c5936cb3",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00046.json": "72326bd632c14d8ce0ca4b5681f89466cfcfea9aa8d6007161573df93c9ddae1",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00047.json": "59354eac3391089a2c3d59938f152ec99272b5a469568dc4d418d8886cea1cfd",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00048.json": "214af08a9012728d7f5dcb508bad21227656fcd166fe5ef859d952384b2158ab",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00049.json": "c706661dd3759665c6b378dc2557c8eb61621e870e41e266ce0533821517954c",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_20\\c1\\B12_c6000\\seed00050.json": "1a43f0b6b2e2bb35ff734b08aef1e29ab2feff8b65fcce045c36c000857f76e9",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00031.json": "a838544786aba60c48e73cf51834dc2d8a603544786158c6f1c75e4337a57c21",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00032.json": "f82c5b98865318d8b05e560b93e5ea32e14600de74886fde9869e81c2682597f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00033.json": "1622af06b0690697857b560f3922527045b27ad5ecc0ab42bbcddff6b093dafa",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00034.json": "118dfb1c8561fd15253ace6e207821440cd3c212dadcf52fbd83e4ffb3c95687",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00035.json": "3439ee9b72fba676ea4f57522b38c38c7185f06be786cc4b3ca7b8baa770a85e",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00036.json": "8e662ad651911cb88b022d286cc7dc83ecbea365d00b496d94fa8bb399264ba9",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00037.json": "8df2d20e18821a5d075dc2ff77d02d8ddcb991cd709606237a65c3a1d57b7855",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00038.json": "f3232b8853c1a5fef001a74385eefe7645f1fcc93db805c9a5fe4e1cf62de9a4",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00039.json": "601b52ef6fcadbe21e83ada5808ea1c28cf7c2ef6c3fdea98ec1ab5a76a90575",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00040.json": "ad1e140548cc91a60a8e00dde4c407bab9740ed76b753a4df7a3dbf0e8c4d712",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00041.json": "f4e60c9b3262989adddc4985bd2c563d48d9204b1e036274473cf3babd3c6368",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00042.json": "15e97317016ea5edfa09c1217f4d94233c782232acc64160e1280a752eea7a20",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00043.json": "e471d844f341651630e0861d35c5a703e8ca59a49745babc3c8a42ea30f384c5",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00044.json": "ec4b16ac9e34fba0b59aed3cefe24fac01b127d646545ae212d2471e48e0b49a",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00045.json": "b9be7db2c6120dde8e36f3d8fbfa3f3fcab0927408ad84bbd2f9228d407e647d",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00046.json": "45923d2bba2e64ea3a303737af69f7ba26ff11febfa5cef8f720a50994ddef12",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00047.json": "3b86be82ef67fca7b07ad2bf36693d2b33ff8b569afb591e0266f5121a9528b6",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00048.json": "76bf02394692596c415372384e03defe0658a1d255e041d767fdda277d34b709",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00049.json": "23f0c3867f54fbcc6b9ae30a4351b452d9519f775d268799ecea2fe1be6c119c",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_31\\none\\B12_c6000\\seed00050.json": "86d262893f9356a9b4f17c7b828a8d0649b424d19f5d64e40072477822ec8448",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00031.json": "65e9c525b67d447c0a0cc3dee6e8e59b6e2e4d20ba65c69e02319a1ca6674ae1",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00032.json": "b0c12ab3e1b195e220626d5238349ef4cd4a47f33501e021fe848d3da8210fed",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00033.json": "a4ca81212b4306cc8a6b290a377448aecd377408e2732941c348c51cc593ab68",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00034.json": "a2bb9e784d1979b4b6b79acf6ef2f69fbf5fa5aa77c0cbdc02d62a32ea0c60a5",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00035.json": "429bc6ab4197c1c486675aeed1d59fa749d734a870a1d5daefc6072634dd2fcb",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00036.json": "53b8676ef087d880774861ffafbe7e680c36472290159981bb38f683cbc08628",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00037.json": "2bc5e6a8b5ed3826ba2c2c216363ffba52312cd624487dc11513f12e467ea7d4",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00038.json": "b06aee2a05f04cf8a88b5b4fc7c48c48191e0ed6ff814e664f05f4c9186caf65",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00039.json": "2448326929cc71479875dc44985d52c1270916088bd5a7349d078a4c1e712d7c",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00040.json": "c8b95e87bdbcbfe458e05be9008b330fda21dd81d32a106327b548f0d414e2e1",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00041.json": "2b47979609232f25ba556a988a011487d8692c982997fdcc6aa7b860c3da3a8a",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00042.json": "f52315ae1e1cbebd32c09ce61983c22b3f5a067f6454348f3dd2793d23e058d3",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00043.json": "8e9bedf66992bd2d5f15a07d0fc56665417731578a197a9bb901b01c2a694f6b",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00044.json": "49b2ff3b0a8ceb61d4f54ebaeda03db7eb60830d86189d31c98ff1131549b9e4",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00045.json": "e70967e826e05079db99a4fdb1d760b2aa3b1066f3a3b9f1f455fe0256c08eec",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00046.json": "2840036174f8925310b7a0b16c5d9a437014825d7d09b0fd09a1450079661c78",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00047.json": "dfa6d30dd071d14067f5420c72dabfc81852010a43f45d3bb006e73261357f64",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00048.json": "99b85891c77153652ffb5f7a6b8845d6ac5889e9ea875e9636e357dd577e91b5",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00049.json": "b9326da3ffbc14a4f4733d01c5994d477be7ea764f9c8f2715e82a641efd3753",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_42\\c1\\B12_c6000\\seed00050.json": "2beedacf623f3e0e9ecee4bdc0d36e638e445f84ac4039ef8f7bc78f63176e63",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00031.json": "ca041d11c0fbdc0cbd6b18aaa01c51a460c1357f928f4b8ddf6a653cccdf1996",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00032.json": "b174a7160af97673e1abc8ff8dad66c89f6f91170d2715ecb03e275b49b51168",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00033.json": "a01005c40f63169ece7b5ff2c8a5c8885de453c1bad3b14767424bf2ee4e25a3",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00034.json": "7ad23931728b52cea36b790053fff529ead4685587b54be82ecc7d4caba8ed44",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00035.json": "85f202784b12f979845a3ed4d264092f8dcebd9249478b844b713a35e20c2f15",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00036.json": "12f8dd0677589605f64f3d40228864fe5105206e994d73659e60db37575e742a",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00037.json": "3243ba4928d86d7258c5db97a482047576741b84c64845d9bdd7b13cd6b3139f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00038.json": "b5705b112a5fb1902dfd59537320283fd2417c11d68b1dd82dfe67582aa8d488",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00039.json": "797caaef756633ea7508f1401b382439e47e192495573a7237ec74d5c74b7cc7",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00040.json": "aa94a075b449f68ee9f3f3992ff2f93653683142ca19b357ae647e31a3f77c11",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00041.json": "4c01f2bc63b705c0acf71fba99037f549d65c104128674706e0f01d3e5180474",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00042.json": "6c521b0473897eeb034da1a3748feade654db61328a63b70068b482472a1f55c",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00043.json": "14f61ab790e7e872d6f8d41fc1279dd8a958541970a755146f8e742c1a6b1757",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00044.json": "7c254ddd0ff4932a690fa61431bfd7f506203119cda2d0edaadf25b154e5c72d",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00045.json": "b95d2df9effc1ce148f8a8d01fb474a263873dc401bcba8460dabe395cdf5d6f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00046.json": "f8899052fafe0c5d03563a50e4a548c0e3812b0734cb63f95d418581c6d26ef1",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00047.json": "29bf3001c2b4b8c57e6069ba910801eae22ac24a48a15271ee7c63720ad9df83",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00048.json": "6c0b2a43d209593129abe2dfdb77a971dde75504dc4440da923b5cc222d6a873",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00049.json": "a2307222d64a84e7b30c3f01491ec088976f45769defb5d6569dbeb675fa9425",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_53\\ideal\\B12_c6000\\seed00050.json": "c82a6621059a085d0e39b5158c3237b6329a61f93d1e93082ae18696b6d43c59",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00031.json": "64ea819457ea098fdbc3b589d67e8f0b511a1853b49242a62287c73d8238ed00",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00032.json": "7b92c86b4d2452be9bdbd510e778e023f8633491b0ebaa4ed3f777d38888f32d",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00033.json": "853d94f7646e63de481bdf03f9e7d79ab24cf84256df58b055ee5d015905b386",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00034.json": "cb9cc9b3af77501dd508c88cd5d5dbd472a3befa5ccec5ec4dc6dc8f8b3e7410",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00035.json": "088f81298c91732db363c69c10d6ab0f931ed2c9cf48ae59570c0d45a3674661",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00036.json": "7ad5cf1e8be2039d57cf2fe58cf5586520d0daa7461b6116c404a9a17cf9a1ca",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00037.json": "0dfeefe311c8a88601d4789379f78a3e4c717271e2347ea68b759f575cc1fb91",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00038.json": "f576fc06e7e890ce6454d1620e3133d4d3a1ca22b3a03c1da777537c9eea622f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00039.json": "10014b43990fbaca62899f4f7a843aed7594060e51a9f815145631775de8e515",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00040.json": "e5ff96d27ec4fdac36049012774575e213333cb243057d84e2803fabd63951e5",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00041.json": "de1e56dc2c15b9a558502d4e4f92cd81900080dc90d24909cba967fcfa1cffe8",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00042.json": "10cff31936eeda45dce0700b19a53db9af405f1c5adc6f01fffc35c81c5ee625",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00043.json": "4f91a00683a36dc0778278ec680155759ac1c891aea0c8eb40648320f5d87c00",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00044.json": "d82ff02a05ae90966e110ca6d65fd3759317d88deae1882d4c1bf6ece2696fc2",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00045.json": "d17084b955dc40c50052bf51b3be7312c97673e0b989db4694e31252660fb573",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00046.json": "0765c2709cf6a8bc00f1b910d482df5c1541ea38853671cb21c82b33e6da69b7",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00047.json": "046abc3b8f5d29f0e43869bdbcb5d683ea19a710070f8403e3e203e63046ed32",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00048.json": "27bc5f01c1f0317854e7288a3702f897785f08fa814b4ae081326137985f895b",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00049.json": "25c3d7d9189bd8b364823d8e906bd7e9a12778af5d3f8575f10789c19dfde47a",
+  "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_64\\none\\B12_c6000\\seed00050.json": "22913a7cdf41dd81fd9cc872fc6dcbf325f6d1b24162063d9762dba6a6f98871",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00031.json": "e826b60c3eb47aa5097570667c45cffead357a3f22b5f45f5da876f293c8e139",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00032.json": "4fd030e33a608947d3a140af35b5c220b1bd030f24eaeef2fb7210300b36cf68",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00033.json": "5f03f436461a52e26c660bf6d4a50d7f809d8931d1e71b2f2599e85faf55be65",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00034.json": "07dbe434c024c1ecb2e7257d75053bf657dc90c51d1a42d3d042d699c99e33e8",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00035.json": "24270564ea971214dcf755da0dd7e946636845d3862f541cb0609090a615f595",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00036.json": "0f0676c12f49779ee8a4ddbe5a1b65e06839d78ef3a75088b36fe9d7a20ae3bb",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00037.json": "c7a52a46f0df4dd8bba5493168d077906a674fd8e07bb23283c5cc32a75c2c37",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00038.json": "01bc1e99ea2e5d909cec5a1989fc8e2ab9853774826a55a6bfbb055755759f86",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00039.json": "2d1c7e61fa01ceb099b7a9a666eb4641fd9d8be51c2386e4722a7b7e3809ddf2",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00040.json": "b3ee5c2742c596cc97838aad9f12467a60b89f6df8d998b33c1829d507f5540b",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00041.json": "2cf2b3c9e53bfe83a6bff5dba40e822410e4c8c127d67d80815e9f006e235188",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00042.json": "ec6ec08289ceb1dd0d83d233c49aa8b02724bef364e6bcc3bbd5956ecbbcf58b",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00043.json": "f3b3461fb3b6f52b1062cfc377216cda64d92d2ed02fadbca4660e4c779aa996",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00044.json": "52e7aa3f1b40a17291ca288b41ebfc20f98d99921fbf94a7c78c871889c0207a",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00045.json": "51fb4c0d3f2dd7b005d677f0f6dba5ae396d9c1d4700d9d2e393533a48c4a8c2",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00046.json": "6e469f8cc6759d5e147e5e161f7a8daafea9602eb618dadee88f6917ee350553",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00047.json": "0c8f38b90d096a27f28a447a1303fef4647fe98fc8afc199a7d83c5cb1d8ba46",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00048.json": "9119ba49d84eb54755603de87a2b683a5e88abb8edbc5462946c266d4aaf8005",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00049.json": "3891f9042f74c6c49ae5956229424027ba314bd1a418c16e0ea4882dd2af42c2",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_14\\c1\\B12_c6000\\seed00050.json": "b04597d83c02ec4ac66d2c1d6862be9ed23dbb52882a114b17b8e0e613cfbc7d",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00031.json": "9402aa36aa49b42d2495947257cd6ab2a8dea38996b5bd0c3dff40e62a68a008",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00032.json": "07d58f1b478e7789b478beba16118ff8375d3712868bc69f8b769241040d3942",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00033.json": "1f273cb5380ef4f059e992f64c083261cc71c5e4c1314bc79e65d4e3f8f28559",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00034.json": "3db088ad555a66ebf291ccbac12fbaed802221c3571791e65066f124a9754109",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00035.json": "30bd2d14a574064d76cac0fb18f466700df825bb729add564636631f16bd430c",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00036.json": "57aa61cfd1eee12feab57ad6065d77a0760060c1853a142bef363c7bb218b5e4",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00037.json": "ee05b6e01abc45008f4c1c87f0499dbffe50fb119adb37a3f4619547890da0b6",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00038.json": "59da545a39befcb7738f1860b674cd860ab3d37a123b01257051ace62d35d1c3",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00039.json": "87130eaa7bd6d3586eee699fa6c6240d33f9382668a097965ae552c7c98b37ef",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00040.json": "fdf279ad963859adfd291ba31f83ded91c70260bb5e9d26428a738ca787b23a9",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00041.json": "9139e0ba5f95177967f3a83958a4b73dc71471feb1a90d9253e50c923424a49b",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00042.json": "d26cfd6e6866d96d046565ffa1d86a7c39631696e2d3cd817b67e1c2ff5d6262",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00043.json": "3b4b457f8335d8fa26659b8b2c673b767662ca6d4104dd8b13853a753b1f18df",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00044.json": "337d7d19abf3ba9c166bbeded96a1fe5735f7405fe7b441f4c92df9293ab5e19",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00045.json": "dc9bf7dbf651c97060d9f37f8130ec393661ae8e53296858d416007a89de4e13",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00046.json": "79838814e926448b46c1f6434bc5d9677e96b471641f307ad35d34b8c699eb7a",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00047.json": "04d1a5ae56f2d17ddda0d2109fa7dfda9f1c064bdb555d34e23843a37ce274b8",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00048.json": "92ce77d47f34dca5d0cdc529fcda9a03b55d92646863bdf48c6053c85ed8e8a1",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00049.json": "c8710d943a058631b5ccb2742fc8ac3bea4a91d60068a22333e550a0f372d008",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_25\\ideal\\B12_c6000\\seed00050.json": "cb0cd90508fe7c7393dfa9908bbda7b621fcace5dd7caf69b2e2e17729251abe",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00031.json": "c31bb7606f1358d0fd2272eccc687397db3fb261feb53a172c292e80065d1776",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00032.json": "d8074533851b2bfb60a7fe59d74f4fa264adb141e349e98d5fc7fd6036bb0b3d",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00033.json": "6b62737a13f229b85f997f8592d606bd8f4444ff64b72724248963acc3d7b5af",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00034.json": "99a1808cf89b151eaafe6e5572f075583e46dc103db7c3907d74db799fb641ab",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00035.json": "f98bd81d5007f239c731d54cdf8ddc6e333ccb072f54cfd8415549f3f4dfd190",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00036.json": "0a728e1b206f043f7ab097f3a1c34ab249dbc9cb4b30519e8fa902dfde4a03eb",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00037.json": "9c740cac283b090e5b397a1df0d104e3eab4148b71fe2168e766d96234bc8911",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00038.json": "28bead1ef42d9c7d98e88b256a36dcb8225e4be523757c5830fd42787f045913",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00039.json": "444813a39f6724f5457a0e924ed8b6f0414ca9d8f17fd8655434614b00dc26fc",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00040.json": "9d1def0faa89145f4aa60fbe433dbed3b8c2912295b475d0b8c7f3680c9e5928",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00041.json": "b9f9028a6f61c903afa0fb7a9c9733579c378e0ad5415526ce5fddae15a5b9c5",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00042.json": "e27ca7e9083bbdb1f4f954c73ff6d7f11589881964c4aa2a5582940417c7b1f5",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00043.json": "60c959798bf98d2bc8d8ea40abd8b6968c0bedf57d546a41bd2f3708cb13523c",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00044.json": "eba5f5c1c90d455dfabeec1099f54942c484d08fd178173d0116541b71a1f874",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00045.json": "088a9fe175ae76bf170b788b40dbbc92fc09c6cf9490f55e589383762c7daf87",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00046.json": "3045858d87f98a9f3532fe9d188503a6899a821b9e598af8c7b91c061d997735",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00047.json": "011e79921367b5355ee5d9271f6370e9cafeadf3bd844c6188dda8c080aa0c2b",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00048.json": "622376f9c12a5f8bcffae1b051420257c587e745b949223b7027c8fb7c10b6d4",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00049.json": "aa07ac0d257ee4df4137011d68940cb8fbe3fbd1b62ff9cf4220b766dfc293e6",
+  "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_36\\none\\B12_c6000\\seed00050.json": "9a533f22fad6f5d51afa71698afe0ae949432d6a3f11bade4eef5601a303cede",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00031.json": "1613c39f5f324be8ca9c8ff6423f339d47613d70ec021345253b0f52a4920ab0",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00032.json": "dd0bf65ceb13c1ae9cc53272cb28125d48d70cce63d8b4c9e98a8f11e6b198c1",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00033.json": "99fa6ab0d6aa36fe81182cc388ddc1707309a6fb5da7dde126ddfc42b64a1b30",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00034.json": "a7084a5153aed4205b07e8e3dc8ed13b7c240d495ef2d44b98e8ed7f9313fc59",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00035.json": "fd1a2710bcff2e340e47e6287a48c2f93cd4b7b7f7c3cd8cd2e331088ebbedc7",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00036.json": "b8c0ad35799b171e8314e79c55141e892b832da1b3e4a955ecd68eb953f4007f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00037.json": "3391fc098153143390d37e641396ddfd9aa6e780e8131a7e26fa6452f6fdecee",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00038.json": "68168a96ba92e2e0f9a4740b741e2aa24d2c0fc391b7e7b3f2aca34121c0c2a6",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00039.json": "f29feb866a49546b583448016f87a2836fb722265a1d1c6d73eafc4e07d746da",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00040.json": "81d460af780a9a08ec991e62453c288cf29fc87a78ce683edf465c114a1dab1f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00041.json": "1eeaf74f1931c4844938497443b452ae8767c7972f1c1811e4a619b146e2d8d8",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00042.json": "385e7af863da500e7469d487af319edb414187833a367cf62f8bdf0acb1e5a95",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00043.json": "f62cbb049b0eb919fd1a6babfbac5dc93ae1a76a9b333468c86595b97488388d",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00044.json": "e0af658461420975c4c8dd012aaffd830adde4008da7ff923749b87a3804e384",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00045.json": "84e3c0f01c0e8b0a380bd19f800e7fd377098762bcbd35090712389106827d2f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00046.json": "27e283be24c0240f48c3bed83c460261c33f70fc5a0836c196fec6406f3bd0f2",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00047.json": "10f1f5bf877aef101e2b3fb8f673836ca434328408e26b28d7e073beb86da26b",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00048.json": "d021dbed5b53cf333cfb7248bfde1dd1eeac318dd99f5d1f4b7d5cd9132f7715",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00049.json": "270c214e12685232167c5d31f034d9237e6063fcbcdfa803d231d82797e555dd",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B12_c6000\\seed00050.json": "c8e2eb4cdc96cfcf6ec4a7e111d77d8874ee901c14532b3de7252be96ae995f1",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00031.json": "7c19273a0d3a0e5d4a2898b3e930bfda5fd36235609477d364ea9a5b76c37857",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00032.json": "26ea517dc0fa69e2b54608e1969298fddb3875c66579b670c57637763551b725",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00033.json": "6298afaa3d8da6249dc35058a1601da505ee2160a88f6813b9f96a4059606141",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00034.json": "8dc726f125b7f3164e541fb75ff30d326c48882f073caaab0403197fcbd99da3",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00035.json": "cfa40ae8084cc1809a2e758c3d0788a09de1706b53a639afc8e6f2e41a9139f5",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00036.json": "611f7312d8e6909896e897e11ab1cbc571b2155c7f70a32987b959cf6c9cc231",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00037.json": "ddc1c1cab9e75dd954ad2aa7ba009630821e098c49b1a39b05d05594a0165c41",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00038.json": "5a5cc93985a80967ed9546a21da6e5b84d8888fa5036539d76f5c18f8f068f2f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00039.json": "74737d1b4cc673dc47f1651418927b0e08a7c5e543cc9c4e2e26de3df879c019",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00040.json": "c49ca384e1af6388a79da7c3821c3b00ca4438c75092f7090ac62e46732cd777",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00041.json": "de9285d18dfc17c21c3ff25194972ad526094cb22764e14d37695e1f298696e3",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00042.json": "b0de2970fb2d75f8da7de3e408501d2ba727a1e75ac2b1e75cb3a449bce2f0e2",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00043.json": "ad200a1a8e4eb88253e97e6f5950d396f8272ffcf749890bc570ebc624adc56f",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00044.json": "75a715ef736e69040491a6c49116ac4562310cdc9eb0b45c536d6a58c1b87bd5",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00045.json": "88b88a91451e2e898d09b10c1850e185811ab05d2a0a7cc99797ad97ea45cb0e",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00046.json": "c49b2adaef261ce320c7fd10b570f6c3ab561e5282c645e6da71b5fd862c0f03",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00047.json": "08bc9ae4618adae230623f23be56a31c566b167c954a46e1dd46d8c996ca9281",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00048.json": "c532b04b094a41dbfe07e9305ca14023b09cc985c5a2c37b503d4deda83cb326",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00049.json": "f43f3cf279ba3cc2568d75b2b181f583b761b1cc9e4d578c6186523c566f4c23",
+  "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B12_c6000\\seed00050.json": "223c947721e552341a020fc22f4771921bb1977a107b1555c29ee6d7786efed1"
+ },
+ "j6_adoption": {
+  "active_policy_changed": false,
+  "adopt_under_original_rule": true,
+  "all_primary_upper_within_0_5": true,
+  "c1_decrease_cells": [
+   "B12_c6000"
+  ],
+  "primary_cells": [
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B1",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B2",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B3_u0",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B3_u2",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B4",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B5",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B6",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B7",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B8_j10",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B8_j20",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B9",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B10",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B11",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": -2.397197648265495,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B12_c6000",
+    "source": "Z1 rejudge",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_none",
+    "candidate": "j6_none",
+    "scenario": "B12_c12000",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B1",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B2",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B3_u0",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B3_u2",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B4",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B5",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B6",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B7",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B8_j10",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B8_j20",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B9",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B10",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B11",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": -2.3977178579472227,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B12_c6000",
+    "source": "Z1 rejudge",
+    "status": "pass"
+   },
+   {
+    "adjusted_upper_ms": 0.0,
+    "baseline": "l1_c1",
+    "candidate": "j6_c1",
+    "scenario": "B12_c12000",
+    "source": "stored J6_benchmark_v1",
+    "status": "pass"
+   }
+  ],
+  "rule": "docs/J6_preflight_budget.md 25: every primary cell adjusted upper <= 0.5 ms and at least one C1 cell adjusted upper < 0"
+ },
+ "reproduction_checks": [
+  {
+   "baseline": "v32",
+   "candidate": "j6_none",
+   "reproduced": true,
+   "seed_mean_ms": -2.473480460252573,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "v31",
+   "candidate": "j6_none",
+   "reproduced": true,
+   "seed_mean_ms": -2.473480460252573,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "v32",
+   "candidate": "j6_c1",
+   "reproduced": true,
+   "seed_mean_ms": -2.471304280750665,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "v31",
+   "candidate": "j6_c1",
+   "reproduced": true,
+   "seed_mean_ms": -2.471304280750665,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "v32",
+   "candidate": "j6_ideal",
+   "reproduced": true,
+   "seed_mean_ms": -2.4713814253049726,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "v31",
+   "candidate": "j6_ideal",
+   "reproduced": true,
+   "seed_mean_ms": -2.4713814253049726,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "j6_none",
+   "candidate": "j6_c1",
+   "reproduced": true,
+   "seed_mean_ms": 0.002176179501907882,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "l1_none",
+   "candidate": "j6_none",
+   "reproduced": true,
+   "seed_mean_ms": -2.473480460252573,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "l1_c1",
+   "candidate": "j6_c1",
+   "reproduced": true,
+   "seed_mean_ms": -2.5064697822591344,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "l1_ideal",
+   "candidate": "j6_ideal",
+   "reproduced": true,
+   "seed_mean_ms": -2.506759674142589,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "zero_none",
+   "candidate": "j6_none",
+   "reproduced": true,
+   "seed_mean_ms": 0.007994074074076292,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "zero_c1",
+   "candidate": "j6_c1",
+   "reproduced": true,
+   "seed_mean_ms": 0.007994095339741956,
+   "stored_shared_mc_bound_ms": null
+  },
+  {
+   "baseline": "l1_none",
+   "candidate": "zero_none",
+   "reproduced": true,
+   "seed_mean_ms": -2.481474534326649,
+   "stored_shared_mc_bound_ms": 0.06930654371807321
+  },
+  {
+   "baseline": "l1_c1",
+   "candidate": "zero_c1",
+   "reproduced": true,
+   "seed_mean_ms": -2.5144638775988764,
+   "stored_shared_mc_bound_ms": 0.08863110499086906
+  }
+ ],
+ "rule_document": "C:\\dev\\pq_afec_gen33\\docs\\V33FIX_bench_rules.md",
+ "rule_document_mtime_utc": "2026-11-01T16:47:37.860493+00:00",
+ "rule_section_sha256": "124952bb4f4f287acafb9cb372d4decb58077e747eb53bbce7d85fe04672c2e0",
+ "samples_per_action": 131072,
+ "sampling_seconds": 16.47640709999996,
+ "schema": "padfec.v33fix.j6_rejudge/1",
+ "scope": "Development independent event world. Z1 replaces only the null MC width of the two distinct-action zero-variance tables. Seeds, N, thresholds and the original adoption rule are unchanged. The active policy is not changed.",
+ "script_sha256": "107a7583eab4dcd17ff12f88a63bc351784b4f826f756ff48a3f35bf08062158",
+ "started_kst": "2026-11-02T01:50:32.959823+09:00",
+ "world_sources_sha256": {
+  "oracle.py": "84e9feb6d880e176dc82af8f6e33d42f7a6d3b97dadcd17b21ccd7f1e198592c",
+  "worldparams.json": "57e9352c5ff778fd278772e496fbbfe74a685ef7ba49b3849b40df45648db6ed",
+  "worldsim.py": "8f86bb520af2d18d03f9188f14104bc988af680665f705dbe0121b83d391e374"
+ },
+ "z1_evaluations": [
+  {
+   "action": [
+    12,
+    0,
+    4
+   ],
+   "action_moments": {
+    "action": [
+     12,
+     0,
+     4
+    ],
+    "failed": 0,
+    "max_hct_ms": 325.2164517352859,
+    "mean_hct_ms": 125.1975698656205,
+    "min_hct_ms": 124.66721580273601,
+    "n": 131072,
+    "params_sha256": "f46153ee09566cd2a0e4b56781edb5734cdbfe98db541d7d6bfec8236dad0f55",
+    "seed": 860001,
+    "variance_hct_ms2": 0.6640804082120699
+   },
+   "confidence": 0.99,
+   "context": {
+    "cert_bytes": 6000,
+    "k": 2,
+    "p": 0.08,
+    "rtt_ms": 120,
+    "uplink_mbps": 10,
+    "w": 1280
+   },
+   "context_id": "0d4cd14cd8ac65a43314",
+   "critical": 3.926455321066781,
+   "effective_gap_half_width_ms": 0.020928804807014454,
+   "evaluation_family_size": 116,
+   "paired_gap_ms": 0.008000000000001482,
+   "paired_table_gap_variance_ms2": 6.416345444111607e-29,
+   "paired_table_mean_gap_ms": 0.008000000000001482,
+   "paired_table_seed": 850001,
+   "reference_action": [
+    7,
+    0,
+    4
+   ],
+   "reference_moments": {
+    "action": [
+     7,
+     0,
+     4
+    ],
+    "failed": 0,
+    "max_hct_ms": 488.06276601956847,
+    "mean_hct_ms": 125.19393575200984,
+    "min_hct_ms": 124.6594156725203,
+    "n": 131072,
+    "params_sha256": "f46153ee09566cd2a0e4b56781edb5734cdbfe98db541d7d6bfec8236dad0f55",
+    "seed": 860002,
+    "variance_hct_ms2": 1.6682084183832775
+   },
+   "status": "resolved",
+   "unpaired_difference_ms": 0.0036341136106585736,
+   "unpaired_interval_ms": [
+    -0.012928804807012972,
+    0.02019703202833012
+   ],
+   "unpaired_se_ms": 0.004218287759141382
+  },
+  {
+   "action": [
+    12,
+    0,
+    2
+   ],
+   "action_moments": {
+    "action": [
+     12,
+     0,
+     2
+    ],
+    "failed": 0,
+    "max_hct_ms": 125.78203034350858,
+    "mean_hct_ms": 125.18964821176841,
+    "min_hct_ms": 124.667779496236,
+    "n": 131072,
+    "params_sha256": "f46153ee09566cd2a0e4b56781edb5734cdbfe98db541d7d6bfec8236dad0f55",
+    "seed": 860003,
+    "variance_hct_ms2": 0.05419736549171979
+   },
+   "confidence": 0.99,
+   "context": {
+    "cert_bytes": 6000,
+    "k": 2,
+    "p": 0.01,
+    "rtt_ms": 120,
+    "uplink_mbps": 10,
+    "w": 1280
+   },
+   "context_id": "25b8f9c00a6e624fb79f",
+   "critical": 3.926455321066781,
+   "effective_gap_half_width_ms": 0.004115549110356692,
+   "evaluation_family_size": 116,
+   "paired_gap_ms": 0.008000000000002522,
+   "paired_table_gap_variance_ms2": 5.23714632618112e-29,
+   "paired_table_mean_gap_ms": 0.008000000000002522,
+   "paired_table_seed": 850001,
+   "reference_action": [
+    7,
+    0,
+    2
+   ],
+   "reference_moments": {
+    "action": [
+     7,
+     0,
+     2
+    ],
+    "failed": 0,
+    "max_hct_ms": 125.76599999999999,
+    "mean_hct_ms": 125.18218654140371,
+    "min_hct_ms": 124.65942394761703,
+    "n": 131072,
+    "params_sha256": "f46153ee09566cd2a0e4b56781edb5734cdbfe98db541d7d6bfec8236dad0f55",
+    "seed": 860004,
+    "variance_hct_ms2": 0.05459534054019757
+   },
+   "status": "resolved",
+   "unpaired_difference_ms": 0.007461670364705242,
+   "unpaired_interval_ms": [
+    0.0038844508896458308,
+    0.011038889839764653
+   ],
+   "unpaired_se_ms": 0.000911055693379828
+  }
+ ],
+ "zero_variance_sha256": "820147c2d650aa29a2790f7233130294b3e7c047366b2357421b5c28e6f763f3"
+}

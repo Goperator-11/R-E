@@ -1,0 +1,53 @@
+preserved build stage /home/scien/quicbed_gen33/stage.IWZHRs
+WORK=/home/scien/quicbed_gen33/stage.IWZHRs/go-work/go-build352678857
+gen33 vet passed
+=== RUN   TestHoldCloseDuringPhysicalRead
+--- PASS: TestHoldCloseDuringPhysicalRead (0.00s)
+=== RUN   TestHoldTwoConnectionsShareAddressWithoutCreditBorrowing
+--- PASS: TestHoldTwoConnectionsShareAddressWithoutCreditBorrowing (0.00s)
+=== RUN   TestHoldGlobalMemoryAndFlightCountCaps
+--- PASS: TestHoldGlobalMemoryAndFlightCountCaps (0.00s)
+=== RUN   TestHoldCreditCountsOnlyReturnedParity
+--- PASS: TestHoldCreditCountsOnlyReturnedParity (0.00s)
+=== RUN   TestHoldMetadataFieldsAreImmutable
+--- PASS: TestHoldMetadataFieldsAreImmutable (0.00s)
+=== RUN   TestHoldRealSocketTimerAndClose
+--- PASS: TestHoldRealSocketTimerAndClose (0.00s)
+=== RUN   TestHoldCRCFailureDoesNotReturnPartialRecovery
+--- PASS: TestHoldCRCFailureDoesNotReturnPartialRecovery (0.00s)
+=== RUN   TestHoldDeadlinePacketTiesAndLateSymbols
+--- PASS: TestHoldDeadlinePacketTiesAndLateSymbols (0.00s)
+=== RUN   TestHoldPythonReadFromReference
+    qamp_hold_test.go:587: M1_REFERENCE_GZIP is required for the full wire gate
+--- SKIP: TestHoldPythonReadFromReference (0.00s)
+=== RUN   TestLeadV2OutputMatchesGen2Golden
+--- PASS: TestLeadV2OutputMatchesGen2Golden (0.01s)
+=== RUN   TestLeadV2LaterFlightKeepsGen2Shape
+--- PASS: TestLeadV2LaterFlightKeepsGen2Shape (0.00s)
+=== RUN   TestLeadV3AllArrivalsFeedOne
+    qamp_lead_test.go:378: 74717 arrival subsets x orders checked
+--- PASS: TestLeadV3AllArrivalsFeedOne (1.82s)
+=== RUN   TestLeadV3AllArrivalsReadFrom
+    qamp_lead_test.go:378: 74717 arrival subsets x orders checked
+--- PASS: TestLeadV3AllArrivalsReadFrom (1.97s)
+=== RUN   TestLeadVer1LegacyAllArrivalsFeedOne
+    qamp_lead_test.go:378: 18824 arrival subsets x orders checked
+--- PASS: TestLeadVer1LegacyAllArrivalsFeedOne (0.54s)
+=== RUN   TestLeadVer1LegacyAllArrivalsReadFrom
+    qamp_lead_test.go:378: 18824 arrival subsets x orders checked
+--- PASS: TestLeadVer1LegacyAllArrivalsReadFrom (0.54s)
+=== RUN   TestLeadCreditRule
+--- PASS: TestLeadCreditRule (0.00s)
+=== RUN   TestLeadHeaderRoundTrip
+--- PASS: TestLeadHeaderRoundTrip (0.00s)
+=== RUN   TestLeadClientV3Layout
+--- PASS: TestLeadClientV3Layout (0.00s)
+=== RUN   TestLeadClientV3LegacyLeadDefault
+--- PASS: TestLeadClientV3LegacyLeadDefault (0.00s)
+=== RUN   TestLeadClientToServerRecovers
+--- PASS: TestLeadClientToServerRecovers (0.00s)
+=== RUN   TestLeadLayoutFlags
+--- PASS: TestLeadLayoutFlags (0.00s)
+FAIL
+FAIL	pqafec/quicbed/cmd/qamp	5.016s
+FAIL

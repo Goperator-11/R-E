@@ -1,0 +1,515 @@
+--- a/experiments/quicbed/policy.go
++++ b/experiments/quicbed/policy.go
+@@ -48,17 +48,11 @@
+ 	return n * serverPacketSize
+ }
+ 
+-// parityDatagramBytes 는 패리티 데이터그램 하나의 크기다.
+-//
+-//	롱헤더+CID(약 26) + FEC 머리(13) + crc/len 목록(6k) + 심볼(W)
+-//
+-// 🩸 2026-08-20 p13 실측 수정. 예전 값 32 는 CID 를 과소평가했다 - 실측
+-// 패리티(서버 연결별 회계 beff_parity)는 x25519 1323.5~1326.5 /
+-// ML-KEM 1331~1332 로 W+32+6k 보다 ~7 B 크다. CID 길이가 연결마다 달라
+-// ±수 B 흔들리며, 중앙값 기준 base ≈ 39 다. padfec/policy.py
+-// PARITY_OVERHEAD_BASE 와 같은 값이어야 한다(격자 대조가 잡는다).
++const parityOverheadBase = 46
++const parityDatagramMax = 1452
++
+ func parityDatagramBytes(w, k int) int {
+-	return w + 39 + 6*k
++	return w + parityOverheadBase + 6*k
+ }
+ 
+ // criticalPathBytes 는 업링크 직렬화가 **핸드셰이크를 실제로 늦추는** 바이트다.
+@@ -789,11 +783,7 @@
+ 			// quic-go 는 1452 B 로 깎아 보낸다.
+ 			continue
+ 		}
+-		// 🩸 2026-09-07 감사 - 패리티 데이터그램(wEff+39+6k)이 UDP 페이로드
+-		//    상한(MTU 1500 - 28 = 1472)을 넘으면 그 후보도 보낼 수 없다.
+-		//    overMTU 는 wEff 만 봐서 wEff<=1452 인 결합 후보의 패리티
+-		//    1497~1515 B 를 못 잡았다. Python decide_v2 와 같은 자리에서 뺀다.
+-		if c.m > 0 && parityDatagramBytes(c.wEff, c.k) > typicalMTU-28 {
++		if c.m > 0 && parityDatagramBytes(c.wEff, c.k) > parityDatagramMax {
+ 			continue
+ 		}
+ 		// 2026-08-21 - `sf := serverFlight + steps*cPkt` 를 지웠다.
+--- a/experiments/quicbed/policy3.go
++++ b/experiments/quicbed/policy3.go
+@@ -48,7 +48,7 @@
+ 	p3MMax              = 4
+ 	p3MinW              = 1200
+ 	p3StateVersion      = 3
+-	p3UDPMax            = typicalMTU - 28
++	p3UDPMax            = parityDatagramMax
+ 	p3Later             = "v3"
+ 	p3CacheSchema       = "padfec3.cache3/3"
+ 	p3MemoCap           = 100000
+--- a/experiments/quicbed/qamp.go
++++ b/experiments/quicbed/qamp.go
+@@ -601,6 +601,13 @@
+ 
+ var fecMagic = []byte{'P', 'F', 'E', 'C'}
+ 
++func fecMagicAtBody(d []byte) bool {
++	h := parseLongHdr(d)
++	i := h.bodyOff + 3
++	return h.ok && h.typ == 0 && h.bodyOff < len(d) && d[h.bodyOff] == 0 &&
++		i+fecMagicLen <= len(d) && string(d[i:i+fecMagicLen]) == string(fecMagic)
++}
++
+ const fecVer = 1
+ 
+ const fecVerLead = 3
+@@ -631,6 +638,12 @@
+ // 롱헤더 Initial 이라 서버가 연결에 귀속시켜 바이트를 세지만, 페이로드가
+ // AEAD 를 통과하지 못하므로 QUIC 스택은 조용히 폐기한다.
+ func buildParity(dcid, scid []byte, fb fecBlock) []byte {
++	cidBytes := len(dcid) + len(scid)
++	if len(dcid) > 20 || len(scid) > 20 || cidBytes > 24 || fb.k < 1 || fb.k > 32 ||
++		fb.symLen <= 0 || len(fb.sym) != fb.symLen || len(fb.crcs) != fb.k || len(fb.lens) != fb.k ||
++		parityDatagramBytes(fb.symLen, fb.k) > parityDatagramMax {
++		return nil
++	}
+ 	ver, mb := byte(fecVer), byte(fb.m)
+ 	if fb.ver == fecVerLead {
+ 		ver, mb = byte(fecVerLead), byte(fb.lead<<4|fb.m)
+@@ -648,6 +661,7 @@
+ 		body = binary.BigEndian.AppendUint16(body, l)
+ 	}
+ 	body = append(body, fb.sym...)
++	body = append(body, make([]byte, 24-cidBytes)...)
+ 
+ 	out := make([]byte, 0, len(body)+64)
+ 	out = append(out, 0xC3) // 롱헤더 + fixed bit + Initial + pn len 4
+@@ -1002,16 +1016,17 @@
+ 
+ // ------------------------------------------------------- 클라이언트 쪽 FEC
+ type clientStats struct {
+-	Flights      int            `json:"flights"`
+-	FlightSizes  map[string]int `json:"flight_sizes"`
+-	ParitySent   int            `json:"parity_sent"`
+-	ParityFail   int            `json:"parity_fail"`
+-	DroppedOrig  int            `json:"dropped_originals"`
+-	DroppedPar   int            `json:"dropped_parities"`
+-	CorruptPar   int            `json:"corrupted_parities"`
+-	BytesOrig    int64          `json:"bytes_orig"`
+-	BytesParity  int64          `json:"bytes_parity"`
+-	InitialDgram int            `json:"initial_datagrams"`
++	Flights             int            `json:"flights"`
++	FlightSizes         map[string]int `json:"flight_sizes"`
++	ParitySent          int            `json:"parity_sent"`
++	ParityFail          int            `json:"parity_fail"`
++	ParityBuildRejected int            `json:"parity_build_rejected"`
++	DroppedOrig         int            `json:"dropped_originals"`
++	DroppedPar          int            `json:"dropped_parities"`
++	CorruptPar          int            `json:"corrupted_parities"`
++	BytesOrig           int64          `json:"bytes_orig"`
++	BytesParity         int64          `json:"bytes_parity"`
++	InitialDgram        int            `json:"initial_datagrams"`
+ 	// C1 배선 확인용: 서버 회신을 몇 번 받았고 마지막 내용이 무엇인가.
+ 	FbRecv      int  `json:"fb_recv"`
+ 	FbMagicSeen int  `json:"fb_magic_seen"`
+@@ -1415,6 +1430,13 @@
+ 		})
+ 	}
+ 	emit := func(j int, pkt []byte) {
++		if len(pkt) == 0 {
++			c.mu.Lock()
++			c.stats.ParityFail++
++			c.stats.ParityBuildRejected++
++			c.mu.Unlock()
++			return
++		}
+ 		if isFirstFlight && c.dropParity == j {
+ 			c.mu.Lock()
+ 			c.stats.DroppedPar++
+@@ -1541,9 +1563,10 @@
+ 
+ // ------------------------------------------------------------ 서버 쪽 FEC
+ type serverStats struct {
+-	Originals int `json:"originals"`
+-	Parities  int `json:"parities"`
+-	Recovered int `json:"recovered"`
++	FecParseFail int `json:"fec_parse_fail"`
++	Originals    int `json:"originals"`
++	Parities     int `json:"parities"`
++	Recovered    int `json:"recovered"`
+ 	// 🩸 2026-08-28 (2 단계 감사) - **비행당 복구가 한 번뿐인지 보는 계수.**
+ 	//    Recovered 는 복원한 **원본 개수**라 한 번에 여럿을 세므로,
+ 	//    "같은 비행을 두 번 풀었다"를 못 가른다. 그 결함이 실제로 있었다
+@@ -2114,6 +2137,9 @@
+ 	var fbOut []byte
+ 	s.mu.Lock()
+ 	s.stats.BytesIn += int64(n)
++	if s.mode != "off" && fb == nil && fecMagicAtBody(b[:n]) {
++		s.stats.FecParseFail++
++	}
+ 	if !hs.ok {
+ 		s.stats.HdrShort++
+ 	} else if hs.typ == 0 {
+--- a/experiments/quicbed/policy3_test.go
++++ b/experiments/quicbed/policy3_test.go
+@@ -38,12 +38,12 @@
+ 
+ func TestP3ConstantsAreTheSharedOnes(t *testing.T) {
+ 	c := p3Constants()
+-	if c["c_pkt"] != 41.983 || c["max_ips"] != 1452 || c["udp_max"] != 1472 ||
++	if c["c_pkt"] != 41.983 || c["max_ips"] != 1452 || c["udp_max"] != 1452 ||
+ 		c["j_tie_ms"] != 0.01 || c["t_pto_ms"] != 200.86 || c["t_ack_slope"] != 1.125 ||
+ 		c["t_ack_base_ms"] != 1.424 || c["pto_sampled_mult"] != 3.0 || c["max_steps"] != 2 {
+ 		t.Fatalf("constants drifted: %v", c)
+ 	}
+-	if !reflect.DeepEqual(c["parity_overhead"], []int{39, 6}) {
++	if !reflect.DeepEqual(c["parity_overhead"], []int{46, 6}) {
+ 		t.Fatalf("parity overhead %v", c["parity_overhead"])
+ 	}
+ 	wantD := []float64{0.0, 0.133, 0.266, 0.355, 0.533, 0.710, 1.066}
+@@ -113,12 +113,12 @@
+ 		j, e, p2, pf, p1 float64
+ 	}{
+ 		{3, 1281, 0, 0, 0.05, 37.5, 100.0, 15, 88.44377712457208, 0.9999999999999999, 0.8573749999999999, 0.142625, 0.0},
+-		{2, 1452, 4, 3, 0.12, 10.0, 2.0, 11, 40.79788845577526, 0.041403322368000005, 0.001659322368, 0.039744, 0.958596677632},
+-		{2, 1350, 4, 2, 0.2625, 10.0, 1.5, 1, 42.40132777525795, 0.05810734863281252, 0.0, 0.05810734863281252, 0.9418926513671877},
+-		{1, 1280, 4, 0, 0.252512, 50.0, 10.0, 4, 101.83438970118405, 0.9926161357352952, 0.9915895148184967, 0.0010266209167984995, 0.007383864264704742},
+-		{3, 1201, 1, 1, 0.12, 50.0, 1.5, 13, 187.98096681961943, 1.0, 0.681472, 0.318528, 0.0},
+-		{3, 1281, 3, 1, 0.08404, 100.0, 5.0, 2, 109.24927385951987, 0.005212433204687288, 0.0, 0.005212433204687288, 0.9947875667953128},
+-		{4, 1281, 4, 4, 0.041534, 100.0, 100.0, 20, 134.94507990542505, 0.16432803497706355, 0.00825885303661183, 0.15606918194045172, 0.8356719650229368},
++		{2, 1452, 4, 3, 0.12, 10.0, 2.0, 11, 40.87602551503722, 0.041403322368000005, 0.001659322368, 0.039744, 0.958596677632},
++		{2, 1350, 4, 2, 0.2625, 10.0, 1.5, 1, 42.47101181601862, 0.05810734863281252, 0.0, 0.05810734863281252, 0.9418926513671877},
++		{1, 1280, 4, 0, 0.252512, 50.0, 10.0, 4, 102.00003581768797, 0.9958349699776332, 0.9948083490608347, 0.0010266209167984995, 0.004165030022366439},
++		{3, 1201, 1, 1, 0.12, 50.0, 1.5, 13, 188.01862817366552, 1.0, 0.681472, 0.318528, 0.0},
++		{3, 1281, 3, 1, 0.08404, 100.0, 5.0, 2, 109.2622438405286, 0.005212433204687288, 0.0, 0.005212433204687288, 0.9947875667953128},
++		{4, 1281, 4, 4, 0.041534, 100.0, 100.0, 20, 134.94728882751318, 0.16432803497706355, 0.00825885303661183, 0.15606918194045172, 0.8356719650229368},
+ 		{1, 1350, 3, 2, 0.0, 200.0, 0.0, 1, 200.0, 0.0, 0.0, 0, 1.0},
+ 	} {
+ 		pt := p3Evaluate(c.k, c.w, c.m, c.lead, c.p, c.rtt, c.u, c.nNeed)
+@@ -145,13 +145,13 @@
+ 		nTied     int
+ 		mode      string
+ 	}{
+-		{4, 1350, 11728.229000000001, 200.0, 100.0, []int{10}, []float64{1.0}, p3Action{0, 0, 4}, 10, 16, "c6fa4aba889370466984775a5a6e3b7ff37ba5ece565e6cad2dd0bb5a4dbaecf", 200.61994613898588, 1, "parity"},
+-		{2, 1200, 6434.348, 100.0, 10.0, []int{2}, []float64{1.0}, p3Action{0, 0, 2}, 5, 16, "e89f37a8a7fe7143fc318e48f0e0b2925d4f132f9d59812ca582c0f16c602a95", 101.92050930203779, 3, "parity"},
+-		{2, 1200, 15723.898, 200.0, 2.0, []int{20}, []float64{1.0}, p3Action{0, 3, 1}, 13, 28, "ead0a4faffd0f7c2a4d8af7491f213720b4f7f8e2e1c891b1781798fdf2dd3bb", 388.6937355289787, 1, "parity"},
++		{4, 1350, 11728.229000000001, 200.0, 100.0, []int{10}, []float64{1.0}, p3Action{0, 0, 4}, 10, 16, "c6fa4aba889370466984775a5a6e3b7ff37ba5ece565e6cad2dd0bb5a4dbaecf", 200.62016952791396, 1, "parity"},
++		{2, 1200, 6434.348, 100.0, 10.0, []int{2}, []float64{1.0}, p3Action{0, 0, 2}, 5, 16, "e89f37a8a7fe7143fc318e48f0e0b2925d4f132f9d59812ca582c0f16c602a95", 101.9205652978518, 3, "parity"},
++		{2, 1200, 15723.898, 200.0, 2.0, []int{20}, []float64{1.0}, p3Action{0, 3, 1}, 13, 28, "c6e5f099b7c6a3c5b0ee256a1f7c36ef97d8ac4d0ad4e238b27b67897191e999", 388.7628204370858, 1, "parity"},
+ 		{1, 1200, 4797.949, 100.0, 0.0, []int{0}, []float64{1.0}, p3Action{81, 0, 0}, 4, 30, "819555259c00e1f22b4e8d7b304b0bf7f38c642ccc45ea9996a4cbedbc58e1fa", 100.0, 29, "pad"},
+ 		{3, 1280, 7458.847, 200.0, 100.0, []int{0}, []float64{1.0}, p3Action{0, 0, 0}, 6, 17, "1d5f3391c1e4deaf62d0a963901a82eafe108cbb0b5ee573d4ff86e233ebd613", 200.3072, 6, "none"},
+-		{1, 1200, 15597.949, 100.0, 10.0, []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25}, []float64{0.06503101279892642, 0.07028904107076685, 0.010451972206941898, 0.04577269167765198, 0.0005329923206520032, 0.019181507107660336, 0.061183188071661405, 0.0026221833058007746, 0.0018791695512713398, 0.06747692891820282, 0.029179837828303103, 0.058706501360453016, 0.047030083359234455, 0.05678797610846154, 0.06996924629811822, 0.021650263755264514, 0.04971208910009615, 0.0030634881718954415, 0.06444224602228374, 0.062207509498743804, 0.02247901123650686, 0.01146104068585015, 0.03685426319946053, 0.05500625470600149, 0.03436370204159975, 0.03266579959819148}, p3Action{47, 3, 1}, 13, 25, "1e2fb5f6aadddf30d96c1cf68516516273175fdffebc47a34370931d4b984de9", 142.20137940349358, 1, "combo"},
+-		{2, 1280, 12523.898, 50.0, 2.0, []int{5, 19}, []float64{0.19947915192038704, 0.800520848079613}, p3Action{0, 2, 2}, 10, 16, "68d0171ad8df1fcb348bac00b629431128c6a9c42d97503c244a56f09a3ae2a1", 75.94417557764409, 1, "parity"},
++		{1, 1200, 15597.949, 100.0, 10.0, []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25}, []float64{0.06503101279892642, 0.07028904107076685, 0.010451972206941898, 0.04577269167765198, 0.0005329923206520032, 0.019181507107660336, 0.061183188071661405, 0.0026221833058007746, 0.0018791695512713398, 0.06747692891820282, 0.029179837828303103, 0.058706501360453016, 0.047030083359234455, 0.05678797610846154, 0.06996924629811822, 0.021650263755264514, 0.04971208910009615, 0.0030634881718954415, 0.06444224602228374, 0.062207509498743804, 0.02247901123650686, 0.01146104068585015, 0.03685426319946053, 0.05500625470600149, 0.03436370204159975, 0.03266579959819148}, p3Action{42, 3, 1}, 13, 25, "9a385fec1479e30319f39134096390c4101727d9be6217542cecdba5a947ce95", 142.21718330971294, 1, "combo"},
++		{2, 1280, 12523.898, 50.0, 2.0, []int{5, 19}, []float64{0.19947915192038704, 0.800520848079613}, p3Action{0, 2, 2}, 10, 16, "68d0171ad8df1fcb348bac00b629431128c6a9c42d97503c244a56f09a3ae2a1", 75.99819371014131, 1, "parity"},
+ 	} {
+ 		post := make([]float64, p3NG)
+ 		for i, g := range c.g {
+--- a/experiments/quicbed/qamp_audit_test.go
++++ b/experiments/quicbed/qamp_audit_test.go
+@@ -132,7 +132,7 @@
+ 		for m := 1; m <= 3; m++ {
+ 			for _, w := range []int{1200, 1280} {
+ 				for _, need := range []int{4, 7, 10, 13, 16} {
+-					candidates := comboDeltas(k, m, w, 39+6*k, need, 172)
++					candidates := comboDeltas(k, m, w, 46+6*k, need, 172)
+ 					last, _, _, _ := flightOutcome(k, m, w, 0.17, 3, need, 0)
+ 					for delta := 1; delta <= 172; delta++ {
+ 						value, _, _, _ := flightOutcome(k, m, w+delta, 0.17, 3, need, 0)
+--- a/experiments/quicbed/qamp_lead_test.go
++++ b/experiments/quicbed/qamp_lead_test.go
+@@ -90,10 +90,10 @@
+ var leadV2Golden = map[string]string{
+ 	"off": "ae4b292f44316c12deed63a33d0b52959c8cc0b07aed81dbdaba6ec0938bac3c",
+ 	"buf": "c148d149c90b87c4e386ffa0505c477c35b9622d0316e6eb80d4f6f69360cff5",
+-	"fec": "514ad428971dd3607b5cbe05da25d0e8e1510f3ad4ef2c10a7fb4bb024475487",
+-}
+-
+-func TestLeadV2OutputMatchesGen2Golden(t *testing.T) {
++	"fec": "8ff916106d28c46b0da4cb89faf9b5f04b8fc967532dcc999188d88cefa062c8",
++}
++
++func TestLeadV2OutputMatchesJ7WireGolden(t *testing.T) {
+ 	gfInit()
+ 	explicit := func(mode string, m, k int, inject bool) *fecConn {
+ 		fc := leadV2Conn(mode, m, k, inject)
+@@ -103,10 +103,10 @@
+ 	}
+ 	for mode, want := range leadV2Golden {
+ 		if got := leadV2Digest(mode, leadV2Conn); got != want {
+-			t.Errorf("%s default layout transcript %s, gen-2 golden %s", mode, got, want)
++			t.Errorf("%s default layout transcript %s, J7 wire golden %s", mode, got, want)
+ 		}
+ 		if got := leadV2Digest(mode, explicit); got != want {
+-			t.Errorf("%s -layout v2 -lead -1 transcript %s, gen-2 golden %s", mode, got, want)
++			t.Errorf("%s -layout v2 -lead -1 transcript %s, J7 wire golden %s", mode, got, want)
+ 		}
+ 	}
+ }
+--- a/padfec/policy.py
++++ b/padfec/policy.py
+@@ -598,15 +598,11 @@
+                    % (c["W_eff"], max_ips))
+         elif (c["m"] > 0 and int(c.get("parity_bytes")
+                                  or parity_datagram_bytes(c["W_eff"], c["k"]))
+-              > quantum.TYPICAL_MTU - 28):
+-            # 🩸 2026-09-07 감사 - 패리티 데이터그램(W_eff+39+6k)이 UDP 페이로드
+-            #    상한(MTU 1500 - IP/UDP 28)을 넘으면 보낼 수 없다(조각나거나
+-            #    EMSGSIZE). W_eff<=1452 인 결합 후보의 패리티가 1497~1515 B 라
+-            #    over_mtu(W_eff 만 봄)로는 안 잡혔다. policy.go 와 같은 자리.
+-            why = ("패리티 데이터그램 %d B > UDP 페이로드 상한 %d"
++              > PARITY_DATAGRAM_MAX):
++            why = ("패리티 데이터그램 %d B > 서버 수신 상한 %d"
+                    % (int(c.get("parity_bytes")
+                           or parity_datagram_bytes(c["W_eff"], c["k"])),
+-                      quantum.TYPICAL_MTU - 28))
++                      PARITY_DATAGRAM_MAX))
+         if why:
+             dropped.append({"cand": c, "why": why})
+         else:
+@@ -694,14 +690,9 @@
+ # 그래서 v2 정책은 **후보 생성만** quantum.levers 에 맡기고, 비용 계산은
+ # 아래 Go 이식 함수로 다시 한다.
+ 
+-# 🩸 2026-08-20 p13 실측 수정. 예전 값 32(롱헤더 ~19 + FEC 머리 13)는 연결 ID
+-# 를 과소평가했다 - 실측 패리티 크기(서버 연결별 회계의 beff_parity)는
+-# x25519 1323.5~1326.5, ML-KEM 1331~1332 로, W+32+6k(1318/1324)보다 ~7 B 크다.
+-# 원인은 CID 길이(quic-go 가 고르는 무작위 길이)라 연결마다 ±수 B 흔들리며,
+-# 실측 중앙값 기준 base ≈ 38.5~39.5 다. 39 로 둔다. 남는 ±수 B 는 신용을
+-# 과소평가하는 쪽(보수)으로만 작용한다.
+-PARITY_OVERHEAD_BASE = 39      # 롱헤더+CID 약 26 + FEC 머리 13 (p13 실측)
+-PARITY_OVERHEAD_PER_K = 6      # crc/len 목록
++PARITY_OVERHEAD_BASE = 46
++PARITY_OVERHEAD_PER_K = 6
++PARITY_DATAGRAM_MAX = 1452
+ 
+ 
+ def parity_datagram_bytes(w, k):
+--- a/padfec3/decide3.py
++++ b/padfec3/decide3.py
+@@ -6,7 +6,7 @@
+ MAX_STEPS = policy.MAX_STEPS_DEFAULT
+ M_MAX = layout.M_MAX
+ MAX_IPS = policy.QUICGO_MAX_IPS
+-UDP_MAX = quantum.TYPICAL_MTU - 28
++UDP_MAX = policy.PARITY_DATAGRAM_MAX
+ J_TIE = policy.J_TIE_MS
+ MIN_W = learn3.MIN_W
+ CHOICE_KEYS = ("action", "delta", "lead", "T", "m", "mode", "W_eff",
+--- a/tests/test_core_regressions.py
++++ b/tests/test_core_regressions.py
+@@ -111,7 +111,7 @@
+                 if abs(value - last) > 1e-12:
+                     expected.add(delta)
+                 last = value
+-            got = set(quantum._combo_deltas(k, m, w, 39+6*k, need, max_delta=172))
++            got = set(quantum._combo_deltas(k, m, w, 46+6*k, need, max_delta=172))
+             self.assertEqual(got, expected, (k, m, w, need, got, expected))
+ 
+     def test_rate_override_uses_current_rate_in_argmin(self):
+--- a/tests/test_padfec3_layout.py
++++ b/tests/test_padfec3_layout.py
+@@ -199,16 +199,16 @@
+             assert r0["J"] == pytest.approx(50.0 * n0, abs=1e-12)
+ 
+ 
+-def test_measured_anchors_of_credit_count():
++def test_credit_count_for_fixed_j7_wire():
+     nn = layout.n_need(16000, s0_base=S0_MLKEM, c_pkt=C_PKT)
+     assert nn == 15
+     assert layout.evaluate(2, 1280, 3, -1, 0.0, 50.0, 0.0, nn)["p_one_rtt"] == 1.0
+     assert layout.evaluate(2, 1280, 2, -1, 0.0, 50.0, 0.0, nn)["p_one_rtt"] == 0.0
+     assert layout.evaluate(2, 1280, 3, -1, 0.0, 50.0, 2.0, nn)["p_one_rtt"] == 0.0
+     assert layout.evaluate(2, 1280, 4, 3, 0.0, 50.0, 2.0, nn)["p_one_rtt"] == 1.0
+-    assert layout.pre_decision_bytes(2, 3, -1, 1280) == 3891
+-    assert layout.pre_decision_bytes(2, 4, 3, 1280) == 6553
+-    assert layout.client_bytes(2, 4, 1280) == 7884
++    assert layout.pre_decision_bytes(2, 3, -1, 1280) == 3898
++    assert layout.pre_decision_bytes(2, 4, 3, 1280) == 6574
++    assert layout.client_bytes(2, 4, 1280) == 7912
+ 
+ 
+ def test_send_order_and_validation():
+--- /dev/null
++++ b/experiments/quicbed/qamp_j7_test.go
+@@ -0,0 +1,150 @@
++package main
++
++import (
++	"bytes"
++	"fmt"
++	"net"
++	"reflect"
++	"testing"
++	"time"
++)
++
++func j7Block(k, m, lead, size, version int) fecBlock {
++	fb := fecBlock{flight: 7, k: k, m: m, lead: lead, index: 0, symLen: size, ver: version,
++		crcs: make([]uint32, k), lens: make([]uint16, k), sym: bytes.Repeat([]byte{71}, size)}
++	for i := range fb.crcs {
++		fb.crcs[i] = uint32(i + 100)
++		fb.lens[i] = uint16(size - i)
++	}
++	return fb
++}
++
++func TestJ7WireLengthAndPayloadAcrossCIDs(t *testing.T) {
++	cases := 0
++	for k := 1; k <= 4; k++ {
++		for m := 1; m <= 4; m++ {
++			for _, version := range []int{fecVer, fecVerLead} {
++				for _, size := range []int{1280, 1452 - 46 - 6*k} {
++					for dc := 0; dc <= 20; dc++ {
++						for sc := 0; sc <= 20; sc++ {
++							if dc+sc > 24 {
++								continue
++							}
++							fb := j7Block(k, m, m, size, version)
++							dcid, scid := bytes.Repeat([]byte{1}, dc), bytes.Repeat([]byte{2}, sc)
++							packet := buildParity(dcid, scid, fb)
++							if len(packet) != size+46+6*k || len(packet) > 1452 {
++								t.Fatalf("k%d m%d dc%d sc%d size%d: length %d", k, m, dc, sc, size, len(packet))
++							}
++							h := parseLongHdr(packet)
++							if !h.ok || !bytes.Equal(h.dcid, dcid) || !bytes.Equal(h.scid, scid) {
++								t.Fatal("connection IDs changed")
++							}
++							declared := int(packet[h.bodyOff+1]&0x3f)<<8 | int(packet[h.bodyOff+2])
++							if declared != len(packet)-h.bodyOff-3 {
++								t.Fatal("padding outside declared body")
++							}
++							pad := 24 - dc - sc
++							if !bytes.Equal(packet[len(packet)-pad:], make([]byte, pad)) {
++								t.Fatal("nonzero padding")
++							}
++							got := parseFecBlock(packet)
++							if got == nil || got.k != k || got.m != m || got.symLen != size ||
++								!bytes.Equal(got.sym, fb.sym) || !reflect.DeepEqual(got.crcs, fb.crcs) || !reflect.DeepEqual(got.lens, fb.lens) {
++								t.Fatal("PFEC payload changed")
++							}
++							cases++
++						}
++					}
++				}
++			}
++		}
++	}
++	t.Logf("checked %d wire cases", cases)
++}
++
++func TestJ7RejectedParityKeepsOriginals(t *testing.T) {
++	gfInit()
++	for _, layout := range []string{"v2", "v3"} {
++		for _, c := range []struct{ dc, sc, size int }{{20, 20, 1280}, {21, 0, 1280}, {0, 21, 1280}, {8, 4, 1395}} {
++			t.Run(fmt.Sprintf("%s_%d_%d_%d", layout, c.dc, c.sc, c.size), func(t *testing.T) {
++				addr := &net.UDPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 12345}
++				wire := &auditConn{scriptConn: scriptConn{addr: addr}}
++				fc := &fecConn{mode: "fec", m: 2, expectK: 2, layout: layout, lead: 1, dropParity: -1, corruptParity: -1, parityDelay: time.Hour}
++				fc.PacketConn = wire
++				originals := [][]byte{}
++				for i := 0; i < 2; i++ {
++					packet := leadTestInitial(make([]byte, c.dc), make([]byte, c.sc), c.size, byte(i+3))
++					originals = append(originals, packet)
++					if n, err := fc.WriteTo(packet, addr); err != nil || n != len(packet) {
++						t.Fatalf("original: n=%d err=%v", n, err)
++					}
++				}
++				stats := fc.finalSendStats()
++				if !reflect.DeepEqual(wire.written, originals) || stats.ParitySent != 0 || stats.ParityFail != 2 || stats.ParityBuildRejected != 2 || stats.BytesParity != 0 {
++					t.Fatalf("rejected parity changed transmission: %+v writes=%d", stats, len(wire.written))
++				}
++			})
++		}
++	}
++}
++
++func TestJ7FecParseFailureCounter(t *testing.T) {
++	base := buildParity(leadTestDCID, leadTestSCID, j7Block(2, 2, 1, 1280, fecVerLead))
++	off := parseLongHdr(base).bodyOff
++	badVersion := append([]byte(nil), base...)
++	badVersion[off+7] = 99
++	badLength := append([]byte(nil), base...)
++	badLength[off+1] = 0
++	falseMagic := leadTestInitial(leadTestDCID, leadTestSCID, 1280, 19)
++	copy(falseMagic[off+20:], fecMagic)
++	for _, c := range []struct {
++		name   string
++		packet []byte
++		want   int
++	}{
++		{"valid", base, 0}, {"truncated", base[:len(base)-1], 1}, {"version", badVersion, 1},
++		{"length", badLength, 1}, {"unrelated", falseMagic, 0}, {"short", []byte("PFEC"), 0},
++	} {
++		for _, mode := range []string{"off", "fec"} {
++			t.Run(c.name+"_"+mode, func(t *testing.T) {
++				wire := &scriptConn{dgs: [][]byte{c.packet}, addr: &net.UDPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 12345}}
++				sv := &decodeConn{mode: mode}
++				sv.PacketConn = wire
++				buf := make([]byte, 1452)
++				sv.ReadFrom(buf)
++				want := c.want
++				if mode == "off" {
++					want = 0
++				}
++				if sv.stats.FecParseFail != want {
++					t.Fatalf("parse failures %d want %d", sv.stats.FecParseFail, want)
++				}
++			})
++		}
++	}
++}
++
++func TestJ7CandidateReceiveLimit(t *testing.T) {
++	checked := 0
++	for k := 1; k <= 4; k++ {
++		for _, w := range []int{1200, 1280, 1350, 1382, 1388, 1394, 1400, 1452} {
++			for _, cert := range []int{1000, 4032, 9000, 11000, 12000, 16000, 30000} {
++				s := float64(cert) + 1472 + float64(binIndex(k*w))*cPktDefault
++				for _, c := range p3Candidates(k, w, s, cPktDefault) {
++					if c.M > 0 && c.WEff+46+6*k > 1452 {
++						t.Fatalf("oversize candidate %+v", c)
++					}
++					checked++
++				}
++				for _, c := range evalCands(levers(k, w, maxStepsDefault, mMaxDefault, s, cPktDefault, quicgoMaxIPS), k, w, s, 50, .05, 1, cPktDefault, quicgoMaxIPS, 2) {
++					if c.c.m > 0 && c.c.wEff+46+6*k > 1452 {
++						t.Fatalf("oversize gen2 candidate %+v", c)
++					}
++					checked++
++				}
++			}
++		}
++	}
++	t.Logf("checked %d candidates", checked)
++}
+--- /dev/null
++++ b/tests/test_v33_j7_wire.py
+@@ -0,0 +1,28 @@
++from padfec import policy, quantum
++from padfec3 import decide3
++
++
++def test_parity_geometry_and_receive_limit():
++    assert policy.PARITY_OVERHEAD_BASE == 46
++    assert policy.PARITY_OVERHEAD_PER_K == 6
++    assert policy.PARITY_DATAGRAM_MAX == decide3.UDP_MAX == 1452
++    for k, cap in ((1, 1400), (2, 1394), (3, 1388), (4, 1382)):
++        assert policy.parity_datagram_bytes(cap, k) == 1452
++        assert policy.parity_datagram_bytes(cap + 1, k) == 1453
++
++
++def test_all_generated_candidates_fit_the_receiver():
++    for k in range(1, 5):
++        for w in (1200, 1280, 1350, 1382, 1388, 1394, 1400, 1452):
++            for cert in (1000, 4032, 9000, 11000, 12000, 16000, 30000):
++                size = cert + 1472 + quantum.bin_index(k * w) * policy.C_PKT_POLICY_DEFAULT
++                candidates = decide3.candidates3(k, w, size, policy.C_PKT_POLICY_DEFAULT)
++                assert candidates
++                for candidate in candidates:
++                    if candidate["m"]:
++                        assert candidate["W_eff"] + 46 + 6 * k <= 1452
++
++
++def test_c12000_oversize_l5_action_is_not_an_eligible_candidate():
++    candidates = decide3.candidates3(2, 1280, 13934, policy.C_PKT_POLICY_DEFAULT)
++    assert (130, 2, 2) not in {c["action"] for c in candidates}

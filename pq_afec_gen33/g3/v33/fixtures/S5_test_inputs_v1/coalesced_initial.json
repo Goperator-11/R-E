@@ -1,0 +1,757 @@
+{
+  "row": {
+    "revisit": {
+      "token_store": true,
+      "resume": true,
+      "first_connection": false,
+      "cache_scope": "process",
+      "token": {
+        "gets": 1,
+        "hits": 1,
+        "puts": 1
+      },
+      "session": {
+        "gets": 1,
+        "hits": 1,
+        "puts": 1
+      },
+      "tls_observed": true,
+      "tls_did_resume": true,
+      "used_0rtt": false,
+      "retry_received": 0,
+      "wait_requested_ns": 200000000,
+      "wait_target_ns": 204506819,
+      "wait_elapsed_ns": 205034625,
+      "wait_rtt_ns": 204506819,
+      "wait_rtt_source": "handshake_elapsed_fallback",
+      "wait_completed": true
+    },
+    "client_hello_padding": {
+      "bytes": 0,
+      "parameter_id": 0,
+      "encoded_bytes": 0,
+      "source": "disabled"
+    },
+    "extra_sent": {
+      "kind": "none",
+      "sent": 0,
+      "bytes": 0,
+      "errors": 0,
+      "parity_budget_bytes": 0,
+      "first_sent": 0,
+      "first_bytes": 0,
+      "first_lead": 0,
+      "first_parity_budget_bytes": 0
+    },
+    "retrans_layout": "not_applicable",
+    "bytes_parity": 0,
+    "flight_trace": {
+      "records": [
+        {
+          "extra_sent": {
+            "kind": "none",
+            "sent": 0,
+            "bytes": 0,
+            "errors": 0,
+            "parity_budget_bytes": 0,
+            "first_sent": 0,
+            "first_bytes": 0,
+            "first_lead": 0,
+            "first_parity_budget_bytes": 0
+          },
+          "shape": {
+            "phase": "first_bundle",
+            "rule": "disabled",
+            "lead": 0,
+            "trail": 0,
+            "original_immediate": true,
+            "pto_count_at_start": 0,
+            "pto_scope": "qlog_loss_timer_expired_lower_bound"
+          },
+          "parity_sent": 0,
+          "parity_bytes": 0,
+          "sequence": 1,
+          "id": 1,
+          "first_input_ms": 0.396649,
+          "last_input_ms": 0.4346,
+          "flush_ms": 1.530436,
+          "end_ms": 1.535239,
+          "reason": "timer",
+          "expected_k": 0,
+          "actual_k": 2,
+          "original_bytes": 2560,
+          "original_immediate": true,
+          "buffered_first_wait_ms": 0,
+          "buffered_last_wait_ms": 0,
+          "k_mismatch": false,
+          "split_suspected": false,
+          "flushed": true,
+          "complete": true,
+          "flush_tx_dgrams": 0,
+          "flush_tx_bytes": 0,
+          "flush_tx_errors": 0
+        },
+        {
+          "extra_sent": {
+            "kind": "none",
+            "sent": 0,
+            "bytes": 0,
+            "errors": 0,
+            "parity_budget_bytes": 0,
+            "first_sent": 0,
+            "first_bytes": 0,
+            "first_lead": 0,
+            "first_parity_budget_bytes": 0
+          },
+          "shape": {
+            "phase": "pre_response_followup",
+            "rule": "disabled",
+            "lead": 0,
+            "trail": 0,
+            "original_immediate": true,
+            "pto_count_at_start": 1,
+            "pto_scope": "qlog_loss_timer_expired_lower_bound"
+          },
+          "parity_sent": 0,
+          "parity_bytes": 0,
+          "sequence": 2,
+          "id": 2,
+          "first_input_ms": 201.135218,
+          "last_input_ms": 201.225682,
+          "flush_ms": 202.264291,
+          "end_ms": 202.275571,
+          "reason": "timer",
+          "expected_k": 0,
+          "actual_k": 2,
+          "original_bytes": 2560,
+          "original_immediate": true,
+          "buffered_first_wait_ms": 0,
+          "buffered_last_wait_ms": 0,
+          "k_mismatch": false,
+          "split_suspected": false,
+          "flushed": true,
+          "complete": true,
+          "flush_tx_dgrams": 0,
+          "flush_tx_bytes": 0,
+          "flush_tx_errors": 0
+        },
+        {
+          "extra_sent": {
+            "kind": "none",
+            "sent": 0,
+            "bytes": 0,
+            "errors": 0,
+            "parity_budget_bytes": 0,
+            "first_sent": 0,
+            "first_bytes": 0,
+            "first_lead": 0,
+            "first_parity_budget_bytes": 0
+          },
+          "shape": {
+            "phase": "post_response",
+            "rule": "disabled",
+            "lead": 0,
+            "trail": 0,
+            "original_immediate": true,
+            "pto_count_at_start": 1,
+            "pto_scope": "qlog_loss_timer_expired_lower_bound"
+          },
+          "parity_sent": 0,
+          "parity_bytes": 0,
+          "sequence": 3,
+          "id": 3,
+          "first_input_ms": 204.499459,
+          "last_input_ms": 204.499459,
+          "flush_ms": 205.651071,
+          "end_ms": 205.653572,
+          "reason": "timer",
+          "expected_k": 0,
+          "actual_k": 1,
+          "original_bytes": 1280,
+          "original_immediate": true,
+          "buffered_first_wait_ms": 0,
+          "buffered_last_wait_ms": 0,
+          "k_mismatch": false,
+          "split_suspected": false,
+          "flushed": true,
+          "complete": true,
+          "flush_tx_dgrams": 0,
+          "flush_tx_bytes": 0,
+          "flush_tx_errors": 0
+        }
+      ],
+      "omitted": 0,
+      "stale_triggers": 0,
+      "flushed_originals": 5,
+      "flushed_bytes": 6400,
+      "discarded_originals": 0,
+      "discarded_bytes": 0
+    },
+    "flight_expectation": {
+      "k": 0,
+      "source": "timer_only",
+      "scope": "timer_only"
+    },
+    "rx_rejected_peer": 0,
+    "rx_rejected_cid": 0,
+    "first_flight_non_initial_long": 0,
+    "arrivals": {
+      "src": "none",
+      "sent": 0,
+      "lost": 0,
+      "bitmap": null,
+      "trunc": false
+    },
+    "c1": {
+      "version": 0,
+      "received": 0,
+      "physical_original": 0,
+      "physical_parity": 0,
+      "other_crc": 0,
+      "recovered_original": 0,
+      "other_recovered_crc": 0,
+      "raw_original": 0,
+      "raw_parity": 0,
+      "raw_recovered": 0,
+      "reason": "disabled"
+    },
+    "observation": {
+      "version": 1,
+      "end_ns": 410681531,
+      "server_datagrams": [
+        {
+          "at_ns": 202200747,
+          "bytes": 41,
+          "crc32c": 2536866954,
+          "feedback": false,
+          "before_big": true,
+          "initial": true
+        },
+        {
+          "at_ns": 204097029,
+          "bytes": 1280,
+          "crc32c": 2506255105,
+          "feedback": false,
+          "before_big": false,
+          "initial": true
+        },
+        {
+          "at_ns": 204289540,
+          "bytes": 302,
+          "crc32c": 1436706436,
+          "feedback": false,
+          "before_big": false,
+          "initial": false
+        },
+        {
+          "at_ns": 402780193,
+          "bytes": 41,
+          "crc32c": 2101954764,
+          "feedback": false,
+          "before_big": false,
+          "initial": true
+        },
+        {
+          "at_ns": 404425265,
+          "bytes": 1280,
+          "crc32c": 1325857273,
+          "feedback": false,
+          "before_big": false,
+          "initial": true
+        },
+        {
+          "at_ns": 405241663,
+          "bytes": 1280,
+          "crc32c": 895104609,
+          "feedback": false,
+          "before_big": false,
+          "initial": true
+        },
+        {
+          "at_ns": 406310242,
+          "bytes": 299,
+          "crc32c": 2665718505,
+          "feedback": false,
+          "before_big": false,
+          "initial": false
+        }
+      ],
+      "packets": [
+        {
+          "at_ns": 366701,
+          "direction": "sent",
+          "space": "initial",
+          "pn": 0,
+          "bytes": 1280,
+          "crc32c": 1390921216,
+          "coalesced": false,
+          "ack_ranges": [],
+          "crypto": [
+            [
+              0,
+              1134
+            ]
+          ]
+        },
+        {
+          "at_ns": 374920,
+          "direction": "sent",
+          "space": "initial",
+          "pn": 1,
+          "bytes": 1280,
+          "crc32c": 383489592,
+          "coalesced": false,
+          "ack_ranges": [],
+          "crypto": [
+            [
+              1134,
+              525
+            ]
+          ]
+        },
+        {
+          "at_ns": 201081738,
+          "direction": "sent",
+          "space": "initial",
+          "pn": 2,
+          "bytes": 1280,
+          "crc32c": 1810124745,
+          "coalesced": false,
+          "ack_ranges": [],
+          "crypto": [
+            [
+              0,
+              1134
+            ]
+          ]
+        },
+        {
+          "at_ns": 201110711,
+          "direction": "sent",
+          "space": "initial",
+          "pn": 3,
+          "bytes": 1280,
+          "crc32c": 2677822226,
+          "coalesced": false,
+          "ack_ranges": [],
+          "crypto": [
+            [
+              1134,
+              525
+            ]
+          ]
+        },
+        {
+          "at_ns": 202246794,
+          "direction": "received",
+          "space": "initial",
+          "pn": 0,
+          "bytes": 41,
+          "crc32c": 2536866954,
+          "coalesced": false,
+          "ack_ranges": [
+            [
+              0,
+              0
+            ]
+          ],
+          "crypto": []
+        },
+        {
+          "at_ns": 204337034,
+          "direction": "received",
+          "space": "initial",
+          "pn": 1,
+          "bytes": 1280,
+          "crc32c": 2506255105,
+          "coalesced": false,
+          "ack_ranges": [
+            [
+              0,
+              1
+            ]
+          ],
+          "crypto": [
+            [
+              0,
+              1184
+            ]
+          ]
+        },
+        {
+          "at_ns": 204426852,
+          "direction": "received",
+          "space": "handshake",
+          "pn": 0,
+          "bytes": 207,
+          "crc32c": 1436706436,
+          "coalesced": false,
+          "ack_ranges": [],
+          "crypto": [
+            [
+              0,
+              168
+            ]
+          ]
+        },
+        {
+          "at_ns": 204456304,
+          "direction": "received",
+          "space": "1RTT",
+          "pn": 0,
+          "bytes": 95,
+          "crc32c": 1436706436,
+          "coalesced": false,
+          "ack_ranges": [],
+          "crypto": []
+        },
+        {
+          "at_ns": 204470810,
+          "direction": "sent",
+          "space": "initial",
+          "pn": 4,
+          "bytes": 1099,
+          "crc32c": 645405717,
+          "coalesced": false,
+          "ack_ranges": [
+            [
+              0,
+              1
+            ]
+          ],
+          "crypto": []
+        },
+        {
+          "at_ns": 204471374,
+          "direction": "sent",
+          "space": "handshake",
+          "pn": 0,
+          "bytes": 79,
+          "crc32c": 645405717,
+          "coalesced": false,
+          "ack_ranges": [
+            [
+              0,
+              0
+            ]
+          ],
+          "crypto": [
+            [
+              0,
+              36
+            ]
+          ]
+        },
+        {
+          "at_ns": 204474037,
+          "direction": "sent",
+          "space": "1RTT",
+          "pn": 0,
+          "bytes": 102,
+          "crc32c": 645405717,
+          "coalesced": false,
+          "ack_ranges": [
+            [
+              0,
+              0
+            ]
+          ],
+          "crypto": []
+        },
+        {
+          "at_ns": 404517677,
+          "direction": "sent",
+          "space": "handshake",
+          "pn": 1,
+          "bytes": 74,
+          "crc32c": 3240045777,
+          "coalesced": false,
+          "ack_ranges": [],
+          "crypto": [
+            [
+              0,
+              36
+            ]
+          ]
+        },
+        {
+          "at_ns": 404539596,
+          "direction": "sent",
+          "space": "handshake",
+          "pn": 2,
+          "bytes": 74,
+          "crc32c": 1293020799,
+          "coalesced": false,
+          "ack_ranges": [],
+          "crypto": [
+            [
+              0,
+              36
+            ]
+          ]
+        },
+        {
+          "at_ns": 406428613,
+          "direction": "received",
+          "space": "1RTT",
+          "pn": 1,
+          "bytes": 299,
+          "crc32c": 0,
+          "coalesced": false,
+          "ack_ranges": [
+            [
+              0,
+              0
+            ]
+          ],
+          "crypto": [
+            [
+              0,
+              170
+            ]
+          ]
+        }
+      ],
+      "rtt_updates": [
+        {
+          "at_ns": 406406060,
+          "latest_ns": 201853882,
+          "min_ns": 201853882
+        }
+      ],
+      "pto_at_ns": [
+        200999345,
+        404500963
+      ],
+      "pto_count": 2,
+      "pto_count_scope": "qlog_loss_timer_expired_lower_bound",
+      "server_bytes": 4523,
+      "truncated": false
+    },
+    "handshake_end_ns": 204506819,
+    "feedback_wait_limit_ms": 1000,
+    "feedback_wait_ns": 0,
+    "feedback_wait_received": false,
+    "i": 1,
+    "ms": 204.506,
+    "ok": true,
+    "group": "X25519MLKEM768",
+    "kem_id": 4588,
+    "cipher_id": 4865,
+    "initial_datagrams": 5,
+    "parity_sent": 0,
+    "first_flight_datagrams": 2,
+    "first_flight_bytes": 2560,
+    "first_flight_parity_dgrams": 0,
+    "first_flight_parity_bytes": 0,
+    "m_used": 0,
+    "ips_used": 0,
+    "ips_eff": 1280,
+    "server_bytes": 4523,
+    "loss_event": true,
+    "path_rtt_ms": 201.853882,
+    "path_rtt_valid": true,
+    "path_rtt_source": "quic_ack_min_rtt",
+    "layout": "v2",
+    "lead": 0,
+    "first_flight_lead_dgrams": 0,
+    "later_parity_sent": 0
+  },
+  "events": [
+    {
+      "at_ns": 839616100,
+      "direction": "c2s",
+      "bytes": 1280,
+      "crc32": 2168961288,
+      "crc32c": 1390921216,
+      "feedback": false,
+      "wire_hex": "c000000001120e79f15fbf357bb4c837618dbf94848eb03d04a14410d1405b71c793fb35317c99230f4788fd22d3d0cc1ae76889025634b34ccaa6ce74e91c33b883fee2e139f1589c34fb1206ad1edf661ff96b49be19d0a56e16d2f8072b7920ce34d0915f3f72a96418fb4427195caa82fc62211ea30ca00844841dac08fa235b398f6da25873e5a7ca6bdb993fe6c303edfff0bd995e91fa814805f0c4aebf11afedf697b83f7869a1d32d46a9fbd28ef5d75595526991da129c834e7f6e1b5bfcfd4f2335ddf8be8e41bb0c987b6ef685ceb0a9c2188ec0d9bcd2f991dd097caf40f18ebb6c25b2c95e3499923c2e91f58ad3daa0e5499b0e84808396450e08599687375bcf015df7b4328b772142e87ec4d642d6afb6e2ce45d4a8fc87a78cded56abad3bc9c4b3a95b8f937b0f80f0f7f952e392c941c3682a74310423cae674fce286913a8fa58a31132d9dfaf6a2c96cce96f154bcbe3e3aaef787c9f7c5934a5e2e4ff2b42be59c2faa36bfe913238d2a606b8710a290949448e424aee069bd2c631a63f102660277790ca8212056954ce71425ccd05e8c9195f795cb1c28c695b0d19f97ccb51ebc1dabf4c21cc5a4e0a1ba7dcd18094af4f83f6c1597618881871b24963bcd4562475d71e31f1e2d06ced3487aade32215563805ee549dfda44c12d01fe5b41028dff24e301b7afd3658b1b1294567e3c036ea7f268c523b16f898ffd5f900102b3d7b8da141f3ed9bdbf7e50434360255b53e4d6415341f4a84538f820c13eeaa5b3872fe2a6e3599341820342a06849043f7e423927387d5e8701798733d7ef7d336b63f1e9c372d44a69edf9a9ae6b1a155fb267b41520f0a7850e1ae1d670afb2c82e8447dfe084b6aa9db4bc62685f2cde9e58d9539e75dbea2a443a9df5e0ff241c1e42634bd42ce13b16108e0a38e190c129e4a486e93c282910429db7c478b0fa892a7f7f2a2a55eac049d3dbba46dfd03a39c4ef89fe750ae5d05c03b58742e04b7cc570e7f2a861447375dcb5ef573872421a2eeccc407e582e9b4b470925b76227b3b13725a319161f78f90bef80875a06a7f1dd7664a0e11e395d3f1f6a7408724b3ce18303ea9dbb93072d629ca644870e94a31fd94c3f737df2b76f400db2db016969c58847152abcd42e412c8d2b8fa6835f75372ca1e30c1e991867f0d45ca65fe3b09ff20c64ed1483e2be27feb086a8850a2d845c940af6e12e0708ace70410d25683eadba12eb520e88aff8af6e3cac02b7bafd6876297d1d700635e4ad0f3480ac3280256e3d7f4f9e66ec1c56ba32256370beee3a22cf27f099dbb690eb10a1b6a54aa590b4cf66b63bce646d871ef3c2ea6de36dc72d544e1d2afe3eef4ab2d5697f3530cdb6dce0867edfa958547037fe855be6f3a71f5d63edba7373df79908bfd270db8dcf21f1ec12d6f8694fd72e1151045eb5c35a862ffe572e0ab3d1ff63881944b596376825151b4607b06b6f053327e7f848eca58b62abf7d64c729a9a61517be3ed37b8777acd0d376e92d3386188b360f5dbc38128efd2b5f0129c3ead4ad8d927fe08a253b9e92f34d6129168442dea06ffe46dac19b2285a7bceae8150f0793d40b54120b6ab72167a5161eb75634808e196652afd1614f2e8e1bd5b661e89ea3a5a2dd10786ff3588b7d76ec2a3075ff4b9daa782bc7e26fc0d05a140232a4044a61d67043850f7a57de8b1124027a988590934c81fa298c687d7f4db1489e06dd337d4abf2cf39a2c454893202ee7f4c3a2e606b5243214e8340754b897b1418b1",
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 840449982,
+      "direction": "c2s",
+      "bytes": 1280,
+      "crc32": 2551314569,
+      "crc32c": 383489592,
+      "feedback": false,
+      "wire_hex": "cf00000001120e79f15fbf357bb4c837618dbf94848eb03d04a14410d1405b71c793fb35317c99230f4788fd22d3d0cc1ae76889025634b34ccaa6ce74e91c33b883fee2e139f1589c34fb1206ad1edf661ff96b49be19d0a56e16d2f8072b7920ce34d0915f3f72a96418fb4427195caa82fc62211ea30ca008448435c16b2a708bc676279aa8996b79f76a99ac79bcc4a382c078d48199a2b7d46127b98779c10d815d8d215e88cabf4caf1c6fdbe1c029746cc36fe52b94eb6832c4e7fb7f3d310947d4e8746e692c9810ad95d5d02d2f5ce79c3a0bc7ed860a25de552c81644942d86388d3c2c2ed287ded85278cd40da05afa0deb098e53612b4932a2a6c958918517d8ec6fb21381e2a5f91f1f858c8389b380627ad4e2e69c232b242db709752d4e3152191cc803d4a8834c4fbb9e2dfbb654096ddbac390ce803d0fd631801a6f053f6febf43a5ec325aa4bba4d57b529792294d1c39e1227bf8165ec893e349f7c2dbbb079d7085006b2db91f021b5fd04b2e0bc12aa9596307030588869a22347be3222864aa4e521450f78a36c60c5b06c099a2ea6ea00fab001b2467334f7619555d99fde7a82d045409b676f622b40f7926292cf5c639fb1a09b60c4f699ae11b6f79d7e58942fb3d2525fa420fc3146a7cc0ba8b0b6a31762646ca20c1e9735d15c79419a709193964576bd2f2bc6dc9e85f7c1632bd7d092321c62fb12d8f7bcd0c0f8e50613c9e6ff6d64b7548b9ebc7c53178b32b465dc3f20ad639dff28fd6d324e90ba3adf437423d2cca45ae7b6d857c0c77a2bfbf3a3e8fa439c134e3bf7cba103dd492e30622575d66982534e222896949ef406479f24a8fdf481cc2bbe99097528f04200d3a39cddbbd9155bd0d514ce12eab4b95337e8113842d891053f8df35b4d59cf3be12b5554ec7e1084f3724ea256f0f9d5ccc007518915b6d39640e65fecdf5c8f53e6cf4915ccb1670a05dc58553e5dd633832098d9c9649af6bc504cbf602411a0ffa1413a03e221bc90bae7d2a14d46f3f36a090c764207aea13bbf8c60ffc033a82b89d35d34ff55393422d621796ba1d8e2af62200b495dfe163eab4ad3256c4ad13910d3a8a4811d20128a1e97248378c1235a894023553103b7d6a9fa533cb41cec26e83f86bb4ad2813606388ba6267db87a5433d49dd62842620e5abfbdad5e18fbd180fa6a80d7b61be7fd72d617be539055344f230422c723f6c4da99665f3aeaed02869d073cb32689470be0f6304a96336da223e6ca795df37c5873b92cda2ef9c9f889e6ca8f94b958f98a03454cacea7aa4558b6732398b874398e50dd63fbf749497c32f68e57758b6e2b4b17e3a0a29559bc416d63791c05f499f57d04ecea429c86c063380a37bd80e6b4a54148f825ed917e122ae50722bd016687920e97a4a194239e9172dcbaa7be687c53a7278b98c34abf7d86f0dbfc7d08d5ddbc283022ee9717da58f3c0f40cdae95c2b59dd628f1f44a6bfe70274030fe147ffd1e119c13d3bf18f89a3c70eb0086ea3b6323a546d31017ccbf2914d47c1480b2d638f76c24668c128893da3254b28fe11b12dd33e0b4715ec2dd1b3c557ab551486fff38aa6079bc281c260654bed1f446ce1529d7cdfc003c8670fcab2c21310a331119b5d3a3725a974042fd6dff48e53108cf1f0ed5ba195e9e02277b94a52eae24bcba55ab2e12938c39874c9cf9bf34f021131e9d35eaafb17388358a0e7748975b6e014aea93cc392ec5ed6bec29369d5dfb982652c5962b150ae76c4da6564fc8de472976994",
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 941110077,
+      "direction": "s2c",
+      "bytes": 41,
+      "crc32": 1842651777,
+      "crc32c": 2536866954,
+      "feedback": false,
+      "wire_hex": null,
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 942004298,
+      "direction": "s2c",
+      "bytes": 1280,
+      "crc32": 309442548,
+      "crc32c": 2506255105,
+      "feedback": false,
+      "wire_hex": null,
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 943018738,
+      "direction": "s2c",
+      "bytes": 302,
+      "crc32": 196322559,
+      "crc32c": 1436706436,
+      "feedback": false,
+      "wire_hex": null,
+      "parity": null,
+      "initial": false,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 1040373322,
+      "direction": "c2s",
+      "bytes": 1280,
+      "crc32": 1611757318,
+      "crc32c": 1810124745,
+      "feedback": false,
+      "wire_hex": "c400000001120e79f15fbf357bb4c837618dbf94848eb03d04a14410d1405b71c793fb35317c99230f4788fd22d3d0cc1ae76889025634b34ccaa6ce74e91c33b883fee2e139f1589c34fb1206ad1edf661ff96b49be19d0a56e16d2f8072b7920ce34d0915f3f72a96418fb4427195caa82fc62211ea30ca008448431335ee218aa65b2f74ce93130314401f3e20364a748fe0de60e71b4df6c10005249e3c432d9d20a09aebb5d3fc5edd3c0e8dbd1413542493cc253e86a3f6f71fd98b0470c31c51d0830cab782af8933498904e27d06dbd4563bca7f3e963c45f17298ef6ad3cf7c179c6cb5a2392322701448c002b0280aafdd7f8041aed73079eb20a205bc6525f7863589808b44c6cdbdfe4c884b38b2b66e1d11a38becff7bf4edb154bd8b3315ee1a616af9eb580221813b230aae8560ccdd2a1f2d683a328a8d29475b00f72c0d4d6f66511a1beac0e5263a73ddf460d65711c499fe0cc8e730c7eac63119f4b3c953b8aa20c018a0c389e23f11f14bc8af43bf6f6138c593c6e7471eb5a10966ecd4e33d4136fecc3d4133806517b3924151e05ce50175e0a4bfa163caa3d8f908f354ec94e7e5ea9138ed9f73093cbf39b4c54ee4c11fac9105635fb81648044df8d1ff99f25f99a025f4a23ef6e2e2afcefcbcda3d1d3a184293a33a46b0add91421dd6f570618bb7952208471c8923d444aa90e8039a5345ba25f7f4139ac231d5410d6f364eba59bc4d0e08d330fa61ca8e8e98d2087ecc6f9f86835549078e6d4ad9c42f32e010e705229f011a7ce2f3818a73309a2198eb5c529001833302699b34e0c6fc81df2867bf0070ee5d0d7bafd32b7e8ab77c05119a9fb1a590723af33080f21122922542137716ca205bd1796d645ca87721ed76d3c4f3c3e622261e79d2c074cab7c2bf46f7a61d1a5ea3f3b37a4b9a4edf7c02b68cd918b2506db5774459c29da6ee2a4aea3a23a34fe53290be9afbfd6159b4410e1bca08ac165aec5c6d96c9af795ae516aa559ce0439d0bd096c9edd2f04c2c03d30a77abe721f3794cb464150d9ccf1f994f295d58eb0078e353a9a3e0844f834716ff055b687371b2ee47417fd1ef709ff3ae03d92602e1c09838c0609fc03291595d1fbbd8d5dd525bdde5ad86d2d212dbed2985aa53e048a8d6d434d8bfb5e285b5f7d1c361d29337e72c5811ec4dff936485a8d486b169cbe848d77822993011ea71688fb6a3426d93308a167eb262566f991b1915523ad0386c8b8d6d3f526e768b9736a9266706f543b99981447ba9b9b82a898aa8d96b49cdb9245492db5a406b2d719576cc939243f57e44c4404b6088b4f644d20c4c4506db36bb0a0984349a15036c11ed796db16320bae5c293e73f753753c82273a04e28d9bf223276673055ae62f690efd861c44f3e208fad4c53a92dbab911b56c1a41e0f84e19e6826fe9c8d93bdb123bc33dbbadefe63676e4477a2d4831a52c7f2fb78f6ca43b4d873216113fb4882b4ef5c14e3bad86263f6db5be71203a65abb72216ec24dfbaebdc16cbde4ed1a420fadbe954a8cb30fe248cfcdeba2f5d269884d4f8c3b71e27fe7a6775d1b2be4ab774d4a396064e28648fc22725ba1b7a1adfaf9a9dcaf3b34c10f1bca671903ad8a6d2667221f762db5502810834345d99b4f4710c8bd57527c14cef50ff597af305f628c9b43ce6621d4fe8e3c89a3c47f5de222dab1707002804fd375d7990634e938433b964c2e5f64624f0beb8e4411e5e1a326b16d751bcb5c3f3128fb1cd32b1b7a9fc74543b2dd12384af652d4",
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 1041290551,
+      "direction": "c2s",
+      "bytes": 1280,
+      "crc32": 398613362,
+      "crc32c": 2677822226,
+      "feedback": false,
+      "wire_hex": "cd00000001120e79f15fbf357bb4c837618dbf94848eb03d04a14410d1405b71c793fb35317c99230f4788fd22d3d0cc1ae76889025634b34ccaa6ce74e91c33b883fee2e139f1589c34fb1206ad1edf661ff96b49be19d0a56e16d2f8072b7920ce34d0915f3f72a96418fb4427195caa82fc62211ea30ca008448494c1e7799c5966a929670c0c91f09208f06720f4b78893746f973fa52aa417f58da72b77863dccf1b9473cdf153c7fd40744af16cf95dba744fbb41e91cd7083c79e90c257b75c478ebc71980351b943c3f258dd5d1c92df36fcf93fb1d179cf1ddffb09ecbc7391aa4436598448c35a3b63aaa215150d628be97a26ee88fd914a301959cb57da865d6c5d3ed061d8cf3e3526b468d6a6db9621e1746ac3ebf0b8ede55b7da0c2e5f39eddcc0ddbfcf3516c73849d90551d9bd9b69188b4d9b72aa0ec11b4f9dd263f01c62c6b4627aa704d7822fbd885a280e487f79cdf7945280ba4259451c539e521d78d84923675f5b435b03121dce60d2f81606149525eb6f508fccdb37c697bbc362af9e31266a3b242d9425854cf1547a18b114b2ae51aab6b34d750dbd092cd519fe691787216aa000ca46c1ee3d64076d5fab3e3ea362a50ce3b4fbf26bb83d9b2b7c83f476190fe8ba05c37c3f8575d486d63d5ff2b3459feb8f93f0f39309a6abbaf4666a822d9a45f4cf5ca659aad5cacd0435a12fe393c0f1e53186c028309f2690132c911924e49d724e44c50c00c9bc126dacfadeb3969ce678098d87d89e308c2231736ec917227291a12f96a41548885a0a86e7db97b879ec08b2c5dfbf5954a7c4086966de2fd0c633c695a37f4be4ae512ef86cc7ae09128f5fab0da78def7974ad8f6d993776c22e2b3af573778734056ed756774aa0e74298d0ca9c9ce7fa61fe498dfb6bf76db07a876821f8fb939eedc61602fe40144b6b1eb278e0d85f50108582e86306a3e0974f7e18fa9b2c23791bfdd5f44138418043c452c0ce677f52073a947b2b63e6581c14057730b4299b6fd969e47f7abd0088d3333efb36e6694cd89e46c6bc6e665c5014506c7465214b045c93956698dba8274b68687c5dd89f4e2e30c2a6391efceda052f2c728dbf52a4285a16f8951e723de61f491c4625ebd3a55106885135f820f72c9838b8b6f69d4f4a7cce779ea78ef3caa18460f7ab771d458f86ae9752fd633d1450fbd687190a331bdf14d60d3b676c7659ba6e86f989755d826d3b2dcc1cf8289591c9f7b72ce1acde51b40edd40e45db3b774560543add07bfb609cc50e36c1b940cc3202f4e4beb46eec004057f755d32ecbdaccc29c910d028da954b220f8de44a7a7f71c2978c141157edb1efc3284a3f5f2bc91b50e9c09166c01cd88210af1d515f75d357fb08dc6cd99a5016c5cc5791685f59149dd7f682b0f0175bfaf0ec7d7dc17bd6a216282816f37b0eb1f4290db32ba8915cefa78ce7af51028abd42b87ad2c99cd7c5121fa7fc714de4539f1481805bc846dc9ee143380c564728ce57e08393847c9c72ab58da82c221aa953e83a5da5084af8d74027d9a657ec84415ddf2698c8cdfc0ec04739ab260d6a9e52a202c33a78be7881131993e84f112ff1e6ee571b404b9273da73a25405b6a085fce44e94138557b0de239a0b2ebdbd778c7e3c1c471203befc55e0fb95a531ae925cf6a3bb067fd9994147cdb015b248d173d609cc22bf14dc10c6a99faa0ce723010a11588876ec3206cc1ab8011fffa1293edba0f23f46a8171eacdcbdc914c199e5b494e26ddde454651c0877b98db7",
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 1043656296,
+      "direction": "c2s",
+      "bytes": 1280,
+      "crc32": 4244503586,
+      "crc32c": 645405717,
+      "feedback": false,
+      "wire_hex": "c3000000010434b8b9b204a14410d1405b71c793fb35317c99230f4788fd22d3d0cc1ae76889025634b34ccaa6ce74e91c33b883fee2e139f1589c34fb1206ad1edf661ff96b49be19d0a56e16d2f8072b7920ce34d0915f3f72a96418fb4427195caa82fc62211ea30ca00843dd594a7dcd19c8ea70c31143b79ad7b959937356322036daff709b9bfd69eeaba4f6a7db18d867a7e389b98cb14aea791bba9d61be091d9072a75c9157482ae2d4bbdb9b6f14952ffbb4683f62f1dda122e0aba142ea6724823501c6ce0f587224c4768684fd1624335197d93eb39fb2cca4a1c5fd6d3d7aaf2a888ebc654657acd2ba19d5fdb75364b84a8bb7a208709bbf6bfc381ac5837caad5036785e55cd6fda6bb4af50ecb51d1a4c120907c9845c77b413a52ccb2db7ae9e5659626cb8603d5c7e0ee11a8227ee771ac8cf5fbecfa46e60a890f91e47a27864d143669d4292c8ec4a6253d67b6a19299b57d7a293339eb8101cc8dcf1a52d79568fd81fbd7328a4629a069f44589e146b777445b2226eb8ccfda0416c2a459cae43f39274837f3c92e6c0087d408c905dfe9d3546a017dce549dd101cb1fbeec0581a98091ff00b7529137fe703e343f3ea1a00f22ef2aa61b1b73b5411e6a24b609d6a48717de9e5d8101b15673b8e51f3e6df4b3dcd696a7c86cb0822313c16f36abb7214bc5242b4bc09e64830d57f74544ccef3c921aabe431cf5e88935c056bb27c2c29fa5c0415ec56d27ef15787cf0c175c1eeef87269491d092b5fc1d8ec832efefa9e9b5d83b23b69d6e11870c70597f6fa93d6d172fe29e9db01986a89197515aac9b5ac718cd7cd23d7b5a031876bdfcd56223b85d1e10eb6f177cc0dab83b0f76748b66d8b7e872c13aa44212698a6b9997ec669b2eaa1f96c2cee8d963e1ec1d08fa81d8689c124bdbac55d332e993c6c3dfe2953ef9b678669db869b8304a313738c4607fb30728276f5852ec178d287aa47d3fdc226a5d3807bca912cd71c1966d8f24d06ebecfaa4f3ae675c6986e811d97257180de4ba733223dfc26f835316e5f66ede674e0c4f6042af74a7b655d87ea8e15a59484d5f6210ebd05ab92b3fe9215339695151ebcbdb905778684dd8d824604e0845ed339e1a0d23edadb9e56447817de5c3d57e94676c2d0c24fa7221255ffc5b24421a997bed1652ba633a0e5f0309688c4f2d7ffde6766e4e660c3add05dac0ed400eeb2adcb693e9efdd0154549f1d10258807444da841ff2d5d02e318ad127f62b59b2ed279eb94da03c3c17108c8f6e5671b3a17186e676920d559dfa3191ee9270acb9b0c0e073351f03c8291cf1dcf50bbf59f832251635f897a866ce4ca1f09b368b6c8d52e12caa9c5b0ffef7d47285b720d5a0bea9244000e4d059892bcad3fa2759196efbb1ae2dcfe1ccf4ecf0244d05cca83e545134a0a6b20520bb10b852c106b9a1a7fdb36d94fcff58d834cf6d154544f06c9ee7227960814ec0d8178bb8b28590ba706761087cd92a2aaf6533a97a9b7eacb40e2c62e792e1e5ed477e6000000010434b8b9b204a14410d1403e621d097720c197e3fe381fa85712615673fd1da759a063512af96681db60fe741c45062177e90011f1706f86837ec0d08faf5e464774d7ee275f802477ea4f34b8b9b28cc680fa6ce89077bbf03cb77134a506285729fee7516af6918327234aefeba05522dc5ae6d8fe4e883d9e302b6cf7c560ac9830854433a2737c164e6c239de237089ac927f3d0bbcb1509e4cd260b6044e861de5a23243d200f0d090387873e17",
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 1141592012,
+      "direction": "s2c",
+      "bytes": 41,
+      "crc32": 2223706053,
+      "crc32c": 2101954764,
+      "feedback": false,
+      "wire_hex": null,
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 1142449058,
+      "direction": "s2c",
+      "bytes": 1280,
+      "crc32": 323496697,
+      "crc32c": 1325857273,
+      "feedback": false,
+      "wire_hex": null,
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 1143302066,
+      "direction": "s2c",
+      "bytes": 1280,
+      "crc32": 1025415654,
+      "crc32c": 895104609,
+      "feedback": false,
+      "wire_hex": null,
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 1144974094,
+      "direction": "s2c",
+      "bytes": 299,
+      "crc32": 929734909,
+      "crc32c": 2665718505,
+      "feedback": false,
+      "wire_hex": null,
+      "parity": null,
+      "initial": false,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 1243725413,
+      "direction": "c2s",
+      "bytes": 74,
+      "crc32": 360519345,
+      "crc32c": 3240045777,
+      "feedback": false,
+      "wire_hex": "e3000000010434b8b9b204a14410d14039e9d39d582bd192f9d3aeaf1abd91ba07da3f655ec1cb303e9fa3c39fca05a8b83830f4fe6f4409553028af8e807f1d4c42680ae4be4eded2d1",
+      "parity": null,
+      "initial": false,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 1243822001,
+      "direction": "c2s",
+      "bytes": 74,
+      "crc32": 2859403649,
+      "crc32c": 1293020799,
+      "feedback": false,
+      "wire_hex": "e2000000010434b8b9b204a14410d140397a06de53b17bbf106a1a99696b67d76fafe0349f0565852b4cc039ec2cf9be297e4f0bcb37293c0a8d62a472e06093bb94e8e3512ae13ebd13",
+      "parity": null,
+      "initial": false,
+      "dropped": false,
+      "peer_port": 47641
+    },
+    {
+      "at_ns": 1249910703,
+      "direction": "c2s",
+      "bytes": 30,
+      "crc32": 2492902790,
+      "crc32c": 2326930742,
+      "feedback": false,
+      "wire_hex": "5a34b8b9b2fe219b015cc3bf2f0df1b14f5caaed72d062a33dc0912580f5",
+      "parity": null,
+      "initial": false,
+      "dropped": false,
+      "peer_port": 47641
+    }
+  ]
+}

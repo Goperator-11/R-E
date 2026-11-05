@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "units": {
+    "time": "ms",
+    "bytes": "UDP payload bytes",
+    "rate": "Mbps"
+  },
+  "features": {
+    "c2s_loss": true,
+    "s2c_loss": true,
+    "uplink_serialization": true,
+    "amplification_limit": true,
+    "preflight_ack": true,
+    "trailing_race": true,
+    "second_round_loss": true,
+    "processing_delay": true,
+    "rtt_inflation": true,
+    "retransmissions": true,
+    "presample_pto": true,
+    "token_retry": true,
+    "destination_changes": true
+  },
+  "channel": {
+    "lost_consumes_uplink": false,
+    "preserve_ge_across_connections": false,
+    "jitter_mean_ms": 0.0
+  },
+  "server": {
+    "mode": "granular",
+    "packet_bytes": 1280,
+    "iw_packets": 32,
+    "preflight_ack_bytes": 41,
+    "preflight_ack_coalesce_ms": 0.0,
+    "decoder_max_datagram_bytes": 1452,
+    "max_wire_datagram_bytes": 1472,
+    "s0_mlkem_bytes": 1472.0,
+    "s0_classical_bytes": 382.45,
+    "packet_overhead_bytes": 41.983,
+    "retry_bytes": 100
+  },
+  "fec": {
+    "parity_overhead_base": 39,
+    "parity_overhead_per_k": 6,
+    "lead_mode": "buffered",
+    "hold_margin_ms": 1.0,
+    "retransmission_shape": "full",
+    "response_xor": true,
+    "hold_ttl_ms": 1000.0,
+    "hold_recent_ms": 3000.0,
+    "hold_flight_memory_bytes": 32768,
+    "hold_uplink_source": "fixed",
+    "hold_uplink_kbps": 2000
+  },
+  "timers": {
+    "initial_pto_ms": 200.0,
+    "rfc_initial_pto_ms": 999.0,
+    "use_rfc_initial_pto": false,
+    "sampled_pto_multiplier": 3.0,
+    "initial_probe_packets": 2,
+    "loss_time_multiplier": 1.125,
+    "loss_timer_extra_ms": 0.0,
+    "max_pto_backoff": 8,
+    "max_time_ms": 120000.0,
+    "max_events": 20000
+  },
+  "processing": {
+    "default_ms": 2.6,
+    "conditions": {}
+  },
+  "race": {
+    "delay_ms": [
+      0.0,
+      0.133,
+      0.266,
+      0.355,
+      0.533,
+      0.71,
+      1.066
+    ],
+    "survival_probability": [
+      1.0,
+      0.996,
+      0.972,
+      0.64,
+      0.404,
+      0.212,
+      0.004
+    ],
+    "jitter_factor": 1.0,
+    "zero_at_last_knot": true
+  },
+  "compatibility": {
+    "initial_pto_ms": 200.86,
+    "ack_slope": 1.125,
+    "ack_base_ms": 1.424,
+    "sampled_pto_multiplier": 3.0,
+    "later": "v3"
+  },
+  "provenance": {
+    "scope": "v3.1 calibration defaults, frozen separately from later policy changes",
+    "server_packet_iw": "TASKS.md W0 and audit-quicgo-source.md; P=1280, iw=32",
+    "preflight_ack": "A0 and audit-quicgo-source.md; 41 B observed, per-arrival ACK approximation with configurable coalescing",
+    "packetization": "padfec/policy.py S0_BASE_MLKEM=1472, S0_BASE_X25519=382.45, C_PKT_POLICY_DEFAULT=41.983; empirical packetization approximation",
+    "parity_size": "v3.1 padfec/policy.py PARITY_OVERHEAD_BASE=39, PER_K=6; not future J7 format",
+    "race": "v3.1 padfec/policy.py RACE_DELAY_MS/RACE_WIN_Q; d>=1.066 returns zero",
+    "processing": "A0 03_j3_decomposition.json: 2 percent pooled (0,3,1) one-RTT offset 2.610030 ms; card default 2.6",
+    "initial_pto": "quic-go v0.61.0 initialRTT 100ms gives no-sample PTO 200ms; RFC alternative 999ms from W0 card",
+    "compatibility_timers": "v3.1 padfec/policy.py: measured 200.86, ACK 1.125*RTT+1.424, sampled 3*RTT",
+    "transport_limits": "runs/W0_transport_review.md; server amp-limited PTO suppression, ACK range qualified 9/8 loss, tail PTO",
+    "loss_before_rate": "W0 required default; A5-09/A7-M04; external Linux source revalidation not claimed",
+    "m1": "D20 receiver-observed first parity anchor; single connection valid metadata simulation. Other W0 parameters unchanged.",
+    "m1_v33fix": "V33FIX 2026-11-02: the receiver deadline uses the Go default -lead-hold-uplink-kbps 2000 (D20) unless hold_uplink_source is context, an explicit diagnostic oracle. Stack outputs no longer resume server sending; only an arriving original does, as in the W0 off path. Parity arriving after server ready or ready scheduling is credited without recovery, as in the W0 off path."
+  }
+}

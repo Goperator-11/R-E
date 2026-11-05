@@ -1,0 +1,19 @@
+{
+  "path": "g3\\v33\\E12_l1_reference_v1.json",
+  "sha256": "fb06e5d3fe7de1ad08278ff986759a38060cd63ee3e736f852ee73f10a854fc5",
+  "arrivals": 44,
+  "classes": 1080,
+  "observations": 432,
+  "cache_steps": 288,
+  "invalid_arrivals": 31,
+  "sources": {
+    "g3/l1_go_reference_gen.py": "34e7680536592fb830a8fc65c92ca38081791d0b5211856127227c26d0488805",
+    "experiments/replay_g3.py": "8d0981daf1b882c09a221446fa95ca447e00e449754d78fb3463e5c01cbe954d",
+    "padfec3/learn3.py": "80f924c67b28b5030de4195fa2856c655a3c5a59fe34780f34d98518a0ae4452",
+    "padfec3/decide3.py": "72e6f388651df35d2e70cb52c65c71e5ec6a0d496ad95400e623544a3fb880ba",
+    "padfec3/layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+    "padfec/policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+    "padfec/quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "padfec/table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb"
+  }
+}

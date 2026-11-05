@@ -1,0 +1,14 @@
+/home/scien/quicbed_gen33/stage.zJV3Mg/build_record/qamp: go1.26.6
+	path	pqafec/quicbed/cmd/qamp
+	mod	pqafec/quicbed	(devel)	
+	dep	github.com/quic-go/quic-go	v0.61.0	h1:ui88A53s8MSVYLC56en0KQ17HARk+9986Dn0SBfKNvA=
+	dep	golang.org/x/crypto	v0.54.0	h1:YLIA59K4fiNzHzjnZt2tUJQjQtUWfWbeHBqKtk3eScw=
+	dep	golang.org/x/net	v0.56.0	h1:Rw8j/hFzGvJUZwNBXnAtf5sVDVt+65SK2C7IxCxZt5o=
+	dep	golang.org/x/sys	v0.47.0	h1:o7XGOvZQCADBQQ4Y7VNq2dRWQR7JmOUW8Kxx4ZsNgWs=
+	build	-buildmode=exe
+	build	-compiler=gc
+	build	-trimpath=true
+	build	CGO_ENABLED=0
+	build	GOARCH=amd64
+	build	GOOS=linux
+	build	GOAMD64=v1

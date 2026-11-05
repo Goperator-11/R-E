@@ -1,0 +1,25 @@
+{"job": ["off", "l1", "ideal", "B1"], "exit_code": 0}
+{"job": ["off", "l1", "none", "B1"], "exit_code": 0}
+{"job": ["off", "l1", "c1", "B1"], "exit_code": 0}
+{"job": ["off", "l1", "c1", "B12_c6000"], "exit_code": 0}
+{"job": ["off", "l1", "none", "B12_c6000"], "exit_code": 0}
+{"job": ["off", "l1", "ideal", "B12_c6000"], "exit_code": 0}
+{"job": ["off", "m1", "none", "B1"], "exit_code": 0}
+{"job": ["off", "m1", "none", "B12_c6000"], "exit_code": 0}
+{"job": ["hold", "l1", "none", "B1"], "exit_code": 0}
+{"job": ["hold", "l1", "none", "B12_c6000"], "exit_code": 0}
+{"job": ["hold", "l1", "c1", "B1"], "exit_code": 0}
+{"job": ["off", "m1", "c1", "B1"], "exit_code": 0}
+{"job": ["off", "m1", "ideal", "B1"], "exit_code": 0}
+{"job": ["off", "m1", "c1", "B12_c6000"], "exit_code": 0}
+{"job": ["hold", "l1", "c1", "B12_c6000"], "exit_code": 0}
+{"job": ["hold", "l1", "ideal", "B1"], "exit_code": 0}
+{"job": ["off", "m1", "ideal", "B12_c6000"], "exit_code": 0}
+{"job": ["hold", "l1", "ideal", "B12_c6000"], "exit_code": 0}
+{"job": ["hold", "m1", "none", "B1"], "exit_code": 0}
+{"job": ["hold", "m1", "c1", "B1"], "exit_code": 0}
+{"job": ["hold", "m1", "ideal", "B1"], "exit_code": 0}
+{"job": ["hold", "m1", "none", "B12_c6000"], "exit_code": 0}
+{"job": ["hold", "m1", "c1", "B12_c6000"], "exit_code": 0}
+{"job": ["hold", "m1", "ideal", "B12_c6000"], "exit_code": 0}
+{"status": "complete", "jobs": 24}

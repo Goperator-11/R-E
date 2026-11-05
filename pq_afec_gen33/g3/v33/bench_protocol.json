@@ -1,0 +1,522 @@
+{
+  "schema": "padfec.v33.benchmark/1",
+  "data_kind": "development_independent_world_simulation",
+  "seeds": [
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50
+  ],
+  "c_pkt": 41.983,
+  "generations": {
+    "v31": {
+      "source_root": "C:/dev/pq_afec_gen31"
+    },
+    "v32": {
+      "source_root": "C:/dev/pq_afec_gen32"
+    },
+    "current": {
+      "source_root": "C:/dev/pq_afec_gen33"
+    }
+  },
+  "baseline_generations": [
+    "v31",
+    "v32"
+  ],
+  "scenarios": [
+    {
+      "id": "B1",
+      "family": "B1",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 16000
+      },
+      "phases": [
+        {
+          "length": 450,
+          "p": 0.02
+        },
+        {
+          "length": 450,
+          "p": 0.15
+        },
+        {
+          "length": 450,
+          "p": 0.02
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B2",
+      "family": "B2",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 16000
+      },
+      "phases": [
+        {
+          "length": 450,
+          "p": 0.02
+        },
+        {
+          "length": 450,
+          "p": 0.25
+        },
+        {
+          "length": 450,
+          "p": 0.02
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B3_u0",
+      "family": "B3",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 0,
+        "cert_bytes": 2955
+      },
+      "phases": [
+        {
+          "length": 1600,
+          "p": 0
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B3_u2",
+      "family": "B3",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 2955
+      },
+      "phases": [
+        {
+          "length": 1600,
+          "p": 0
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B4",
+      "family": "B4",
+      "context": {
+        "k": 1,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 0,
+        "cert_bytes": 4032
+      },
+      "phases": [
+        {
+          "length": 1600,
+          "p": 0
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B5",
+      "family": "B5",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 9000
+      },
+      "phases": [
+        {
+          "length": 450,
+          "p": 0.02,
+          "cert_bytes": 9000
+        },
+        {
+          "length": 450,
+          "p": 0.02,
+          "cert_bytes": 16000
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B6",
+      "family": "B6",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 9000
+      },
+      "phases": [
+        {
+          "length": 1350,
+          "p": 0.02
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false,
+      "mixture": [
+        {
+          "weight": 0.5,
+          "context": {
+            "cert_bytes": 9000
+          }
+        },
+        {
+          "weight": 0.5,
+          "context": {
+            "cert_bytes": 16000
+          }
+        }
+      ]
+    },
+    {
+      "id": "B7",
+      "family": "B7",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 9000
+      },
+      "phases": [
+        {
+          "length": 1350,
+          "p": 0.02,
+          "s2c_loss": 0.01
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B8_j10",
+      "family": "B8",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 16000
+      },
+      "phases": [
+        {
+          "length": 1350,
+          "p": 0.02,
+          "jitter_mean_ms": 10
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B8_j20",
+      "family": "B8",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 16000
+      },
+      "phases": [
+        {
+          "length": 1350,
+          "p": 0.02,
+          "jitter_mean_ms": 20
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B9",
+      "family": "B9",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 2,
+        "cert_bytes": 2955
+      },
+      "phases": [
+        {
+          "length": 1350,
+          "p": 0.02
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": true,
+      "mixture": [
+        {
+          "weight": 0.65,
+          "context": {
+            "cert_bytes": 2955
+          }
+        },
+        {
+          "weight": 0.35,
+          "context": {
+            "cert_bytes": 16000
+          }
+        }
+      ]
+    },
+    {
+      "id": "B10",
+      "family": "B10",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 50,
+        "uplink_mbps": 0,
+        "cert_bytes": 4032
+      },
+      "phases": [
+        {
+          "length": 1350,
+          "p": 0.15,
+          "loss_model": "ge",
+          "burst_length": 3
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B11",
+      "family": "B11",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 200,
+        "uplink_mbps": 2,
+        "cert_bytes": 9000
+      },
+      "phases": [
+        {
+          "length": 450,
+          "p": 0.02
+        },
+        {
+          "length": 450,
+          "p": 0.15
+        },
+        {
+          "length": 450,
+          "p": 0.02
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B12_c6000",
+      "family": "B12",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 120,
+        "uplink_mbps": 10,
+        "cert_bytes": 6000
+      },
+      "phases": [
+        {
+          "length": 450,
+          "p": 0.01
+        },
+        {
+          "length": 450,
+          "p": 0.08
+        },
+        {
+          "length": 450,
+          "p": 0.01
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    },
+    {
+      "id": "B12_c12000",
+      "family": "B12",
+      "context": {
+        "k": 2,
+        "w": 1280,
+        "p": 0.02,
+        "rtt_ms": 120,
+        "uplink_mbps": 5,
+        "cert_bytes": 12000
+      },
+      "phases": [
+        {
+          "length": 450,
+          "p": 0.01
+        },
+        {
+          "length": 450,
+          "p": 0.08
+        },
+        {
+          "length": 450,
+          "p": 0.01
+        }
+      ],
+      "world_params": {},
+      "reset_each_connection": false
+    }
+  ],
+  "diagnostic_variants": {
+    "guard_off": [
+      "B1",
+      "B2"
+    ],
+    "reeval_off": [
+      "B1",
+      "B2"
+    ]
+  },
+  "oracle": {
+    "stage_sizes": [
+      64,
+      256,
+      1024,
+      4096,
+      16384
+    ],
+    "selection_seed": 840001,
+    "validation_seed": 850001,
+    "validation_samples": 131072,
+    "min_elimination_samples": 1024,
+    "indifference_ms": 0.025,
+    "confidence": 0.99,
+    "m_max": 4,
+    "original_max_bytes": 1452,
+    "wire_max_bytes": 1472,
+    "method": "independent_integer_action_grid_paired_mc",
+    "formal_distribution_free_certificate": false
+  },
+  "observation": {
+    "cold_start": true,
+    "truth_initialization": false,
+    "baseline_c1": false,
+    "rtt": "minimum valid observed RTT including failed connections, or minimum successful HCT until RTT exists",
+    "uplink": "scenario configured true uplink retained as baseline scope",
+    "allowed_fields": [
+      "action",
+      "hct_ms",
+      "ok",
+      "k_obs",
+      "srv_bytes",
+      "rtt_ms",
+      "j_pred"
+    ],
+    "future_c1": "separate CRC and first-flight feedback adapter, no raw world arrivals"
+  },
+  "metrics": {
+    "paired_confidence": 0.95,
+    "ci_unit": "seed",
+    "p_bias_high_phase_last_n": 200,
+    "transition_alarm_exclusion": 100,
+    "cold_alarm_exclusion": 100,
+    "delay_consecutive": 5,
+    "adaptation_consecutive": 2,
+    "adaptation_near_optimal_ms": 0.5,
+    "extra_bytes": "whole-connection server read bytes minus paired b0; historical first-flight counters separate",
+    "regret": "action-frequency weighted independent MC expected gap, seed interval and shared MC uncertainty separate",
+    "mixture_oracle": "distribution-aware action before random chain; no realized-chain clairvoyance",
+    "oracle_threshold_decision": "pass only upper seed CI plus MC bound plus selection-gap bound below threshold; fail if lower bound exceeds; otherwise inconclusive",
+    "suboptimal_episode_epsilon_ms": 0.5,
+    "suboptimal_episode_gap_merge": 0
+  },
+  "thresholds": {
+    "B1_regret_ms": 0.1,
+    "B2_regret_ms": 0.5,
+    "B1_abs_p_bias": 0.005,
+    "B4_extra_bytes": 1855,
+    "B5_adaptation_connections": 2,
+    "max_regression_vs_v31_ms": 0.5
+  },
+  "scope_notes": [
+    "B1 S16000 means cert_bytes16000 per audit sim_core; actual server flight is separately packetized.",
+    "B12 contains historical held-out cells now exposed to development; it is not a new confirmatory holdout.",
+    "W0 tail and Initial-count calibration limitations remain; no policy outcomes tune world parameters.",
+    "Scenario lengths unspecified by the task use 1350, zero-loss uses1600, certificate replacement450+450. B8 uses bigcert16000 and p.02. These are protocol choices.",
+    "B9 each connection has a new opaque destination identifier; no chain information is in the identifier.",
+    "No test changes or new policy implementation are part of baseline capture."
+  ],
+  "world": {
+    "profile": "default",
+    "source_sha256": {
+      "worldsim.py": "8f86bb520af2d18d03f9188f14104bc988af680665f705dbe0121b83d391e374",
+      "worldparams.json": "57e9352c5ff778fd278772e496fbbfe74a685ef7ba49b3849b40df45648db6ed"
+    }
+  },
+  "comparators": {
+    "b0": [
+      0,
+      0,
+      0
+    ],
+    "global_fixed": [
+      0,
+      3,
+      1
+    ],
+    "note": "same seed and connection; diagnostic realized HCT and server bytes, no parameter selection from results"
+  }
+}

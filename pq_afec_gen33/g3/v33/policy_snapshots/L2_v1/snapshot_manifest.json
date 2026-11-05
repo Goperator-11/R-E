@@ -1,0 +1,33 @@
+{
+  "schema": "padfec.v33.policy_snapshot/1",
+  "source_root": "C:\\dev\\pq_afec_gen33",
+  "snapshot_root": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\L2_v1",
+  "files": {
+    "afec/__init__.py": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+    "afec/cache.py": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+    "afec/channel.py": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7",
+    "afec/controller.py": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+    "afec/estimator.py": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+    "afec/handshake.py": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+    "afec/rs.py": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f",
+    "afec/sim.py": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+    "padfec/__init__.py": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+    "padfec/amplif.py": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+    "padfec/capacity.py": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+    "padfec/codec.py": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+    "padfec/policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+    "padfec/quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "padfec/table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "padfec3/__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+    "padfec3/decide3.py": "5fb9cc1e5fc095865bd2cf4dc8269acdf65c046efc9c58f9c64f3a3ec6d022e5",
+    "padfec3/layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+    "padfec3/learn3.py": "b0410c9c429c23e7956181f4fdb2e82cf552d858b3393e3647c8fa11dd289d04"
+  },
+  "source_and_snapshot_byte_identical": true,
+  "epsilon_calibration": "adaptive",
+  "created_kst": "2026-10-31T13:01:41.730141+09:00",
+  "script_path": "C:\\dev\\codex_handoff\\v33\\runs\\l2_snapshot_policy.py",
+  "script_sha256": "1e1cfe304fbd72a132bbe1237bc186a875c940aff27961451a21a18edfb58976",
+  "state_version": 5,
+  "inventory_scope": "all .py files in afec, padfec, padfec3; source bytes only"
+}

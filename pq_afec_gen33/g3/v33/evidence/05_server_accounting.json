@@ -1,0 +1,5890 @@
+{
+  "schema": "padfec.v33.a0/1",
+  "generated_kst": "2026-10-30T01:48:47+09:00",
+  "root": "C:\\dev\\pq_afec_gen33",
+  "inputs": [
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_AA_bigcert_units.jsonl",
+      "sha256": "96dd69f318f3e47a5736e6d11cc089453b03404a890a53faa244010ed247d8de",
+      "bytes": 2428948,
+      "fingerprints": [
+        "abac4d1b9169072d"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 6,
+      "selected_units": 6
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_C_2955_l0_units.jsonl",
+      "sha256": "1d0278aee75fc940e90f0adac71ed5f0c5ad611bbcf391e90152d8857653c3a2",
+      "bytes": 2605560,
+      "fingerprints": [
+        "a73211ee725b0a0e"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 100,
+      "selected_units": 100
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_C_bigcert_l2_units.jsonl",
+      "sha256": "2cd87cbe901d991932085303fe080474065a5dbe57c662dabeab62cf8e985e16",
+      "bytes": 2625081,
+      "fingerprints": [
+        "1c5276d6b8909afd"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 100,
+      "selected_units": 100
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p11_2955_l0_units.jsonl",
+      "sha256": "790ac491313b04f0b69c8d42c49e60aac696d2110e8f8f0c067fde2f3fdd1f6a",
+      "bytes": 3189293,
+      "fingerprints": [
+        "1dd012fc2b193922"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p11_2955_l2_units.jsonl",
+      "sha256": "0a4ae914becb95ff319b670b5a89b593aabf1d7f807e47174a8e032b2ebe8aa5",
+      "bytes": 3192953,
+      "fingerprints": [
+        "0ebfac73c031e650"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p11_2955_l5_units.jsonl",
+      "sha256": "e93ca4fe80b3bfb6d4b42ee0243144685cba94a13e0672c2c376a2cd48bc1a52",
+      "bytes": 3193488,
+      "fingerprints": [
+        "a4678bd17ca70ad7"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p11_9000_l0_units.jsonl",
+      "sha256": "a257122583f4f1e5ae9d1fb22be401fd7b53c40cc5bf285c8bf0a8a71e56c9c1",
+      "bytes": 3204921,
+      "fingerprints": [
+        "b069112357e8408b"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p11_9000_l2_units.jsonl",
+      "sha256": "1f754212ac1e0e295ad44beab3c0940f9f8ea2dec490d20b6d53414edaecc19f",
+      "bytes": 3204857,
+      "fingerprints": [
+        "2b00c026199b6248"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p11_9000_l5_units.jsonl",
+      "sha256": "84b29def328dfefc47e5f6ea6c75a853bb2478511a7a41555aa94efc365d0be9",
+      "bytes": 3205794,
+      "fingerprints": [
+        "6fed9dd765717a91"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p15_4032_l0_units.jsonl",
+      "sha256": "b56cf5ee524aaa1ba3acdf9ae23c2751206648bc6106fac4cbafd9ba2f76622d",
+      "bytes": 3153285,
+      "fingerprints": [
+        "eb0a6c935f408a0b"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p15_4032_l2_units.jsonl",
+      "sha256": "ace5a904b169abaf363b22814b6fd40303ee315e0c2da8ee3a465478a066490f",
+      "bytes": 3154534,
+      "fingerprints": [
+        "987e66fbe4828f46"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p15_4032_l5_units.jsonl",
+      "sha256": "0131c95ed4f5afbff38bfb21103680ce5b1972874c8bb076fb459dbc3adb1a57",
+      "bytes": 3156235,
+      "fingerprints": [
+        "3fec3b56f0e75fc6"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p17_mbps2_units.jsonl",
+      "sha256": "8cbcb8d23ae31c742a184c709b934645527ec9a6e2698087f1b198d3773b09ef",
+      "bytes": 8802476,
+      "fingerprints": [
+        "fdfb31991fe0845a"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p17_unlimited_units.jsonl",
+      "sha256": "a89a79b47c084c2fa9a2316c1a00eb8e680b0a3835d51da7ff8e8c3784926fd1",
+      "bytes": 8784747,
+      "fingerprints": [
+        "0e1e2e92a11c5da3"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_D_p18_burst3_units.jsonl",
+      "sha256": "3310740813a8d999b70f8927dcbb60bf17360ab146272810d63437361a4ee71e",
+      "bytes": 3211958,
+      "fingerprints": [
+        "2669569e56660312"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_H_h_c12000_r120_u5_units.jsonl",
+      "sha256": "dbcc6c90e677aff406014219f5ec8ca1f19a7b2a63b795cf62ef67921d08bece",
+      "bytes": 3578460,
+      "fingerprints": [
+        "d222b2ab166a9089"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 6,
+      "selected_units": 6
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_H_h_c14000_r120_u5_units.jsonl",
+      "sha256": "7a593610e753b047ea0b6023fc94dcd4ba7d4970f544df86c712bf8c776fac23",
+      "bytes": 3573682,
+      "fingerprints": [
+        "a4bb0b3dec843803"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 6,
+      "selected_units": 6
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_H_h_c6000_r120_u10_units.jsonl",
+      "sha256": "33123d7b1de06963be104dcde1c170a771dc121990c7a5ca4a704df0abaeb346",
+      "bytes": 3558508,
+      "fingerprints": [
+        "de445bc651d306a4"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 6,
+      "selected_units": 6
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_H_h_c8000_r120_u10_units.jsonl",
+      "sha256": "f16470458cf5b01419428ab72935a41f460007fd9997e07fd07a6aceb3a4dc20",
+      "bytes": 3561552,
+      "fingerprints": [
+        "b21bd28fd20e9934"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 6,
+      "selected_units": 6
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_R_c6000_r80_u10_units.jsonl",
+      "sha256": "9c72f906d7f937a42ef236ecf27887cdd0d5a54aa8d4dfb1aa83cb09bfb3df2f",
+      "bytes": 3536326,
+      "fingerprints": [
+        "dacb345eef9a7a2c"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 6,
+      "selected_units": 6
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_S_bigcert_units.jsonl",
+      "sha256": "2e8c129920bce96d1cb10349e5047a58b8a470d3da30246f73a6b97a63f3478d",
+      "bytes": 11229367,
+      "fingerprints": [
+        "fcc9f81dbad94971"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_S_rtt200_units.jsonl",
+      "sha256": "4d00530a99b466f22be1665cfc148456ea7a4c8250c785c0f99f03c8d3162229",
+      "bytes": 11073426,
+      "fingerprints": [
+        "ea366cd1b616c1d1"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_SEQ_mbps2_l15_units.jsonl",
+      "sha256": "5852cbe187e5833054064c15201653a8b952b639531f8626c86ab1ce8ed99cc0",
+      "bytes": 1477729,
+      "fingerprints": [
+        "3a0f13ebf32f9f97"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run2_S_bigcert_units.jsonl",
+      "sha256": "1fc6e1b15a0a7353043c9e6b8ef6459be4cfe0a9693c2c8f80b390ed0e1b2457",
+      "bytes": 8856680,
+      "fingerprints": [
+        "12209706751eb179"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    },
+    {
+      "path": "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run2_S_rtt200_units.jsonl",
+      "sha256": "fe6c482ffee14d1057ebd1b9958a283c820a822775d79f16636906d5cfe7f21e",
+      "bytes": 8742547,
+      "fingerprints": [
+        "c0b4f57121fb349a"
+      ],
+      "duplicate_records": [],
+      "ignored_torn_last_line": null,
+      "schema_errors": [],
+      "nonempty_lines": 10,
+      "selected_units": 10
+    }
+  ],
+  "source_sha256": {
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\01_posterior_trajectories.py": "5262de065cfd3d86c8c92bb02b421ae92d0a73769803cd9a306e2d9e6eaf0d5f",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\02_baseline_contamination.py": "4c0dcb6baa20aeb74b8117e4935dd543b8e3ce3912ed94bf9309b065adcfecc9",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\03_j3_decomposition.py": "d9d8c4037f0f34620bf04ecace9580867e6ad35935b1bb98e70a57217ed10032",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\04_burst_model.py": "acfef5e66a428907253f3d1260b8bf2d53e8e42423e9eb91f9813dcd172e3f20",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\05_server_accounting.py": "2b2f26c23717ac03138e887fc1adb249273d1383c6cad12e1831165a6890d895",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\06_server_size_bins.py": "dca5aaa3dfc4dff1c130cbe0822c42096b8c9b4852277033a031e6b183bbbd5a",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\07_rtt200_probes.py": "1e1037cc8271dce95415646b1943f5a8978a8f743b616589ce8bbe3b7264e821",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\evidence\\common.py": "836059cc6cf71db8b7fdb14ce620663a47eed9a8810a7a57eda8871b72ede216",
+    "C:\\dev\\pq_afec_gen33\\padfec\\policy.py": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+    "C:\\dev\\pq_afec_gen33\\padfec\\quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "C:\\dev\\pq_afec_gen33\\padfec\\table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\decide3.py": "72e6f388651df35d2e70cb52c65c71e5ec6a0d496ad95400e623544a3fb880ba",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+    "C:\\dev\\pq_afec_gen33\\padfec3\\learn3.py": "a78a69b057179e633b9dbc8cbfac57bbfc9a68b25ecc47853c9e6f6b42b9044e"
+  },
+  "item": "A0-5",
+  "data_kind": "measurement_reanalysis",
+  "source_scripts": [
+    "audit-measurement/srvbytes.py",
+    "audit-measurement/s11_bytes.py",
+    "audit-measurement/jl.py"
+  ],
+  "definitions": {
+    "server_counter": "segments[].server_delta를 합산한다. 누적 server_after를 합산하지 않는다.",
+    "denominator": "반환 행 수. 계획 연결 수도 별도로 출력한다.",
+    "lossless": "서버 수신량과 송신량을 대조할 수 있는 조건이며 종료 패킷 등 계측 범위 차이가 남는다.",
+    "lossy": "server_received_bytes는 손실 뒤 서버 수신량이다. 클라이언트 송신량으로 이름을 바꾸지 않는다.",
+    "first_flight": "행별 first_flight_bytes + first_flight_parity_bytes. 연결 전체 바이트와 별도 통계다.",
+    "missing": "필수 계수 중 하나라도 누락된 그룹은 연결당 계수를 null로 표시한다."
+  },
+  "results": [
+    {
+      "run": "run1",
+      "condition": "AA_bigcert",
+      "arm": "g2m3",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 4643310,
+        "parities": 2326,
+        "originals": 1925,
+        "recovered": 204,
+        "credit_parities": 766
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1733120,
+        "bytes_parity": 3582591,
+        "parity_sent": 2706
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6552.682222222223,
+      "server_received_bytes_per_returned_connection_B": 10318.466666666667,
+      "server_received_parities_per_returned_connection": 5.168888888888889,
+      "client_counted_bytes_per_returned_connection_B": 11812.691111111111,
+      "client_counted_parities_per_returned_connection": 6.013333333333334
+    },
+    {
+      "run": "run1",
+      "condition": "AA_bigcert",
+      "arm": "g2m3",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 1350,
+      "planned_connections": 1350,
+      "ok_connections": 1350,
+      "server_delta_sum": {
+        "bytes_in": 13937820,
+        "parities": 6957,
+        "originals": 5806,
+        "recovered": 585,
+        "credit_parities": 2306
+      },
+      "client_stats_sum": {
+        "bytes_orig": 5219840,
+        "bytes_parity": 10791312,
+        "parity_sent": 8151
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6554.60962962963,
+      "server_received_bytes_per_returned_connection_B": 10324.31111111111,
+      "server_received_parities_per_returned_connection": 5.153333333333333,
+      "client_counted_bytes_per_returned_connection_B": 11860.112592592594,
+      "client_counted_parities_per_returned_connection": 6.0377777777777775
+    },
+    {
+      "run": "run1",
+      "condition": "AA_bigcert",
+      "arm": "g2m3",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 1350,
+      "planned_connections": 1350,
+      "ok_connections": 1350,
+      "server_delta_sum": {
+        "bytes_in": 15933765,
+        "parities": 7945,
+        "originals": 6647,
+        "recovered": 79,
+        "credit_parities": 2651
+      },
+      "client_stats_sum": {
+        "bytes_orig": 5184000,
+        "bytes_parity": 10723923,
+        "parity_sent": 8100
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6555.6466666666665,
+      "server_received_bytes_per_returned_connection_B": 11802.788888888888,
+      "server_received_parities_per_returned_connection": 5.885185185185185,
+      "client_counted_bytes_per_returned_connection_B": 11783.646666666667,
+      "client_counted_parities_per_returned_connection": 6.0
+    },
+    {
+      "run": "run1",
+      "condition": "AA_bigcert",
+      "arm": "g2m3",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 2700,
+      "planned_connections": 2700,
+      "ok_connections": 2700,
+      "server_delta_sum": {
+        "bytes_in": 29871585,
+        "parities": 14902,
+        "originals": 12453,
+        "recovered": 664,
+        "credit_parities": 4957
+      },
+      "client_stats_sum": {
+        "bytes_orig": 10403840,
+        "bytes_parity": 21515235,
+        "parity_sent": 16251
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6555.128148148148,
+      "server_received_bytes_per_returned_connection_B": 11063.55,
+      "server_received_parities_per_returned_connection": 5.519259259259259,
+      "client_counted_bytes_per_returned_connection_B": 11821.87962962963,
+      "client_counted_parities_per_returned_connection": 6.018888888888889
+    },
+    {
+      "run": "run1",
+      "condition": "AA_bigcert",
+      "arm": "g2m3B",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 4644581,
+        "parities": 2313,
+        "originals": 1917,
+        "recovered": 190,
+        "credit_parities": 780
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1747200,
+        "bytes_parity": 3610647,
+        "parity_sent": 2727
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6556.306666666666,
+      "server_received_bytes_per_returned_connection_B": 10321.291111111112,
+      "server_received_parities_per_returned_connection": 5.14,
+      "client_counted_bytes_per_returned_connection_B": 11906.326666666666,
+      "client_counted_parities_per_returned_connection": 6.06
+    },
+    {
+      "run": "run1",
+      "condition": "AA_bigcert",
+      "arm": "g2m3B",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 1350,
+      "planned_connections": 1350,
+      "ok_connections": 1350,
+      "server_delta_sum": {
+        "bytes_in": 13966025,
+        "parities": 6947,
+        "originals": 5808,
+        "recovered": 552,
+        "credit_parities": 2309
+      },
+      "client_stats_sum": {
+        "bytes_orig": 5223680,
+        "bytes_parity": 10799823,
+        "parity_sent": 8157
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6555.988888888889,
+      "server_received_bytes_per_returned_connection_B": 10345.203703703704,
+      "server_received_parities_per_returned_connection": 5.145925925925926,
+      "client_counted_bytes_per_returned_connection_B": 11869.26148148148,
+      "client_counted_parities_per_returned_connection": 6.042222222222223
+    },
+    {
+      "run": "run1",
+      "condition": "AA_bigcert",
+      "arm": "g2m3B",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 1350,
+      "planned_connections": 1350,
+      "ok_connections": 1350,
+      "server_delta_sum": {
+        "bytes_in": 15895939,
+        "parities": 7923,
+        "originals": 6675,
+        "recovered": 88,
+        "credit_parities": 2648
+      },
+      "client_stats_sum": {
+        "bytes_orig": 5184000,
+        "bytes_parity": 10723572,
+        "parity_sent": 8100
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6555.386666666666,
+      "server_received_bytes_per_returned_connection_B": 11774.769629629629,
+      "server_received_parities_per_returned_connection": 5.868888888888889,
+      "client_counted_bytes_per_returned_connection_B": 11783.386666666667,
+      "client_counted_parities_per_returned_connection": 6.0
+    },
+    {
+      "run": "run1",
+      "condition": "AA_bigcert",
+      "arm": "g2m3B",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 2700,
+      "planned_connections": 2700,
+      "ok_connections": 2700,
+      "server_delta_sum": {
+        "bytes_in": 29861964,
+        "parities": 14870,
+        "originals": 12483,
+        "recovered": 640,
+        "credit_parities": 4957
+      },
+      "client_stats_sum": {
+        "bytes_orig": 10407680,
+        "bytes_parity": 21523395,
+        "parity_sent": 16257
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6555.687777777778,
+      "server_received_bytes_per_returned_connection_B": 11059.986666666666,
+      "server_received_parities_per_returned_connection": 5.507407407407407,
+      "client_counted_bytes_per_returned_connection_B": 11826.324074074075,
+      "client_counted_parities_per_returned_connection": 6.021111111111111
+    },
+    {
+      "run": "run1",
+      "condition": "C_2955_l0",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 99,
+      "segments": 1,
+      "returned_connections": 8,
+      "planned_connections": 8,
+      "ok_connections": 8,
+      "server_delta_sum": {
+        "bytes_in": 78936,
+        "parities": 36,
+        "originals": 32,
+        "recovered": 0,
+        "credit_parities": 12
+      },
+      "client_stats_sum": {
+        "bytes_orig": 30720,
+        "bytes_parity": 23976,
+        "parity_sent": 18
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5557,
+      "server_received_bytes_per_returned_connection_B": 9867.0,
+      "server_received_parities_per_returned_connection": 4.5,
+      "client_counted_bytes_per_returned_connection_B": 6837.0,
+      "client_counted_parities_per_returned_connection": 2.25
+    },
+    {
+      "run": "run1",
+      "condition": "C_2955_l0",
+      "arm": "g2auto",
+      "scope": "loss_percent=0.0",
+      "last_block_index": 99,
+      "segments": 100,
+      "returned_connections": 800,
+      "planned_connections": 800,
+      "ok_connections": 800,
+      "server_delta_sum": {
+        "bytes_in": 7821511,
+        "parities": 3555,
+        "originals": 3190,
+        "recovered": 0,
+        "credit_parities": 1200
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3072000,
+        "bytes_parity": 2446223,
+        "parity_sent": 1837
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5556.91375,
+      "server_received_bytes_per_returned_connection_B": 9776.88875,
+      "server_received_parities_per_returned_connection": 4.44375,
+      "client_counted_bytes_per_returned_connection_B": 6897.77875,
+      "client_counted_parities_per_returned_connection": 2.29625
+    },
+    {
+      "run": "run1",
+      "condition": "C_2955_l0",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 99,
+      "segments": 100,
+      "returned_connections": 800,
+      "planned_connections": 800,
+      "ok_connections": 800,
+      "server_delta_sum": {
+        "bytes_in": 7821511,
+        "parities": 3555,
+        "originals": 3190,
+        "recovered": 0,
+        "credit_parities": 1200
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3072000,
+        "bytes_parity": 2446223,
+        "parity_sent": 1837
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5556.91375,
+      "server_received_bytes_per_returned_connection_B": 9776.88875,
+      "server_received_parities_per_returned_connection": 4.44375,
+      "client_counted_bytes_per_returned_connection_B": 6897.77875,
+      "client_counted_parities_per_returned_connection": 2.29625
+    },
+    {
+      "run": "run1",
+      "condition": "C_2955_l0",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 99,
+      "segments": 1,
+      "returned_connections": 8,
+      "planned_connections": 8,
+      "ok_connections": 8,
+      "server_delta_sum": {
+        "bytes_in": 77824,
+        "parities": 35,
+        "originals": 32,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 30720,
+        "bytes_parity": 46552,
+        "parity_sent": 35
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7227.5,
+      "server_received_bytes_per_returned_connection_B": 9728.0,
+      "server_received_parities_per_returned_connection": 4.375,
+      "client_counted_bytes_per_returned_connection_B": 9659.0,
+      "client_counted_parities_per_returned_connection": 4.375
+    },
+    {
+      "run": "run1",
+      "condition": "C_2955_l0",
+      "arm": "g3auto",
+      "scope": "loss_percent=0.0",
+      "last_block_index": 99,
+      "segments": 100,
+      "returned_connections": 800,
+      "planned_connections": 800,
+      "ok_connections": 800,
+      "server_delta_sum": {
+        "bytes_in": 7776905,
+        "parities": 3499,
+        "originals": 3201,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3072000,
+        "bytes_parity": 4649524,
+        "parity_sent": 3499
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7222.05,
+      "server_received_bytes_per_returned_connection_B": 9721.13125,
+      "server_received_parities_per_returned_connection": 4.37375,
+      "client_counted_bytes_per_returned_connection_B": 9651.905,
+      "client_counted_parities_per_returned_connection": 4.37375
+    },
+    {
+      "run": "run1",
+      "condition": "C_2955_l0",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 99,
+      "segments": 100,
+      "returned_connections": 800,
+      "planned_connections": 800,
+      "ok_connections": 800,
+      "server_delta_sum": {
+        "bytes_in": 7776905,
+        "parities": 3499,
+        "originals": 3201,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3072000,
+        "bytes_parity": 4649524,
+        "parity_sent": 3499
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7222.05,
+      "server_received_bytes_per_returned_connection_B": 9721.13125,
+      "server_received_parities_per_returned_connection": 4.37375,
+      "client_counted_bytes_per_returned_connection_B": 9651.905,
+      "client_counted_parities_per_returned_connection": 4.37375
+    },
+    {
+      "run": "run1",
+      "condition": "C_bigcert_l2",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 99,
+      "segments": 1,
+      "returned_connections": 8,
+      "planned_connections": 8,
+      "ok_connections": 8,
+      "server_delta_sum": {
+        "bytes_in": 77875,
+        "parities": 36,
+        "originals": 38,
+        "recovered": 2,
+        "credit_parities": 12
+      },
+      "client_stats_sum": {
+        "bytes_orig": 30720,
+        "bytes_parity": 47715,
+        "parity_sent": 36
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5563.375,
+      "server_received_bytes_per_returned_connection_B": 9734.375,
+      "server_received_parities_per_returned_connection": 4.5,
+      "client_counted_bytes_per_returned_connection_B": 9804.375,
+      "client_counted_parities_per_returned_connection": 4.5
+    },
+    {
+      "run": "run1",
+      "condition": "C_bigcert_l2",
+      "arm": "g2auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 99,
+      "segments": 100,
+      "returned_connections": 800,
+      "planned_connections": 800,
+      "ok_connections": 800,
+      "server_delta_sum": {
+        "bytes_in": 7813983,
+        "parities": 3469,
+        "originals": 3938,
+        "recovered": 39,
+        "credit_parities": 1154
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3083520,
+        "bytes_parity": 4702992,
+        "parity_sent": 3552
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5517.22,
+      "server_received_bytes_per_returned_connection_B": 9767.47875,
+      "server_received_parities_per_returned_connection": 4.33625,
+      "client_counted_bytes_per_returned_connection_B": 9733.14,
+      "client_counted_parities_per_returned_connection": 4.44
+    },
+    {
+      "run": "run1",
+      "condition": "C_bigcert_l2",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 99,
+      "segments": 100,
+      "returned_connections": 800,
+      "planned_connections": 800,
+      "ok_connections": 800,
+      "server_delta_sum": {
+        "bytes_in": 7813983,
+        "parities": 3469,
+        "originals": 3938,
+        "recovered": 39,
+        "credit_parities": 1154
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3083520,
+        "bytes_parity": 4702992,
+        "parity_sent": 3552
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5517.22,
+      "server_received_bytes_per_returned_connection_B": 9767.47875,
+      "server_received_parities_per_returned_connection": 4.33625,
+      "client_counted_bytes_per_returned_connection_B": 9733.14,
+      "client_counted_parities_per_returned_connection": 4.44
+    },
+    {
+      "run": "run1",
+      "condition": "C_bigcert_l2",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 99,
+      "segments": 1,
+      "returned_connections": 8,
+      "planned_connections": 8,
+      "ok_connections": 8,
+      "server_delta_sum": {
+        "bytes_in": 76781,
+        "parities": 34,
+        "originals": 34,
+        "recovered": 0,
+        "credit_parities": 20
+      },
+      "client_stats_sum": {
+        "bytes_orig": 30720,
+        "bytes_parity": 46480,
+        "parity_sent": 35
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7218.5,
+      "server_received_bytes_per_returned_connection_B": 9597.625,
+      "server_received_parities_per_returned_connection": 4.25,
+      "client_counted_bytes_per_returned_connection_B": 9650.0,
+      "client_counted_parities_per_returned_connection": 4.375
+    },
+    {
+      "run": "run1",
+      "condition": "C_bigcert_l2",
+      "arm": "g3auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 99,
+      "segments": 100,
+      "returned_connections": 800,
+      "planned_connections": 800,
+      "ok_connections": 800,
+      "server_delta_sum": {
+        "bytes_in": 7691142,
+        "parities": 3447,
+        "originals": 3285,
+        "recovered": 30,
+        "credit_parities": 2067
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3078400,
+        "bytes_parity": 4658960,
+        "parity_sent": 3506
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7222.245,
+      "server_received_bytes_per_returned_connection_B": 9613.9275,
+      "server_received_parities_per_returned_connection": 4.30875,
+      "client_counted_bytes_per_returned_connection_B": 9671.7,
+      "client_counted_parities_per_returned_connection": 4.3825
+    },
+    {
+      "run": "run1",
+      "condition": "C_bigcert_l2",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 99,
+      "segments": 100,
+      "returned_connections": 800,
+      "planned_connections": 800,
+      "ok_connections": 800,
+      "server_delta_sum": {
+        "bytes_in": 7691142,
+        "parities": 3447,
+        "originals": 3285,
+        "recovered": 30,
+        "credit_parities": 2067
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3078400,
+        "bytes_parity": 4658960,
+        "parity_sent": 3506
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7222.245,
+      "server_received_bytes_per_returned_connection_B": 9613.9275,
+      "server_received_parities_per_returned_connection": 4.30875,
+      "client_counted_bytes_per_returned_connection_B": 9671.7,
+      "client_counted_parities_per_returned_connection": 4.3825
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l0",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1157664,
+        "parities": 402,
+        "originals": 640,
+        "recovered": 0,
+        "credit_parities": 50
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 283500,
+        "parity_sent": 213
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 4241.4,
+      "server_received_bytes_per_returned_connection_B": 7235.4,
+      "server_received_parities_per_returned_connection": 2.5125,
+      "client_counted_bytes_per_returned_connection_B": 5611.875,
+      "client_counted_parities_per_returned_connection": 1.33125,
+      "expected": {
+        "server_bytes_per_conn": {
+          "actual": 7235.4,
+          "expected_from_source": 7235,
+          "difference": 0.3999999999996362,
+          "exact_match": false,
+          "definition": "마지막 블록의 정수 B 반올림값"
+        }
+      }
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l0",
+      "arm": "g2auto",
+      "scope": "loss_percent=0.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 17601372,
+        "parities": 8579,
+        "originals": 6391,
+        "recovered": 0,
+        "credit_parities": 2792
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 6033739,
+        "parity_sent": 4532
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6155.071875,
+      "server_received_bytes_per_returned_connection_B": 11000.8575,
+      "server_received_parities_per_returned_connection": 5.361875,
+      "client_counted_bytes_per_returned_connection_B": 7611.086875,
+      "client_counted_parities_per_returned_connection": 2.8325
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l0",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 17601372,
+        "parities": 8579,
+        "originals": 6391,
+        "recovered": 0,
+        "credit_parities": 2792
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 6033739,
+        "parity_sent": 4532
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6155.071875,
+      "server_received_bytes_per_returned_connection_B": 11000.8575,
+      "server_received_parities_per_returned_connection": 5.361875,
+      "client_counted_bytes_per_returned_connection_B": 7611.086875,
+      "client_counted_parities_per_returned_connection": 2.8325,
+      "expected": {
+        "client_parity": {
+          "actual": 4532,
+          "expected_from_source": 4532,
+          "difference": 0,
+          "exact_match": true,
+          "definition": "실행 전체 클라이언트 계수"
+        },
+        "server_parity": {
+          "actual": 8579,
+          "expected_from_source": 8579,
+          "difference": 0,
+          "exact_match": true,
+          "definition": "실행 전체 서버 수신 계수"
+        },
+        "server_bytes_per_conn": {
+          "actual": 11000.8575,
+          "expected_from_source": 11001,
+          "difference": -0.14249999999992724,
+          "exact_match": false,
+          "definition": "감사 문서의 정수 B 반올림값"
+        }
+      }
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l0",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1688208,
+        "parities": 800,
+        "originals": 640,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 1062768,
+        "parity_sent": 800
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7886.3,
+      "server_received_bytes_per_returned_connection_B": 10551.3,
+      "server_received_parities_per_returned_connection": 5.0,
+      "client_counted_bytes_per_returned_connection_B": 10482.3,
+      "client_counted_parities_per_returned_connection": 5.0,
+      "expected": {
+        "server_bytes_per_conn": {
+          "actual": 10551.3,
+          "expected_from_source": 10551,
+          "difference": 0.2999999999992724,
+          "exact_match": false,
+          "definition": "마지막 블록의 정수 B 반올림값"
+        }
+      }
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l0",
+      "arm": "g3auto",
+      "scope": "loss_percent=0.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16872881,
+        "parities": 7991,
+        "originals": 6401,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10618300,
+        "parity_sent": 7991
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.55,
+      "server_received_bytes_per_returned_connection_B": 10545.550625,
+      "server_received_parities_per_returned_connection": 4.994375,
+      "client_counted_bytes_per_returned_connection_B": 10476.4375,
+      "client_counted_parities_per_returned_connection": 4.994375
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l0",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16872881,
+        "parities": 7991,
+        "originals": 6401,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10618300,
+        "parity_sent": 7991
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.55,
+      "server_received_bytes_per_returned_connection_B": 10545.550625,
+      "server_received_parities_per_returned_connection": 4.994375,
+      "client_counted_bytes_per_returned_connection_B": 10476.4375,
+      "client_counted_parities_per_returned_connection": 4.994375,
+      "expected": {
+        "client_parity": {
+          "actual": 7991,
+          "expected_from_source": 7991,
+          "difference": 0,
+          "exact_match": true,
+          "definition": "실행 전체 클라이언트 계수"
+        },
+        "server_parity": {
+          "actual": 7991,
+          "expected_from_source": 7991,
+          "difference": 0,
+          "exact_match": true,
+          "definition": "실행 전체 서버 수신 계수"
+        },
+        "server_bytes_per_conn": {
+          "actual": 10545.550625,
+          "expected_from_source": 10546,
+          "difference": -0.4493750000001455,
+          "exact_match": false,
+          "definition": "감사 문서의 정수 B 반올림값"
+        }
+      }
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l2",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1772600,
+        "parities": 875,
+        "originals": 629,
+        "recovered": 4,
+        "credit_parities": 292
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 651012,
+        "parity_sent": 489
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6357.4,
+      "server_received_bytes_per_returned_connection_B": 11078.75,
+      "server_received_parities_per_returned_connection": 5.46875,
+      "client_counted_bytes_per_returned_connection_B": 7908.825,
+      "client_counted_parities_per_returned_connection": 3.05625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l2",
+      "arm": "g2auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 18126231,
+        "parities": 9079,
+        "originals": 6265,
+        "recovered": 93,
+        "credit_parities": 3054
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6146560,
+        "bytes_parity": 6574760,
+        "parity_sent": 4939
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6451.2625,
+      "server_received_bytes_per_returned_connection_B": 11328.894375,
+      "server_received_parities_per_returned_connection": 5.674375,
+      "client_counted_bytes_per_returned_connection_B": 7950.825,
+      "client_counted_parities_per_returned_connection": 3.086875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l2",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 18126231,
+        "parities": 9079,
+        "originals": 6265,
+        "recovered": 93,
+        "credit_parities": 3054
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6146560,
+        "bytes_parity": 6574760,
+        "parity_sent": 4939
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6451.2625,
+      "server_received_bytes_per_returned_connection_B": 11328.894375,
+      "server_received_parities_per_returned_connection": 5.674375,
+      "client_counted_bytes_per_returned_connection_B": 7950.825,
+      "client_counted_parities_per_returned_connection": 3.086875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l2",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1653276,
+        "parities": 779,
+        "originals": 626,
+        "recovered": 5,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 1062748,
+        "parity_sent": 800
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7886.175,
+      "server_received_bytes_per_returned_connection_B": 10332.975,
+      "server_received_parities_per_returned_connection": 4.86875,
+      "client_counted_bytes_per_returned_connection_B": 10482.175,
+      "client_counted_parities_per_returned_connection": 5.0
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l2",
+      "arm": "g3auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16532071,
+        "parities": 7823,
+        "originals": 6271,
+        "recovered": 88,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10621472,
+        "parity_sent": 7993
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.8875,
+      "server_received_bytes_per_returned_connection_B": 10332.544375,
+      "server_received_parities_per_returned_connection": 4.889375,
+      "client_counted_bytes_per_returned_connection_B": 10478.42,
+      "client_counted_parities_per_returned_connection": 4.995625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l2",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16532071,
+        "parities": 7823,
+        "originals": 6271,
+        "recovered": 88,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10621472,
+        "parity_sent": 7993
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.8875,
+      "server_received_bytes_per_returned_connection_B": 10332.544375,
+      "server_received_parities_per_returned_connection": 4.889375,
+      "client_counted_bytes_per_returned_connection_B": 10478.42,
+      "client_counted_parities_per_returned_connection": 4.995625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l5",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1749087,
+        "parities": 875,
+        "originals": 611,
+        "recovered": 26,
+        "credit_parities": 295
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 634791,
+        "parity_sent": 477
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6354.71875,
+      "server_received_bytes_per_returned_connection_B": 10931.79375,
+      "server_received_parities_per_returned_connection": 5.46875,
+      "client_counted_bytes_per_returned_connection_B": 7807.44375,
+      "client_counted_parities_per_returned_connection": 2.98125
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l5",
+      "arm": "g2auto",
+      "scope": "loss_percent=5.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 17566882,
+        "parities": 8772,
+        "originals": 6086,
+        "recovered": 217,
+        "credit_parities": 2943
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6150400,
+        "bytes_parity": 6513716,
+        "parity_sent": 4894
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6415.5775,
+      "server_received_bytes_per_returned_connection_B": 10979.30125,
+      "server_received_parities_per_returned_connection": 5.4825,
+      "client_counted_bytes_per_returned_connection_B": 7915.0725,
+      "client_counted_parities_per_returned_connection": 3.05875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l5",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 17566882,
+        "parities": 8772,
+        "originals": 6086,
+        "recovered": 217,
+        "credit_parities": 2943
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6150400,
+        "bytes_parity": 6513716,
+        "parity_sent": 4894
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6415.5775,
+      "server_received_bytes_per_returned_connection_B": 10979.30125,
+      "server_received_parities_per_returned_connection": 5.4825,
+      "client_counted_bytes_per_returned_connection_B": 7915.0725,
+      "client_counted_parities_per_returned_connection": 3.05875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l5",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1602652,
+        "parities": 752,
+        "originals": 618,
+        "recovered": 17,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 1063144,
+        "parity_sent": 800
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7888.65,
+      "server_received_bytes_per_returned_connection_B": 10016.575,
+      "server_received_parities_per_returned_connection": 4.7,
+      "client_counted_bytes_per_returned_connection_B": 10484.65,
+      "client_counted_parities_per_returned_connection": 5.0
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l5",
+      "arm": "g3auto",
+      "scope": "loss_percent=5.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16000826,
+        "parities": 7571,
+        "originals": 6076,
+        "recovered": 236,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10619804,
+        "parity_sent": 7993
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7883.845,
+      "server_received_bytes_per_returned_connection_B": 10000.51625,
+      "server_received_parities_per_returned_connection": 4.731875,
+      "client_counted_bytes_per_returned_connection_B": 10477.3775,
+      "client_counted_parities_per_returned_connection": 4.995625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_2955_l5",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16000826,
+        "parities": 7571,
+        "originals": 6076,
+        "recovered": 236,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10619804,
+        "parity_sent": 7993
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7883.845,
+      "server_received_bytes_per_returned_connection_B": 10000.51625,
+      "server_received_parities_per_returned_connection": 4.731875,
+      "client_counted_bytes_per_returned_connection_B": 10477.3775,
+      "client_counted_parities_per_returned_connection": 4.995625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l0",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1884841,
+        "parities": 951,
+        "originals": 641,
+        "recovered": 0,
+        "credit_parities": 318
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 667020,
+        "parity_sent": 501
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6531.475,
+      "server_received_bytes_per_returned_connection_B": 11780.25625,
+      "server_received_parities_per_returned_connection": 5.94375,
+      "client_counted_bytes_per_returned_connection_B": 8008.875,
+      "client_counted_parities_per_returned_connection": 3.13125
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l0",
+      "arm": "g2auto",
+      "scope": "loss_percent=0.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 18766100,
+        "parities": 9462,
+        "originals": 6399,
+        "recovered": 0,
+        "credit_parities": 3169
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 6648478,
+        "parity_sent": 4994
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6521.18875,
+      "server_received_bytes_per_returned_connection_B": 11728.8125,
+      "server_received_parities_per_returned_connection": 5.91375,
+      "client_counted_bytes_per_returned_connection_B": 7995.29875,
+      "client_counted_parities_per_returned_connection": 3.12125
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l0",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 18766100,
+        "parities": 9462,
+        "originals": 6399,
+        "recovered": 0,
+        "credit_parities": 3169
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 6648478,
+        "parity_sent": 4994
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6521.18875,
+      "server_received_bytes_per_returned_connection_B": 11728.8125,
+      "server_received_parities_per_returned_connection": 5.91375,
+      "client_counted_bytes_per_returned_connection_B": 7995.29875,
+      "client_counted_parities_per_returned_connection": 3.12125
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l0",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1688584,
+        "parities": 800,
+        "originals": 640,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 1063144,
+        "parity_sent": 800
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7888.65,
+      "server_received_bytes_per_returned_connection_B": 10553.65,
+      "server_received_parities_per_returned_connection": 5.0,
+      "client_counted_bytes_per_returned_connection_B": 10484.65,
+      "client_counted_parities_per_returned_connection": 5.0
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l0",
+      "arm": "g3auto",
+      "scope": "loss_percent=0.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16876154,
+        "parities": 7993,
+        "originals": 6402,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10621392,
+        "parity_sent": 7993
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.8375,
+      "server_received_bytes_per_returned_connection_B": 10547.59625,
+      "server_received_parities_per_returned_connection": 4.995625,
+      "client_counted_bytes_per_returned_connection_B": 10478.37,
+      "client_counted_parities_per_returned_connection": 4.995625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l0",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16876154,
+        "parities": 7993,
+        "originals": 6402,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10621392,
+        "parity_sent": 7993
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.8375,
+      "server_received_bytes_per_returned_connection_B": 10547.59625,
+      "server_received_parities_per_returned_connection": 4.995625,
+      "client_counted_bytes_per_returned_connection_B": 10478.37,
+      "client_counted_parities_per_returned_connection": 4.995625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l2",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1838837,
+        "parities": 925,
+        "originals": 629,
+        "recovered": 6,
+        "credit_parities": 311
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 672431,
+        "parity_sent": 505
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6532.39375,
+      "server_received_bytes_per_returned_connection_B": 11492.73125,
+      "server_received_parities_per_returned_connection": 5.78125,
+      "client_counted_bytes_per_returned_connection_B": 8042.69375,
+      "client_counted_parities_per_returned_connection": 3.15625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l2",
+      "arm": "g2auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 18328647,
+        "parities": 9223,
+        "originals": 6279,
+        "recovered": 84,
+        "credit_parities": 3090
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 6658838,
+        "parity_sent": 5002
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6521.08375,
+      "server_received_bytes_per_returned_connection_B": 11455.404375,
+      "server_received_parities_per_returned_connection": 5.764375,
+      "client_counted_bytes_per_returned_connection_B": 8001.77375,
+      "client_counted_parities_per_returned_connection": 3.12625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l2",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 18328647,
+        "parities": 9223,
+        "originals": 6279,
+        "recovered": 84,
+        "credit_parities": 3090
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 6658838,
+        "parity_sent": 5002
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6521.08375,
+      "server_received_bytes_per_returned_connection_B": 11455.404375,
+      "server_received_parities_per_returned_connection": 5.764375,
+      "client_counted_bytes_per_returned_connection_B": 8001.77375,
+      "client_counted_parities_per_returned_connection": 3.12625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l2",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1659331,
+        "parities": 787,
+        "originals": 626,
+        "recovered": 9,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 1063020,
+        "parity_sent": 800
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.875,
+      "server_received_bytes_per_returned_connection_B": 10370.81875,
+      "server_received_parities_per_returned_connection": 4.91875,
+      "client_counted_bytes_per_returned_connection_B": 10483.875,
+      "client_counted_parities_per_returned_connection": 5.0
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l2",
+      "arm": "g3auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16529680,
+        "parities": 7821,
+        "originals": 6292,
+        "recovered": 90,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10622616,
+        "parity_sent": 7994
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.78,
+      "server_received_bytes_per_returned_connection_B": 10331.05,
+      "server_received_parities_per_returned_connection": 4.888125,
+      "client_counted_bytes_per_returned_connection_B": 10479.135,
+      "client_counted_parities_per_returned_connection": 4.99625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l2",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16529680,
+        "parities": 7821,
+        "originals": 6292,
+        "recovered": 90,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10622616,
+        "parity_sent": 7994
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.78,
+      "server_received_bytes_per_returned_connection_B": 10331.05,
+      "server_received_parities_per_returned_connection": 4.888125,
+      "client_counted_bytes_per_returned_connection_B": 10479.135,
+      "client_counted_parities_per_returned_connection": 4.99625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l5",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1805568,
+        "parities": 913,
+        "originals": 609,
+        "recovered": 23,
+        "credit_parities": 303
+      },
+      "client_stats_sum": {
+        "bytes_orig": 616960,
+        "bytes_parity": 668342,
+        "parity_sent": 502
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6531.5125,
+      "server_received_bytes_per_returned_connection_B": 11284.8,
+      "server_received_parities_per_returned_connection": 5.70625,
+      "client_counted_bytes_per_returned_connection_B": 8033.1375,
+      "client_counted_parities_per_returned_connection": 3.1375
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l5",
+      "arm": "g2auto",
+      "scope": "loss_percent=5.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 17894370,
+        "parities": 9034,
+        "originals": 6085,
+        "recovered": 232,
+        "credit_parities": 3017
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6150400,
+        "bytes_parity": 6674438,
+        "parity_sent": 5014
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6533.30125,
+      "server_received_bytes_per_returned_connection_B": 11183.98125,
+      "server_received_parities_per_returned_connection": 5.64625,
+      "client_counted_bytes_per_returned_connection_B": 8015.52375,
+      "client_counted_parities_per_returned_connection": 3.13375
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l5",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 17894370,
+        "parities": 9034,
+        "originals": 6085,
+        "recovered": 232,
+        "credit_parities": 3017
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6150400,
+        "bytes_parity": 6674438,
+        "parity_sent": 5014
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6533.30125,
+      "server_received_bytes_per_returned_connection_B": 11183.98125,
+      "server_received_parities_per_returned_connection": 5.64625,
+      "client_counted_bytes_per_returned_connection_B": 8015.52375,
+      "client_counted_parities_per_returned_connection": 3.13375
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l5",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1628578,
+        "parities": 771,
+        "originals": 612,
+        "recovered": 16,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 614400,
+        "bytes_parity": 1063036,
+        "parity_sent": 800
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.975,
+      "server_received_bytes_per_returned_connection_B": 10178.6125,
+      "server_received_parities_per_returned_connection": 4.81875,
+      "client_counted_bytes_per_returned_connection_B": 10483.975,
+      "client_counted_parities_per_returned_connection": 5.0
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l5",
+      "arm": "g3auto",
+      "scope": "loss_percent=5.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16090911,
+        "parities": 7606,
+        "originals": 6104,
+        "recovered": 203,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10620616,
+        "parity_sent": 7993
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.3525,
+      "server_received_bytes_per_returned_connection_B": 10056.819375,
+      "server_received_parities_per_returned_connection": 4.75375,
+      "client_counted_bytes_per_returned_connection_B": 10477.885,
+      "client_counted_parities_per_returned_connection": 4.995625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p11_9000_l5",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16090911,
+        "parities": 7606,
+        "originals": 6104,
+        "recovered": 203,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6144000,
+        "bytes_parity": 10620616,
+        "parity_sent": 7993
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.3525,
+      "server_received_bytes_per_returned_connection_B": 10056.819375,
+      "server_received_parities_per_returned_connection": 4.75375,
+      "client_counted_bytes_per_returned_connection_B": 10477.885,
+      "client_counted_parities_per_returned_connection": 4.995625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l0",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1625495,
+        "parities": 912,
+        "originals": 480,
+        "recovered": 0,
+        "credit_parities": 304
+      },
+      "client_stats_sum": {
+        "bytes_orig": 409616,
+        "bytes_parity": 1204839,
+        "parity_sent": 912
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5059.69375,
+      "server_received_bytes_per_returned_connection_B": 10159.34375,
+      "server_received_parities_per_returned_connection": 5.7,
+      "client_counted_bytes_per_returned_connection_B": 10090.34375,
+      "client_counted_parities_per_returned_connection": 5.7
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l0",
+      "arm": "g2auto",
+      "scope": "loss_percent=0.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16361290,
+        "parities": 9198,
+        "originals": 4803,
+        "recovered": 0,
+        "credit_parities": 3066
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4097122,
+        "bytes_parity": 12153225,
+        "parity_sent": 9198
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5092.50875,
+      "server_received_bytes_per_returned_connection_B": 10225.80625,
+      "server_received_parities_per_returned_connection": 5.74875,
+      "client_counted_bytes_per_returned_connection_B": 10156.466875,
+      "client_counted_parities_per_returned_connection": 5.74875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l0",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16361290,
+        "parities": 9198,
+        "originals": 4803,
+        "recovered": 0,
+        "credit_parities": 3066
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4097122,
+        "bytes_parity": 12153225,
+        "parity_sent": 9198
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5092.50875,
+      "server_received_bytes_per_returned_connection_B": 10225.80625,
+      "server_received_parities_per_returned_connection": 5.74875,
+      "client_counted_bytes_per_returned_connection_B": 10156.466875,
+      "client_counted_parities_per_returned_connection": 5.74875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l0",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1480928,
+        "parities": 800,
+        "originals": 480,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 409920,
+        "bytes_parity": 1059968,
+        "parity_sent": 800
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6588.8,
+      "server_received_bytes_per_returned_connection_B": 9255.8,
+      "server_received_parities_per_returned_connection": 5.0,
+      "client_counted_bytes_per_returned_connection_B": 9186.8,
+      "client_counted_parities_per_returned_connection": 5.0
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l0",
+      "arm": "g3auto",
+      "scope": "loss_percent=0.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 14803263,
+        "parities": 7995,
+        "originals": 4802,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4099198,
+        "bytes_parity": 10593303,
+        "parity_sent": 7995
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6585.636875,
+      "server_received_bytes_per_returned_connection_B": 9252.039375,
+      "server_received_parities_per_returned_connection": 4.996875,
+      "client_counted_bytes_per_returned_connection_B": 9182.813125,
+      "client_counted_parities_per_returned_connection": 4.996875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l0",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 14803263,
+        "parities": 7995,
+        "originals": 4802,
+        "recovered": 0,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4099198,
+        "bytes_parity": 10593303,
+        "parity_sent": 7995
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6585.636875,
+      "server_received_bytes_per_returned_connection_B": 9252.039375,
+      "server_received_parities_per_returned_connection": 4.996875,
+      "client_counted_bytes_per_returned_connection_B": 9182.813125,
+      "client_counted_parities_per_returned_connection": 4.996875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l2",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1600160,
+        "parities": 898,
+        "originals": 470,
+        "recovered": 6,
+        "credit_parities": 301
+      },
+      "client_stats_sum": {
+        "bytes_orig": 409920,
+        "bytes_parity": 1205667,
+        "parity_sent": 912
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5062.96875,
+      "server_received_bytes_per_returned_connection_B": 10001.0,
+      "server_received_parities_per_returned_connection": 5.6125,
+      "client_counted_bytes_per_returned_connection_B": 10097.41875,
+      "client_counted_parities_per_returned_connection": 5.7
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l2",
+      "arm": "g2auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16121560,
+        "parities": 9066,
+        "originals": 4714,
+        "recovered": 55,
+        "credit_parities": 3022
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4106348,
+        "bytes_parity": 12221589,
+        "parity_sent": 9246
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5114.5175,
+      "server_received_bytes_per_returned_connection_B": 10075.975,
+      "server_received_parities_per_returned_connection": 5.66625,
+      "client_counted_bytes_per_returned_connection_B": 10204.960625,
+      "client_counted_parities_per_returned_connection": 5.77875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l2",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16121560,
+        "parities": 9066,
+        "originals": 4714,
+        "recovered": 55,
+        "credit_parities": 3022
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4106348,
+        "bytes_parity": 12221589,
+        "parity_sent": 9246
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5114.5175,
+      "server_received_bytes_per_returned_connection_B": 10075.975,
+      "server_received_parities_per_returned_connection": 5.66625,
+      "client_counted_bytes_per_returned_connection_B": 10204.960625,
+      "client_counted_parities_per_returned_connection": 5.77875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l2",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1449063,
+        "parities": 783,
+        "originals": 469,
+        "recovered": 7,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 409920,
+        "bytes_parity": 1059860,
+        "parity_sent": 800
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6588.125,
+      "server_received_bytes_per_returned_connection_B": 9056.64375,
+      "server_received_parities_per_returned_connection": 4.89375,
+      "client_counted_bytes_per_returned_connection_B": 9186.125,
+      "client_counted_parities_per_returned_connection": 5.0
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l2",
+      "arm": "g3auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 14521599,
+        "parities": 7848,
+        "originals": 4705,
+        "recovered": 66,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4099198,
+        "bytes_parity": 10593231,
+        "parity_sent": 7995
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6585.591875,
+      "server_received_bytes_per_returned_connection_B": 9075.999375,
+      "server_received_parities_per_returned_connection": 4.905,
+      "client_counted_bytes_per_returned_connection_B": 9182.768125,
+      "client_counted_parities_per_returned_connection": 4.996875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l2",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 14521599,
+        "parities": 7848,
+        "originals": 4705,
+        "recovered": 66,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4099198,
+        "bytes_parity": 10593231,
+        "parity_sent": 7995
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6585.591875,
+      "server_received_bytes_per_returned_connection_B": 9075.999375,
+      "server_received_parities_per_returned_connection": 4.905,
+      "client_counted_bytes_per_returned_connection_B": 9182.768125,
+      "client_counted_parities_per_returned_connection": 4.996875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l5",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1580365,
+        "parities": 899,
+        "originals": 448,
+        "recovered": 21,
+        "credit_parities": 307
+      },
+      "client_stats_sum": {
+        "bytes_orig": 409920,
+        "bytes_parity": 1245126,
+        "parity_sent": 942
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5186.11875,
+      "server_received_bytes_per_returned_connection_B": 9877.28125,
+      "server_received_parities_per_returned_connection": 5.61875,
+      "client_counted_bytes_per_returned_connection_B": 10344.0375,
+      "client_counted_parities_per_returned_connection": 5.8875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l5",
+      "arm": "g2auto",
+      "scope": "loss_percent=5.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 15806862,
+        "parities": 8913,
+        "originals": 4584,
+        "recovered": 139,
+        "credit_parities": 2958
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4109178,
+        "bytes_parity": 12364848,
+        "parity_sent": 9354
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5159.439375,
+      "server_received_bytes_per_returned_connection_B": 9879.28875,
+      "server_received_parities_per_returned_connection": 5.570625,
+      "client_counted_bytes_per_returned_connection_B": 10296.26625,
+      "client_counted_parities_per_returned_connection": 5.84625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l5",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 15806862,
+        "parities": 8913,
+        "originals": 4584,
+        "recovered": 139,
+        "credit_parities": 2958
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4109178,
+        "bytes_parity": 12364848,
+        "parity_sent": 9354
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5159.439375,
+      "server_received_bytes_per_returned_connection_B": 9879.28875,
+      "server_received_parities_per_returned_connection": 5.570625,
+      "client_counted_bytes_per_returned_connection_B": 10296.26625,
+      "client_counted_parities_per_returned_connection": 5.84625
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l5",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1407826,
+        "parities": 757,
+        "originals": 460,
+        "recovered": 11,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 409920,
+        "bytes_parity": 1059796,
+        "parity_sent": 800
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6587.725,
+      "server_received_bytes_per_returned_connection_B": 8798.9125,
+      "server_received_parities_per_returned_connection": 4.73125,
+      "client_counted_bytes_per_returned_connection_B": 9185.725,
+      "client_counted_parities_per_returned_connection": 5.0
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l5",
+      "arm": "g3auto",
+      "scope": "loss_percent=5.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 14075126,
+        "parities": 7600,
+        "originals": 4572,
+        "recovered": 150,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4099198,
+        "bytes_parity": 10593567,
+        "parity_sent": 7995
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6585.801875,
+      "server_received_bytes_per_returned_connection_B": 8796.95375,
+      "server_received_parities_per_returned_connection": 4.75,
+      "client_counted_bytes_per_returned_connection_B": 9182.978125,
+      "client_counted_parities_per_returned_connection": 4.996875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p15_4032_l5",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 14075126,
+        "parities": 7600,
+        "originals": 4572,
+        "recovered": 150,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 4099198,
+        "bytes_parity": 10593567,
+        "parity_sent": 7995
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6585.801875,
+      "server_received_bytes_per_returned_connection_B": 8796.95375,
+      "server_received_parities_per_returned_connection": 4.75,
+      "client_counted_bytes_per_returned_connection_B": 9182.978125,
+      "client_counted_parities_per_returned_connection": 4.996875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_mbps2",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 4548316,
+        "parities": 2270,
+        "originals": 1630,
+        "recovered": 174,
+        "credit_parities": 750
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1739520,
+        "bytes_parity": 2237636,
+        "parity_sent": 1684
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6520.366666666667,
+      "server_received_bytes_per_returned_connection_B": 10107.368888888888,
+      "server_received_parities_per_returned_connection": 5.044444444444444,
+      "client_counted_bytes_per_returned_connection_B": 8838.124444444444,
+      "client_counted_parities_per_returned_connection": 3.7422222222222223
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_mbps2",
+      "arm": "g2auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 22670601,
+        "parities": 11363,
+        "originals": 8062,
+        "recovered": 928,
+        "credit_parities": 3786
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8711680,
+        "bytes_parity": 10970756,
+        "parity_sent": 8254
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6522.5453333333335,
+      "server_received_bytes_per_returned_connection_B": 10075.822666666667,
+      "server_received_parities_per_returned_connection": 5.050222222222223,
+      "client_counted_bytes_per_returned_connection_B": 8747.749333333333,
+      "client_counted_parities_per_returned_connection": 3.6684444444444444
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_mbps2",
+      "arm": "g2auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 25817986,
+        "parities": 13007,
+        "originals": 8860,
+        "recovered": 143,
+        "credit_parities": 4369
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8640000,
+        "bytes_parity": 9798477,
+        "parity_sent": 7365
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6516.569333333333,
+      "server_received_bytes_per_returned_connection_B": 11474.660444444444,
+      "server_received_parities_per_returned_connection": 5.780888888888889,
+      "client_counted_bytes_per_returned_connection_B": 8194.878666666667,
+      "client_counted_parities_per_returned_connection": 3.2733333333333334
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_mbps2",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 48488587,
+        "parities": 24370,
+        "originals": 16922,
+        "recovered": 1071,
+        "credit_parities": 8155
+      },
+      "client_stats_sum": {
+        "bytes_orig": 17351680,
+        "bytes_parity": 20769233,
+        "parity_sent": 15619
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6519.557333333333,
+      "server_received_bytes_per_returned_connection_B": 10775.241555555556,
+      "server_received_parities_per_returned_connection": 5.415555555555556,
+      "client_counted_bytes_per_returned_connection_B": 8471.314,
+      "client_counted_parities_per_returned_connection": 3.4708888888888887
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_mbps2",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 4086747,
+        "parities": 1933,
+        "originals": 1575,
+        "recovered": 176,
+        "credit_parities": 597
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1735680,
+        "bytes_parity": 3008904,
+        "parity_sent": 2265
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7886.408888888889,
+      "server_received_bytes_per_returned_connection_B": 9081.66,
+      "server_received_parities_per_returned_connection": 4.295555555555556,
+      "client_counted_bytes_per_returned_connection_B": 10543.52,
+      "client_counted_parities_per_returned_connection": 5.033333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_mbps2",
+      "arm": "g3auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 20300115,
+        "parities": 9600,
+        "originals": 7781,
+        "recovered": 927,
+        "credit_parities": 3426
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8689920,
+        "bytes_parity": 15066412,
+        "parity_sent": 11339
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.703111111111,
+      "server_received_bytes_per_returned_connection_B": 9022.273333333333,
+      "server_received_parities_per_returned_connection": 4.266666666666667,
+      "client_counted_bytes_per_returned_connection_B": 10558.369777777778,
+      "client_counted_parities_per_returned_connection": 5.039555555555555
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_mbps2",
+      "arm": "g3auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 23265978,
+        "parities": 11006,
+        "originals": 8886,
+        "recovered": 126,
+        "credit_parities": 2424
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8640000,
+        "bytes_parity": 14934460,
+        "parity_sent": 11239
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7885.632,
+      "server_received_bytes_per_returned_connection_B": 10340.434666666666,
+      "server_received_parities_per_returned_connection": 4.891555555555556,
+      "client_counted_bytes_per_returned_connection_B": 10477.537777777778,
+      "client_counted_parities_per_returned_connection": 4.995111111111111
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_mbps2",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 43566093,
+        "parities": 20606,
+        "originals": 16667,
+        "recovered": 1053,
+        "credit_parities": 5850
+      },
+      "client_stats_sum": {
+        "bytes_orig": 17329920,
+        "bytes_parity": 30000872,
+        "parity_sent": 22578
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7886.667555555556,
+      "server_received_bytes_per_returned_connection_B": 9681.354,
+      "server_received_parities_per_returned_connection": 4.579111111111111,
+      "client_counted_bytes_per_returned_connection_B": 10517.953777777779,
+      "client_counted_parities_per_returned_connection": 5.017333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_unlimited",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 4527279,
+        "parities": 2284,
+        "originals": 1546,
+        "recovered": 194,
+        "credit_parities": 759
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1742080,
+        "bytes_parity": 1918247,
+        "parity_sent": 1441
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6527.008888888889,
+      "server_received_bytes_per_returned_connection_B": 10060.62,
+      "server_received_parities_per_returned_connection": 5.075555555555556,
+      "client_counted_bytes_per_returned_connection_B": 8134.06,
+      "client_counted_parities_per_returned_connection": 3.2022222222222223
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_unlimited",
+      "arm": "g2auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 22647512,
+        "parities": 11410,
+        "originals": 7763,
+        "recovered": 954,
+        "credit_parities": 3816
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8715520,
+        "bytes_parity": 9650493,
+        "parity_sent": 7251
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6532.304444444444,
+      "server_received_bytes_per_returned_connection_B": 10065.56088888889,
+      "server_received_parities_per_returned_connection": 5.071111111111111,
+      "client_counted_bytes_per_returned_connection_B": 8162.672444444444,
+      "client_counted_parities_per_returned_connection": 3.2226666666666666
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_unlimited",
+      "arm": "g2auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 25830342,
+        "parities": 13017,
+        "originals": 8815,
+        "recovered": 133,
+        "credit_parities": 4363
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8640378,
+        "bytes_parity": 9475629,
+        "parity_sent": 7119
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6532.7,
+      "server_received_bytes_per_returned_connection_B": 11480.152,
+      "server_received_parities_per_returned_connection": 5.785333333333333,
+      "client_counted_bytes_per_returned_connection_B": 8051.558666666667,
+      "client_counted_parities_per_returned_connection": 3.164
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_unlimited",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 48477854,
+        "parities": 24427,
+        "originals": 16578,
+        "recovered": 1087,
+        "credit_parities": 8179
+      },
+      "client_stats_sum": {
+        "bytes_orig": 17355898,
+        "bytes_parity": 19126122,
+        "parity_sent": 14370
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6532.502222222222,
+      "server_received_bytes_per_returned_connection_B": 10772.856444444444,
+      "server_received_parities_per_returned_connection": 5.428222222222222,
+      "client_counted_bytes_per_returned_connection_B": 8107.115555555555,
+      "client_counted_parities_per_returned_connection": 3.1933333333333334
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_unlimited",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 4083509,
+        "parities": 1947,
+        "originals": 1544,
+        "recovered": 194,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1728000,
+        "bytes_parity": 2987648,
+        "parity_sent": 2248
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7889.066666666667,
+      "server_received_bytes_per_returned_connection_B": 9074.464444444444,
+      "server_received_parities_per_returned_connection": 4.326666666666667,
+      "client_counted_bytes_per_returned_connection_B": 10479.217777777778,
+      "client_counted_parities_per_returned_connection": 4.995555555555556
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_unlimited",
+      "arm": "g3auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 20252116,
+        "parities": 9607,
+        "originals": 7662,
+        "recovered": 952,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8640000,
+        "bytes_parity": 14946136,
+        "parity_sent": 11248
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.8968888888885,
+      "server_received_bytes_per_returned_connection_B": 9000.940444444444,
+      "server_received_parities_per_returned_connection": 4.269777777777778,
+      "client_counted_bytes_per_returned_connection_B": 10482.727111111111,
+      "client_counted_parities_per_returned_connection": 4.9991111111111115
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_unlimited",
+      "arm": "g3auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 23291519,
+        "parities": 11029,
+        "originals": 8831,
+        "recovered": 120,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8640000,
+        "bytes_parity": 14938396,
+        "parity_sent": 11242
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7885.626666666667,
+      "server_received_bytes_per_returned_connection_B": 10351.786222222223,
+      "server_received_parities_per_returned_connection": 4.901777777777777,
+      "client_counted_bytes_per_returned_connection_B": 10479.28711111111,
+      "client_counted_parities_per_returned_connection": 4.996444444444444
+    },
+    {
+      "run": "run1",
+      "condition": "D_p17_unlimited",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 43543635,
+        "parities": 20636,
+        "originals": 16493,
+        "recovered": 1072,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 17280000,
+        "bytes_parity": 29884532,
+        "parity_sent": 22490
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7886.761777777778,
+      "server_received_bytes_per_returned_connection_B": 9676.363333333333,
+      "server_received_parities_per_returned_connection": 4.5857777777777775,
+      "client_counted_bytes_per_returned_connection_B": 10481.007111111112,
+      "client_counted_parities_per_returned_connection": 4.997777777777777
+    },
+    {
+      "run": "run1",
+      "condition": "D_p18_burst3",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1676114,
+        "parities": 843,
+        "originals": 570,
+        "recovered": 37,
+        "credit_parities": 284
+      },
+      "client_stats_sum": {
+        "bytes_orig": 655360,
+        "bytes_parity": 726360,
+        "parity_sent": 546
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6503.35,
+      "server_received_bytes_per_returned_connection_B": 10475.7125,
+      "server_received_parities_per_returned_connection": 5.26875,
+      "client_counted_bytes_per_returned_connection_B": 8635.75,
+      "client_counted_parities_per_returned_connection": 3.4125
+    },
+    {
+      "run": "run1",
+      "condition": "D_p18_burst3",
+      "arm": "g2auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16875676,
+        "parities": 8457,
+        "originals": 5727,
+        "recovered": 360,
+        "credit_parities": 2831
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6604800,
+        "bytes_parity": 7364506,
+        "parity_sent": 5534
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6507.855625,
+      "server_received_bytes_per_returned_connection_B": 10547.2975,
+      "server_received_parities_per_returned_connection": 5.285625,
+      "client_counted_bytes_per_returned_connection_B": 8730.81625,
+      "client_counted_parities_per_returned_connection": 3.45875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p18_burst3",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16875676,
+        "parities": 8457,
+        "originals": 5727,
+        "recovered": 360,
+        "credit_parities": 2831
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6604800,
+        "bytes_parity": 7364506,
+        "parity_sent": 5534
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6507.855625,
+      "server_received_bytes_per_returned_connection_B": 10547.2975,
+      "server_received_parities_per_returned_connection": 5.285625,
+      "client_counted_bytes_per_returned_connection_B": 8730.81625,
+      "client_counted_parities_per_returned_connection": 3.45875
+    },
+    {
+      "run": "run1",
+      "condition": "D_p18_burst3",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1435602,
+        "parities": 668,
+        "originals": 554,
+        "recovered": 46,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 629760,
+        "bytes_parity": 1040233,
+        "parity_sent": 783
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7562.675,
+      "server_received_bytes_per_returned_connection_B": 8972.5125,
+      "server_received_parities_per_returned_connection": 4.175,
+      "client_counted_bytes_per_returned_connection_B": 10437.45625,
+      "client_counted_parities_per_returned_connection": 4.89375
+    },
+    {
+      "run": "run1",
+      "condition": "D_p18_burst3",
+      "arm": "g3auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 14578202,
+        "parities": 6803,
+        "originals": 5628,
+        "recovered": 424,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6330880,
+        "bytes_parity": 10692188,
+        "parity_sent": 8047
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7692.320625,
+      "server_received_bytes_per_returned_connection_B": 9111.37625,
+      "server_received_parities_per_returned_connection": 4.251875,
+      "client_counted_bytes_per_returned_connection_B": 10639.4175,
+      "client_counted_parities_per_returned_connection": 5.029375
+    },
+    {
+      "run": "run1",
+      "condition": "D_p18_burst3",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 14578202,
+        "parities": 6803,
+        "originals": 5628,
+        "recovered": 424,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6330880,
+        "bytes_parity": 10692188,
+        "parity_sent": 8047
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7692.320625,
+      "server_received_bytes_per_returned_connection_B": 9111.37625,
+      "server_received_parities_per_returned_connection": 4.251875,
+      "client_counted_bytes_per_returned_connection_B": 10639.4175,
+      "client_counted_parities_per_returned_connection": 5.029375
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c12000_r120_u5",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 300,
+      "planned_connections": 300,
+      "ok_connections": 300,
+      "server_delta_sum": {
+        "bytes_in": 2633644,
+        "parities": 1141,
+        "originals": 1387,
+        "recovered": 72,
+        "credit_parities": 302
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1157120,
+        "bytes_parity": 1647028,
+        "parity_sent": 1244
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5317.143333333333,
+      "server_received_bytes_per_returned_connection_B": 8778.813333333334,
+      "server_received_parities_per_returned_connection": 3.8033333333333332,
+      "client_counted_bytes_per_returned_connection_B": 9347.16,
+      "client_counted_parities_per_returned_connection": 4.1466666666666665
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c12000_r120_u5",
+      "arm": "g2auto",
+      "scope": "loss_percent=1.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9048692,
+        "parities": 4084,
+        "originals": 4452,
+        "recovered": 29,
+        "credit_parities": 1182
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3456000,
+        "bytes_parity": 5445926,
+        "parity_sent": 4113
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5610.5488888888885,
+      "server_received_bytes_per_returned_connection_B": 10054.102222222222,
+      "server_received_parities_per_returned_connection": 4.5377777777777775,
+      "client_counted_bytes_per_returned_connection_B": 9891.028888888888,
+      "client_counted_parities_per_returned_connection": 4.57
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c12000_r120_u5",
+      "arm": "g2auto",
+      "scope": "loss_percent=8.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 8901096,
+        "parities": 4178,
+        "originals": 4152,
+        "recovered": 223,
+        "credit_parities": 1282
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3470080,
+        "bytes_parity": 6005743,
+        "parity_sent": 4536
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5913.753333333333,
+      "server_received_bytes_per_returned_connection_B": 9890.106666666667,
+      "server_received_parities_per_returned_connection": 4.642222222222222,
+      "client_counted_bytes_per_returned_connection_B": 10528.692222222222,
+      "client_counted_parities_per_returned_connection": 5.04
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c12000_r120_u5",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 1800,
+      "planned_connections": 1800,
+      "ok_connections": 1800,
+      "server_delta_sum": {
+        "bytes_in": 17949788,
+        "parities": 8262,
+        "originals": 8604,
+        "recovered": 252,
+        "credit_parities": 2464
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6926080,
+        "bytes_parity": 11451669,
+        "parity_sent": 8649
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5762.151111111111,
+      "server_received_bytes_per_returned_connection_B": 9972.104444444445,
+      "server_received_parities_per_returned_connection": 4.59,
+      "client_counted_bytes_per_returned_connection_B": 10209.860555555555,
+      "client_counted_parities_per_returned_connection": 4.805
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c12000_r120_u5",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 300,
+      "planned_connections": 300,
+      "ok_connections": 300,
+      "server_delta_sum": {
+        "bytes_in": 2988378,
+        "parities": 1414,
+        "originals": 1124,
+        "recovered": 47,
+        "credit_parities": 856
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1169920,
+        "bytes_parity": 2038260,
+        "parity_sent": 1534
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.986666666667,
+      "server_received_bytes_per_returned_connection_B": 9961.26,
+      "server_received_parities_per_returned_connection": 4.713333333333333,
+      "client_counted_bytes_per_returned_connection_B": 10693.933333333332,
+      "client_counted_parities_per_returned_connection": 5.113333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c12000_r120_u5",
+      "arm": "g3auto",
+      "scope": "loss_percent=1.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9396465,
+        "parities": 4449,
+        "originals": 3570,
+        "recovered": 26,
+        "credit_parities": 2639
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3458560,
+        "bytes_parity": 5977500,
+        "parity_sent": 4499
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7881.191111111111,
+      "server_received_bytes_per_returned_connection_B": 10440.516666666666,
+      "server_received_parities_per_returned_connection": 4.943333333333333,
+      "client_counted_bytes_per_returned_connection_B": 10484.511111111111,
+      "client_counted_parities_per_returned_connection": 4.998888888888889
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c12000_r120_u5",
+      "arm": "g3auto",
+      "scope": "loss_percent=8.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 8904134,
+        "parities": 4224,
+        "originals": 3359,
+        "recovered": 173,
+        "credit_parities": 2538
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3496960,
+        "bytes_parity": 6081140,
+        "parity_sent": 4577
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.506666666667,
+      "server_received_bytes_per_returned_connection_B": 9893.482222222223,
+      "server_received_parities_per_returned_connection": 4.693333333333333,
+      "client_counted_bytes_per_returned_connection_B": 10642.333333333334,
+      "client_counted_parities_per_returned_connection": 5.085555555555556
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c12000_r120_u5",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 1800,
+      "planned_connections": 1800,
+      "ok_connections": 1800,
+      "server_delta_sum": {
+        "bytes_in": 18300599,
+        "parities": 8673,
+        "originals": 6929,
+        "recovered": 199,
+        "credit_parities": 5177
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6955520,
+        "bytes_parity": 12058640,
+        "parity_sent": 9076
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.348888888889,
+      "server_received_bytes_per_returned_connection_B": 10166.999444444444,
+      "server_received_parities_per_returned_connection": 4.818333333333333,
+      "client_counted_bytes_per_returned_connection_B": 10563.422222222222,
+      "client_counted_parities_per_returned_connection": 5.042222222222223
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c14000_r120_u5",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 300,
+      "planned_connections": 300,
+      "ok_connections": 300,
+      "server_delta_sum": {
+        "bytes_in": 1845218,
+        "parities": 529,
+        "originals": 1397,
+        "recovered": 62,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1167360,
+        "bytes_parity": 762640,
+        "parity_sent": 576
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 3829.866666666667,
+      "server_received_bytes_per_returned_connection_B": 6150.7266666666665,
+      "server_received_parities_per_returned_connection": 1.7633333333333334,
+      "client_counted_bytes_per_returned_connection_B": 6433.333333333333,
+      "client_counted_parities_per_returned_connection": 1.92
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c14000_r120_u5",
+      "arm": "g2auto",
+      "scope": "loss_percent=1.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 6957084,
+        "parities": 2496,
+        "originals": 4466,
+        "recovered": 21,
+        "credit_parities": 395
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3456000,
+        "bytes_parity": 3347032,
+        "parity_sent": 2528
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 4430.675555555556,
+      "server_received_bytes_per_returned_connection_B": 7730.093333333333,
+      "server_received_parities_per_returned_connection": 2.7733333333333334,
+      "client_counted_bytes_per_returned_connection_B": 7558.924444444445,
+      "client_counted_parities_per_returned_connection": 2.8088888888888888
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c14000_r120_u5",
+      "arm": "g2auto",
+      "scope": "loss_percent=8.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 6805784,
+        "parities": 2560,
+        "originals": 4173,
+        "recovered": 198,
+        "credit_parities": 490
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3500800,
+        "bytes_parity": 3697460,
+        "parity_sent": 2793
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 4616.623333333333,
+      "server_received_bytes_per_returned_connection_B": 7561.982222222222,
+      "server_received_parities_per_returned_connection": 2.8444444444444446,
+      "client_counted_bytes_per_returned_connection_B": 7998.066666666667,
+      "client_counted_parities_per_returned_connection": 3.1033333333333335
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c14000_r120_u5",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 1800,
+      "planned_connections": 1800,
+      "ok_connections": 1800,
+      "server_delta_sum": {
+        "bytes_in": 13762868,
+        "parities": 5056,
+        "originals": 8639,
+        "recovered": 219,
+        "credit_parities": 885
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6956800,
+        "bytes_parity": 7044492,
+        "parity_sent": 5321
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 4523.649444444444,
+      "server_received_bytes_per_returned_connection_B": 7646.037777777778,
+      "server_received_parities_per_returned_connection": 2.8088888888888888,
+      "client_counted_bytes_per_returned_connection_B": 7778.495555555555,
+      "client_counted_parities_per_returned_connection": 2.956111111111111
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c14000_r120_u5",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 300,
+      "planned_connections": 300,
+      "ok_connections": 300,
+      "server_delta_sum": {
+        "bytes_in": 2987000,
+        "parities": 1425,
+        "originals": 1128,
+        "recovered": 62,
+        "credit_parities": 856
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1171200,
+        "bytes_parity": 2039336,
+        "parity_sent": 1535
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7886.906666666667,
+      "server_received_bytes_per_returned_connection_B": 9956.666666666666,
+      "server_received_parities_per_returned_connection": 4.75,
+      "client_counted_bytes_per_returned_connection_B": 10701.786666666667,
+      "client_counted_parities_per_returned_connection": 5.116666666666666
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c14000_r120_u5",
+      "arm": "g3auto",
+      "scope": "loss_percent=1.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9400484,
+        "parities": 4454,
+        "originals": 3569,
+        "recovered": 27,
+        "credit_parities": 2631
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3456000,
+        "bytes_parity": 5971052,
+        "parity_sent": 4494
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7881.426666666666,
+      "server_received_bytes_per_returned_connection_B": 10444.982222222223,
+      "server_received_parities_per_returned_connection": 4.948888888888889,
+      "client_counted_bytes_per_returned_connection_B": 10474.502222222221,
+      "client_counted_parities_per_returned_connection": 4.993333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c14000_r120_u5",
+      "arm": "g3auto",
+      "scope": "loss_percent=8.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 8887827,
+        "parities": 4229,
+        "originals": 3360,
+        "recovered": 196,
+        "credit_parities": 2532
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3504640,
+        "bytes_parity": 6098572,
+        "parity_sent": 4590
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.613333333334,
+      "server_received_bytes_per_returned_connection_B": 9875.363333333333,
+      "server_received_parities_per_returned_connection": 4.698888888888889,
+      "client_counted_bytes_per_returned_connection_B": 10670.235555555555,
+      "client_counted_parities_per_returned_connection": 5.1
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c14000_r120_u5",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 1800,
+      "planned_connections": 1800,
+      "ok_connections": 1800,
+      "server_delta_sum": {
+        "bytes_in": 18288311,
+        "parities": 8683,
+        "originals": 6929,
+        "recovered": 223,
+        "credit_parities": 5163
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6960640,
+        "bytes_parity": 12069624,
+        "parity_sent": 9084
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.52,
+      "server_received_bytes_per_returned_connection_B": 10160.172777777778,
+      "server_received_parities_per_returned_connection": 4.823888888888889,
+      "client_counted_bytes_per_returned_connection_B": 10572.368888888888,
+      "client_counted_parities_per_returned_connection": 5.046666666666667
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c6000_r120_u10",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 300,
+      "planned_connections": 300,
+      "ok_connections": 300,
+      "server_delta_sum": {
+        "bytes_in": 3221787,
+        "parities": 1601,
+        "originals": 1155,
+        "recovered": 57,
+        "credit_parities": 524
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1161867,
+        "bytes_parity": 1394391,
+        "parity_sent": 1048
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6467.74,
+      "server_received_bytes_per_returned_connection_B": 10739.29,
+      "server_received_parities_per_returned_connection": 5.336666666666667,
+      "client_counted_bytes_per_returned_connection_B": 8520.86,
+      "client_counted_parities_per_returned_connection": 3.493333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c6000_r120_u10",
+      "arm": "g2auto",
+      "scope": "loss_percent=1.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9776448,
+        "parities": 4748,
+        "originals": 3682,
+        "recovered": 35,
+        "credit_parities": 1525
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3458694,
+        "bytes_parity": 3634737,
+        "parity_sent": 2730
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6146.958888888889,
+      "server_received_bytes_per_returned_connection_B": 10862.72,
+      "server_received_parities_per_returned_connection": 5.275555555555556,
+      "client_counted_bytes_per_returned_connection_B": 7881.59,
+      "client_counted_parities_per_returned_connection": 3.033333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c6000_r120_u10",
+      "arm": "g2auto",
+      "scope": "loss_percent=8.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9421993,
+        "parities": 4633,
+        "originals": 3463,
+        "recovered": 189,
+        "credit_parities": 1502
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3477915,
+        "bytes_parity": 3985238,
+        "parity_sent": 2995
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6316.732222222222,
+      "server_received_bytes_per_returned_connection_B": 10468.881111111112,
+      "server_received_parities_per_returned_connection": 5.147777777777778,
+      "client_counted_bytes_per_returned_connection_B": 8292.392222222223,
+      "client_counted_parities_per_returned_connection": 3.327777777777778
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c6000_r120_u10",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 1800,
+      "planned_connections": 1800,
+      "ok_connections": 1800,
+      "server_delta_sum": {
+        "bytes_in": 19198441,
+        "parities": 9381,
+        "originals": 7145,
+        "recovered": 224,
+        "credit_parities": 3027
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6936609,
+        "bytes_parity": 7619975,
+        "parity_sent": 5725
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6231.845555555556,
+      "server_received_bytes_per_returned_connection_B": 10665.800555555556,
+      "server_received_parities_per_returned_connection": 5.211666666666667,
+      "client_counted_bytes_per_returned_connection_B": 8086.991111111111,
+      "client_counted_parities_per_returned_connection": 3.1805555555555554
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c6000_r120_u10",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 300,
+      "planned_connections": 300,
+      "ok_connections": 300,
+      "server_delta_sum": {
+        "bytes_in": 2930448,
+        "parities": 1385,
+        "originals": 1110,
+        "recovered": 59,
+        "credit_parities": 553
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1152000,
+        "bytes_parity": 1992908,
+        "parity_sent": 1500
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.026666666667,
+      "server_received_bytes_per_returned_connection_B": 9768.16,
+      "server_received_parities_per_returned_connection": 4.616666666666666,
+      "client_counted_bytes_per_returned_connection_B": 10483.026666666667,
+      "client_counted_parities_per_returned_connection": 5.0
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c6000_r120_u10",
+      "arm": "g3auto",
+      "scope": "loss_percent=1.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9387467,
+        "parities": 4449,
+        "originals": 3563,
+        "recovered": 33,
+        "credit_parities": 1784
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3456000,
+        "bytes_parity": 5970236,
+        "parity_sent": 4493
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7881.982222222222,
+      "server_received_bytes_per_returned_connection_B": 10430.51888888889,
+      "server_received_parities_per_returned_connection": 4.943333333333333,
+      "client_counted_bytes_per_returned_connection_B": 10473.595555555556,
+      "client_counted_parities_per_returned_connection": 4.992222222222222
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c6000_r120_u10",
+      "arm": "g3auto",
+      "scope": "loss_percent=8.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 8753053,
+        "parities": 4160,
+        "originals": 3298,
+        "recovered": 221,
+        "credit_parities": 1665
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3457280,
+        "bytes_parity": 5984744,
+        "parity_sent": 4504
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.866666666667,
+      "server_received_bytes_per_returned_connection_B": 9725.614444444445,
+      "server_received_parities_per_returned_connection": 4.622222222222222,
+      "client_counted_bytes_per_returned_connection_B": 10491.137777777778,
+      "client_counted_parities_per_returned_connection": 5.004444444444444
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c6000_r120_u10",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 1800,
+      "planned_connections": 1800,
+      "ok_connections": 1800,
+      "server_delta_sum": {
+        "bytes_in": 18140520,
+        "parities": 8609,
+        "originals": 6861,
+        "recovered": 254,
+        "credit_parities": 3449
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6913280,
+        "bytes_parity": 11954980,
+        "parity_sent": 8997
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.924444444445,
+      "server_received_bytes_per_returned_connection_B": 10078.066666666668,
+      "server_received_parities_per_returned_connection": 4.782777777777778,
+      "client_counted_bytes_per_returned_connection_B": 10482.366666666667,
+      "client_counted_parities_per_returned_connection": 4.998333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c8000_r120_u10",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 300,
+      "planned_connections": 300,
+      "ok_connections": 300,
+      "server_delta_sum": {
+        "bytes_in": 3239781,
+        "parities": 1633,
+        "originals": 1127,
+        "recovered": 67,
+        "credit_parities": 539
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1152000,
+        "bytes_parity": 1327528,
+        "parity_sent": 998
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6515.72,
+      "server_received_bytes_per_returned_connection_B": 10799.27,
+      "server_received_parities_per_returned_connection": 5.443333333333333,
+      "client_counted_bytes_per_returned_connection_B": 8265.093333333334,
+      "client_counted_parities_per_returned_connection": 3.3266666666666667
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c8000_r120_u10",
+      "arm": "g2auto",
+      "scope": "loss_percent=1.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 10435105,
+        "parities": 5263,
+        "originals": 3565,
+        "recovered": 34,
+        "credit_parities": 1768
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3456000,
+        "bytes_parity": 3830150,
+        "parity_sent": 2878
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6515.966666666666,
+      "server_received_bytes_per_returned_connection_B": 11594.56111111111,
+      "server_received_parities_per_returned_connection": 5.847777777777778,
+      "client_counted_bytes_per_returned_connection_B": 8095.722222222223,
+      "client_counted_parities_per_returned_connection": 3.1977777777777776
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c8000_r120_u10",
+      "arm": "g2auto",
+      "scope": "loss_percent=8.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9754960,
+        "parities": 4910,
+        "originals": 3398,
+        "recovered": 201,
+        "credit_parities": 1630
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3463680,
+        "bytes_parity": 4047782,
+        "parity_sent": 3043
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6520.8133333333335,
+      "server_received_bytes_per_returned_connection_B": 10838.844444444445,
+      "server_received_parities_per_returned_connection": 5.455555555555556,
+      "client_counted_bytes_per_returned_connection_B": 8346.068888888889,
+      "client_counted_parities_per_returned_connection": 3.381111111111111
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c8000_r120_u10",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 1800,
+      "planned_connections": 1800,
+      "ok_connections": 1800,
+      "server_delta_sum": {
+        "bytes_in": 20190065,
+        "parities": 10173,
+        "originals": 6963,
+        "recovered": 235,
+        "credit_parities": 3398
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6919680,
+        "bytes_parity": 7877932,
+        "parity_sent": 5921
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6518.39,
+      "server_received_bytes_per_returned_connection_B": 11216.702777777778,
+      "server_received_parities_per_returned_connection": 5.651666666666666,
+      "client_counted_bytes_per_returned_connection_B": 8220.895555555555,
+      "client_counted_parities_per_returned_connection": 3.2894444444444444
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c8000_r120_u10",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 300,
+      "planned_connections": 300,
+      "ok_connections": 300,
+      "server_delta_sum": {
+        "bytes_in": 2922159,
+        "parities": 1385,
+        "originals": 1110,
+        "recovered": 66,
+        "credit_parities": 550
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1152000,
+        "bytes_parity": 1990308,
+        "parity_sent": 1498
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.133333333333,
+      "server_received_bytes_per_returned_connection_B": 9740.53,
+      "server_received_parities_per_returned_connection": 4.616666666666666,
+      "client_counted_bytes_per_returned_connection_B": 10474.36,
+      "client_counted_parities_per_returned_connection": 4.993333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c8000_r120_u10",
+      "arm": "g3auto",
+      "scope": "loss_percent=1.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9391866,
+        "parities": 4446,
+        "originals": 3573,
+        "recovered": 26,
+        "credit_parities": 1780
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3456000,
+        "bytes_parity": 5969420,
+        "parity_sent": 4493
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7881.075555555555,
+      "server_received_bytes_per_returned_connection_B": 10435.406666666666,
+      "server_received_parities_per_returned_connection": 4.94,
+      "client_counted_bytes_per_returned_connection_B": 10472.68888888889,
+      "client_counted_parities_per_returned_connection": 4.992222222222222
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c8000_r120_u10",
+      "arm": "g3auto",
+      "scope": "loss_percent=8.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 8781070,
+        "parities": 4170,
+        "originals": 3312,
+        "recovered": 207,
+        "credit_parities": 1663
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3456000,
+        "bytes_parity": 5981664,
+        "parity_sent": 4502
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7885.928888888889,
+      "server_received_bytes_per_returned_connection_B": 9756.744444444445,
+      "server_received_parities_per_returned_connection": 4.633333333333334,
+      "client_counted_bytes_per_returned_connection_B": 10486.293333333333,
+      "client_counted_parities_per_returned_connection": 5.002222222222223
+    },
+    {
+      "run": "run1",
+      "condition": "H_h_c8000_r120_u10",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 1800,
+      "planned_connections": 1800,
+      "ok_connections": 1800,
+      "server_delta_sum": {
+        "bytes_in": 18172936,
+        "parities": 8616,
+        "originals": 6885,
+        "recovered": 233,
+        "credit_parities": 3443
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6912000,
+        "bytes_parity": 11951084,
+        "parity_sent": 8995
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7883.502222222222,
+      "server_received_bytes_per_returned_connection_B": 10096.075555555555,
+      "server_received_parities_per_returned_connection": 4.786666666666667,
+      "client_counted_bytes_per_returned_connection_B": 10479.49111111111,
+      "client_counted_parities_per_returned_connection": 4.997222222222222
+    },
+    {
+      "run": "run1",
+      "condition": "R_c6000_r80_u10",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 300,
+      "planned_connections": 300,
+      "ok_connections": 300,
+      "server_delta_sum": {
+        "bytes_in": 3255596,
+        "parities": 1636,
+        "originals": 1129,
+        "recovered": 65,
+        "credit_parities": 549
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1158024,
+        "bytes_parity": 1355292,
+        "parity_sent": 1018
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6548.18,
+      "server_received_bytes_per_returned_connection_B": 10851.986666666666,
+      "server_received_parities_per_returned_connection": 5.453333333333333,
+      "client_counted_bytes_per_returned_connection_B": 8377.72,
+      "client_counted_parities_per_returned_connection": 3.3933333333333335
+    },
+    {
+      "run": "run1",
+      "condition": "R_c6000_r80_u10",
+      "arm": "g2auto",
+      "scope": "loss_percent=1.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9820649,
+        "parities": 4762,
+        "originals": 3704,
+        "recovered": 20,
+        "credit_parities": 1516
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3458694,
+        "bytes_parity": 3543231,
+        "parity_sent": 2661
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6144.792222222222,
+      "server_received_bytes_per_returned_connection_B": 10911.832222222221,
+      "server_received_parities_per_returned_connection": 5.291111111111111,
+      "client_counted_bytes_per_returned_connection_B": 7779.916666666667,
+      "client_counted_parities_per_returned_connection": 2.9566666666666666
+    },
+    {
+      "run": "run1",
+      "condition": "R_c6000_r80_u10",
+      "arm": "g2auto",
+      "scope": "loss_percent=8.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9582092,
+        "parities": 4757,
+        "originals": 3433,
+        "recovered": 189,
+        "credit_parities": 1566
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3467667,
+        "bytes_parity": 3977207,
+        "parity_sent": 2988
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6420.5488888888885,
+      "server_received_bytes_per_returned_connection_B": 10646.76888888889,
+      "server_received_parities_per_returned_connection": 5.285555555555556,
+      "client_counted_bytes_per_returned_connection_B": 8272.082222222221,
+      "client_counted_parities_per_returned_connection": 3.32
+    },
+    {
+      "run": "run1",
+      "condition": "R_c6000_r80_u10",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 1800,
+      "planned_connections": 1800,
+      "ok_connections": 1800,
+      "server_delta_sum": {
+        "bytes_in": 19402741,
+        "parities": 9519,
+        "originals": 7137,
+        "recovered": 209,
+        "credit_parities": 3082
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6926361,
+        "bytes_parity": 7520438,
+        "parity_sent": 5649
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6282.670555555555,
+      "server_received_bytes_per_returned_connection_B": 10779.300555555556,
+      "server_received_parities_per_returned_connection": 5.288333333333333,
+      "client_counted_bytes_per_returned_connection_B": 8025.999444444445,
+      "client_counted_parities_per_returned_connection": 3.138333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "R_c6000_r80_u10",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 5,
+      "segments": 1,
+      "returned_connections": 300,
+      "planned_connections": 300,
+      "ok_connections": 300,
+      "server_delta_sum": {
+        "bytes_in": 2924165,
+        "parities": 1372,
+        "originals": 1127,
+        "recovered": 55,
+        "credit_parities": 547
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1154560,
+        "bytes_parity": 1997984,
+        "parity_sent": 1504
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7886.2266666666665,
+      "server_received_bytes_per_returned_connection_B": 9747.216666666667,
+      "server_received_parities_per_returned_connection": 4.573333333333333,
+      "client_counted_bytes_per_returned_connection_B": 10508.48,
+      "client_counted_parities_per_returned_connection": 5.013333333333334
+    },
+    {
+      "run": "run1",
+      "condition": "R_c6000_r80_u10",
+      "arm": "g3auto",
+      "scope": "loss_percent=1.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 9390275,
+        "parities": 4445,
+        "originals": 3567,
+        "recovered": 27,
+        "credit_parities": 1775
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3456000,
+        "bytes_parity": 5972164,
+        "parity_sent": 4494
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7882.662222222222,
+      "server_received_bytes_per_returned_connection_B": 10433.638888888889,
+      "server_received_parities_per_returned_connection": 4.938888888888889,
+      "client_counted_bytes_per_returned_connection_B": 10475.737777777778,
+      "client_counted_parities_per_returned_connection": 4.993333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "R_c6000_r80_u10",
+      "arm": "g3auto",
+      "scope": "loss_percent=8.0",
+      "last_block_index": 5,
+      "segments": 3,
+      "returned_connections": 900,
+      "planned_connections": 900,
+      "ok_connections": 900,
+      "server_delta_sum": {
+        "bytes_in": 8738530,
+        "parities": 4122,
+        "originals": 3327,
+        "recovered": 194,
+        "credit_parities": 1639
+      },
+      "client_stats_sum": {
+        "bytes_orig": 3461120,
+        "bytes_parity": 5989712,
+        "parity_sent": 4508
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.453333333333,
+      "server_received_bytes_per_returned_connection_B": 9709.477777777778,
+      "server_received_parities_per_returned_connection": 4.58,
+      "client_counted_bytes_per_returned_connection_B": 10500.924444444445,
+      "client_counted_parities_per_returned_connection": 5.0088888888888885
+    },
+    {
+      "run": "run1",
+      "condition": "R_c6000_r80_u10",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 5,
+      "segments": 6,
+      "returned_connections": 1800,
+      "planned_connections": 1800,
+      "ok_connections": 1800,
+      "server_delta_sum": {
+        "bytes_in": 18128805,
+        "parities": 8567,
+        "originals": 6894,
+        "recovered": 221,
+        "credit_parities": 3414
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6917120,
+        "bytes_parity": 11961876,
+        "parity_sent": 9002
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7885.057777777778,
+      "server_received_bytes_per_returned_connection_B": 10071.558333333332,
+      "server_received_parities_per_returned_connection": 4.759444444444444,
+      "client_counted_bytes_per_returned_connection_B": 10488.33111111111,
+      "client_counted_parities_per_returned_connection": 5.001111111111111
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 2617746,
+        "parities": 772,
+        "originals": 1968,
+        "recovered": 180,
+        "credit_parities": 0
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1790720,
+        "bytes_parity": 1198280,
+        "parity_sent": 905
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 3862.428888888889,
+      "server_received_bytes_per_returned_connection_B": 5817.213333333333,
+      "server_received_parities_per_returned_connection": 1.7155555555555555,
+      "client_counted_bytes_per_returned_connection_B": 6642.222222222223,
+      "client_counted_parities_per_returned_connection": 2.011111111111111
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g2auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 14384643,
+        "parities": 4771,
+        "originals": 9899,
+        "recovered": 816,
+        "credit_parities": 452
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8930560,
+        "bytes_parity": 7472780,
+        "parity_sent": 5644
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 4189.229333333334,
+      "server_received_bytes_per_returned_connection_B": 6393.174666666667,
+      "server_received_parities_per_returned_connection": 2.1204444444444444,
+      "client_counted_bytes_per_returned_connection_B": 7290.373333333333,
+      "client_counted_parities_per_returned_connection": 2.5084444444444443
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g2auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 15843409,
+        "parities": 5138,
+        "originals": 11117,
+        "recovered": 121,
+        "credit_parities": 408
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8643840,
+        "bytes_parity": 6933393,
+        "parity_sent": 5237
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 4109.109777777778,
+      "server_received_bytes_per_returned_connection_B": 7041.515111111111,
+      "server_received_parities_per_returned_connection": 2.2835555555555556,
+      "client_counted_bytes_per_returned_connection_B": 6923.214666666667,
+      "client_counted_parities_per_returned_connection": 2.3275555555555556
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 30228052,
+        "parities": 9909,
+        "originals": 21016,
+        "recovered": 937,
+        "credit_parities": 860
+      },
+      "client_stats_sum": {
+        "bytes_orig": 17574400,
+        "bytes_parity": 14406173,
+        "parity_sent": 10881
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 4149.169555555555,
+      "server_received_bytes_per_returned_connection_B": 6717.344888888889,
+      "server_received_parities_per_returned_connection": 2.202,
+      "client_counted_bytes_per_returned_connection_B": 7106.794,
+      "client_counted_parities_per_returned_connection": 2.418
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 4146437,
+        "parities": 1956,
+        "originals": 1743,
+        "recovered": 183,
+        "credit_parities": 1039
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1751040,
+        "bytes_parity": 3025192,
+        "parity_sent": 2277
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7843.413333333333,
+      "server_received_bytes_per_returned_connection_B": 9214.304444444444,
+      "server_received_parities_per_returned_connection": 4.346666666666667,
+      "client_counted_bytes_per_returned_connection_B": 10613.84888888889,
+      "client_counted_parities_per_returned_connection": 5.06
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g3auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 20805556,
+        "parities": 9752,
+        "originals": 9099,
+        "recovered": 856,
+        "credit_parities": 3585
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8802560,
+        "bytes_parity": 15198543,
+        "parity_sent": 11439
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7851.0742222222225,
+      "server_received_bytes_per_returned_connection_B": 9246.913777777778,
+      "server_received_parities_per_returned_connection": 4.334222222222222,
+      "client_counted_bytes_per_returned_connection_B": 10667.156888888889,
+      "client_counted_parities_per_returned_connection": 5.084
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g3auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 23326575,
+        "parities": 11005,
+        "originals": 9193,
+        "recovered": 117,
+        "credit_parities": 6345
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8642560,
+        "bytes_parity": 14926088,
+        "parity_sent": 11233
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7876.048,
+      "server_received_bytes_per_returned_connection_B": 10367.366666666667,
+      "server_received_parities_per_returned_connection": 4.891111111111111,
+      "client_counted_bytes_per_returned_connection_B": 10474.954666666667,
+      "client_counted_parities_per_returned_connection": 4.992444444444445
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 44132131,
+        "parities": 20757,
+        "originals": 18292,
+        "recovered": 973,
+        "credit_parities": 9930
+      },
+      "client_stats_sum": {
+        "bytes_orig": 17445120,
+        "bytes_parity": 30124631,
+        "parity_sent": 22672
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7863.561111111111,
+      "server_received_bytes_per_returned_connection_B": 9807.140222222222,
+      "server_received_parities_per_returned_connection": 4.612666666666667,
+      "client_counted_bytes_per_returned_connection_B": 10571.055777777778,
+      "client_counted_parities_per_returned_connection": 5.038222222222222
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g3fixL3",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 4261389,
+        "parities": 2021,
+        "originals": 1727,
+        "recovered": 162,
+        "credit_parities": 1232
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1804800,
+        "bytes_parity": 3167488,
+        "parity_sent": 2384
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7888.471111111111,
+      "server_received_bytes_per_returned_connection_B": 9469.753333333334,
+      "server_received_parities_per_returned_connection": 4.4911111111111115,
+      "client_counted_bytes_per_returned_connection_B": 11049.528888888888,
+      "client_counted_parities_per_returned_connection": 5.297777777777778
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g3fixL3",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 21253062,
+        "parities": 10023,
+        "originals": 8734,
+        "recovered": 776,
+        "credit_parities": 6086
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8943360,
+        "bytes_parity": 15665712,
+        "parity_sent": 11791
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7888.266666666666,
+      "server_received_bytes_per_returned_connection_B": 9445.805333333334,
+      "server_received_parities_per_returned_connection": 4.454666666666666,
+      "client_counted_bytes_per_returned_connection_B": 10937.365333333333,
+      "client_counted_parities_per_returned_connection": 5.240444444444444
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g3fixL3",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 23321829,
+        "parities": 11054,
+        "originals": 9025,
+        "recovered": 154,
+        "credit_parities": 6646
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8652800,
+        "bytes_parity": 14961976,
+        "parity_sent": 11260
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.822222222222,
+      "server_received_bytes_per_returned_connection_B": 10365.257333333333,
+      "server_received_parities_per_returned_connection": 4.912888888888889,
+      "client_counted_bytes_per_returned_connection_B": 10495.456,
+      "client_counted_parities_per_returned_connection": 5.004444444444444
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g3fixL3",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 44574891,
+        "parities": 21077,
+        "originals": 17759,
+        "recovered": 930,
+        "credit_parities": 12732
+      },
+      "client_stats_sum": {
+        "bytes_orig": 17596160,
+        "bytes_parity": 30627688,
+        "parity_sent": 23051
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7888.044444444445,
+      "server_received_bytes_per_returned_connection_B": 9905.531333333332,
+      "server_received_parities_per_returned_connection": 4.683777777777777,
+      "client_counted_bytes_per_returned_connection_B": 10716.410666666667,
+      "client_counted_parities_per_returned_connection": 5.122444444444445
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 6959654,
+        "parities": 3372,
+        "originals": 2410,
+        "recovered": 335,
+        "credit_parities": 1112
+      },
+      "client_stats_sum": {
+        "bytes_orig": 2881260,
+        "bytes_parity": 3961692,
+        "parity_sent": 2976
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6523.913333333333,
+      "server_received_bytes_per_returned_connection_B": 15465.897777777778,
+      "server_received_parities_per_returned_connection": 7.493333333333333,
+      "client_counted_bytes_per_returned_connection_B": 15206.56,
+      "client_counted_parities_per_returned_connection": 6.613333333333333
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g2auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 34829037,
+        "parities": 16909,
+        "originals": 11984,
+        "recovered": 1624,
+        "credit_parities": 5641
+      },
+      "client_stats_sum": {
+        "bytes_orig": 14403926,
+        "bytes_parity": 20004564,
+        "parity_sent": 15036
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6521.366666666667,
+      "server_received_bytes_per_returned_connection_B": 15479.572,
+      "server_received_parities_per_returned_connection": 7.5151111111111115,
+      "client_counted_bytes_per_returned_connection_B": 15292.662222222221,
+      "client_counted_parities_per_returned_connection": 6.682666666666667
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g2auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 40247372,
+        "parities": 19575,
+        "originals": 13321,
+        "recovered": 209,
+        "credit_parities": 6541
+      },
+      "client_stats_sum": {
+        "bytes_orig": 14400000,
+        "bytes_parity": 19035208,
+        "parity_sent": 14303
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6513.101333333333,
+      "server_received_bytes_per_returned_connection_B": 17887.72088888889,
+      "server_received_parities_per_returned_connection": 8.7,
+      "client_counted_bytes_per_returned_connection_B": 14860.092444444444,
+      "client_counted_parities_per_returned_connection": 6.356888888888889
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 75076409,
+        "parities": 36484,
+        "originals": 25305,
+        "recovered": 1833,
+        "credit_parities": 12182
+      },
+      "client_stats_sum": {
+        "bytes_orig": 28803926,
+        "bytes_parity": 39039772,
+        "parity_sent": 29339
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6517.234,
+      "server_received_bytes_per_returned_connection_B": 16683.646444444443,
+      "server_received_parities_per_returned_connection": 8.107555555555555,
+      "client_counted_bytes_per_returned_connection_B": 15076.377333333334,
+      "client_counted_parities_per_returned_connection": 6.519777777777778
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 7003590,
+        "parities": 3415,
+        "originals": 2283,
+        "recovered": 317,
+        "credit_parities": 1512
+      },
+      "client_stats_sum": {
+        "bytes_orig": 2880016,
+        "bytes_parity": 5382592,
+        "parity_sent": 4046
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7888.506666666667,
+      "server_received_bytes_per_returned_connection_B": 15563.533333333333,
+      "server_received_parities_per_returned_connection": 7.588888888888889,
+      "client_counted_bytes_per_returned_connection_B": 18361.35111111111,
+      "client_counted_parities_per_returned_connection": 8.991111111111111
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g3auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 35185434,
+        "parities": 17191,
+        "originals": 11503,
+        "recovered": 1615,
+        "credit_parities": 7655
+      },
+      "client_stats_sum": {
+        "bytes_orig": 14400016,
+        "bytes_parity": 26929640,
+        "parity_sent": 20244
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7888.119111111111,
+      "server_received_bytes_per_returned_connection_B": 15637.970666666666,
+      "server_received_parities_per_returned_connection": 7.640444444444444,
+      "client_counted_bytes_per_returned_connection_B": 18368.736,
+      "client_counted_parities_per_returned_connection": 8.997333333333334
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g3auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 40683347,
+        "parities": 19858,
+        "originals": 13263,
+        "recovered": 224,
+        "credit_parities": 8532
+      },
+      "client_stats_sum": {
+        "bytes_orig": 14400000,
+        "bytes_parity": 26933568,
+        "parity_sent": 20248
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7884.890666666666,
+      "server_received_bytes_per_returned_connection_B": 18081.487555555555,
+      "server_received_parities_per_returned_connection": 8.825777777777779,
+      "client_counted_bytes_per_returned_connection_B": 18370.474666666665,
+      "client_counted_parities_per_returned_connection": 8.99911111111111
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 75868781,
+        "parities": 37049,
+        "originals": 24766,
+        "recovered": 1839,
+        "credit_parities": 16187
+      },
+      "client_stats_sum": {
+        "bytes_orig": 28800016,
+        "bytes_parity": 53863208,
+        "parity_sent": 40492
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7886.504888888889,
+      "server_received_bytes_per_returned_connection_B": 16859.72911111111,
+      "server_received_parities_per_returned_connection": 8.23311111111111,
+      "client_counted_bytes_per_returned_connection_B": 18369.605333333333,
+      "client_counted_parities_per_returned_connection": 8.998222222222223
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g3fixL2",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 7028262,
+        "parities": 3442,
+        "originals": 2302,
+        "recovered": 332,
+        "credit_parities": 1534
+      },
+      "client_stats_sum": {
+        "bytes_orig": 2880000,
+        "bytes_parity": 5384664,
+        "parity_sent": 4048
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.884444444445,
+      "server_received_bytes_per_returned_connection_B": 15618.36,
+      "server_received_parities_per_returned_connection": 7.648888888888889,
+      "client_counted_bytes_per_returned_connection_B": 18365.92,
+      "client_counted_parities_per_returned_connection": 8.995555555555555
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g3fixL2",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 35102052,
+        "parities": 17122,
+        "originals": 11520,
+        "recovered": 1591,
+        "credit_parities": 7590
+      },
+      "client_stats_sum": {
+        "bytes_orig": 14402560,
+        "bytes_parity": 26934128,
+        "parity_sent": 20250
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.356444444445,
+      "server_received_bytes_per_returned_connection_B": 15600.912,
+      "server_received_parities_per_returned_connection": 7.6097777777777775,
+      "client_counted_bytes_per_returned_connection_B": 18371.861333333334,
+      "client_counted_parities_per_returned_connection": 9.0
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g3fixL2",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 40613756,
+        "parities": 19826,
+        "originals": 13226,
+        "recovered": 242,
+        "credit_parities": 8800
+      },
+      "client_stats_sum": {
+        "bytes_orig": 14400000,
+        "bytes_parity": 26929168,
+        "parity_sent": 20246
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.4293333333335,
+      "server_received_bytes_per_returned_connection_B": 18050.558222222222,
+      "server_received_parities_per_returned_connection": 8.811555555555556,
+      "client_counted_bytes_per_returned_connection_B": 18368.519111111113,
+      "client_counted_parities_per_returned_connection": 8.998222222222223
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g3fixL2",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 75715808,
+        "parities": 36948,
+        "originals": 24746,
+        "recovered": 1833,
+        "credit_parities": 16390
+      },
+      "client_stats_sum": {
+        "bytes_orig": 28802560,
+        "bytes_parity": 53863296,
+        "parity_sent": 40496
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.392888888889,
+      "server_received_bytes_per_returned_connection_B": 16825.735111111113,
+      "server_received_parities_per_returned_connection": 8.210666666666667,
+      "client_counted_bytes_per_returned_connection_B": 18370.190222222223,
+      "client_counted_parities_per_returned_connection": 8.99911111111111
+    },
+    {
+      "run": "run1",
+      "condition": "SEQ_mbps2_l15",
+      "arm": "g2m3",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1642531,
+        "parities": 816,
+        "originals": 592,
+        "recovered": 52,
+        "credit_parities": 279
+      },
+      "client_stats_sum": {
+        "bytes_orig": 619520,
+        "bytes_parity": 769431,
+        "parity_sent": 579
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6554.44375,
+      "server_received_bytes_per_returned_connection_B": 10265.81875,
+      "server_received_parities_per_returned_connection": 5.1,
+      "client_counted_bytes_per_returned_connection_B": 8680.94375,
+      "client_counted_parities_per_returned_connection": 3.61875
+    },
+    {
+      "run": "run1",
+      "condition": "SEQ_mbps2_l15",
+      "arm": "g2m3",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16170961,
+        "parities": 8119,
+        "originals": 5746,
+        "recovered": 661,
+        "credit_parities": 2704
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6187520,
+        "bytes_parity": 7789246,
+        "parity_sent": 5861
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6555.296875,
+      "server_received_bytes_per_returned_connection_B": 10106.850625,
+      "server_received_parities_per_returned_connection": 5.074375,
+      "client_counted_bytes_per_returned_connection_B": 8735.47875,
+      "client_counted_parities_per_returned_connection": 3.663125
+    },
+    {
+      "run": "run1",
+      "condition": "SEQ_mbps2_l15",
+      "arm": "g2m3",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16170961,
+        "parities": 8119,
+        "originals": 5746,
+        "recovered": 661,
+        "credit_parities": 2704
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6187520,
+        "bytes_parity": 7789246,
+        "parity_sent": 5861
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6555.296875,
+      "server_received_bytes_per_returned_connection_B": 10106.850625,
+      "server_received_parities_per_returned_connection": 5.074375,
+      "client_counted_bytes_per_returned_connection_B": 8735.47875,
+      "client_counted_parities_per_returned_connection": 3.663125
+    },
+    {
+      "run": "run1",
+      "condition": "SEQ_mbps2_l15",
+      "arm": "g2m3B",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 160,
+      "planned_connections": 160,
+      "ok_connections": 160,
+      "server_delta_sum": {
+        "bytes_in": 1608355,
+        "parities": 809,
+        "originals": 567,
+        "recovered": 70,
+        "credit_parities": 264
+      },
+      "client_stats_sum": {
+        "bytes_orig": 616960,
+        "bytes_parity": 795886,
+        "parity_sent": 599
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6555.5125,
+      "server_received_bytes_per_returned_connection_B": 10052.21875,
+      "server_received_parities_per_returned_connection": 5.05625,
+      "client_counted_bytes_per_returned_connection_B": 8830.2875,
+      "client_counted_parities_per_returned_connection": 3.74375
+    },
+    {
+      "run": "run1",
+      "condition": "SEQ_mbps2_l15",
+      "arm": "g2m3B",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16148371,
+        "parities": 8120,
+        "originals": 5692,
+        "recovered": 676,
+        "credit_parities": 2723
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6182400,
+        "bytes_parity": 7721228,
+        "parity_sent": 5809
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6555.638125,
+      "server_received_bytes_per_returned_connection_B": 10092.731875,
+      "server_received_parities_per_returned_connection": 5.075,
+      "client_counted_bytes_per_returned_connection_B": 8689.7675,
+      "client_counted_parities_per_returned_connection": 3.630625
+    },
+    {
+      "run": "run1",
+      "condition": "SEQ_mbps2_l15",
+      "arm": "g2m3B",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 1600,
+      "planned_connections": 1600,
+      "ok_connections": 1600,
+      "server_delta_sum": {
+        "bytes_in": 16148371,
+        "parities": 8120,
+        "originals": 5692,
+        "recovered": 676,
+        "credit_parities": 2723
+      },
+      "client_stats_sum": {
+        "bytes_orig": 6182400,
+        "bytes_parity": 7721228,
+        "parity_sent": 5809
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6555.638125,
+      "server_received_bytes_per_returned_connection_B": 10092.731875,
+      "server_received_parities_per_returned_connection": 5.075,
+      "client_counted_bytes_per_returned_connection_B": 8689.7675,
+      "client_counted_parities_per_returned_connection": 3.630625
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 3668700,
+        "parities": 1556,
+        "originals": 1969,
+        "recovered": 168,
+        "credit_parities": 392
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1780480,
+        "bytes_parity": 2437456,
+        "parity_sent": 1841
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 5247.604444444444,
+      "server_received_bytes_per_returned_connection_B": 8152.666666666667,
+      "server_received_parities_per_returned_connection": 3.457777777777778,
+      "client_counted_bytes_per_returned_connection_B": 9373.191111111111,
+      "client_counted_parities_per_returned_connection": 4.091111111111111
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "arm": "g2auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 16342036,
+        "parities": 6328,
+        "originals": 9755,
+        "recovered": 897,
+        "credit_parities": 1211
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8911360,
+        "bytes_parity": 9797486,
+        "parity_sent": 7400
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 4714.178222222222,
+      "server_received_bytes_per_returned_connection_B": 7263.127111111111,
+      "server_received_parities_per_returned_connection": 2.8124444444444445,
+      "client_counted_bytes_per_returned_connection_B": 8315.042666666666,
+      "client_counted_parities_per_returned_connection": 3.2888888888888888
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "arm": "g2auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 16750295,
+        "parities": 5861,
+        "originals": 11034,
+        "recovered": 160,
+        "credit_parities": 777
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8648960,
+        "bytes_parity": 7931601,
+        "parity_sent": 5991
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 4332.254666666667,
+      "server_received_bytes_per_returned_connection_B": 7444.575555555555,
+      "server_received_parities_per_returned_connection": 2.604888888888889,
+      "client_counted_bytes_per_returned_connection_B": 7369.138222222222,
+      "client_counted_parities_per_returned_connection": 2.6626666666666665
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 33092331,
+        "parities": 12189,
+        "originals": 20789,
+        "recovered": 1057,
+        "credit_parities": 1988
+      },
+      "client_stats_sum": {
+        "bytes_orig": 17560320,
+        "bytes_parity": 17729087,
+        "parity_sent": 13391
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 4523.216444444444,
+      "server_received_bytes_per_returned_connection_B": 7353.851333333333,
+      "server_received_parities_per_returned_connection": 2.708666666666667,
+      "client_counted_bytes_per_returned_connection_B": 7842.090444444444,
+      "client_counted_parities_per_returned_connection": 2.9757777777777776
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 4199610,
+        "parities": 1978,
+        "originals": 1796,
+        "recovered": 168,
+        "credit_parities": 795
+      },
+      "client_stats_sum": {
+        "bytes_orig": 1770240,
+        "bytes_parity": 3078984,
+        "parity_sent": 2317
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7873.973333333333,
+      "server_received_bytes_per_returned_connection_B": 9332.466666666667,
+      "server_received_parities_per_returned_connection": 4.395555555555555,
+      "client_counted_bytes_per_returned_connection_B": 10776.053333333333,
+      "client_counted_parities_per_returned_connection": 5.148888888888889
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "arm": "g3auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 20811916,
+        "parities": 9747,
+        "originals": 9132,
+        "recovered": 860,
+        "credit_parities": 3173
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8800000,
+        "bytes_parity": 15167865,
+        "parity_sent": 11416
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7839.711555555556,
+      "server_received_bytes_per_returned_connection_B": 9249.740444444444,
+      "server_received_parities_per_returned_connection": 4.332,
+      "client_counted_bytes_per_returned_connection_B": 10652.384444444444,
+      "client_counted_parities_per_returned_connection": 5.073777777777778
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "arm": "g3auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 23309099,
+        "parities": 11023,
+        "originals": 8984,
+        "recovered": 122,
+        "credit_parities": 6590
+      },
+      "client_stats_sum": {
+        "bytes_orig": 8646400,
+        "bytes_parity": 14908990,
+        "parity_sent": 11220
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7875.439111111111,
+      "server_received_bytes_per_returned_connection_B": 10359.599555555556,
+      "server_received_parities_per_returned_connection": 4.899111111111111,
+      "client_counted_bytes_per_returned_connection_B": 10469.062222222223,
+      "client_counted_parities_per_returned_connection": 4.986666666666666
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 44121015,
+        "parities": 20770,
+        "originals": 18116,
+        "recovered": 982,
+        "credit_parities": 9763
+      },
+      "client_stats_sum": {
+        "bytes_orig": 17446400,
+        "bytes_parity": 30076855,
+        "parity_sent": 22636
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7857.575333333333,
+      "server_received_bytes_per_returned_connection_B": 9804.67,
+      "server_received_parities_per_returned_connection": 4.615555555555556,
+      "client_counted_bytes_per_returned_connection_B": 10560.723333333333,
+      "client_counted_parities_per_returned_connection": 5.030222222222222
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "arm": "g2auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 6981644,
+        "parities": 3372,
+        "originals": 2401,
+        "recovered": 289,
+        "credit_parities": 1124
+      },
+      "client_stats_sum": {
+        "bytes_orig": 2881280,
+        "bytes_parity": 3913514,
+        "parity_sent": 2941
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6520.86,
+      "server_received_bytes_per_returned_connection_B": 15514.764444444445,
+      "server_received_parities_per_returned_connection": 7.493333333333333,
+      "client_counted_bytes_per_returned_connection_B": 15099.542222222222,
+      "client_counted_parities_per_returned_connection": 6.535555555555556
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "arm": "g2auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 35112259,
+        "parities": 17009,
+        "originals": 12093,
+        "recovered": 1487,
+        "credit_parities": 5671
+      },
+      "client_stats_sum": {
+        "bytes_orig": 14401910,
+        "bytes_parity": 19550416,
+        "parity_sent": 14693
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6520.669333333333,
+      "server_received_bytes_per_returned_connection_B": 15605.448444444444,
+      "server_received_parities_per_returned_connection": 7.559555555555556,
+      "client_counted_bytes_per_returned_connection_B": 15089.922666666667,
+      "client_counted_parities_per_returned_connection": 6.530222222222222
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "arm": "g2auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 40157533,
+        "parities": 19541,
+        "originals": 13279,
+        "recovered": 223,
+        "credit_parities": 6546
+      },
+      "client_stats_sum": {
+        "bytes_orig": 14400000,
+        "bytes_parity": 18411314,
+        "parity_sent": 13828
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6513.369333333333,
+      "server_received_bytes_per_returned_connection_B": 17847.792444444443,
+      "server_received_parities_per_returned_connection": 8.684888888888889,
+      "client_counted_bytes_per_returned_connection_B": 14582.806222222222,
+      "client_counted_parities_per_returned_connection": 6.145777777777778
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "arm": "g2auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 75269792,
+        "parities": 36550,
+        "originals": 25372,
+        "recovered": 1710,
+        "credit_parities": 12217
+      },
+      "client_stats_sum": {
+        "bytes_orig": 28801910,
+        "bytes_parity": 37961730,
+        "parity_sent": 28521
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 6517.019333333334,
+      "server_received_bytes_per_returned_connection_B": 16726.620444444445,
+      "server_received_parities_per_returned_connection": 8.122222222222222,
+      "client_counted_bytes_per_returned_connection_B": 14836.364444444445,
+      "client_counted_parities_per_returned_connection": 6.338
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "arm": "g3auto",
+      "scope": "last_block",
+      "last_block_index": 9,
+      "segments": 1,
+      "returned_connections": 450,
+      "planned_connections": 450,
+      "ok_connections": 450,
+      "server_delta_sum": {
+        "bytes_in": 7071647,
+        "parities": 3458,
+        "originals": 2293,
+        "recovered": 309,
+        "credit_parities": 1521
+      },
+      "client_stats_sum": {
+        "bytes_orig": 2880000,
+        "bytes_parity": 5386400,
+        "parity_sent": 4050
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7886.888888888889,
+      "server_received_bytes_per_returned_connection_B": 15714.771111111111,
+      "server_received_parities_per_returned_connection": 7.684444444444445,
+      "client_counted_bytes_per_returned_connection_B": 18369.777777777777,
+      "client_counted_parities_per_returned_connection": 9.0
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "arm": "g3auto",
+      "scope": "loss_percent=15.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 35118630,
+        "parities": 17174,
+        "originals": 11446,
+        "recovered": 1624,
+        "credit_parities": 7595
+      },
+      "client_stats_sum": {
+        "bytes_orig": 14400000,
+        "bytes_parity": 26934524,
+        "parity_sent": 20249
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7887.742222222222,
+      "server_received_bytes_per_returned_connection_B": 15608.28,
+      "server_received_parities_per_returned_connection": 7.632888888888889,
+      "client_counted_bytes_per_returned_connection_B": 18370.899555555556,
+      "client_counted_parities_per_returned_connection": 8.999555555555556
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "arm": "g3auto",
+      "scope": "loss_percent=2.0",
+      "last_block_index": 9,
+      "segments": 5,
+      "returned_connections": 2250,
+      "planned_connections": 2250,
+      "ok_connections": 2250,
+      "server_delta_sum": {
+        "bytes_in": 40604776,
+        "parities": 19810,
+        "originals": 13239,
+        "recovered": 234,
+        "credit_parities": 7899
+      },
+      "client_stats_sum": {
+        "bytes_orig": 14400000,
+        "bytes_parity": 26920764,
+        "parity_sent": 20239
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7885.269333333334,
+      "server_received_bytes_per_returned_connection_B": 18046.56711111111,
+      "server_received_parities_per_returned_connection": 8.804444444444444,
+      "client_counted_bytes_per_returned_connection_B": 18364.784,
+      "client_counted_parities_per_returned_connection": 8.995111111111111
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "arm": "g3auto",
+      "scope": "whole_run",
+      "last_block_index": 9,
+      "segments": 10,
+      "returned_connections": 4500,
+      "planned_connections": 4500,
+      "ok_connections": 4500,
+      "server_delta_sum": {
+        "bytes_in": 75723406,
+        "parities": 36984,
+        "originals": 24685,
+        "recovered": 1858,
+        "credit_parities": 15494
+      },
+      "client_stats_sum": {
+        "bytes_orig": 28800000,
+        "bytes_parity": 53855288,
+        "parity_sent": 40488
+      },
+      "first_flight_missing": 0,
+      "missing_fields": [],
+      "first_flight_sent_bytes_mean_B": 7886.505777777777,
+      "server_received_bytes_per_returned_connection_B": 16827.423555555557,
+      "server_received_parities_per_returned_connection": 8.218666666666667,
+      "client_counted_bytes_per_returned_connection_B": 18367.84177777778,
+      "client_counted_parities_per_returned_connection": 8.997333333333334
+    }
+  ],
+  "status": "calculated"
+}

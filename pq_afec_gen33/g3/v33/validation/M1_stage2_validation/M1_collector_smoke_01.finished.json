@@ -1,0 +1,43 @@
+{
+  "phase": "smoke",
+  "started_kst": "2026-10-31T22:56:39.950724+09:00",
+  "plan_path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\bench_overlays\\M1_evaluation_v1.json",
+  "plan_sha256": "5be8bd6cb35a9d309c7c762a0ee0a2ff62e068c0f689875b4e0942fe2decf591",
+  "source_sha256": {
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_m1.py": "b30b44ba8548a5012f9d99daccdbef51e40379d913ce52e1c255afbf353621ac",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\worldsim_m1.py": "fc427330be779d5a09e4de59dee9971276b9b0ffcc6831bb93eb67e53dd878c7",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\worldparams_m1.json": "74c4db0fc28bd8359691fe392e8e234d93e19ecd006da7c8235c764950980ac1",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\world_receiver_m1.py": "ca05209f80beb2a7bfffb05569dbc81da39a95736bc3f7ca70870876b95beab3",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_learning.py": "412666987b56f46cdfe6cfa7970c1c6da5ff3eeed207037bae997ec4790d873f",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\first_flight_observer.py": "fccc8f4df3bf8448586c7a2ed41982cf91d65f1c585492fa43a36794b60aa64c",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench.py": "58db05857c0e6b230e0e0290ca4328c3ebdba289d3837c4f4957a3702f43c396",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_metrics.py": "1316c407308656affee6a45c7b5985eada7496a0c3274b4f677c96b78e94d06e",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\policy_worker.py": "49370cc038bfdaef7d0c01f38bd368e156890959f173d1fbf292b3b11744618c",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\worldsim.py": "8f86bb520af2d18d03f9188f14104bc988af680665f705dbe0121b83d391e374",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\worldparams.json": "57e9352c5ff778fd278772e496fbbfe74a685ef7ba49b3849b40df45648db6ed",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\oracle.py": "84e9feb6d880e176dc82af8f6e33d42f7a6d3b97dadcd17b21ccd7f1e198592c",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_oracles.py": "ecaa601217c9a6df74c903d0e1cc0572ea4f565cf44deec73eb2a039f43bfba9",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_action_pool.py": "b3601f7887265c7769ea655cfa15ccce072eada0375a28264f9c2bd1af7463d5",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_report.py": "7c53c630bb33df9f697fd8dac9c0d3447f0b315d7c5c31fb0769086ed59fcfaa"
+  },
+  "driver_pid": 39104,
+  "driver_sha256": "1987dec3643d930e53768e2c4607b7285c1e2668bdcfd62db801cb5192cdfd6a",
+  "command": [
+    "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+    "-X",
+    "utf8",
+    "-I",
+    "-B",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_m1.py",
+    "smoke",
+    "--plan",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\bench_overlays\\M1_evaluation_v1.json"
+  ],
+  "child_pid": 36824,
+  "exit_code": 0,
+  "unchanged": true,
+  "inputs_valid": true,
+  "elapsed_seconds": 6.096711700003652,
+  "ended_kst": "2026-10-31T22:56:46.049187+09:00",
+  "log_sha256": "e6a1535a3d3d1335a6efdd6577b5402a7abb22bbcd30fd944ad263d2237eac59"
+}

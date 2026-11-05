@@ -1,0 +1,14 @@
+{
+  "schema": "padfec.v33.learning_precision_plan_publication/1",
+  "status": "complete",
+  "precision_plan_path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\bench_overlays\\L1_precision_v1.json",
+  "precision_plan_sha256": "f71d22fba623fd42a0ae9e906ede79372449e008e9669174888ba2a78975a4ff",
+  "wrapper_sha256": "7abe1c7a18b4f3db53830f4946359917f7fa1b9997168f6a563f9288401a1446",
+  "artifacts_sha256": {
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\bench_overlays\\L1_precision_v1.json": "f71d22fba623fd42a0ae9e906ede79372449e008e9669174888ba2a78975a4ff",
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\bench_overlays\\L1_precision_v1_protocol.json": "6aa00cdcca23e6c226300641155bece38aa1c8f9168f4b6979fa90d4df6c6d83"
+  },
+  "input_inventory_sha256": "19a95ee62cd0b994d736ebf8c5ce4997e8c2983d352bcabb7dedfa9d0f115d45",
+  "original_publication_sha256": "ae7bdc37e3a20c344799bceb0ee9b7c654ddd9a85335cd0a99fda2925082e37a",
+  "published_ns": 1793311138092493200
+}

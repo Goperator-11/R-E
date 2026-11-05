@@ -1,0 +1,39 @@
+{
+  "source_commit": "4bab4a59725ed5946c7173060115e89259edd747",
+  "srcsha_files": 14,
+  "computed_srcsha": "b181677970b7dd4338099f37c6837b8bc4aacff3caa1a186b9a2c6c442f2be19",
+  "recorded_srcsha": "b181677970b7dd4338099f37c6837b8bc4aacff3caa1a186b9a2c6c442f2be19",
+  "source_files": [
+    {
+      "staged": "cmd/qamp/main.go",
+      "git_file": "pq_afec/experiments/quicbed/qamp.go",
+      "sha256": "3107098a8aac62a8957a9805f7f09f9e896c4f0da0bd239ce33a6266bf08e16a",
+      "crlf_normalized_match": true
+    },
+    {
+      "staged": "cmd/qamp/policy.go",
+      "git_file": "pq_afec/experiments/quicbed/policy.go",
+      "sha256": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+      "crlf_normalized_match": true
+    },
+    {
+      "staged": "cmd/qamp/pfail_table.go",
+      "git_file": "pq_afec/experiments/quicbed/pfail_table.go",
+      "sha256": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+      "crlf_normalized_match": true
+    },
+    {
+      "staged": "go.mod",
+      "git_file": "pq_afec/experiments/quicbed/go.mod",
+      "sha256": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+      "crlf_normalized_match": true
+    },
+    {
+      "staged": "go.sum",
+      "git_file": "pq_afec/experiments/quicbed/go.sum",
+      "sha256": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+      "crlf_normalized_match": true
+    }
+  ],
+  "binary_rebuilt": false
+}

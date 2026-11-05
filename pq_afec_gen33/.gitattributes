@@ -1,0 +1,39 @@
+# 🩸 2026-09-03 - 셸 스크립트가 CRLF 로 체크아웃되면 **실행 자체가 안 된다**
+#    (`bash: build.sh: cannot execute: required file not found` - 셔뱅 줄 끝의
+#    ^M 때문이다). 이 저장소의 Go 빌드 입구가 build.sh 이고 그것을 WSL 에서
+#    돌리므로, clone 한 사람이 윈도우에서 core.autocrlf=true 로 받으면 go.mod
+#    을 넣어 준 보람 없이 첫 줄에서 죽는다. .sh 는 LF 로 못 박는다.
+*.sh text eol=lf
+
+# Go 모듈 정의도 LF 로. Go 는 CRLF 를 견디지만 go.sum 은 해시 목록이라
+# 줄 끝이 섞이면 사람이 diff 를 읽기 어렵다.
+go.mod text eol=lf
+go.sum text eol=lf
+*.py text eol=lf
+*.go text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+*.mask text eol=lf
+*.c text eol=lf
+*.ps1 text eol=lf
+*.smoke text eol=lf
+*.log text eol=lf
+*.saved text eol=lf
+*.buildinfo text eol=lf
+*.sha256 text eol=lf
+*.srcsha text eol=lf
+*.jsonl text eol=lf
+*.patch text eol=lf
+*.diff text eol=lf
+*.js text eol=lf
+*.yml text eol=lf
+*.csv text eol=lf
+*.ini text eol=lf
+tools/hooks/* text eol=lf
+g3/v33/validation/E12_v1/runs/*.log -text
+g3/v33/validation/J7_checkpoint_v1/runs/*.log -text
+g3/v33/validation/L2_unit/runs/*.log -text
+.gitignore text eol=lf
+.gitattributes text eol=lf
+*.png binary

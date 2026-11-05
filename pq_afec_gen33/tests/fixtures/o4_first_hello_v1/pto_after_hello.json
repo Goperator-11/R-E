@@ -1,0 +1,648 @@
+{
+  "width": 1280,
+  "observation": {
+    "version": 1,
+    "end_ns": 419083659,
+    "server_datagrams": [
+      {
+        "at_ns": 202260913,
+        "bytes": 41,
+        "crc32c": 3811889782,
+        "feedback": false,
+        "before_big": true,
+        "initial": true
+      },
+      {
+        "at_ns": 204089858,
+        "bytes": 1280,
+        "crc32c": 199454233,
+        "feedback": false,
+        "before_big": false,
+        "initial": true
+      },
+      {
+        "at_ns": 205308756,
+        "bytes": 1280,
+        "crc32c": 2609834337,
+        "feedback": false,
+        "before_big": false,
+        "initial": false
+      },
+      {
+        "at_ns": 206031382,
+        "bytes": 1280,
+        "crc32c": 1330407430,
+        "feedback": false,
+        "before_big": false,
+        "initial": false
+      },
+      {
+        "at_ns": 206790162,
+        "bytes": 1280,
+        "crc32c": 1834148975,
+        "feedback": false,
+        "before_big": false,
+        "initial": false
+      },
+      {
+        "at_ns": 207655888,
+        "bytes": 1280,
+        "crc32c": 3100254973,
+        "feedback": false,
+        "before_big": false,
+        "initial": false
+      },
+      {
+        "at_ns": 208513913,
+        "bytes": 1280,
+        "crc32c": 1671696545,
+        "feedback": false,
+        "before_big": false,
+        "initial": false
+      },
+      {
+        "at_ns": 208533705,
+        "bytes": 190,
+        "crc32c": 1851503082,
+        "feedback": false,
+        "before_big": false,
+        "initial": false
+      },
+      {
+        "at_ns": 402853066,
+        "bytes": 41,
+        "crc32c": 3454554637,
+        "feedback": false,
+        "before_big": false,
+        "initial": true
+      },
+      {
+        "at_ns": 404488705,
+        "bytes": 1280,
+        "crc32c": 838013367,
+        "feedback": false,
+        "before_big": false,
+        "initial": true
+      },
+      {
+        "at_ns": 405261418,
+        "bytes": 1280,
+        "crc32c": 3692088535,
+        "feedback": false,
+        "before_big": false,
+        "initial": true
+      },
+      {
+        "at_ns": 406609839,
+        "bytes": 1280,
+        "crc32c": 3173919275,
+        "feedback": false,
+        "before_big": false,
+        "initial": false
+      },
+      {
+        "at_ns": 407399728,
+        "bytes": 1280,
+        "crc32c": 3332119814,
+        "feedback": false,
+        "before_big": false,
+        "initial": false
+      },
+      {
+        "at_ns": 409761332,
+        "bytes": 125,
+        "crc32c": 3914371696,
+        "feedback": false,
+        "before_big": false,
+        "initial": false
+      }
+    ],
+    "packets": [
+      {
+        "at_ns": 351490,
+        "direction": "sent",
+        "space": "initial",
+        "pn": 0,
+        "bytes": 1280,
+        "crc32c": 3140928523,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            0,
+            1132
+          ]
+        ]
+      },
+      {
+        "at_ns": 360572,
+        "direction": "sent",
+        "space": "initial",
+        "pn": 1,
+        "bytes": 1280,
+        "crc32c": 3396502425,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            1132,
+            316
+          ]
+        ]
+      },
+      {
+        "at_ns": 201099588,
+        "direction": "sent",
+        "space": "initial",
+        "pn": 2,
+        "bytes": 1280,
+        "crc32c": 2188727774,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            0,
+            1132
+          ]
+        ]
+      },
+      {
+        "at_ns": 201113677,
+        "direction": "sent",
+        "space": "initial",
+        "pn": 3,
+        "bytes": 1280,
+        "crc32c": 2166683452,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            1132,
+            316
+          ]
+        ]
+      },
+      {
+        "at_ns": 202303970,
+        "direction": "received",
+        "space": "initial",
+        "pn": 0,
+        "bytes": 41,
+        "crc32c": 3811889782,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            0
+          ]
+        ],
+        "crypto": []
+      },
+      {
+        "at_ns": 204326622,
+        "direction": "received",
+        "space": "initial",
+        "pn": 1,
+        "bytes": 1280,
+        "crc32c": 199454233,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            1
+          ]
+        ],
+        "crypto": [
+          [
+            0,
+            1178
+          ]
+        ]
+      },
+      {
+        "at_ns": 204334204,
+        "direction": "sent",
+        "space": "initial",
+        "pn": 4,
+        "bytes": 1280,
+        "crc32c": 3672052470,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            1
+          ]
+        ],
+        "crypto": []
+      },
+      {
+        "at_ns": 205357421,
+        "direction": "received",
+        "space": "handshake",
+        "pn": 0,
+        "bytes": 1280,
+        "crc32c": 2609834337,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            0,
+            1241
+          ]
+        ]
+      },
+      {
+        "at_ns": 205362110,
+        "direction": "sent",
+        "space": "handshake",
+        "pn": 0,
+        "bytes": 40,
+        "crc32c": 172991861,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            0
+          ]
+        ],
+        "crypto": []
+      },
+      {
+        "at_ns": 206070557,
+        "direction": "received",
+        "space": "handshake",
+        "pn": 1,
+        "bytes": 1280,
+        "crc32c": 1330407430,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            1241,
+            1240
+          ]
+        ]
+      },
+      {
+        "at_ns": 206075699,
+        "direction": "sent",
+        "space": "handshake",
+        "pn": 1,
+        "bytes": 40,
+        "crc32c": 4124533384,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            1
+          ]
+        ],
+        "crypto": []
+      },
+      {
+        "at_ns": 206815035,
+        "direction": "received",
+        "space": "handshake",
+        "pn": 2,
+        "bytes": 1280,
+        "crc32c": 1834148975,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            2481,
+            1240
+          ]
+        ]
+      },
+      {
+        "at_ns": 206818343,
+        "direction": "sent",
+        "space": "handshake",
+        "pn": 2,
+        "bytes": 40,
+        "crc32c": 402240945,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            2
+          ]
+        ],
+        "crypto": []
+      },
+      {
+        "at_ns": 207677828,
+        "direction": "received",
+        "space": "handshake",
+        "pn": 3,
+        "bytes": 1280,
+        "crc32c": 3100254973,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            3721,
+            1240
+          ]
+        ]
+      },
+      {
+        "at_ns": 207680756,
+        "direction": "sent",
+        "space": "handshake",
+        "pn": 3,
+        "bytes": 40,
+        "crc32c": 247336311,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            3
+          ]
+        ],
+        "crypto": []
+      },
+      {
+        "at_ns": 208620540,
+        "direction": "received",
+        "space": "handshake",
+        "pn": 4,
+        "bytes": 1280,
+        "crc32c": 1671696545,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            4961,
+            1240
+          ]
+        ]
+      },
+      {
+        "at_ns": 208785443,
+        "direction": "received",
+        "space": "handshake",
+        "pn": 5,
+        "bytes": 95,
+        "crc32c": 1851503082,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            6201,
+            56
+          ]
+        ]
+      },
+      {
+        "at_ns": 208813847,
+        "direction": "received",
+        "space": "1RTT",
+        "pn": 0,
+        "bytes": 95,
+        "crc32c": 1851503082,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": []
+      },
+      {
+        "at_ns": 208826198,
+        "direction": "sent",
+        "space": "handshake",
+        "pn": 4,
+        "bytes": 79,
+        "crc32c": 2428176564,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            5
+          ]
+        ],
+        "crypto": [
+          [
+            0,
+            36
+          ]
+        ]
+      },
+      {
+        "at_ns": 208829387,
+        "direction": "sent",
+        "space": "1RTT",
+        "pn": 0,
+        "bytes": 102,
+        "crc32c": 2428176564,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            0
+          ]
+        ],
+        "crypto": []
+      },
+      {
+        "at_ns": 406643062,
+        "direction": "received",
+        "space": "handshake",
+        "pn": 6,
+        "bytes": 1280,
+        "crc32c": 3173919275,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            0,
+            1241
+          ]
+        ]
+      },
+      {
+        "at_ns": 406656267,
+        "direction": "sent",
+        "space": "handshake",
+        "pn": 5,
+        "bytes": 40,
+        "crc32c": 2156272354,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            6
+          ]
+        ],
+        "crypto": []
+      },
+      {
+        "at_ns": 407431507,
+        "direction": "received",
+        "space": "handshake",
+        "pn": 7,
+        "bytes": 1280,
+        "crc32c": 3332119814,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            1241,
+            1240
+          ]
+        ]
+      },
+      {
+        "at_ns": 407440585,
+        "direction": "sent",
+        "space": "handshake",
+        "pn": 6,
+        "bytes": 40,
+        "crc32c": 1078137285,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            7
+          ]
+        ],
+        "crypto": []
+      },
+      {
+        "at_ns": 409708125,
+        "direction": "sent",
+        "space": "handshake",
+        "pn": 7,
+        "bytes": 74,
+        "crc32c": 2667241561,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            0,
+            36
+          ]
+        ]
+      },
+      {
+        "at_ns": 409712859,
+        "direction": "sent",
+        "space": "handshake",
+        "pn": 8,
+        "bytes": 74,
+        "crc32c": 167749709,
+        "coalesced": false,
+        "ack_ranges": [],
+        "crypto": [
+          [
+            0,
+            36
+          ]
+        ]
+      },
+      {
+        "at_ns": 409779437,
+        "direction": "received",
+        "space": "1RTT",
+        "pn": 1,
+        "bytes": 125,
+        "crc32c": 0,
+        "coalesced": false,
+        "ack_ranges": [
+          [
+            0,
+            0
+          ]
+        ],
+        "crypto": []
+      }
+    ],
+    "rtt_updates": [
+      {
+        "at_ns": 409772251,
+        "latest_ns": 200946969,
+        "min_ns": 200946969
+      }
+    ],
+    "pto_at_ns": [
+      201046071,
+      409697451
+    ],
+    "pto_count": 2,
+    "pto_count_scope": "qlog_loss_timer_expired_lower_bound",
+    "server_bytes": 13197,
+    "truncated": false
+  },
+  "events": [
+    {
+      "at_ns": 821708756,
+      "direction": "c2s",
+      "bytes": 1280,
+      "crc32": 1413473094,
+      "crc32c": 3140928523,
+      "feedback": false,
+      "wire_hex": "cd0000000114226b1f7e584470ae36bcb39eda98641c550db9f904ad770d68405b3edb5e21d4a81970217fc77bf2e8dd08250d73a3f3ab371f04fe5eab3ba1e0ab9ec0b9d7c3170e6dcc12c59283fa093e24308f33cedbe69230e24e9456691991308cf7dd8e4933716b513766fcf190303ad24295a8ecf1c946416c4482a32bc4a007c633c27b4431982fe3e110c764a2522bc82037604de2ca0aec7f92a697bdba918586c75850a963b1a057bb3cb8fe335aa43c93ba802a98a9198dba7c27d9421cdd52c16d63b83da6e723f0eb99259d2c21917103d32de01e2750bb20e9c1cbc50502a36e2ab0671e2d8ae791c71192e331d65567dc7d7e54528c92f12d2ba90924f01ade629bf7b4bf8df3b50d9fa05cf96c906fad9af243b1b697630772edcf92d890444992c9c6edd8a402e99286c5ee0d85cb2e4c89af8e494da273c61ffd7424da6d6dda29781afc9bbcdd68453d75f314ea47f25f5f724e7a3e7932e5d4949f9c2043f29cc753b2342a479c12b6b03b200375b3bebf02b26407b2bf1aaeb08f57f6ad62524a4656c49154fbc32bc50984e18fd0f8f934c6d7e935d19c81a26cf2f14d7a2411392b8ec0ad032fc646f9ab13532e431fb93c0c81e0366e58f00e59cd4380cd4c8d07b829aa14f13e1cd03a1f3e6bd7c98ca7151b671adb333d099c113e0b3b9c7793b1514d0673a6489c8978300caff3282660b9e8158508f1ecedb3a5833d81255fd1dfd7a76b7d3bdd2b8ea77187283fe290fa9bc638948eab4cfbf4a4b90561ac03b6bda3e21c6f382940a55a19f47cf764a299854d04c833cfc3986fff3fb15f448dfab04c7577330d29ad754080874a29c03bff8865f02dd8d4ee7eac070f2dc2be9daf3626944d731501695e6f0b09912c4a42333865bf7d6293d42a99f7fe2618d8a09fba09d1e17b6a1de6eb1331fc2c5766691586d198772d37882f88780867e403904cdbf2456c80bf543ce0500c19ba1a8fc523686bca008612155a3e5b3b93b9810d2e439d03ba45f62165fc28000b1d0c68da9857df4579b2cf84b6aa0d01b6d27c05736365f1aed560727e80e8c31cfe0ae5a6d18d5504b66baf9fcef919a4a0aa96fe51c63eaa34d8eb9079e7c0cd99691942663ac6401626cd901419deb67a9c235e5c649a9c4a4faf4b913b19cc0ef954caedf8b7c4fc3ef53d706277360e65da868b3111c0f72a35d745ac22807c9857ec3024a7ebe03df426b3a39885bd5c3850e12c21a2bd7c9367f832ef3cfadc9ef9f0e6f67e556d8f524704fdac4d22dfc7ea5792ee7348354f1923467a9d35625bf878c0439ab631c861e097ce67539185364a7bfac94bb2f3472f9e9d66f60c430ab16253382ec54d4858bcf3f71f82f2a0a0052979696221164410e40e28b02a6d9227dee6f1350448fbad18be6bdb8b517f65500f02ec0dd58f12f183c3ee081a34e38bbb8cee37f887bdd4f95e06e8a45262bac7ef8d2aa8af2d4f41c6d4257ed751546e7068302479febac91aa08e6aa5bac052544c1c2068c399cfaf40289f1cf5e384eb6f3253dbf27304b17b01e9cfa096af2f3f5058a67cba234e4c03f5172dee015d31e84f0516bd8274ff0e95b6cda6c31d9b805a3539c1b253dd52104b78111959761f2293561a34168057389d0ce79bf4576fdbf2b17c2bd9390baa5e16fbb0b6ce373811e9ccf6456fc0b40298869e194e36d3d0290a15551dfc189bef9b16038677696b979a0a546345246fa4e378b66ae71ff24b30ccc42658d64f52d16205cb714c05d3ed5da24e641a51fab53c17e08b9fa719",
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 40794
+    },
+    {
+      "at_ns": 822522735,
+      "direction": "c2s",
+      "bytes": 1280,
+      "crc32": 1609482591,
+      "crc32c": 3396502425,
+      "feedback": false,
+      "wire_hex": "c40000000114226b1f7e584470ae36bcb39eda98641c550db9f904ad770d68405b3edb5e21d4a81970217fc77bf2e8dd08250d73a3f3ab371f04fe5eab3ba1e0ab9ec0b9d7c3170e6dcc12c59283fa093e24308f33cedbe69230e24e9456691991308cf7dd8e4933716b513766fcf190303ad24295a8ecf1c946416c4482a2346c61c55c018d4fc2347ef3bb2483e539417d1c1a407923cdee3d8f245cd6de3ff45055f106a64749920021bbb87f8f339f6cb18b96907064a40a482d6da1b08488467b03adb2ffba350efc9160926a83075d337627459395b53cb61690fec1b00fa58b1e21a67ef4b54ba36de6f6cf492afc52c9b7b0f2800e9844ba3441367a4b8a607eb68a2dfdcb7fe6a0b755242f743e18950d1ec9a770e97af57d5348b8e780217d393a3a8ae41a2c442cc9d639b747b0ea8b21510d19c60c053b40dd94d7090ee1210dd1d5387db1948617e0b9cacf711b31a144e8ef49c837ebfda3a8761c743918f78e635d2f542f86b4a5d61bb735aadf302208b39f8223b244ed898c4b1b074169e37e4045a09d1b85089549ce1299fa51432ee221486a67e0e2d31880cb4af0ddf8190f3a831759dfad75248c1a9af3d3729255c69f55fdd5bdf6cbdcd42a5498893cb9e2f64b9ef77750441268b788d322422003f9f66a621b0a31b5edc27cf164d0428eeb70524afe295063ef54978983e05ab834db9ff7b858611a5b0a9f27da0475c85abd737d8a193c539a1976737ac46b84758227d78ca37f399ce011f97940a406dcc64cf75115e13926e64a038a4f27cfb4bb9a2258ea3df6fc95da8bf4652b75880877895ef7fcc9b8ae8367864d70bcdee6424174cc3298a4362a8642a4e2f4c7dd06a0ad2cc6a7aefc10b4c11efc365969e147697cd445bd5062147c6c7193a6dbcc2cae83ca9737b2c75bab33cdd2ab448be57dbb90e8ba0119e048c2b4f0a33fb0ad64f0c12d1e069ce1aa4bbe9a8751bb84f4a5c22a95d00643a14b31fa3678a2f468cc4591ca948a232f512e0cf17d8b5697a0c82080aec65d67c1d8dfae96ae06fe79ef9eeed2edda5ab65783409cae573914f4625ba9e1f921fb93dbeb0f23e078f628994e4118cf061fd532ad1a89c64b84d4e809845fd1f3e6bbab206e11d2dd7474a8ebddb15eaeaa1006e697a4d2ddfe663ab9471f83b5bd1ca8c0758758eb9f037b6179ac7ab99fce708126cc91b89454cd66c58c2ee29b3258163f031e3cbcb5d52e1a63da73ae8577b43258dab5104d228a320e52366a4d2b0c8d38db18503a04d5eff1e6795050495fdd97ad25ea57b77a27226b74d2d4ef679f175125c3bc30d9314a58a480b4da67ab46e6ce124b4254c6ef9a6524478e352f3ec2580635c258bf7682a3c08407ede015d44fe5dd273e5e4596959fdc7d30097a2897f7d1cf51e769b658792ce287eef30410e5f932c57d9a8b6a00c02e22e2cacf932e323f1652f03a66c9676b712d689b22e514c0ac00cbf0744ae9c129460e5e23dbed2f67106f65a1d3a5e2850689633bd2606c8c67537803aa0284958d4393ec392306f8d9b4e89c6d9f63d841d541bacff1bd5d598ccbb8a25f0cfd3d6d8f2c82ef496db6b7fb48acbbb93c77cb8bb4e883f85963f977721c013d4a6dcabf4db3d0db337d64196d3b88de37babdb97b0576e62273beab0154aa3bfa2deda646b5349fd40cef45a1dae450b88aa91cd73cda1f023b8e81071432a92ada127e1c61fc341bfcdcbe9773702222511ec0f338e2bc3ed897d7fe69b050fdc874ac24273926c2eb50c8c39946e06c414a4bd029",
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 40794
+    },
+    {
+      "at_ns": 1022432444,
+      "direction": "c2s",
+      "bytes": 1280,
+      "crc32": 393264561,
+      "crc32c": 2188727774,
+      "feedback": false,
+      "wire_hex": "c20000000114226b1f7e584470ae36bcb39eda98641c550db9f904ad770d68405b3edb5e21d4a81970217fc77bf2e8dd08250d73a3f3ab371f04fe5eab3ba1e0ab9ec0b9d7c3170e6dcc12c59283fa093e24308f33cedbe69230e24e9456691991308cf7dd8e4933716b513766fcf190303ad24295a8ecf1c946416c4482673fc0e44bcd1dc301669c5a4e175457688b02f3666e9572332c8f035acda00e6af651563fea9cdf6ea9909440ea92c189a1500555836421c2e9956766edd62e928238e81f6c1c53a1b62fb2936378872218757bee48afb2cb02e1ea19fc66120b4f597a24d33be4b8705086ee7e3c092f0b339793d20328ff389694b243a08b46273248c5a3bd8c26825536104057c69ad971da16d98a75919b74f2346fb17def3c7a8ec4f5531c7a0e5eba5c432fbd2f09c157f1a3f3761236f16a19b74f31ac628390730d6afb915205d50ee473cfa641dbca4babf51931f0936aab0f6fa71e9e582179658e5955f2501dffc46ec5d44c4e9fff7913a81afd73acd15d36269d11f1bbd7d52a7bb6213c39065bb6d1b04d8e5781b16890b814b848a5c74f5c6316b700b64fe140b4249139ac54ea23ed6c2389c168703044e623a722717b007883320e84a8ad353e4c7da37b05784e914bd5b6acb6b279a37597209ef0dace7699753cd31e45e07163446b75242ee7535430dd554b1d59a1fdd23faa56286aa1ee810b165457794083dde8c70f69193ed9b01054ba9393d8219ee56d29f757de46ed9339666d4dd734afecca5fc3fa364725c5c7bd06ad93fa80e75f65e5c7256e34d70d964d404b87ce18cc3a4fb0c20d0c9ffdd7641605194b5919a70bc7c790e86db57638cb621cefcfae91ca4e8a5b44cfa3df5c453dd98d1083fd943c8ccc2857424cb1ee94401a2b5adb0848a4cc07087b14234e7832a8c867f0a7d28f07e324260edf21b1fcded71d6b505b00eb5d46c3dc94f10ba59872e37b086f4e2071bdb5edf0ad57757dbfaa7a0a909c0eded791bb31589d7c7a7a26a29c6404fd913e3622eb501d6435d2fb4925405bc119be4c131da2dfde985a65c9b0b8538b8230a7afde6b873aa63055b88e5882f78d327e85a5ea334912af0527424940849ad97c5ad513ee3445a4c5304653ea845333949d0161bd209afa3bd663c13c2193dbb84b7c1efb6a8ee989f2c2d4c28710ab584b6090d5225269077a068ce264955e995b61071815eab7596d451b5577a018e9aa725f85b1d6384e8a119db11d059498a6775b309343495c10012df98f4c44a6c8fc3ab4813f675d74d997875c3cb7c50e411e84f408e5adaee3d2b32ffc79ac25e5e5bc46da05511f00018828bb2b620122baee0337b31e8542b2a496525cef20a1e828145cce4d5a0c13ebac14c9e3dfdb2b5fe6c94bb5f85dfe5e3dbdd4d04917519794b35b336d8293a27a67828db9f3cb2b065bcf57193646fde11fe36e2c77d5c1c6ae680ef1a3fd12f0f757bf7bbd70f405bc6a27718ac8b634a848eaf7df8620bfd19cd3982bd85683221ab5ac3e453416abca7fdd2bb23c681fe395e322ddf373e1a13b0ba6f6e02260139dfcf64b1bb4a69f056df0ddc108badc5aa36b0933a6f0979a45fa6adf5e7aee5304ab3d8737b8ee31f327d5445839777c05759bda596a45934f2326a9f92afff78315a434c040c02f844db1f0f2434c48db422b1dde555dd8f6c6f17e476798f174d3538a66c25d29d71bf28432929fbdee6f9e31702ac0f8ffd9caad027c01f9c0d061ef71714ff3aaee9a3dbce304cde1412dd7fdaefdabc4e2cddae9",
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 40794
+    },
+    {
+      "at_ns": 1023463105,
+      "direction": "c2s",
+      "bytes": 1280,
+      "crc32": 3405853976,
+      "crc32c": 2166683452,
+      "feedback": false,
+      "wire_hex": "cb0000000114226b1f7e584470ae36bcb39eda98641c550db9f904ad770d68405b3edb5e21d4a81970217fc77bf2e8dd08250d73a3f3ab371f04fe5eab3ba1e0ab9ec0b9d7c3170e6dcc12c59283fa093e24308f33cedbe69230e24e9456691991308cf7dd8e4933716b513766fcf190303ad24295a8ecf1c946416c4482bcd9a5aff0b829d9ea6eac5c83814f9e3354d8a53987536c3ceff9489554846e2346f0405040be6c046260312911a41975db402e62d69d53a56b06337994c75797cb0ed75b464921f73f118db2ee0188b9ab23ddc74182c3d4f43966375b59ffb2e04e828d0f5c79b9f93c342a4097f8669bf8039c842be829418ea55a370a0244b0ca0c9ccb70c67e7d02ee4fb36594955c2a423a833f024d76ebf116f772af03ab3670c804be25dab7f3ad97c21b13b381ddb196c3ab8246588cac70a0aff5799a9036b6f717ddea3e650efcbdb9fa68097edcef6966ff2ccb6d488c051e9f2d6db96923c6bfced3e4a3831a154ed7f6f68e9469d59b9e68454b52e2301751dfc3c5c9ef35add79a25b61c936919f460ce29c4dbb8d9bc861d87c81cdc73fe76dfd815cabbbc4c59c70f1a1ce1c9769d9a1f2afeb97e1523cb21ec2a9a0399a6a79f513fa568f628b118c03f7794148dc1a149b375725e9908a94170783297abad3dc009dbbeea937373bedd1f20286afdb367b53db6d3f8e23e5ec4c66aa3ea6c664adb9c22327fd8322a35d3a06adf12602c67ca7ddab4b9c812a7a8c417c000d48877f1dff19383b0f2728eec895b9c1850eedace1af4c770a596662a456b5771c23cd9a1eebfc7f4ce6c37058667186bb50c1c3ae69ea9ecdb1794eea94b917c90a37f045836bd72b985f6c04a86abd92d0d52337452b98e824347a7a63ad689342af6c188c4e3974a9801f03bab93924c04323d710bc26f2c4ef2a6bc11a766b4c8234a95208adc6592d5b9778a3d7d6ad82501c8cb7f5ed23a75624a9584c9e8735ca9d850774c80159a9e86fd4d7aab04a4d66ea5a25149201a09147a3816f6d28cf496255e3316624d25f9a2a105210eb6907fe95842b88cc2007c3fa463b0f34b1b163c75fa5e5dc513167c68e83fece8f377e0cc6274b519691eb3596ff34311276bfe70871029f53646ae7dcf8d2b17d6ae8216f6c5a9b8f3f2941c81c88978f49230e04fbb534c332bb3895f1d10468425f2959cd608fdb3d703c25fb25a1db46ecab6a7922b879306aee6126d1a68bbb8bd2102126232399eacb60efbbafa10eccc9d18332056d27cec4609bfa6a4117df6e8b78957e6730b709952cb8ebc33c50d93366640a14818d780f1d7f74cbb5b1247c0e6d921767d202f6c2ca99fb99aefc4053a49183c93a9d57c0f55aab28775e5fe82efde6e345c97080906b7f6629f0f55c152b1dcc260bcf260159de0659776ab9a1e87ef1fe28f449a89bd67da356298b185be506eb691d57bc02cb08c97d81e4df843e2fd13045597f53717cd3b52f35c35b94adb5d34889f7660a578873b4dabd1cb7ad6ecc607c3d3bedd1703d79dbe5a45d83958b5bf4bbaf5251c44713848559f1e8eb664be57899b91aae2d1508da5472217b9f2fb247c6c24073db09a35ce6f5e1a851b2fafaf8bb56bf21c542b86946605f499166445b675240d0600b3b8b36caf68638c6dc73a131b274c5c63fb89d4964234eb6763ac25313e5ef880666cd2044031359fe382733790364e641fa2df71246c61d248c5bb956a01b8218872ce1a838270a1381c65cc5bd5648f8ecefb1d4ad1174b38f72c063bd23eeca715b2a652f7",
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 40794
+    },
+    {
+      "at_ns": 1025666220,
+      "direction": "c2s",
+      "bytes": 1280,
+      "crc32": 3047496669,
+      "crc32c": 3672052470,
+      "feedback": false,
+      "wire_hex": "cf000000010443f4ab8b04ad770d68405b3edb5e21d4a81970217fc77bf2e8dd08250d73a3f3ab371f04fe5eab3ba1e0ab9ec0b9d7c3170e6dcc12c59283fa093e24308f33cedbe69230e24e9456691991308cf7dd8e4933716b513766fcf190303ad24295a8ecf1c946416c449227f854024fab62eabe8aae159dfa681d6e827aa20f8169074d3482bdf4d7067128d7a1417787b5b39e32201061656cb56b4ecde08f1030e06b01979e6c96b33d9b9375c3c6f796de1c13387945f50c0dbc7d244903af4fb16b462713afa0fa05c1b4d9c75a647e4a8bf6c40411aaa0cbd23eebe8d8a0b586a5ae7770c345c3bb189b65a7facc3d0f3f082f2fc22a3bd37bf7c9c6229020193de05fd534b919cabac766ddd0bf31e9adf82500c3ef79c34c8d5039048fd44766905d5d78203c749e366f5c80ee7bfb3e86cf041361de3a47889e238da1c5fded608c9fddd29bdd573a3b7d43e43da9915bc70ecc602135926a0036bfa93b370f44c2aeb2cdf32f371db8636827be5451c822026b377af0715cc604c854c6918ea9e75dfaa3270128e377d2076258541fce2b5221d83d27cfca5bc6b5f4893f3f2bf1278e6f84cd5797d78dd74ae56c00600fbeaa913f8d4d4c822e81d9ab70392f8d2e1ff72464a0b255ddd0d8bd7ae451b8c8d58e35095b03a46e1b25fda977711f138e2b0f78b9193adfcc07c05f9573e5873f1fd8879af8b26646430d1bcf3e297e62b3eeebd3975223a49f0806ecfa716ef7a5de50250f12ea43ee924db53997e11ea7086c4064c6db9b91b9d069792ed48df3b2bee6866572dbfe67e6e7936f973eaa436622c0c7d6e889ef6fcc9393b0c32b1bf83ab602e4c3a8a3b8dd549d02db94caf9d7de7ff697784110cdc6d95cd7a4c552d7333c1b2f0ef434de66e1da78730c7f388fa0bcbe038bcecbf6ea07f96dc6c220710064b0d57b67b04a5357868b7bdb4ca1c11a83c1f68301d6c7d731f6402e870c9492cfc27ff43fdd55fd2f6ca9be57518d975ab525b177cfd615635cf435a7011f50a1bc23ae569afd91057a7cf344c5db54594a0560cc932bb9166328a8c108bbdd4ec0fa9275b8edc3c8a2421f2dd6d874dc10aaf113b843c0fdf453942874924ab165060f4460f81bfba881f73f19eed16ef44165a6d103b963f0c35f4424114ea8e18ba78c1f444d903d4e014d55200393ce4bff2972b5c2c2d609851ecc1b8b9fc19e49e9cc6d2defd417a51e08b6ade9a30b693b007e30d2baca979274628f036ce47b842bda905b726a6d0317822ef650980a0b8da9784d93298f7f11f4d490a441abfc0e2576777bd0f8b98a7f7f6e7aa29bbb7c8230dacde284287e3526e9f41199ab3c30c7b51c9f4dd05e64ef948e1ac459c7d77dd14c67c2009917f62e15f9ef283b2f273be443ffa0a20390bd75a44cdfddc8be8bcbe2c04a5319e88d70d7b31e07b95708768cb773a049a4eef4a6a0a169204c800524cbab83c116b2affbbdcc70bc1d6524ffe9608b08c0ce84ab0b2f80734f425128010248ce0a16dd274ff1de099cbf63d7e34ea9640d3b26d279e4527d1b5c92b3d7bac798449f22ea8eadd25ea60fa8a39bc30a8029c1790abb4df318740df422840e127bfcd3a53eca60d3dbdd7b17aaa92336b391efabb73f20c12994e6d35e2d0a9182b996b10eedba12861ebc3969c4c49024529920a376a680578d2bc7aeae05ede87c863a265c85510a130841763921d65223c7626056e0c034e4098d0c53a1cd365fea4b6124761e375d1bc61327d977c1a03e5d1edcd8c14ed7d63d51211e46",
+      "parity": null,
+      "initial": true,
+      "dropped": false,
+      "peer_port": 40794
+    }
+  ],
+  "source": {
+    "C:\\dev\\codex_handoff\\v33\\runs\\T2_revisit_basic_v1\\token_rtt200.stdout": "1a2d98fe51ab05308183e96f27e81cba659edada8d12d96050fdd31bb22b4d02",
+    "C:\\dev\\codex_handoff\\v33\\runs\\T2_revisit_basic_v1\\token_rtt200.relay.json": "a6f4a63bf3cadca8a073d3d97c7a080370b1e7dd5e4a5ee9edb201ad3c4b9320"
+  },
+  "case": "token_rtt200",
+  "connection": 1
+}

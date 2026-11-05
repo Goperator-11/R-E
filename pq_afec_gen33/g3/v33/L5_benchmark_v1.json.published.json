@@ -1,0 +1,15 @@
+{
+  "schema": "padfec.v33.l5_joint_publication/1",
+  "status": "complete",
+  "published_ns": 1793443394633537400,
+  "artifacts_sha256": {
+    "C:\\dev\\pq_afec_gen33\\g3\\v33\\L5_benchmark_v1.json": "489fcf2ffebbcb2abf8e69ed2cd999888cada907bd3b837eb63a9f76599ca467",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L5_bench_v1.md": "74d660cdf0e6bdb507e4fb1508f58092c954e431f37ff543f92e1c05cd791a76"
+  },
+  "family_plan_path": "C:\\dev\\codex_handoff\\v33\\runs\\L5_joint_action_family_v1.json",
+  "family_plan_sha256": "50ee782b1142f41faa8810a1c066c52f2a351e75622d67df9b4672742a63e9a0",
+  "input_inventory_sha256": "8e0f60788a6b1802aa3108d7de654bc2f27b371f0fb0a0d2af2ab79e0384ac93",
+  "pool_attestation_sha256": "0a93df20eb325d29e15e9721b98818e1b8eedb8e70f442b4cd6875fa957af8b0",
+  "execution_content_sha256": "05df5bd34e8199a82c2d502c2ab266fb2a2964a510104084aab7b5481bd07fe2",
+  "reporter_sha256": "094d0aed5a3d4d21d89dcdfd8251402719862cd1a0b34e355334ed4b03fcd7e8"
+}

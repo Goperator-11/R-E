@@ -1,0 +1,535 @@
+{
+  "seed": 31,
+  "n": 1350,
+  "summary": {
+    "n": 1350,
+    "mean_hct_ms": 94.6248300061819,
+    "failure_count": 0,
+    "failure_rate": 0.0,
+    "mean_extra_server_bytes": 5900.994814814815,
+    "mean_extra_first_flight_bytes": 4798.894814814815,
+    "mean_extra_client_first_flight_bytes": 5320.056296296297,
+    "extra_client_first_flight_observed_n": 1350,
+    "p_bias_high_phase": 0.006839899463304776,
+    "p_mae_high_phase": 0.006840104042501723,
+    "p_bias_high_phase_n": 200,
+    "high_phase_p": 0.15,
+    "phase_summaries": [
+      {
+        "phase": 0,
+        "p": 0.02,
+        "n": 450,
+        "tail_requested_n": 200,
+        "tail_observed_n": 200,
+        "tail_p_n": 200,
+        "tail_p_bias": 0.0007302493626090846,
+        "tail_p_mae": 0.0015024251391613538
+      },
+      {
+        "phase": 1,
+        "p": 0.15,
+        "n": 450,
+        "tail_requested_n": 200,
+        "tail_observed_n": 200,
+        "tail_p_n": 200,
+        "tail_p_bias": 0.006839899463304776,
+        "tail_p_mae": 0.006840104042501723
+      },
+      {
+        "phase": 2,
+        "p": 0.02,
+        "n": 450,
+        "tail_requested_n": 200,
+        "tail_observed_n": 200,
+        "tail_p_n": 200,
+        "tail_p_bias": 0.005193851729029991,
+        "tail_p_mae": 0.005193851729029991
+      }
+    ],
+    "alarm_episode_count": 3,
+    "alarm_connections": 3,
+    "alarm_eligible_connections": 1050,
+    "alarm_rate_per_1000": 2.857142857142857,
+    "alarm_interpretation": "new action alarms per eligible 1000 connections without regime change; not causal loss false alarms",
+    "guard_alarm_fraction": 0.01925925925925926,
+    "longest_unchanged_action_run": 559,
+    "transitions": [
+      {
+        "from_phase": 0,
+        "to_phase": 1,
+        "change_index": 450,
+        "old_p": 0.02,
+        "new_p": 0.15,
+        "midpoint": 0.08499999999999999,
+        "direction": "up",
+        "consecutive": 5,
+        "prechange_old_side_qualified": true,
+        "already_on_new_side": false,
+        "tracking_start_index": 455,
+        "tracking_confirmed_index": 459,
+        "tracking_delay": 5,
+        "tracking_confirmed_delay": 9,
+        "tracking_censored": false,
+        "detection_delay": 5,
+        "detection_confirmed_delay": 9,
+        "detection_censored": false,
+        "detection_status": "detected",
+        "followup_decisions": 450,
+        "unknown_p_rows_before_confirmation": 0
+      },
+      {
+        "from_phase": 1,
+        "to_phase": 2,
+        "change_index": 900,
+        "old_p": 0.15,
+        "new_p": 0.02,
+        "midpoint": 0.08499999999999999,
+        "direction": "down",
+        "consecutive": 5,
+        "prechange_old_side_qualified": true,
+        "already_on_new_side": false,
+        "tracking_start_index": 908,
+        "tracking_confirmed_index": 912,
+        "tracking_delay": 8,
+        "tracking_confirmed_delay": 12,
+        "tracking_censored": false,
+        "detection_delay": 8,
+        "detection_confirmed_delay": 12,
+        "detection_censored": false,
+        "detection_status": "detected",
+        "followup_decisions": 450,
+        "unknown_p_rows_before_confirmation": 0
+      }
+    ],
+    "reeval_count": 11,
+    "updated_count": 1350,
+    "decision_why_counts": {
+      "cold": 1,
+      "ej": 1338,
+      "reeval": 11
+    },
+    "observation_skip_counts": {
+      "None": 1350
+    },
+    "expected_regret_status": "not_evaluated",
+    "metric_scope": "observed run; unchanged actions are not an oracle-defined stuck episode"
+  },
+  "action_counts": [
+    {
+      "context_id": "9edb1cc507fc88ba18b3",
+      "action": [
+        0,
+        0,
+        0
+      ],
+      "n": 1
+    },
+    {
+      "context_id": "9edb1cc507fc88ba18b3",
+      "action": [
+        0,
+        3,
+        1
+      ],
+      "n": 899
+    },
+    {
+      "context_id": "b0d183dfe2bf9c398c6e",
+      "action": [
+        0,
+        0,
+        4
+      ],
+      "n": 166
+    },
+    {
+      "context_id": "b0d183dfe2bf9c398c6e",
+      "action": [
+        0,
+        3,
+        1
+      ],
+      "n": 284
+    }
+  ],
+  "final_state": {
+    "p_mean": 0.022838606668650084,
+    "p_map": 0.02,
+    "mass": 1.0,
+    "p_ge_010": 0.0006458969801599539,
+    "S_hat": 18143.0,
+    "k_hat": 2,
+    "stats": {
+      "obs": 1350,
+      "upd": 1350,
+      "predict": 1350,
+      "shield": 0,
+      "nominal2": 166,
+      "guard": 29,
+      "no_base": 9,
+      "no_ctx": 0,
+      "events": 178,
+      "fail": 0,
+      "resid": 1349,
+      "reeval": 11,
+      "alarm_raised": 3,
+      "alarm_cleared": 3,
+      "datagram": 1279,
+      "categorical": 71,
+      "predict_only": 0,
+      "arr_c1": 1279,
+      "arr_ack": 0,
+      "arr_none": 71,
+      "arr_trunc": 0,
+      "arr_empty": 0,
+      "arr_sent": 7670,
+      "arr_lost": 482,
+      "grade_one_rtt": 986,
+      "grade_two_rtt": 341,
+      "grade_late_or_failure": 22
+    },
+    "guard_alarms": {},
+    "n_dec": 1350,
+    "n_reeval": 177,
+    "supplied_policy_rtt_min_ms": 55.120000000000005,
+    "observed_hct_min_ms": 78.85456850021197,
+    "supplied_rtt_count": 1350,
+    "observations": 1350
+  },
+  "policy_audit": {
+    "source_root": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1",
+    "worker_cwd": "C:\\dev\\pq_afec_gen33",
+    "loaded_modules": {
+      "afec": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\__init__.py",
+        "sha256": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a"
+      },
+      "afec.cache": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\cache.py",
+        "sha256": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d"
+      },
+      "afec.channel": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\channel.py",
+        "sha256": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7"
+      },
+      "afec.controller": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\controller.py",
+        "sha256": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c"
+      },
+      "afec.estimator": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\estimator.py",
+        "sha256": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047"
+      },
+      "afec.handshake": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\handshake.py",
+        "sha256": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d"
+      },
+      "afec.sim": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\sim.py",
+        "sha256": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6"
+      },
+      "padfec": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\__init__.py",
+        "sha256": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79"
+      },
+      "padfec.amplif": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\amplif.py",
+        "sha256": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341"
+      },
+      "padfec.capacity": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\capacity.py",
+        "sha256": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe"
+      },
+      "padfec.policy": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\policy.py",
+        "sha256": "67b27c1dcb50dd4170eee393520818f32ef20e68c4173ae2e0a26b14e64f34e8"
+      },
+      "padfec.quantum": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\quantum.py",
+        "sha256": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e"
+      },
+      "padfec.table": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\table.py",
+        "sha256": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb"
+      },
+      "padfec3": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\__init__.py",
+        "sha256": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3"
+      },
+      "padfec3.decide3": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\decide3.py",
+        "sha256": "23666fd47babdb8364d877a8d51f703b068dffb2a40f650b362dfa6fccc52c33"
+      },
+      "padfec3.layout": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\layout.py",
+        "sha256": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a"
+      },
+      "padfec3.learn3": {
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\learn3.py",
+        "sha256": "80f924c67b28b5030de4195fa2856c655a3c5a59fe34780f34d98518a0ae4452"
+      }
+    },
+    "actual_module_paths": {
+      "afec": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\__init__.py",
+      "afec.cache": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\cache.py",
+      "afec.channel": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\channel.py",
+      "afec.controller": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\controller.py",
+      "afec.estimator": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\estimator.py",
+      "afec.handshake": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\handshake.py",
+      "afec.sim": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\sim.py",
+      "padfec": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\__init__.py",
+      "padfec.amplif": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\amplif.py",
+      "padfec.capacity": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\capacity.py",
+      "padfec.policy": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\policy.py",
+      "padfec.quantum": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\quantum.py",
+      "padfec.table": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\table.py",
+      "padfec3": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\__init__.py",
+      "padfec3.decide3": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\decide3.py",
+      "padfec3.layout": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\layout.py",
+      "padfec3.learn3": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\learn3.py"
+    },
+    "source_sha256": {
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\learn3.py": "80f924c67b28b5030de4195fa2856c655a3c5a59fe34780f34d98518a0ae4452",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\__init__.py": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\policy.py": "67b27c1dcb50dd4170eee393520818f32ef20e68c4173ae2e0a26b14e64f34e8",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\__init__.py": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\cache.py": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\channel.py": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\controller.py": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\estimator.py": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\handshake.py": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\sim.py": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\amplif.py": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\capacity.py": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+      "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\decide3.py": "23666fd47babdb8364d877a8d51f703b068dffb2a40f650b362dfa6fccc52c33"
+    },
+    "path_insertions_blocked": [
+      {
+        "operation": "insert",
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1"
+      },
+      {
+        "operation": "insert",
+        "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1"
+      }
+    ],
+    "sys_path": [
+      "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\python314.zip",
+      "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\DLLs",
+      "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\Lib",
+      "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314",
+      "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages",
+      "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\win32",
+      "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\win32\\lib",
+      "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\Pythonwin"
+    ],
+    "isolated": true,
+    "dont_write_bytecode": true,
+    "source_unchanged": true,
+    "read_only_audit": true
+  },
+  "trace_path": "C:\\dev\\codex_handoff\\v33\\runs\\J7_factorial_raw_v1\\wire39_j7_c1_B1\\seed00031.jsonl.gz",
+  "trace_sha256": "eaa609e723d371c77dc56dfb7e11bb62d7500e0f9887c6ab81edd3d2415e0027",
+  "counterfactual_trace_path": "C:\\dev\\codex_handoff\\v33\\runs\\J7_counterfactuals_v1\\wire39\\B1\\seed00031.jsonl.gz",
+  "counterfactual_trace_sha256": "6dedf510f119ab28e573398632c197e9a962c3100db4fe364c3db5af38dc2c06",
+  "schema": "padfec.v33.j7_factorial/1",
+  "status": "complete",
+  "profile": "wire39",
+  "role": "j7",
+  "scenario": "B1",
+  "observation_mode": "c1",
+  "mode": "full",
+  "policy_initial": {
+    "policy_version": "v3.3-dev",
+    "state_version": 4,
+    "variant": "full",
+    "runtime_overrides": {},
+    "capabilities": {
+      "observe_extra": [
+        "first_flight_evidence"
+      ]
+    },
+    "audit": {
+      "source_root": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1",
+      "worker_cwd": "C:\\dev\\pq_afec_gen33",
+      "loaded_modules": {
+        "afec": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\__init__.py",
+          "sha256": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a"
+        },
+        "afec.cache": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\cache.py",
+          "sha256": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d"
+        },
+        "afec.channel": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\channel.py",
+          "sha256": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7"
+        },
+        "afec.controller": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\controller.py",
+          "sha256": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c"
+        },
+        "afec.estimator": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\estimator.py",
+          "sha256": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047"
+        },
+        "afec.handshake": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\handshake.py",
+          "sha256": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d"
+        },
+        "afec.sim": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\sim.py",
+          "sha256": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6"
+        },
+        "padfec": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\__init__.py",
+          "sha256": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79"
+        },
+        "padfec.amplif": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\amplif.py",
+          "sha256": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341"
+        },
+        "padfec.capacity": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\capacity.py",
+          "sha256": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe"
+        },
+        "padfec.policy": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\policy.py",
+          "sha256": "67b27c1dcb50dd4170eee393520818f32ef20e68c4173ae2e0a26b14e64f34e8"
+        },
+        "padfec.quantum": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\quantum.py",
+          "sha256": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e"
+        },
+        "padfec.table": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\table.py",
+          "sha256": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb"
+        },
+        "padfec3": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\__init__.py",
+          "sha256": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3"
+        },
+        "padfec3.decide3": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\decide3.py",
+          "sha256": "23666fd47babdb8364d877a8d51f703b068dffb2a40f650b362dfa6fccc52c33"
+        },
+        "padfec3.layout": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\layout.py",
+          "sha256": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a"
+        },
+        "padfec3.learn3": {
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\learn3.py",
+          "sha256": "80f924c67b28b5030de4195fa2856c655a3c5a59fe34780f34d98518a0ae4452"
+        }
+      },
+      "actual_module_paths": {
+        "afec": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\__init__.py",
+        "afec.cache": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\cache.py",
+        "afec.channel": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\channel.py",
+        "afec.controller": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\controller.py",
+        "afec.estimator": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\estimator.py",
+        "afec.handshake": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\handshake.py",
+        "afec.sim": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\sim.py",
+        "padfec": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\__init__.py",
+        "padfec.amplif": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\amplif.py",
+        "padfec.capacity": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\capacity.py",
+        "padfec.policy": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\policy.py",
+        "padfec.quantum": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\quantum.py",
+        "padfec.table": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\table.py",
+        "padfec3": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\__init__.py",
+        "padfec3.decide3": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\decide3.py",
+        "padfec3.layout": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\layout.py",
+        "padfec3.learn3": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\learn3.py"
+      },
+      "source_sha256": {
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\learn3.py": "80f924c67b28b5030de4195fa2856c655a3c5a59fe34780f34d98518a0ae4452",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\__init__.py": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\policy.py": "67b27c1dcb50dd4170eee393520818f32ef20e68c4173ae2e0a26b14e64f34e8",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\__init__.py": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\cache.py": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\channel.py": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\controller.py": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\estimator.py": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\handshake.py": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\afec\\sim.py": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\amplif.py": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\capacity.py": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec\\table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+        "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1\\padfec3\\decide3.py": "23666fd47babdb8364d877a8d51f703b068dffb2a40f650b362dfa6fccc52c33"
+      },
+      "path_insertions_blocked": [
+        {
+          "operation": "insert",
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1"
+        },
+        {
+          "operation": "insert",
+          "path": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1"
+        }
+      ],
+      "sys_path": [
+        "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\python314.zip",
+        "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\DLLs",
+        "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\Lib",
+        "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314",
+        "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages",
+        "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\win32",
+        "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\win32\\lib",
+        "C:\\Users\\scien\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\Pythonwin"
+      ],
+      "isolated": true,
+      "dont_write_bytecode": true,
+      "source_unchanged": true,
+      "read_only_audit": true
+    }
+  },
+  "plan_sha256": "5f417689ea9d677e9153ba88246c20c38da8caf3bae4dabd4e67b088fa039d81",
+  "source_sha256": {
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_j7.py": "e56e20a7ec92c9942cc00eb1c1c886a7181ab9cb2ece771b6f03acbcb05b7d40",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_learning.py": "412666987b56f46cdfe6cfa7970c1c6da5ff3eeed207037bae997ec4790d873f",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\first_flight_observer.py": "fccc8f4df3bf8448586c7a2ed41982cf91d65f1c585492fa43a36794b60aa64c",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench.py": "58db05857c0e6b230e0e0290ca4328c3ebdba289d3837c4f4957a3702f43c396",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_metrics.py": "1316c407308656affee6a45c7b5985eada7496a0c3274b4f677c96b78e94d06e",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\policy_worker.py": "49370cc038bfdaef7d0c01f38bd368e156890959f173d1fbf292b3b11744618c",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\worldsim.py": "8f86bb520af2d18d03f9188f14104bc988af680665f705dbe0121b83d391e374",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\worldparams.json": "57e9352c5ff778fd278772e496fbbfe74a685ef7ba49b3849b40df45648db6ed",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\oracle.py": "84e9feb6d880e176dc82af8f6e33d42f7a6d3b97dadcd17b21ccd7f1e198592c",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_oracles.py": "ecaa601217c9a6df74c903d0e1cc0572ea4f565cf44deec73eb2a039f43bfba9",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_action_pool.py": "b3601f7887265c7769ea655cfa15ccce072eada0375a28264f9c2bd1af7463d5",
+    "C:\\dev\\pq_afec_gen33\\experiments\\v33\\bench_report.py": "7c53c630bb33df9f697fd8dac9c0d3447f0b315d7c5c31fb0769086ed59fcfaa"
+  },
+  "protocol_sha256": "59d679a4f4a4210da8ce200eb6defd9e52d5a4e8edd4f3a25030e1abb6c51eb9",
+  "baseline_path": "C:\\dev\\codex_handoff\\v33\\runs\\J7_counterfactuals_v1\\wire39\\B1\\seed00031.json",
+  "baseline_sha256": "12bb45ca999ee0132d68fe992cfcda331732c6dc33ea039d4e10a4fa58c32539",
+  "policy_fingerprint": {
+    "source_root": "C:\\dev\\pq_afec_gen33\\g3\\v33\\policy_snapshots\\J7_v1",
+    "files": {
+      "afec/__init__.py": "427ce756f912a7362b51ddc00769955e7690e40738d0f0bd69a5065e9c4d694a",
+      "afec/cache.py": "6f14a18a3a59a1d07a832aa1fd866caabd9b07cbbf4b4f106bd626bce0134f5d",
+      "afec/channel.py": "ba6dc15db6075717278aad25ccb8d2f68280b8e659a2d6a73a4bd405b74437a7",
+      "afec/controller.py": "dba9df19c5a5dab0f87f37a0ac1ccc549d53a60682890e65192783321e8add4c",
+      "afec/estimator.py": "f941d4456f07d2abb82d116f4a63d2e335f29a33ecc99fddef3a430fd3402047",
+      "afec/handshake.py": "4886c45ae6f54eb06a598b92cad14de70687610221bc78e2307c6e9f6a22c24d",
+      "afec/rs.py": "cacabfe8ade694677308a4f6212a56719ac3526c5c8221b98cd03d0aa204308f",
+      "afec/sim.py": "7a579a969c6285d3998a853d762cf4f53068ab066785907507163528238ecba6",
+      "padfec/__init__.py": "8af008c57ff0ff6918c8fbe712d04466df56ab9526fe138f53068d8ffb248d79",
+      "padfec/amplif.py": "f517ba3c49b952f4714f837d18dd0a2b9200418450d35f5c287cba933d8c4341",
+      "padfec/capacity.py": "ab4d79c456a2cb23d00ce54c06b194b61efc78bbc4ee1903f46df581d0de0dbe",
+      "padfec/codec.py": "9982d94be5c7fabc2a6de37502ff79e30f378c195d925f27dab9af16b181bdc9",
+      "padfec/policy.py": "67b27c1dcb50dd4170eee393520818f32ef20e68c4173ae2e0a26b14e64f34e8",
+      "padfec/quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+      "padfec/table.py": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+      "padfec3/__init__.py": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+      "padfec3/decide3.py": "23666fd47babdb8364d877a8d51f703b068dffb2a40f650b362dfa6fccc52c33",
+      "padfec3/layout.py": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+      "padfec3/learn3.py": "80f924c67b28b5030de4195fa2856c655a3c5a59fe34780f34d98518a0ae4452"
+    }
+  }
+}
