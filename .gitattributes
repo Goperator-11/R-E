@@ -5,3 +5,4 @@
 *.pdf binary
 *.pptx binary
 *.gz binary
+mlkem-quic-amplification/src/*.sh text eol=lf
