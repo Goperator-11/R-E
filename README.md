@@ -22,7 +22,7 @@
 
 | 세대 | 측정 | 판정 |
 |---|---|---|
-| gen-2 (`pq_afec`) | 2026-10-01~10-02 실행 | 17단계 통과, 7단계 실패(p8 p10 p16 p17 p15 p18 p20), p6 미실행. 10월 2일·7일 코드 수정 뒤 새 실측 없음 |
+| gen-2 (`pq_afec`) | 2026-10-01~10-02 실행 | 18단계 통과, 6단계 실패(p8 p10 p15 p17 p18 p20), p6 미실행(이전 done은 stale). p16은 10월 1일 실패 뒤 10월 2일 재실행에서 통과. 10월 2일·7일 코드 수정 뒤 새 실측 없음 |
 | v3.0 (`pq_afec_gen3`) | 2단계, 2026-10-02 두 회차 | H1 개선 주장 성립(큰cert +28.18 ms, RTT200 +11.35 ms). H2 실패(보류 셀 1개 열등), H3 통과, H4 적응 기여 확인 안 됨 |
 | v3.1 (`pq_afec_gen31`) | 3단계, 2026-10-02~10-03 두 회차 | H1 개선 주장 성립(큰cert +28.01 ms, RTT200 +12.38 ms). H2 실패(판정불능 1), H3 실패, H4 적응 기여 확인 안 됨 |
 | v3.2-dev (`pq_afec_gen32`) | 없음 | 구현 검사만 통과. [v3.2 검증 기록](pq_afec_gen32/g3/development_validation/README.md) |
@@ -61,3 +61,13 @@ python pq_afec/experiments/loop2.py --status
 ```
 
 실험별 조건과 한계는 [PADFEC 명세](pq_afec/docs/PADFEC%20v2%20명세.md)와 [팀 측정 README](mlkem-quic-amplification/README.md)에 기록한다.
+
+## 봉인 파일 확인
+
+새 clone의 줄바꿈은 루트 .gitattributes가 LF로 고정한다. 다음 명령은 추적된 상대경로의 봉인·추가 기록 파일을 원본 바이트로 확인한다. 외부 원자료·바이너리·절대경로 개발자료는 로컬 보존 manifest로 별도 확인해야 한다.
+
+```powershell
+python -I -B tools/verify_seals.py
+```
+
+gen-2 최종 상태의 근거는 pq_afec/experiments/state/fixloop_triage.json과 loop2.json의 p16 history다. p6은 과거 done이지만 마지막 분류가 stale이므로 현재 통과 수에 포함하지 않았다.
