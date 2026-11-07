@@ -6,7 +6,7 @@ import subprocess
 
 LIMIT = 20_000_000
 ROOT = Path(__file__).resolve().parents[1]
-PRIVATE_KEY = re.compile(rb"-----BEGIN (?P<kind>(?:[A-Z0-9]+ )?PRIVATE KEY)-----\s+(?:[A-Za-z0-9+/=]+\s+)+-----END (?P=kind)-----")
+PRIVATE_KEY = re.compile(rb"-----BEGIN (?P<kind>(?:[A-Z0-9]+ )?PRIVATE KEY)-----\s+(?:[A-Za-z][A-Za-z0-9-]*:[^\r\n]*\s+)*(?:[A-Za-z0-9+/=]+\s+)+-----END (?P=kind)-----")
 
 
 def staged_sizes(root):
