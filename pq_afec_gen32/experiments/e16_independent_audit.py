@@ -1,27 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E16 - independent re-derivation audit
-
-verify.py checks the algorithm against ITSELF (DP vs Monte Carlo of the same
-model, estimator against its own simulator).  That catches implementation slips
-but not a wrong formula: if the model is wrong, both sides are wrong together.
-
-This file re-derives the load-bearing quantities by a DIFFERENT method and
-compares.  Where two independent derivations agree to machine precision the
-formula is right; where they disagree, one of them is wrong and we find out
-which.
-
-  A1  block erasure distribution : DP         vs brute force over all state paths
-  A2  block erasure distribution : DP         vs transfer matrix (generating fn)
-  A3  Gilbert-Elliott identities : from_burst vs simulated chain
-  A4  interleaving P^D           : DP(P^D)    vs an independently built chain
-  A5  Reed-Solomon MDS           : claim      vs exhaustive erasure patterns
-  A6  cost minimisation          : argmin     vs exhaustive scan
-  A7  numerical health           : pmf sums, signs, monotonicity laws
-  A8  report <-> JSON            : quoted numbers traceable to raw data
-
-Standard library only.  ASCII console output.
-"""
 import itertools
 import json
 import math
@@ -34,9 +10,9 @@ ROOT = os.path.dirname(HERE)
 RESULTS = os.path.join(HERE, "results")
 sys.path.insert(0, ROOT)
 
-from afec.channel import GilbertElliott                      # noqa: E402
-from afec.controller import FecConfig, choose_redundancy     # noqa: E402
-from afec.rs import RSErasureCode                            # noqa: E402
+from afec.channel import GilbertElliott
+from afec.controller import FecConfig, choose_redundancy
+from afec.rs import RSErasureCode
 
 FAIL = []
 PASS = []
@@ -55,15 +31,7 @@ def _harden():
             pass
 
 
-# --------------------------------------------------------- A1 brute force
 def brute_force_pmf(ch, n):
-    """Exact erasure distribution by enumerating every state path.
-
-    Independent of the DP: walks all 2^n state sequences, weights each by its
-    path probability, and convolves the conditionally independent losses.
-    Only feasible for small n - which is the point.  It is a ground truth the
-    DP cannot borrow from.
-    """
     pi = ch.stationary
     P = ch.transition
     lossp = [ch.p_good, ch.p_bad]
@@ -101,15 +69,7 @@ def a1_brute_force():
           "max abs diff %.2e" % worst)
 
 
-# ----------------------------------------------------- A2 transfer matrix
 def transfer_matrix_pmf(ch, n):
-    """Erasure distribution via a polynomial transfer matrix.
-
-    Carry, per state, a polynomial in z whose z^c coefficient is the
-    probability of c erasures so far.  Emission multiplies by ((1-l) + l z),
-    then the transition mixes states.  Different recursion order and different
-    data layout from the DP, so a shared indexing slip cannot hide in both.
-    """
     P = ch.transition
     lg, lb = ch.p_good, ch.p_bad
     pi = ch.stationary
@@ -154,7 +114,6 @@ def a2_transfer_matrix():
           "max abs diff %.2e" % worst)
 
 
-# --------------------------------------------- A3 Gilbert-Elliott identities
 def a3_identities():
     print("\n[A3] from_burst(p, L) really produces loss rate p and burst L")
     bad_p = bad_L = 0.0
@@ -192,7 +151,6 @@ def a3_identities():
           "empirical L = %.3f" % emp_L)
 
 
-# ------------------------------------------------------------ A4 interleave
 def a4_interleave():
     print("\n[A4] interleave=D equals observing the chain every D steps")
     worst = 0.0
@@ -212,7 +170,6 @@ def a4_interleave():
           "max abs diff %.2e" % worst)
 
 
-# ---------------------------------------------------------------- A5 RS MDS
 def a5_rs_mds():
     print("\n[A5] Reed-Solomon: exhaustive erasure patterns")
     ok_all = True
@@ -256,7 +213,6 @@ def a5_rs_mds():
           detail or "exhaustive over 6 (k,r) pairs")
 
 
-# --------------------------------------------------------------- A6 argmin
 def a6_argmin():
     print("\n[A6] choose_redundancy returns the global argmin of J")
     cfg = FecConfig(rate_bps=50e6, delay_budget_ms=20.0)
@@ -296,7 +252,6 @@ def a6_argmin():
           "the documented 'abandonment ridge'" % (nonunimodal, cells))
 
 
-# ------------------------------------------------------------ A7 numerics
 def a7_numerics():
     print("\n[A7] numerical health and monotonicity laws")
     worst_sum = 0.0
@@ -337,7 +292,6 @@ def a7_numerics():
     check("A7d P_fail non-increasing in r", not bad2,
           "%d violation(s)" % len(bad2))
 
-    # the cache quantisation must not change the decision
     cfg = FecConfig(rate_bps=50e6, delay_budget_ms=20.0)
     diff = 0
     for i in range(400):
@@ -356,7 +310,6 @@ def a7_numerics():
           "%d/400 differ" % diff)
 
 
-# ------------------------------------------------------ A8 report vs data
 def a8_report_consistency():
     print("\n[A8] numbers quoted in the report are traceable to the raw JSON")
     rep_path = os.path.join(ROOT, "docs", "실측 보고서.md")

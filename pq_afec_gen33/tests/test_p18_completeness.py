@@ -1,4 +1,3 @@
-"""P18 complete-trial and decision-width regressions without live experiments."""
 import ast
 import contextlib
 import copy

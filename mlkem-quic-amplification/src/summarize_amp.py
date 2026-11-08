@@ -1,4 +1,3 @@
-"""Summarize qamp's raw CSV without treating missing measurements as zero."""
 import argparse
 import csv
 import math
@@ -24,7 +23,7 @@ def summarize(rows, expected):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description="Summarize qamp's raw CSV without treating missing measurements as zero.")
     parser.add_argument('csv_path')
     for flag in ['expected', 'certsize', 'actual', 'initial-size']:
         parser.add_argument('--' + flag, required=True, type=int)

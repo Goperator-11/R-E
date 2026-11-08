@@ -1,25 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E13 - data phase, live: the real controller driving real Reed-Solomon on a
-      real QUIC DATAGRAM flow over a real lossy link
-
-    qdata(client) --QUIC DATAGRAM--> shim tx --[K originals + r RS repairs]-->
-        veth+netem --> shim rx --(RS decode)--> qdata(server)
-
-Policies compared, all on the same netem conditions:
-    none      no repair symbols at all
-    static    a fixed redundancy ratio (the usual baseline)
-    adaptive  afec.AdaptiveFecController deciding r block by block from the
-              loss mask the receiver reports back
-
-Metrics are the ones the R&E plan names: delivery (loss recovery) rate,
-goodput, redundancy overhead, and encoder CPU time.
-
-Run inside a namespace, no root:
-    unshare -r -m -n python3 experiments/e13_data_phase_live.py
-
-Output: experiments/results/e13_data_live.json
-"""
 import argparse
 import hashlib
 import json
@@ -29,9 +7,9 @@ import sys
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(HERE)      # 저널 지문이 참조하는 코드 경로의 기준
+ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from _journal import Journal, code_fingerprint     # noqa: E402
+from _journal import Journal, code_fingerprint
 RESULTS = os.path.join(HERE, "results")
 QBED = os.path.join(HERE, "quicbed")
 os.makedirs(RESULTS, exist_ok=True)
@@ -141,7 +119,6 @@ def one_run(policy, spec, n, size, pps, rate_mbps, budget_ms, static_ratio,
             capture_output=True, text=True, timeout=timeout)
         cli_err = cli.stderr
     except subprocess.TimeoutExpired as e:
-        # One bad condition must not take the whole sweep down with it.
         timed_out = True
         cli_err = (e.stderr or b"").decode("utf-8", "replace") if e.stderr else ""
 
@@ -166,9 +143,6 @@ def one_run(policy, spec, n, size, pps, rate_mbps, budget_ms, static_ratio,
         except Exception:
             return {}
 
-    # The sender tells us how many datagrams it actually handed to QUIC.
-    # That, not n, is the denominator for delivery: datagrams the sender
-    # never emitted were not lost by the link.
     sent = skipped = None
     elapsed_ms = None
     for tok in cli_err.split():
@@ -224,13 +198,9 @@ def main():
 
     out = {"n": a.n, "size": a.size, "pps": a.pps, "rtt_ms": a.rtt,
            "rate_mbps": a.rate_mbps, "runs": {}}
-    # 단계 내부 재개: 조건 x 정책 하나가 끝날 때마다 저널에 남긴다.
-    # 파라미터가 바뀌면 지문이 달라져 옛 기록을 아예 안 읽는다(섞임 방지).
     fp = hashlib.sha256(json.dumps(
         {"n": a.n, "size": a.size, "pps": a.pps, "rate": a.rate_mbps,
          "budget": a.budget_ms, "static": a.static_ratio, "rtt": a.rtt,
-         # 측정 코드가 바뀌면 옛 단위를 재사용하면 안 된다 (2026-08-18:
-         # 심의 길이 프레이밍 버그를 고쳤는데 저널이 낡은 결과를 계속 내줬다)
          "code": code_fingerprint(
              ["experiments/quicbed/shim_data.py",
               "experiments/quicbed/dataapp.go",
@@ -272,11 +242,8 @@ def main():
             sent = sender.get("sent") or a.n
             skipped = sender.get("skipped") or 0
             offered = sent + skipped
-            # delivery over what the SENDER actually emitted
             deliv = s["received"] / sent if sent else 0.0
             skip_frac = skipped / offered if offered else 0.0
-            # goodput on the nominal schedule, so the congestion controller's
-            # back-pressure cannot masquerade as a throughput result
             nominal_s = a.n / a.pps
             goodput = s["received"] * a.size * 8 / nominal_s / 1e6
             row = {
@@ -289,13 +256,8 @@ def main():
                 "valid": skip_frac < 0.01 and not sender.get("timed_out"),
             }
             out["runs"][ukey] = row
-            # 🩸 **무효 판정된 실행은 저널에 넣지 않는다.**
-            # 넣으면 재실행해도 그 실패가 계속 재사용돼 영영 못 고친다
-            # (실측: burst_p5_L4/static 의 송신탈락 34.9% 가 캐시돼 재시도가
-            #  아무 일도 안 했다). 저널은 "끝난 일"을 기억하는 것이지
-            #  "망한 일"을 굳히는 게 아니다.
             if row["valid"]:
-                jr.record(ukey, row)      # 재개 지점
+                jr.record(ukey, row)
             else:
                 print("        (무효 -> 저널에 넣지 않음. 다음 실행에서 재시도)")
             flag = "" if skip_frac < 0.01 else "  <-- SENDER LIMITED, invalid"

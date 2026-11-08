@@ -144,7 +144,6 @@ class FollowupTests(unittest.TestCase):
         for sign in (-1.0, 1.0):
             with self.subTest(sign=sign):
                 data = warm_state().to_json()
-                # Even short or alarmed windows must remain representable.
                 data["g_resid"] = {KEY: [sign * 1e308]}
                 data["g_common"] = [-sign * 1e308]
                 data["g_alarm"] = {KEY: 0}
@@ -181,7 +180,6 @@ class FollowupTests(unittest.TestCase):
             wanted = learn3.model_point(*args)
             learn3.model_point(*args[:-1], 6)
             learn3.model_point(*args[:-1], 7)
-            # A hit preserves FIFO insertion order.
             self.assertEqual(learn3.model_point(*args), wanted)
             learn3.model_point(*args[:-1], 8)
             key = args + (learn3.LATER_DEFAULT,)

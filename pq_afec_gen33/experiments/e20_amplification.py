@@ -1,44 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E20 - QUIC 증폭 제한과 핸드셰이크 FEC (팀 자료 검증 + 가설 시험)
-
-배경
-----
-다른 PC에서 측정된 팀 자료(quic_amplification_v2.xlsx)가 이렇게 보고한다:
-RFC 9000 §8.1(서버는 주소 검증 전까지 수신 바이트의 3배까지만 송신)에 걸려,
-인증서가 어느 크기를 넘으면 핸드셰이크가 1-RTT 에서 2-RTT 로 바뀐다. 그리고
-ML-KEM 은 ClientHello 가 커서 **서버 예산도 커지므로 그 임계가 더 높다**:
-    X25519         임계 3,300~3,400 B
-    X25519MLKEM768 임계 5,900~6,000 B
-    사이 구간에서 후양자가 오히려 1 RTT 빠르다 (RTT 50ms 에서 49ms)
-
-이 파일이 확인하는 것
---------------------
-Q1. 팀의 임계값이 우리 테스트베드에서 재현되는가            (독립 재현)
-Q2. 그 임계가 RFC 9000 §8.1 산술과 맞는가                 (메커니즘)
-Q3. 🔬 **핸드셰이크 FEC 가 그 임계를 밀어올리는가**         (새 가설)
-
-Q3 이 이 실험의 이유다. 증폭 예산은 클라이언트가 보낸 바이트의 3배이므로,
-핸드셰이크에 이중화를 붙이면 예산도 같이 커져 **왕복 하나를 없앨 수 있다**는
-것이 우리 handshake.py 주석에 적혀 있으나 한 번도 측정된 적이 없다.
-
-⚠️ 먼저 확인된 사실: **우리 심의 XOR 패리티는 rx 가 흡수하고 서버로 넘기지
-않는다.** 서버의 QUIC 스택이 보는 바이트가 안 늘므로 예산도 안 는다. 즉 이
-가설은 현재 구현으로는 성립 자체가 불가능하다. 그래서 팔을 셋으로 나눈다:
-
-    nofec   기준선
-    fec     현재 구현(패리티를 rx 가 흡수)      -> 예산 불변 예측
-    dup     Initial 데이터그램 복제(= 반복부호)  -> 예산 증가 예측
-            유효한 DCID 를 가진 정상 패킷이라 서버가 연결에 귀속시켜 센다.
-
-세 팔의 임계를 비교하면 "메커니즘이 참인가"와 "우리 구현이 그걸 활용하는가"가
-분리된다.
-
-네임스페이스 안에서 실행:
-    unshare -r -m -n python3 experiments/e20_amplification.py
-
-Output: experiments/results/e20_amplification.json
-"""
 import argparse
 import json
 import os
@@ -53,7 +12,7 @@ QBED = os.path.join(HERE, "quicbed")
 sys.path.insert(0, HERE)
 os.makedirs(RESULTS, exist_ok=True)
 
-from _journal import Journal, code_fingerprint      # noqa: E402
+from _journal import Journal, code_fingerprint
 
 HOME = os.path.expanduser("~")
 BIN = os.path.join(HOME, "quicbed", "bin")
@@ -96,7 +55,6 @@ def setup(mtu=1500):
 
 
 def set_delay(one_way_ms):
-    """지연만. 손실은 주지 않는다 - 증폭 효과를 손실과 섞으면 안 된다."""
     run("tc qdisc del dev veth-tx root", check=False)
     run("ip netns exec rx tc qdisc del dev veth-rx root", check=False)
     run("tc qdisc add dev veth-tx root netem limit 50000 delay %.3fms" % one_way_ms)
@@ -163,7 +121,6 @@ def run_client(group, n, gap_ms, timeout_s):
 
 
 def classify(times, rtt_ms):
-    """1-RTT 인가 2-RTT 인가. HCT ~ n*RTT + 소수 ms 라 경계가 뚜렷하다."""
     if not times:
         return {}
     s = sorted(times)
@@ -222,7 +179,6 @@ def main():
     for cert in certs:
         for group in groups:
             for arm in arms:
-                # x25519 는 기준선만 - 팔 비교는 ML-KEM 에서 한다
                 if group == "x25519" and arm != "nofec":
                     continue
                 key = "%d/%s/%s" % (cert, group, arm)
@@ -252,7 +208,6 @@ def main():
                        ("패리티" if arm == "fec" else "-")))
         print("")
 
-    # ------------------------------------------------------------- 임계 추출
     def threshold(group, arm):
         prev = None
         for cert in certs:
@@ -282,7 +237,6 @@ def main():
                    ("> %s B (전 구간 1-RTT)" % lo if lo else "측정 불가")))
     out["thresholds"] = ths
 
-    # ------------------------------------------------- 팀 자료 및 이론 대조
     print("")
     print("팀 자료(quic_amplification_v2.xlsx) 대조")
     team = {"x25519/nofec": (3300, 3400), "X25519MLKEM768/nofec": (5900, 6000)}
@@ -295,7 +249,6 @@ def main():
         print("  %-26s 팀 %5d~%-5d B  우리 %5d~%-5d B  %s"
               % (k, tl, th, mine[0], mine[1], "일치" if agree else "**불일치**"))
 
-    # ------------------------------------------------------ Q3 가설 판정
     print("")
     print("Q3 판정 — 핸드셰이크 FEC 가 증폭 임계를 밀어올리는가")
     base = ths.get("X25519MLKEM768/nofec")

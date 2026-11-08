@@ -1,4 +1,3 @@
-"""P17 collection and choice statistics without network or measurement."""
 import contextlib
 import importlib.util
 import io

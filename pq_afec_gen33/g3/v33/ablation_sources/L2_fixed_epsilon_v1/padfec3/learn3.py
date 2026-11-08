@@ -107,7 +107,6 @@ def check_transport(W, u_mbps, rtt_ms, c_pkt, *, missing_rtt=False):
 
 
 def check_model_arithmetic(w_eff, u_mbps, rtt_ms):
-    # Include every layout and the default padding steps before candidate filters.
     flight = ((layout.K_MAX + layout.M_MAX) * w_eff
               + layout.M_MAX * layout.parity_bytes(0, layout.K_MAX)
               + policy.MAX_STEPS_DEFAULT * P_SERVER)
@@ -670,8 +669,6 @@ def context(st, W, u_mbps, rtt_ms, c_pkt):
 
 
 def predict_step(post, w):
-    # One connection advances the hazard prior even when its outcome is censored.
-    # No observation is invented, so the hazard mixture weights stay unchanged.
     n = len(G)
     return [[(1.0 - h) * ph[i] + h * (1.0 / n) for i in range(n)]
             for ph, h in zip(post, H)], list(w)

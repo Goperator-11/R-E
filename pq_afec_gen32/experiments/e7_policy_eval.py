@@ -1,22 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E7 - policy evaluation on REAL measured loss traces (R&E research content 4)
-
-Everything the algorithm was tuned on so far was a Gilbert-Elliott channel that
-we ourselves generated.  This replays the loss masks captured over a real Linux
-netem link (E6) and re-scores every policy on them.
-
-Policies: none / static / rquic / adaptive / cached(correct) / cached(wrong) /
-          oracle  -- oracle gets the trace's own measured (p, burst).
-
-Metrics per the R&E plan: transmission time, goodput, loss-recovery rate,
-overhead, plus regret against the oracle.  Handshake completion time is scored
-separately for x25519 / ML-KEM / ML-KEM+FEC.
-
-Output: experiments/results/e7_policy.json
-
-Standard library only.  ASCII console output.
-"""
 import argparse
 import hashlib
 import json
@@ -32,9 +13,9 @@ TRACES = os.path.join(HERE, "traces")
 sys.path.insert(0, ROOT)
 sys.path.insert(0, HERE)
 
-from _journal import Journal, code_fingerprint          # noqa: E402
-from afec import FecConfig, LossTrace, profile          # noqa: E402
-from afec.sim import (expected_handshake_ms, simulate_data,  # noqa: E402
+from _journal import Journal, code_fingerprint
+from afec import FecConfig, LossTrace, profile
+from afec.sim import (expected_handshake_ms, simulate_data,
                       simulate_handshake)
 
 
@@ -47,7 +28,6 @@ def _harden():
 
 
 def load_trace(name, n):
-    """Read a mask file written by E6.  File access lives HERE, not in afec/."""
     path = os.path.join(TRACES, name + ".mask")
     with open(path, "rb") as f:
         bm = f.read()
@@ -63,9 +43,7 @@ def mean_se(xs):
 
 
 def eval_trace(tr, meas, cfg, rtt, n_blocks, seeds, wrong_factor):
-    """Run every policy over `seeds` seeds on one trace."""
     p, L = meas["loss_rate"], max(meas["mean_burst"], 1.0)
-    # a wrong cache: loss rate off by `wrong_factor` in both directions
     wrong_hi = (min(p * wrong_factor, 0.5), L, 100.0)
     wrong_lo = (max(p / wrong_factor, 1e-4), L, 100.0)
 
@@ -100,10 +78,6 @@ def eval_trace(tr, meas, cfg, rtt, n_blocks, seeds, wrong_factor):
     return per
 
 
-# ------------------------------------------------------------ parallel jobs
-# 28 cores are sitting idle while one trace runs; the harness (not afec/) is
-# allowed to fork, so fan out over (span, trace) pairs.  Serial this took about
-# 5 minutes PER TRACE.
 _CTX = {}
 
 
@@ -149,7 +123,6 @@ def _job_handshake(name):
     def d(x):
         return {"mean_ms": x.mean_ms, "p95_ms": x.p95_ms,
                 "stall_rate": x.stall_rate}
-    # plain dicts so the result can go straight into the resume journal
     return {"name": name, "p": p, "L": L, "x25519": d(a1), "mlkem": d(a2),
             "mlkem_fec": d(a3), "fec_gain": gain}
 
@@ -185,9 +158,6 @@ def main():
     nblocks = {"long": a.long_blocks, "short": a.short_blocks}
     cfg_kw = dict(rate_bps=a.rate_mbps * 1e6, delay_budget_ms=a.budget_ms)
 
-    # 단계 내부 재개: 작업 하나(구간 x 트레이스, 또는 핸드셰이크 트레이스)가
-    # 끝나는 즉시 저널에 남긴다. imap_unordered라 먼저 끝난 것부터 기록되고,
-    # 중간에 죽어도 그때까지 끝난 것은 전부 살아남는다.
     fp = hashlib.sha256(json.dumps(
         {"seeds": a.seeds, "rtt": a.rtt, "rate": a.rate_mbps,
          "budget": a.budget_ms, "wrong": a.wrong_factor,
@@ -257,7 +227,6 @@ def main():
                                       " ".join("%8.1f%%" % (worst[l] * 100)
                                                for l in labels)))
 
-    # ------------------------------------------------ handshake on real traces
     print("")
     print("### handshake completion time on measured traces (%d trials)" % a.trials)
     print("%-14s %7s %6s | %9s %9s %9s %8s %8s" %

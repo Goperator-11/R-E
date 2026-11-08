@@ -1,4 +1,3 @@
-"""Pure report regressions; never import experiment runners or start trials."""
 import ast
 import copy
 import math

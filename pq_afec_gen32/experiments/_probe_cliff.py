@@ -1,27 +1,3 @@
-# -*- coding: utf-8 -*-
-"""임시 탐침 — 양자 경계 절벽을 1점으로 확인한다.
-
-정식 실험은 p12_quantum.py 다. 이건 헤드라인 주장을 **가장 싼 방법으로**
-죽이거나 살리려고 만든 일회용 스크립트다.
-
-주장 (PADFEC v2 명세 §2 따름정리)
-    quic-go 기본 InitialPacketSize=1280 은 증폭 양자 경계에 정확히 걸터앉는다.
-    3B = 3k*1280 은 항상 1280 의 배수이므로 허용량이 딱 맞아떨어지고,
-    1 바이트만 더 보내면 허용량이 1280 B 뛴다.
-
-설계
-    인증서를 두 예측 임계 **사이**에 고정한다 (x25519: 3340 < cert < 4585.5).
-    cert = 4000 B 로 잡으면
-        ips=1280 -> 허용 3840, 서버 비행 4000+500 = 4500 > 3840 -> 2-RTT
-        ips=1281 -> 허용 5120, 4000+534.5 = 4534.5 <= 5120        -> 1-RTT
-    즉 **1 바이트 차이로 HCT 가 약 106 ms <-> 55 ms** 로 갈려야 한다.
-
-부정 시험
-    ips=1279 는 1280 과 **같은 칸**이어야 한다(경계를 안 넘으므로 2-RTT).
-    이게 깨지면 "경계는 1281" 이 아니라 다른 것이 원인이다.
-
-실행:  unshare -Urnm python3 experiments/_probe_cliff.py
-"""
 from __future__ import annotations
 
 import json
@@ -31,22 +7,18 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-import padbed  # noqa: E402
+import padbed
 
 P = 1280
 AMP = 3
 RTT_MS = 50.0
 
-# 인자: [group] [cert] [n]
-#   x25519(k=1)          cert 4000 은 예측 임계 3340 과 4585.5 사이
-#   X25519MLKEM768(k=2)  cert 6500 은 예측 임계 5945.5 와 7191 사이
 GROUP = sys.argv[1] if len(sys.argv) > 1 else "x25519"
 CERT = int(sys.argv[2]) if len(sys.argv) > 2 else (
     4000 if GROUP == "x25519" else 6500)
 N = int(sys.argv[3]) if len(sys.argv) > 3 else 40
 K_EXPECT = 1 if GROUP in ("x25519", "secp256r1") else 2
 
-# 명세 §2.5 의 정밀화 모형
 S0_BASE = {"x25519": 396.5, "X25519MLKEM768": 1527.5}
 C_PKT = 34.5
 

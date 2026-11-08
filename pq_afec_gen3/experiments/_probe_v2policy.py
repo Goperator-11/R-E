@@ -1,28 +1,3 @@
-# -*- coding: utf-8 -*-
-"""v2 정책 실측 - 정책이 **스스로** δ 를 골라 왕복 하나를 사는가.
-
-이식 전에는 `-fec auto` 가 m 만 골랐다. 헤드라인("1 바이트로 왕복 하나")은
-사람이 `-ips 1281` 을 직접 줄 때만 실현됐다 - 정책이 그 자리를 스스로 찾은
-적이 한 번도 없었다. 이 시험은 결정을 정책의 손에 넘긴 뒤, **아무 힌트 없이
-빈 캐시에서 시작해서** 정책이 그 자리를 찾아가는지 본다.
-
-설계
-    인증서를 두 예측 임계 사이에 고정한다(x25519: 3340 < cert < 4585.5).
-    이 자리에서는 ips=1280 이 2-RTT 이고 1281 이 1-RTT 다.
-
-    A 기준선   -fec off, ips 1280   -> 2-RTT 여야 한다
-    B 사람 손   -fec off, ips 1281   -> 1-RTT 여야 한다 (헤드라인의 상한)
-    C auto     정책이 스스로         -> B 에 닿아야 한다
-
-🩸 마지막 검사("무손실인데 m=0 이 다수인가")가 **일부러 빡빡하다.** C 가
-   1-RTT 를 달성하는 방법은 두 가지다 - δ 로 1 바이트를 더 보내거나, 패리티
-   2 개(2,636 B)를 사서 그 바이트로 칸을 올리거나. 둘 다 왕복은 벌지만 값이
-   2,600 배 다르다. 왕복 수만 보면 이 차이가 안 보이므로 m 분포를 따로 본다.
-   (2026-08-20 실측: 5/6 통과, 이 항목만 실패 - 손실률 추정이 아직 참값에서
-   멀어 패리티가 이겼다. 수렴은 _probe_v2converge.py 가 따로 잰다.)
-
-실행: unshare -Urnm python3 experiments/_probe_v2policy.py
-"""
 import json
 import os
 import sys
@@ -31,10 +6,10 @@ from collections import Counter
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import padbed   # noqa: E402
+import padbed
 
 RTT_MS = 50.0
-CERT = 4032          # 명세 4-4 Tranco p50. 예측 임계 3340 < 4032 < 4585.5
+CERT = 4032
 IPS = 1280
 N = 400
 CACHE = "/tmp/padfec/v2cache.json"
@@ -49,7 +24,6 @@ def main():
     padbed.setup(mtu=1500)
     padbed.set_netem(RTT_MS / 2.0, 0.0, 0.0)
 
-    # 빈 캐시에서 시작한다 - "아무 힌트 없이" 가 이 시험의 전제다.
     try:
         os.unlink(CACHE)
     except OSError:
@@ -71,7 +45,6 @@ def main():
             s = padbed.summarize(rows, rtt_ms=RTT_MS)
             used = Counter(r.get("ips_used") for r in rows)
             musd = Counter(r.get("m_used") for r in rows)
-            # 콜드스타트 이후(뒤 절반)만 따로 본다 - 정책이 배운 뒤의 상태다.
             tail = rows[len(rows) // 2:]
             st = padbed.summarize(tail, rtt_ms=RTT_MS)
             rec = {"arm": label, "err": err, "n": s.get("n"),

@@ -1,22 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-One-off migration: rebuild the E7 / E12 unit journals under the NEW fingerprint.
-
-Why this exists.  The journals originally keyed only on experiment parameters.
-That is unsafe - fix a bug in the measurement code, rerun with the same
-parameters, and the journal serves results the broken code produced.  So the
-fingerprint now mixes in a hash of the source files that actually do the
-measuring (see _journal.code_fingerprint).
-
-Changing the fingerprint invalidates every existing journal entry, which would
-force a full re-measurement.  For E7 and E12 that is unnecessary: their
-MEASUREMENT code did not change, only the bookkeeping around it.  So we replay
-the finished results out of their result JSON into a journal stamped with the
-new fingerprint.  E13 is deliberately NOT seeded - its shim really did change
-(the symbol length framing bug), so those units must be measured again.
-
-Run once:  python experiments/_seed_journals.py
-"""
 import hashlib
 import json
 import os
@@ -25,7 +6,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from _journal import Journal, code_fingerprint       # noqa: E402
+from _journal import Journal, code_fingerprint
 
 RESULTS = os.path.join(HERE, "results")
 STATE = os.path.join(HERE, "state")

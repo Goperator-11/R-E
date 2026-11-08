@@ -1,23 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Append-only unit journal - lets a long sweep resume in the middle.
-
-The pipeline can restart a whole stage, but some stages take 10-30 minutes
-(the netem sweep, the policy evaluation, the live QUIC testbed).  Re-running
-those from scratch after an interruption wastes most of the work, so each of
-them records every finished unit here and skips units it already has.
-
-Design rules that make this safe to interrupt at ANY point:
-  * append-only JSONL - a torn last line is discarded on load, never merged
-  * one line = one completed unit, written and flushed atomically enough that
-    a crash can only lose the line in flight, not corrupt earlier ones
-  * the key is a stable string derived from the unit's parameters, so a rerun
-    with different parameters does not silently reuse old results
-  * a `fingerprint` field records the experiment parameters; if they change,
-    load() ignores the old lines instead of mixing two configurations
-
-Standard library only.  ASCII console output.
-"""
 import json
 import os
 import hashlib
@@ -42,7 +22,6 @@ class Journal(object):
         self._used = set()
         self._load()
 
-    # ------------------------------------------------------------ loading
     def _load(self):
         if not os.path.exists(self.path):
             return
@@ -55,7 +34,6 @@ class Journal(object):
                 try:
                     rec = json.loads(line)
                 except (ValueError, UnicodeDecodeError):
-                    # torn final line from an interrupted write: drop it
                     continue
                 if not isinstance(rec, dict) or not isinstance(rec.get("key"), str):
                     continue
@@ -69,7 +47,6 @@ class Journal(object):
                 "run_id": rec.get("run_id"),
             }
 
-    # ------------------------------------------------------------- access
     def has(self, key):
         return key in self._done
 
@@ -86,12 +63,6 @@ class Journal(object):
         return dict(self._done)
 
     def provenance(self, keys=None):
-        """Describe consumed units, without inventing dates for old journals.
-
-        recorded_at is the UTC time the completed unit was journaled, not its
-        measurement start time. Different run IDs identify resumed collections,
-        not statistically independent replicates. Reading this method is inert.
-        """
         selected = sorted(self._used if keys is None else set(keys))
         units = []
         for key in selected:
@@ -111,7 +82,6 @@ class Journal(object):
     def __len__(self):
         return len(self._done)
 
-    # -------------------------------------------------------------- write
     def record(self, key, val):
         if not isinstance(key, str):
             raise TypeError("journal keys must be strings")
@@ -119,8 +89,6 @@ class Journal(object):
                 "run_id": self.run_id}
         line = json.dumps(dict(meta, fp=self.fingerprint, key=key, val=val),
                           ensure_ascii=False)
-        # Preserve a torn tail, but separate it from the next complete record.
-        # Publish the in-memory completion only after the durable append succeeds.
         with open(self.path, "a+b") as f:
             f.seek(0, os.SEEK_END)
             size = f.tell()
@@ -144,7 +112,6 @@ class Journal(object):
 
 
 def atomic_write_json(path, obj, indent=2, default=None, before_replace=None):
-    """Write JSON so a crash mid-write cannot leave a half file behind."""
     d = os.path.dirname(path)
     if d:
         os.makedirs(d, exist_ok=True)
@@ -166,7 +133,6 @@ def atomic_write_json(path, obj, indent=2, default=None, before_replace=None):
 
 
 def save_result(path, obj, indent=1, backup_dir=None, default=None):
-    """Retain an existing result, then replace it atomically. Never prune raw data."""
     def preserve():
         if not os.path.isfile(path):
             return
@@ -182,7 +148,6 @@ def save_result(path, obj, indent=1, backup_dir=None, default=None):
 
 
 def runtime_context():
-    """Stable run settings, excluding changing load and timestamps."""
     try:
         affinity = sorted(os.sched_getaffinity(0))
     except (AttributeError, OSError):
@@ -195,17 +160,7 @@ def runtime_context():
 
 
 def code_fingerprint(paths, root=None):
-    """Hash the source files that actually produce the results.
-
-    A journal keyed only on experiment PARAMETERS is a trap: fix a bug in the
-    measurement code, rerun with the same parameters, and the journal happily
-    serves the results the broken code produced.  That is exactly how a
-    resumable pipeline gets into a state nobody can explain.  Mixing the code
-    hash into the fingerprint makes stale units invisible instead.
-    """
     h = hashlib.sha256()
-    # Handwritten dependency lists used to miss shared measurement helpers and
-    # generated Go code. A conservative source closure prevents stale reuse.
     paths = set(paths)
     if root:
         for subdir, suffixes in (("experiments", (".py",)),

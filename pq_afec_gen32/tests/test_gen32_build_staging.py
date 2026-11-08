@@ -42,7 +42,6 @@ class BuildStagingTests(unittest.TestCase):
             compiler.chmod(0o755)
             log = home / 'compiler-calls.jsonl'
             env = dict(os.environ, HOME=str(home), STAGE_TEST_LOG=str(log))
-            # Replace only the installation path in a scratch copy of the builder.
             source = ROOT / 'experiments/quicbed'
             scratch = home / 'source'
             shutil.copytree(source, scratch)

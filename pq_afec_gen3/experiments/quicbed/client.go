@@ -1,8 +1,3 @@
-// QUIC client for the PQ-AFEC testbed.
-//
-// Times N real handshakes and prints one JSON line per trial.  The measured
-// interval is exactly quic.DialAddr, which returns when the handshake has
-// completed, so process startup is measured once and never enters a sample.
 package main
 
 import (
@@ -55,9 +50,6 @@ func main() {
 			MinVersion:         tls.VersionTLS13,
 			CurvePreferences:   []tls.CurveID{curveFor(*group)},
 		}
-		// A fresh handshake every time: no session resumption, no 0-RTT, and
-		// crucially no cached RTT - which is the situation the research is
-		// about (first contact, no RTT sample, loss falls through to PTO).
 		qconf := &quic.Config{
 			MaxIdleTimeout:  *timeout,
 			KeepAlivePeriod: 0,

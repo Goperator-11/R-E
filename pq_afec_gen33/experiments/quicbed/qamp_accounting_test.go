@@ -8,8 +8,6 @@ import (
 )
 
 func accountingPacket(typ byte, dcid, scid []byte) []byte {
-	// Server CIDs have exactly four bytes in the actual transport. Keep
-	// markers compact in fixtures while encoding the same server CID shape.
 	if len(dcid) == 1 && dcid[0] >= 21 && dcid[0] <= 31 {
 		dcid = []byte{dcid[0], 0, 0, 0}
 	}
@@ -67,9 +65,6 @@ func TestAccountingTracksCIDTransitionAndMigration(t *testing.T) {
 		{a, accountingPacket(0, []byte{12}, []byte{22}), true, newer},
 		{a, accountingPacket(0, []byte{21}, []byte{11}), false, old},
 		{a, accountingPacket(2, []byte{22}, []byte{12}), false, newer},
-		// quic-go rotates immediately after handshake completion. The new
-		// server CID was encrypted in NEW_CONNECTION_ID, but the next client
-		// long header still carries the original client SCID.
 		{a, accountingPacket(0, []byte{31}, []byte{11}), false, old},
 		{a, []byte{0x40, 31, 0, 0, 0, 0}, false, old},
 		{b, []byte{0x40, 21, 0, 0, 0, 0}, false, old},

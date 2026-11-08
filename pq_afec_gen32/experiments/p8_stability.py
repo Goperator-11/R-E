@@ -1,26 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P8 - 같은 결론이 몇 번을 다시 재도 나오는가, 그리고 나오면 안 되는 곳에서는
-안 나오는가.
-
-한 번 잘 나온 수는 증거가 약하다. 여기서 의심하는 것은 넷이다.
-
-  1. 재현성   같은 조건을 여러 라운드 반복하면 같은 판정이 나오는가.
-              임계는 100 B 칸 안에서 흔들리지 않아야 하고, 복구는 매번
-              n/n 이어야 한다.
-
-  2. 음성 대조 우리 FEC 는 **클라이언트 -> 서버** 방향만 보호한다. 그러니
-              손실을 **서버 -> 클라이언트** 쪽에만 걸면 FEC 는 도움이
-              되면 안 된다. 여기서 이득이 보이면 그 이득은 복구가 아니라
-              우리가 모르는 다른 것에서 온 것이다.
-
-  3. 통계     1.5 RTT를 넘는 성공 지연의 비율 차이를 부트스트랩 구간으로
-              확인한다. p95·p99는 참고값이며 통과 집계에서 제외한다.
-
-  4. 계통오차 시행 순서가 결과에 영향을 주는가(예열), netem 이 우리가
-              시킨 만큼 실제로 떨어뜨리는가.
-
-Output: experiments/results/p8_stability.json
-"""
 from __future__ import annotations
 
 import json
@@ -35,8 +12,8 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
-import padbed as B                               # noqa: E402
-from _journal import Journal, code_fingerprint   # noqa: E402
+import padbed as B
+from _journal import Journal, code_fingerprint
 
 RTT_MS = 50.0
 GROUP = "X25519MLKEM768"
@@ -46,13 +23,10 @@ ROUNDS = 3
 N_EFFECT = 200
 N_PROBE = 30
 
-# p2 가 찾은 기준선 임계 구간을 감싸는 두 점. 여기서 판정이 뒤집히면
-# 임계가 재현되지 않는 것이다.
 BRACKET = {"off": (5850, 6050), "on1": (10850, 11050)}
 
 
 def trial_record(n_req, rows, cs, err, summary, server_stats, provenance):
-    """Keep every returned row and separate requested, returned and successful counts."""
     good = [r for r in rows if isinstance(r, dict) and r.get("ok") is True]
     samples = [r["ms"] for r in good if type(r.get("ms")) in (int, float)
                and math.isfinite(r["ms"]) and r["ms"] > 0]
@@ -74,7 +48,6 @@ def trial_record(n_req, rows, cs, err, summary, server_stats, provenance):
 
 
 def unit_source(rec, jr, key, reused):
-    """Do not invent raw records or recording times for old journal units."""
     source = {"journal_key": key, "fingerprint": jr.fingerprint,
               "reused": reused, "journaled": jr.has(key)}
     if source["journaled"]:
@@ -113,7 +86,6 @@ def input_coverage(units, expected_units, expected_trials):
 
 
 def netem_counts(tcout):
-    """Retain kernel counters; they count packets, not client connections."""
     import re
     match = re.search(r"Sent\s+\d+\s+bytes\s+(\d+)\s+pkt\s+\(dropped\s+(\d+)", tcout)
     if not match:
@@ -185,14 +157,12 @@ def pct(v, q):
 
 
 def tail_rate(v, thresh):
-    """Fraction of successful latencies above the fixed threshold, not identified retransmissions."""
     if not v:
         return None
     return sum(1 for x in v if x > thresh) / float(len(v))
 
 
 def bootstrap_tail(a, b, thresh, iters=4000, seed=11):
-    """꼬리 비율 차이(b - a)의 95% 신뢰구간."""
     if not a or not b:
         return None
     rnd = random.Random(seed)
@@ -210,7 +180,6 @@ def bootstrap_tail(a, b, thresh, iters=4000, seed=11):
 
 
 def bootstrap_diff(a, b, q=0.95, iters=2000, seed=7):
-    """b - a 의 q 분위 차이에 대한 95% 신뢰구간."""
     if not a or not b:
         return None
     rnd = random.Random(seed)
@@ -256,7 +225,6 @@ def main():
         print("[%s] %-56s %s" % ("통과" if ok else "실패", name, detail[:80]))
         sys.stdout.flush()
 
-    # ------------------------------------------------- 1. 임계 재현성
     print("=" * 100)
     print("1) 임계 재현성 - 같은 두 점에서 %d 라운드 반복" % ROUNDS)
     print("=" * 100)
@@ -287,13 +255,12 @@ def main():
             % ([round(100 * (x["lo_2rtt"] or 0)) for x in rows],
                [round(100 * (x["hi_2rtt"] or 0)) for x in rows]))
 
-    # ------------------------------------------------- 2. 효과 재현성 + 통계
     print()
     print("=" * 100)
     print("2) 효과 재현성 - c2s 손실 2%%, off 대 on1, %d 라운드 (조건마다 n=%d)"
           % (ROUNDS, N_EFFECT))
     print("=" * 100)
-    _pool_off, _pool_on = [], []   # 합동 검정용 (아래 재보정 주석 참조)
+    _pool_off, _pool_on = [], []
     for r in range(ROUNDS):
         a = effect(2.0, 0.0, "off", 1, N_EFFECT, jr, "r%d" % r)
         b = effect(2.0, 0.0, "on", 1, N_EFFECT, jr, "r%d" % r)
@@ -303,7 +270,6 @@ def main():
         _pool_on.extend(b["samples"] or [])
         bs95 = bootstrap_diff(a["samples"], b["samples"], 0.95)
         bs99 = bootstrap_diff(a["samples"], b["samples"], 0.99)
-        # Existing decision uses the tail-rate interval. Quantiles are diagnostics.
         TAIL = 1.5 * RTT_MS
         bstail = bootstrap_tail(a["samples"], b["samples"], TAIL)
         row = {"round": r,
@@ -325,16 +291,6 @@ def main():
             print("  라운드 %d: 성공 지연 표본이 없어 꼬리 구간 판정 불가" % r)
         sys.stdout.flush()
 
-    # 🩸 2026-08-21 재보정 - 첫 판은 **라운드별** 신뢰구간 전부가 0 을
-    #    제외하기를 요구했다. 그런데 라운드별 n=200 에서 기준선 꼬리가
-    #    조용한 라운드(2 차·3 차의 라운드 2: 2.5% = 5 건)는 검정력이
-    #    원리적으로 모자라, 효과가 실재해도(세 라운드 전부 방향 일치:
-    #    7.0/2.5/4.0% -> 0.0/0.5/0.5%) 검사가 붉어졌다. p3 검사 3 과
-    #    같은 부류의 양치기 검사다.
-    #    주장("FEC 가 꼬리를 줄인다")을 정확히 재는 자로 바꾼다:
-    #      확실성 = 합동(n=600 대 600, 기준선 꼬리 ~27 건) 구간이 0 제외
-    #      일관성 = 어느 라운드도 유의하게 반대 방향(lo > 0)이 아니다
-    #    라운드별 구간은 그대로 정보로 남는다(effect_rounds.d_tail).
     _bs_pool = bootstrap_tail(_pool_off, _pool_on, 1.5 * RTT_MS)
     out["tail_pooled"] = _bs_pool
     _incl = [x["round"] for x in out["effect_rounds"]
@@ -354,7 +310,6 @@ def main():
            ["%.1f%%" % (100 * (x["tail_on1"] or 0))
             for x in out["effect_rounds"]],
            _incl or "없음") if _bs_pool else "표본 없음")
-    # p95 는 참고로만 남긴다 - 불안정하다는 사실 자체를 기록한다
     p95s = [x["off"]["p95"] for x in out["effect_rounds"] if x["off"]["p95"] is not None]
     out["p95_baseline_unstable"] = (max(p95s) - min(p95s)) > 20 if p95s else None
     diagnose("기준선 p95 변동 (참고값, 통과 집계 제외)",
@@ -365,7 +320,6 @@ def main():
     add("모든 라운드에서 복구 CRC 실패 0", not bad,
         "CRC 실패 또는 통계 누락 라운드 %d" % len(bad))
 
-    # ------------------------------------------------- 3. 음성 대조 (s2c 손실)
     print()
     print("=" * 100)
     print("3) 음성 대조 - 손실을 **서버->클라이언트** 쪽에만 건다.")
@@ -389,7 +343,6 @@ def main():
             print("  라운드 %d: 성공 지연 표본이 없어 음성 대조 판정 불가" % r)
         sys.stdout.flush()
 
-    # Absence of a significant improvement is not equivalence.
     claims = [x for x in out["negative_rounds"]
               if x["d_p95"] is not None and x["d_p95"]["hi"] < 0]
     add("음성 대조: s2c 손실에서 p95의 유의한 개선 라운드가 없다",
@@ -397,7 +350,6 @@ def main():
         "개선이 관측된 라운드 %d/%d; 동등성이나 원인은 판정하지 않음"
         % (len(claims), ROUNDS))
 
-    # ------------------------------------------------- 4. 계통오차
     print()
     print("=" * 100)
     print("4) 계통오차 - 시행 순서 효과와 netem 실효 손실률")
@@ -429,11 +381,6 @@ def main():
         % (drift if drift is not None else -1, sum(first10) / max(1, len(first10)),
            sum(rest) / max(1, len(rest))))
 
-    # 🩸 netem 실효 손실률은 **커널에게 직접 묻는다.**
-    # 처음엔 "클라가 보낸 Initial 수" 대 "서버가 센 원본 수" 로 쟀는데,
-    # 서버의 originals 는 Initial 뿐 아니라 Handshake·ACK 등 모든 비패리티
-    # 데이터그램을 세므로 받은 쪽이 더 커져 실효 손실률이 -40.8% 라는
-    # 말이 안 되는 값이 나왔다. tc 의 통계는 그런 오해가 없다.
     started = datetime.now(timezone.utc).isoformat()
     B.run("tc qdisc del dev %s root" % B.DEV_LOCAL, check=False)
     B.run("tc qdisc add dev %s root %s"

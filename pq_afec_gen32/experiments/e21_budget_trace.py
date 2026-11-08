@@ -1,20 +1,3 @@
-# -*- coding: utf-8 -*-
-"""E21 - 증폭 예산(RFC 9000 8.1)을 바이트 단위로 직접 관측한다.
-
-E20 은 "임계가 움직였나"만 봤다. 그런데 dup1 은 임계를 안 움직이고 dup3 은
-13 KB 까지 전 구간 1-RTT 였다. 선형 예산 모델(예산 = 3 x 수신바이트)이면
-dup1 도 임계를 두 배 가까이 밀어야 하므로, 둘 중 하나는 내 해석이 틀렸다.
-
-그래서 해석을 빼고 **수를 직접 본다**. rx 심은 서버 QUIC 스택 바로 앞에
-있으므로, 거기서 기록한 두 수열이 곧 RFC 9000 8.1 의 좌변과 우변이다.
-
-    to_srv   : 서버가 받은 바이트  -> 예산 = 3 x 누적
-    from_srv : 서버가 보낸 바이트  -> 이 누적이 예산에 닿으면 서버가 멈춘다
-
-서버가 멈춘 지점에서 (보낸 누적) / (받은 누적) 이 3.0 에 붙으면 증폭 한계가
-실제로 구속(binding)한 것이고, 3.0 에 한참 못 미치는데 멈췄으면 다른 것이
-원인이다. 이 스크립트는 그 비율을 각 팔마다 뽑는다.
-"""
 from __future__ import print_function
 
 import json
@@ -26,13 +9,12 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-import e20_amplification as E20  # noqa: E402
+import e20_amplification as E20
 
 OUT = os.path.join(HERE, "results", "e21_budget_trace.json")
 
 
 def trace_once(arm, certsize, group, rtt_ms, flight_ms=3.0):
-    """한 번의 핸드셰이크 동안 rx 심이 본 바이트 타임라인을 돌려준다."""
     tracef = "/tmp/e21_trace_%s_%d.json" % (arm, certsize)
     try:
         os.unlink(tracef)
@@ -66,7 +48,6 @@ def trace_once(arm, certsize, group, rtt_ms, flight_ms=3.0):
 
     rows = E20.run_client(group, 1, 0, 20)
     time.sleep(0.4)
-    # rx 심만 먼저 정중히 내려서 트레이스를 받아낸다.
     try:
         procs["rx"].terminate()
         procs["rx"].wait(timeout=3)
@@ -87,7 +68,6 @@ def trace_once(arm, certsize, group, rtt_ms, flight_ms=3.0):
 
 
 def analyse(tr, rtt_ms):
-    """타임라인에서 '서버가 멈춘 지점'과 그때의 증폭비를 뽑는다."""
     if not tr or not tr.get("events"):
         return None
     ev = sorted(tr["events"], key=lambda e: e[0])
@@ -104,8 +84,6 @@ def analyse(tr, rtt_ms):
                       "budget": 3 * rx_cum,
                       "headroom": 3 * rx_cum - tx_cum})
 
-    # 첫 정지: from_srv 가 끊긴 뒤 다음 from_srv 까지의 간격이 RTT 의 절반을
-    # 넘는 지점. 그 직전 상태가 '서버가 더 못 보낸 순간'이다.
     stall = None
     last_tx = None
     for st in steps:

@@ -1,34 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P7 - 알고리즘이 정말로 작동하는지 결정적으로 검증한다.
-
-무작위 손실 통계는 "꼬리가 줄었다"까지만 말한다. 그 개선이 **복구 때문인지**,
-우리가 모르는 다른 경로로 이득을 본 것은 아닌지는 말해 주지 않는다.
-그래서 여기서는 어느 데이터그램이 사라질지 우리가 정하고, 매 조건마다
-**반드시 그래야 하는 결과**를 미리 적어 두고 대조한다.
-
-핵심은 긍정 시험뿐 아니라 **부정 시험**이 있다는 것이다. 고칠 수 없게 만들어
-놓았을 때 정말 못 고쳐야 한다. 그러지 않으면 그 이득은 복구가 아니라 다른
-데서 온 것이다.
-
-  V1  off, 소거 없음              1-RTT, 100% 성공          (정상 동작 기준선)
-  V2  off, 원본 0 소거            PTO (>= 900 ms)          (기준선이 실제로 아프다)
-  V3  off, 원본 1 소거            PTO
-  V4  fec m=1, 원본 0 소거        1-RTT, 복구 = 시행 수      (긍정)
-  V5  fec m=1, 원본 1 소거        1-RTT, 복구 = 시행 수      (긍정)
-  V6  fec m=1, 패리티 소거        PTO, 복구 0               (부정: 패리티 없으면 못 고쳐야)
-  V7  fec m=1, 원본0 + 패리티 손상  PTO, 복구 0, CRC 거절 > 0 (부정: 틀린 복구를 안 넘긴다)
-  V8  fec m=2, 원본 0 소거        1-RTT, 복구 = 시행 수      (긍정)
-  V9  fec m=1, 원본 0+1 소거      실패 또는 PTO, 복구 0      (부정: m=1 은 2 소거를 못 고친다)
-  V10 모든 조건에서 스택 전달 바이트 <= 물리 수신 바이트         (회계 불변식)
-  V11 커널 계수기로 본 증폭비 <= 3.0                          (우리 코드 밖의 증거)
-
-V11 은 우리 계수기를 믿지 않는다. RTT 를 아주 크게(편도 2 초) 잡아 서버의
-첫 응답 버스트와 클라이언트의 두 번째 비행을 시간축에서 갈라 놓고, 그 사이에
-`ip -s link` 로 커널이 센 바이트를 읽는다. 우리 프로그램이 무엇을 세든
-상관없이 커널이 본 숫자다.
-
-Output: experiments/results/p7_verify.json
-"""
 from __future__ import annotations
 
 import json
@@ -43,14 +12,14 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
-import padbed as B                      # noqa: E402
+import padbed as B
 
 RTT_MS = 50.0
-CERT = 2955          # 모든 팔이 1-RTT 인 크기 - 증폭 효과와 섞이지 않게
-N = 12   # 연막용 작은 값 - 본 실행에서는 40 으로 올린다
+CERT = 2955
+N = 12
 GROUP = "X25519MLKEM768"
 K = 2
-PTO_FLOOR_MS = 900.0   # RFC 9002 초기 PTO 는 약 999 ms
+PTO_FLOOR_MS = 900.0
 
 
 def run_case(name, fec, m, drop_i=-1, drop_p=-1, corrupt_p=-1, n=N):
@@ -62,7 +31,7 @@ def run_case(name, fec, m, drop_i=-1, drop_p=-1, corrupt_p=-1, n=N):
     if corrupt_p >= 0:
         extra += ["-corrupt-parity", str(corrupt_p)]
 
-    B.set_netem(RTT_MS / 2.0)      # 무작위 손실 없음. 소거는 우리가 만든다.
+    B.set_netem(RTT_MS / 2.0)
     p, sp = B.start_server(CERT, fec=("on" if fec == "on" else fec))
     rows, cs, err = B.run_client(GROUP, n, fec=fec, m=m, gap_ms=10,
                                  timeout_s=8, expect_k=K, extra=extra)
@@ -98,7 +67,6 @@ def link_counters(dev, ns=None):
     if ns:
         cmd = "ip netns exec %s %s" % (ns, cmd)
     out = B.run(cmd).stdout
-    # RX: 다음 줄의 첫 숫자, TX: 그 다음 블록의 첫 숫자
     nums = re.findall(r"^\s+(\d+)\s+\d+\s+\d+", out, re.M)
     if len(nums) < 2:
         return None
@@ -106,13 +74,7 @@ def link_counters(dev, ns=None):
 
 
 def amplification_wire_check():
-    """커널 계수기로 증폭비를 직접 잰다 (우리 코드 밖의 증거).
-
-    편도 2 초를 걸어 서버의 첫 응답 버스트와 클라이언트의 두 번째 비행을
-    시간축에서 갈라 놓고, 그 사이에 계수기를 읽는다.
-    """
     out = {}
-    # 2-RTT 가 확실한 인증서 크기 (기준선 임계 5,903~5,984 B 위)
     cert = 9000
     B.set_netem(2000.0)
     p, sp = B.start_server(cert, fec="off")
@@ -124,7 +86,7 @@ def amplification_wire_check():
          "-group", GROUP, "-n", "1", "-gap", "0ms", "-timeout", "30s",
          "-fec", "off", "-expect-k", str(K)],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    time.sleep(3.0)          # t=2.0 에 서버가 응답, t=4.0 에 클라 2차 비행
+    time.sleep(3.0)
     mid = link_counters(B.DEV_PEER, B.NS)
     try:
         cli.wait(timeout=40)
@@ -134,8 +96,8 @@ def amplification_wire_check():
     B.set_netem(RTT_MS / 2.0)
     if not (before and mid):
         return {"ok": False, "detail": "커널 계수기를 못 읽었다"}
-    rx = mid["rx_bytes"] - before["rx_bytes"]      # 서버가 받은 바이트
-    tx = mid["tx_bytes"] - before["tx_bytes"]      # 서버가 보낸 바이트
+    rx = mid["rx_bytes"] - before["rx_bytes"]
+    tx = mid["tx_bytes"] - before["tx_bytes"]
     ratio = (tx / float(rx)) if rx else None
     out = {"cert": cert, "rx_bytes": rx, "tx_bytes": tx, "ratio": ratio,
            "ok": ratio is not None and ratio <= 3.05}
@@ -176,7 +138,6 @@ def main():
                  c["cli_dropped_par"], c["cli_corrupt_par"]))
         sys.stdout.flush()
 
-    # ------------------------------------------------------------- 판정
     def by(name):
         return next(c for c in cases if c["case"].startswith(name))
 

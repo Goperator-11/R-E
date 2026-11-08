@@ -1,5 +1,3 @@
-"""PQ-AFEC : ML-KEM 환경을 위한 QUIC 적응형 FEC (v0.2)"""
-
 from .cache import PathStatsCache, Prior
 from .channel import GilbertElliott
 from .controller import (AdaptiveFecController, Decision, FecConfig,

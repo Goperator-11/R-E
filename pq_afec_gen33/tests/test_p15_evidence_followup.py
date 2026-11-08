@@ -1,4 +1,3 @@
-"""P15 raw evidence and byte comparison windows; no actual communication."""
 import ast
 from collections import Counter
 import contextlib

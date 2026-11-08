@@ -1,4 +1,3 @@
-"""P18 aggregate checks against attempted-trial records, without measurement."""
 import copy
 from pathlib import Path
 import sys

@@ -1,4 +1,3 @@
-"""Recalculate P17 v2 aggregates from complete attempted-trial records."""
 import copy
 import sys
 import unittest

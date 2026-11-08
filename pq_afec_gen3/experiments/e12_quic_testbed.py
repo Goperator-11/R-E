@@ -1,22 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E12 - the real thing: ML-KEM + QUIC + FEC on a controlled lossy link
-
-    [netns A]  qclient(Go/quic-go) -> shim tx  ==veth+netem==>  shim rx -> qserver  [netns B]
-
-Everything here is real software doing real work:
-  * quic-go handshakes, Go crypto/tls negotiating X25519MLKEM768 (real ML-KEM)
-  * a real Linux netem link with MTU 1500, so ML-KEM really does split the
-    ClientHello across two datagrams (the flaw the team's 1st sweep had was
-    MTU 65536 on loopback, which hid the split entirely)
-  * a real XOR parity packet on the wire when --fec is on
-  * handshake completion time measured inside the client around quic.DialAddr
-
-Run it inside a namespace, no root needed:
-    unshare -r -m -n python3 experiments/e12_quic_testbed.py
-
-Output: experiments/results/e12_quic_testbed.json
-"""
 import argparse
 import hashlib
 import json
@@ -28,9 +9,9 @@ import sys
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(HERE)      # 저널 지문이 참조하는 코드 경로의 기준
+ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from _journal import Journal, code_fingerprint     # noqa: E402
+from _journal import Journal, code_fingerprint
 RESULTS = os.path.join(HERE, "results")
 QBED = os.path.join(HERE, "quicbed")
 os.makedirs(RESULTS, exist_ok=True)
@@ -39,8 +20,8 @@ HOME = os.path.expanduser("~")
 BIN = os.path.join(HOME, "quicbed", "bin")
 TX_IP = "10.9.0.1"
 RX_IP = "10.9.0.2"
-SHIM_TX_PORT = 5555      # client dials this, inside netns A
-SHIM_RX_PORT = 5556      # tunnel endpoint, inside netns B
+SHIM_TX_PORT = 5555
+SHIM_RX_PORT = 5556
 SERVER_PORT = 4433
 WORK = "/tmp/pqafec_quicbed"
 
@@ -69,8 +50,6 @@ def setup_testbed(mtu):
     run("ip link add veth-tx type veth peer name veth-rx")
     run("ip link set veth-rx netns rx")
     run("ip addr add %s/24 dev veth-tx" % TX_IP)
-    # ⚠️ MTU 1500. The team's 1st sweep ran on loopback with MTU 65,536, so
-    # every KEM fitted in one segment and the split hypothesis was untestable.
     run("ip link set veth-tx mtu %d" % mtu)
     run("ip link set veth-tx up")
     run("ip link set lo up")
@@ -82,7 +61,6 @@ def setup_testbed(mtu):
 
 
 def set_netem(spec_tx, spec_rx):
-    """Symmetric netem: each direction gets its own qdisc on its egress."""
     run("tc qdisc del dev veth-tx root", check=False)
     run("ip netns exec rx tc qdisc del dev veth-rx root", check=False)
     out = []
@@ -103,7 +81,6 @@ def gemodel_spec(p, L):
 
 
 def start_stack(fec, flight_ms, certsize, delay_ms):
-    """server + rx shim inside netns rx, tx shim in the current netns."""
     logs = {}
     procs = {}
     srv_log = open(os.path.join(WORK, "server.log"), "wb")
@@ -234,7 +211,6 @@ def main():
     out = {"mtu": a.mtu, "rtt_ms": a.rtt, "certsize": a.certsize, "n": a.n,
            "flight_ms": a.flight_ms, "arms": {}}
 
-    # 단계 내부 재개: 팔(조건 x 그룹 x FEC) 하나가 끝날 때마다 저널에 남긴다.
     fp = hashlib.sha256(json.dumps(
         {"mtu": a.mtu, "rtt": a.rtt, "cert": a.certsize, "n": a.n,
          "flight_ms": a.flight_ms, "gap": a.gap_ms,
@@ -290,7 +266,7 @@ def main():
                     "shim_tx": st_tx, "shim_rx": st_rx,
                 }
                 out["arms"][label] = arm
-                jr.record(label, arm)     # 재개 지점
+                jr.record(label, arm)
                 qq = arm["quantiles"] or {}
                 print("%-14s %-16s %-4s %4d%% %8.1f %8.1f %8.1f %8.1f %8.1f %7s" %
                       (cname, group, "on" if fec else "off",
@@ -301,13 +277,6 @@ def main():
 
     set_netem(None, None)
 
-    # ---------------------------------------------------------------- guard
-    # 🩸 A harness that quietly drops packets will produce beautiful-looking
-    # numbers that mean nothing.  The no-loss arms are the control: with netem
-    # applying delay only, EVERY handshake must take about one RTT.  If the
-    # tail runs away there, the loss is coming from the harness, not the link.
-    # (This check exists because the first run had p90 = 222 ms at zero loss -
-    # a one-byte flight id wrapping every 255 connections.)
     print("")
     print("SELF-CHECK - no-loss control arms (tail must not run away)")
     bad = []
@@ -332,7 +301,6 @@ def main():
     print("")
     print("saved: %s" % path)
 
-    # ---- the two questions this experiment exists to answer
     print("")
     print("Q1  does ML-KEM cost anything on a real lossy link? (no FEC)")
     for cname, _ in conditions:

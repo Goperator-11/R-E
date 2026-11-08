@@ -1,4 +1,3 @@
-"""Content provenance regressions. Temporary files only; no measurements."""
 import contextlib
 import copy
 import io

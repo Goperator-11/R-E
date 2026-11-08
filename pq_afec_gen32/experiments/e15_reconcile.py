@@ -1,27 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E15 - reconcile the model with the real quic-go measurement
-
-E7 (model on measured traces) says the ML-KEM handshake has a LOWER mean
-completion time than X25519.  E12 (real quic-go on real netem) says ML-KEM has
-a HIGHER median.  Either one of them is wrong, or they are measuring different
-statistics of the same distribution.  This settles it.
-
-The mechanism under test:
-  * X25519's ClientHello is ONE Initial packet.  If it is lost the server
-    receives nothing, sends no ACK, and the client has no RTT sample - so
-    recovery goes through PTO (~999 ms).  Low probability, huge penalty.
-  * ML-KEM's ClientHello is TWO Initial packets.  Losing one still leaves the
-    server able to ACK the survivor, so recovery is time-threshold based
-    (~2 RTT).  Higher probability of being hit, much smaller penalty.
-
-If that is right, the two experiments must disagree in exactly this pattern:
-ML-KEM worse at the median (more packets = more chance of being touched at
-all), ML-KEM no worse - possibly better - in the mean and the tail (its
-failure mode is cheaper).
-
-Output: experiments/results/e15_reconcile.json
-"""
 import argparse
 import json
 import os
@@ -34,10 +10,10 @@ ROOT = os.path.dirname(HERE)
 RESULTS = os.path.join(HERE, "results")
 sys.path.insert(0, ROOT)
 
-from afec import profile                              # noqa: E402
-from afec.channel import GilbertElliott               # noqa: E402
-from afec.controller import pto_ms                    # noqa: E402
-from afec.sim import ChannelSampler                   # noqa: E402
+from afec import profile
+from afec.channel import GilbertElliott
+from afec.controller import pto_ms
+from afec.sim import ChannelSampler
 
 
 def _harden():
@@ -51,8 +27,6 @@ def _harden():
 def handshake_quantiles(k_client, k_server, r_client, r_server,
                         p, burst, rtt_ms, trials, seed=11,
                         ack_partial=True):
-    """Same mechanics as afec.sim.simulate_handshake, but keeps the whole
-    distribution so we can compare quantiles, not just the mean."""
     rng = random.Random(seed)
     ch = GilbertElliott.from_burst(p, burst)
     times = []
@@ -92,8 +66,8 @@ def main():
     ap.add_argument("--rtt", type=float, default=20.0)
     a = ap.parse_args()
 
-    base = profile(None)          # x25519
-    mk = profile(768)             # X25519MLKEM768
+    base = profile(None)
+    mk = profile(768)
     print("=" * 92)
     print("E15 - 모델과 실제 quic-go 측정의 대조")
     print("=" * 92)
@@ -139,7 +113,6 @@ def main():
                100 * (m["p95"] - x["p95"]) / x["p95"]))
         print("")
 
-    # ------------------------------------------------ compare against E12
     e12p = os.path.join(RESULTS, "e12_quic_testbed.json")
     if os.path.exists(e12p):
         with open(e12p, encoding="utf-8") as f:
@@ -166,10 +139,6 @@ def main():
                     continue
                 model_ratio = mm[stat] / mx[stat]
                 meas_ratio = qm / qx
-                # 🩸 부호만 보는 이분법(>1.0)은 **동률을 불일치로 셌다**.
-                # 모델 p50이 정확히 1.000(둘 다 무손실 중앙값=RTT)인데 실측이
-                # 1.007이면 "방향이 다르다"고 잡히지만, 실제로는 둘 다 "차이
-                # 없음"을 말하고 있다. 5% 띠를 두어 3분류로 비교한다.
                 def cls(x, band=0.05):
                     if x > 1.0 + band:
                         return "ML-KEM 나쁨"

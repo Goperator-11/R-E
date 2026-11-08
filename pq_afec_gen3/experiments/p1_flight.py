@@ -1,23 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P1 - 클라이언트 첫 비행의 구조를 실측한다.
-
-이 단계가 정하는 값들이 뒤의 모든 계산에 들어간다.
-
-    k   첫 비행의 데이터그램 수     -> 증폭 예산 = 3 x (k x W)
-    C   ClientHello 실내용 바이트   -> 용량 정리의 좌변
-    h   패킷당 고정 비용            -> 용량 정리의 우변
-    pad 버려지는 PADDING 바이트     -> 인수인계 문서 1-4 의 전제
-
-**추정하지 않는다.** 클라이언트가 실제로 내보낸 첫 비행 데이터그램을 그대로
-떠서(-dump-flight), RFC 9001 5.2 의 Initial 키로 복호해 프레임 단위로 센다.
-Initial 키는 클라이언트가 고른 DCID 와 공개된 소금에서 유도되므로, 지나가던
-관측자도 읽을 수 있다 - 우리가 클라이언트이니 더 말할 것도 없다.
-
-인수인계 문서 1-3 의 결정적 실험(패딩만 늘려도 임계가 이동)을 재현하기 위해
-InitialPacketSize 도 함께 훑는다.
-
-Output: experiments/results/p1_flight.json
-"""
 from __future__ import annotations
 
 import json
@@ -29,19 +9,18 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
-import padbed as B                      # noqa: E402
-import e4_quic_decrypt as E4            # noqa: E402
-from padfec import capacity             # noqa: E402
-from _journal import Journal, code_fingerprint  # noqa: E402
+import padbed as B
+import e4_quic_decrypt as E4
+from padfec import capacity
+from _journal import Journal, code_fingerprint
 
 GROUPS = ["x25519", "secp256r1", "X25519MLKEM768"]
-IPS_LIST = [0, 1200, 1350, 1450]        # 0 = quic-go 기본값(1280)
+IPS_LIST = [0, 1200, 1350, 1450]
 RTT_MS = 50.0
 N = 10
 
 
 def analyse_dump(path):
-    """떠 놓은 첫 비행을 복호해 CRYPTO/PADDING 바이트를 센다."""
     with open(path, "rb") as f:
         blob = f.read()
     dgrams = []
@@ -56,7 +35,6 @@ def analyse_dump(path):
     if not dgrams:
         return None
 
-    # 첫 패킷의 DCID 가 이 연결의 original DCID 다.
     first = list(E4.iter_long_packets(dgrams[0]))
     if not first:
         return None
@@ -79,15 +57,11 @@ def analyse_dump(path):
             for fr in E4.parse_frames(pt):
                 name = fr.get("type")
                 if name == "PADDING":
-                    # e4 는 PADDING 을 "bytes" 로, CRYPTO 를 "length" 로 준다
                     rec["padding"] += fr.get("bytes", 0)
                 elif name == "CRYPTO":
                     rec["crypto"] += fr.get("length", 0)
                 else:
                     rec["other"] = rec.get("other", 0) + 1
-        # 고정 비용 h = 와이어 - CRYPTO 데이터 - PADDING.
-        # 롱헤더, 패킷번호, AEAD 태그, CRYPTO 프레임 머리가 전부 여기 든다.
-        # 첫 비행에는 ACK/PING 이 없으므로 이 뺄셈이 곧 h 다(있으면 other 로 샌다).
         rec["overhead"] = rec["udp_bytes"] - rec["crypto"] - rec["padding"]
         out["crypto_total"] += rec["crypto"]
         out["padding_total"] += rec["padding"]
@@ -134,7 +108,6 @@ def main():
                    "first_flight_datagrams": cs.get("first_flight_datagrams"),
                    "first_flight_bytes": cs.get("first_flight_bytes"),
                    "decoded": det}
-            # 자체 점검: 손실이 없는데 실패한 시행이 있으면 그 자체가 결함이다
             rec["valid"] = (s["ok"] == s["n"] and det is not None
                             and det["k"] == cs.get("first_flight_datagrams"))
             if rec["valid"]:
@@ -149,7 +122,6 @@ def main():
                      det["h_measured"] if det else -1,
                      s["ok"], s["n"], "" if rec["valid"] else "  <-- 무효"))
 
-    # ---------------------------------------------------------- 용량 정리 대조
     print()
     print("=" * 96)
     print("용량 정리 대조   C <= (k-1)(W - h - f)   [f = %d]" % capacity.DEFAULT_F)

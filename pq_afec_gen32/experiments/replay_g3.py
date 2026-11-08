@@ -439,7 +439,6 @@ def paired(a_means, b_means):
 
 
 def recorded_v31(journal, cond_names=(), limit=0):
-    """Feed historical actions/outcomes; new decisions are never executed."""
     states, seen, results = {}, set(), []
     with open(journal, encoding="utf-8") as f:
         for line in f:

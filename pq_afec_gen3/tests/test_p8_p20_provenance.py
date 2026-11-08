@@ -1,4 +1,3 @@
-"""Pure provenance and completeness regressions, without experiment imports."""
 import ast
 import copy
 import hashlib

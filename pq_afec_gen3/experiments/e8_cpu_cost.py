@@ -1,23 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E8 - CPU cost of FEC coding (R&E research content 4: "CPU usage")
-
-The project has been carrying an ASSUMPTION in README.md and in
-FecConfig.cpu_cost_ms_per_symbol:
-
-    "0.047 ms per repair symbol (pure python).  A C/SIMD implementation
-     would be more than 100x faster."
-
-This measures both sides instead of assuming the ratio:
-  - python encoder  (afec/rs.py, bytes.translate + big-int XOR)
-  - C encoder       (experiments/rs_bench.c, same Cauchy construction)
-  - pure XOR parity (what the handshake shield uses when r=1)
-
-and converts them into CPU utilisation at a given line rate, which is the
-metric the R&E plan actually asks for.
-
-Output: experiments/results/e8_cpu.json
-"""
 import argparse
 import json
 import os
@@ -33,7 +13,7 @@ RESULTS = os.path.join(HERE, "results")
 os.makedirs(RESULTS, exist_ok=True)
 sys.path.insert(0, ROOT)
 
-from afec.rs import RSErasureCode      # noqa: E402
+from afec.rs import RSErasureCode
 
 GRID = [(16, 4), (32, 4), (32, 8), (32, 16), (64, 8), (64, 16), (128, 32)]
 
@@ -46,11 +26,10 @@ def _harden():
             pass
 
 
-# ------------------------------------------------------------------ python
 def bench_python(k, r, sym, blocks):
     code = RSErasureCode(k, r)
     src = [bytes(((i * 37 + t * 11) & 0xFF) for t in range(sym)) for i in range(k)]
-    code.encode(src)                       # warm the tables
+    code.encode(src)
     t0 = time.perf_counter()
     for _ in range(blocks):
         code.encode(src)
@@ -63,7 +42,6 @@ def bench_python(k, r, sym, blocks):
 
 
 def bench_python_decode(k, r, sym, blocks):
-    """Worst case: all r repair symbols needed (first r source symbols lost)."""
     code = RSErasureCode(k, r)
     src = [bytes(((i * 37 + t * 11) & 0xFF) for t in range(sym)) for i in range(k)]
     rep = code.encode(src)
@@ -81,7 +59,6 @@ def bench_python_decode(k, r, sym, blocks):
     return {"decode_ms_per_block": dt * 1000.0 / blocks}
 
 
-# ----------------------------------------------------------------------- C
 def build_c(workdir):
     src = os.path.join(HERE, "rs_bench.c")
     if shutil.which("gcc") is None:
@@ -110,9 +87,7 @@ def bench_c(binary, k, r, sym, blocks, repeats=3):
     return best
 
 
-# ----------------------------------------------------------- CPU utilisation
 def cpu_fraction(ms_per_block, k, sym, rate_bps):
-    """Fraction of ONE core needed to keep up with `rate_bps` of source data."""
     block_bits = k * sym * 8.0
     blocks_per_s = rate_bps / block_bits
     return blocks_per_s * (ms_per_block / 1000.0)
@@ -171,13 +146,8 @@ def main():
         print(line)
     print("-" * 92)
 
-    # XOR parity - the handshake shield's r=1 case
     if cbin:
         c = bench_c(cbin, 2, 1, a.symbol, 200000, repeats=3)
-        # ⚠️ K=2 x 1200B = 2.4 KB stays in L1, so this number is a best case and
-        # sits near the timer floor.  Do not quote the GB/s figure; quote the
-        # conservative bound instead.  (The first version of this benchmark had
-        # the loop hoisted out entirely and reported ~100 GB/s.)
         c["caveat"] = ("L1-resident best case, near timer resolution; "
                        "quote as '< 1 us per parity packet'")
         c["conservative_us_at_10GBps"] = 2.0 * a.symbol / 10e9 * 1e6
@@ -189,7 +159,6 @@ def main():
         print("  conservative bound at a pessimistic 10 GB/s: %.2f us"
               % c["conservative_us_at_10GBps"])
 
-    # put it next to the ML-KEM cost measured in E1
     e1p = os.path.join(RESULTS, "e1_mlkem.json")
     if os.path.exists(e1p):
         with open(e1p, encoding="utf-8") as f:

@@ -239,7 +239,7 @@ func TestDisabledProbesStayDisabled(t *testing.T) {
 		c := adaptationCache(symbols)
 		probeEvery := 0
 		if symbols {
-			probeEvery = 20 // Valid symbol feedback itself disables probes.
+			probeEvery = 20
 		}
 		_, m, why, _ := c.decide("test", 1280, 3, 0, probeEvery,
 			defaultAssumedBurst, cPktDefault, maxStepsDefault, quicgoMaxIPS, 2)

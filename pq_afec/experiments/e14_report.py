@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E14 - generate the results tables straight from the experiment JSON.
-
-Hand-copied numbers rot.  This regenerates every table in the report from
-experiments/results/*.json so the document can never disagree with the data.
-The narrative report (docs/실측 보고서.md) cites this file; this file owns the
-numbers.
-
-Output: docs/실측 결과표.md
-"""
 import json
 import os
 import sys

@@ -1,4 +1,3 @@
-"""Prevent a live run from consuming a forced historical journal generation."""
 import contextlib
 import io
 import os

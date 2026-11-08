@@ -1,13 +1,3 @@
-// qhct — QUIC 핸드셰이크 완료 시간(HCT) 측정 도구
-//
-// 서버·클라이언트 모드를 하나의 바이너리로 제공한다.
-// qlog를 켜면 Initial 패킷 수·증폭 예산 동작을 패킷 단위로 관찰할 수 있다.
-//
-// 빌드:  go build -o qhct qhct.go
-// 서버:  ./qhct -mode server -addr 10.9.0.2:44433 -group X25519MLKEM768
-// 측정:  ./qhct -mode client -addr 10.9.0.2:44433 -group X25519MLKEM768 \
-//              -iters 500 -warmup 20 -csv out.csv -timeout 5000
-// qlog:  -qlog ./qlogdir  (클라이언트/서버 어느 쪽이든)
 package main
 
 import (
@@ -38,7 +28,6 @@ import (
 
 const alpn = "rne-hct"
 
-// 자체 서명 인증서 생성 (측정 대상은 키 교환이므로 검증은 생략)
 func genCert() tls.Certificate {
 	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
@@ -58,7 +47,6 @@ func genCert() tls.Certificate {
 	return tls.Certificate{Certificate: [][]byte{der}, PrivateKey: key}
 }
 
-// 그룹 이름 → CurveID
 func curveOf(name string) (tls.CurveID, error) {
 	switch name {
 	case "X25519":
@@ -121,7 +109,7 @@ func runServer(addr, group, qlogDir string) {
 		NextProtos:       []string{alpn},
 		MinVersion:       tls.VersionTLS13,
 		CurvePreferences: []tls.CurveID{cid},
-		SessionTicketsDisabled: true, // 세션 재개 차단 — 전체 핸드셰이크만 측정
+		SessionTicketsDisabled: true,
 	}
 	qConf := &quic.Config{
 		Tracer:               qlogTracer(qlogDir, "srv"),
@@ -140,7 +128,6 @@ func runServer(addr, group, qlogDir string) {
 			continue
 		}
 		go func(c *quic.Conn) {
-			// 핸드셰이크만 필요하므로 즉시 종료
 			time.Sleep(5 * time.Millisecond)
 			c.CloseWithError(0, "done")
 		}(conn)
@@ -153,11 +140,11 @@ func runClient(addr, group string, iters, warmup, timeoutMs int, csvPath, qlogDi
 		log.Fatal(err)
 	}
 	tlsConf := &tls.Config{
-		InsecureSkipVerify: true, // 자체 서명. 측정 대상은 키 교환
+		InsecureSkipVerify: true,
 		NextProtos:         []string{alpn},
 		MinVersion:         tls.VersionTLS13,
 		CurvePreferences:   []tls.CurveID{cid},
-		ClientSessionCache: nil, // 세션 재개 차단
+		ClientSessionCache: nil,
 	}
 
 	var w *csv.Writer
@@ -264,13 +251,10 @@ func curveName(c tls.CurveID) string {
 	return fmt.Sprintf("id_%d", uint16(c))
 }
 
-
-// countingConn — UDP 데이터그램의 개수와 크기를 기록하는 래퍼.
-// tcpdump 없이, 권한 없이 패킷 수준 관찰이 가능하다.
 type countingConn struct {
 	net.PacketConn
-	sent []int // 송신 데이터그램 크기 (바이트)
-	rcvd []int // 수신 데이터그램 크기
+	sent []int
+	rcvd []int
 }
 
 func (c *countingConn) WriteTo(b []byte, addr net.Addr) (int, error) {
@@ -294,7 +278,6 @@ func sum(xs []int) int {
 	return t
 }
 
-// 단일 핸드셰이크를 수행하며 데이터그램 크기를 보고한다
 func runProbe(addr, group string, timeoutMs int) {
 	cid, err := curveOf(group)
 	if err != nil {

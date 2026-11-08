@@ -1,28 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E9 - does the channel model actually predict the real link?  (verification)
-
-Everything in this project rests on one equation:
-
-    P_fail(K, r) = P[ erasures in a K+r block > r ]
-
-computed exactly by dynamic programming over a Gilbert-Elliott chain fitted
-with (loss rate, mean burst).  That has been cross-checked against Monte Carlo
-of the SAME model - which proves the DP, not the model.
-
-This checks the model itself.  For every measured netem trace we:
-  1. slide a window over the REAL loss mask and count how often a (K+r) block
-     would actually have lost more than r symbols  -> empirical P_fail
-  2. ask the GE-DP for its prediction, fed only with the trace's measured
-     (loss rate, mean burst)
-  3. ask a binomial model (independence) for its prediction
-
-and report all three.  (3) is the "what if we ignored bursts" baseline: the
-project claims ignoring burst underestimates failure by a large factor, and
-this measures that factor on real data instead of on simulated data.
-
-Output: experiments/results/e9_validation.json
-"""
 import argparse
 import json
 import math
@@ -36,7 +11,7 @@ RESULTS = os.path.join(HERE, "results")
 TRACES = os.path.join(HERE, "traces")
 sys.path.insert(0, ROOT)
 
-from afec.channel import GilbertElliott      # noqa: E402
+from afec.channel import GilbertElliott
 
 GRID = [(32, 0), (32, 2), (32, 4), (32, 8), (32, 16),
         (16, 2), (16, 4), (64, 8), (64, 16)]
@@ -57,11 +32,6 @@ def load_mask_bits(name, n):
 
 
 def empirical_p_fail(bm, n, k, r, stride):
-    """Slide a disjoint-ish window of length k+r and count blocks with >r losses.
-
-    stride = k + r means back-to-back blocks, which is how a sender actually
-    lays them out.  Every window is a real stretch of the measured link.
-    """
     win = k + r
     blocks = 0
     failed = 0
@@ -89,7 +59,6 @@ def binomial_p_fail(p, k, r):
 
 
 def wilson(fail, total, z=1.96):
-    """Wilson score interval - honest error bars on a small failure count."""
     if total == 0:
         return (0.0, 0.0)
     ph = fail / total
@@ -146,9 +115,6 @@ def main():
           % (len(names), n))
     print("=" * 104)
 
-    # 버스트 트레이스와 독립 트레이스를 반드시 나눠서 요약해야 한다.
-    # 섞으면 "이항이 2배 과소평가"라는 김빠진 중앙값이 나오는데, 그건 독립
-    # 트레이스(이항이 맞는 자리)가 절반을 차지해 희석된 결과다.
     kind = {}
     for nm in names:
         kind[nm] = "burst" if e6["configs"][nm].get("model") == "gemodel" \
@@ -218,9 +184,6 @@ def main():
     bm = summary["binomial_ratio_median_burst"]
     bw = summary["binomial_worst_ratio_burst"]
     summary["burst_underestimate_median_x"] = (1.0 / bm) if bm else None
-    # 🩸 최악 셀에서는 이항 예측이 사실상 0이다(예: RS(48,32)에 연속 61패킷
-    # 버스트 - 독립 가정으로는 원리적으로 볼 수 없는 사건). 그걸 그냥 나누면
-    # 2e18 같은 무의미한 정수가 나와 보고서에 실린다. 발산으로 보고한다.
     FLOOR = 1e-6
     if bw is None or bw != bw:
         summary["burst_underestimate_worst_x"] = None

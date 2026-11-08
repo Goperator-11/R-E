@@ -1,10 +1,6 @@
 #!/bin/bash
 echo "Historical diagnostics are disabled in gen33; use a development measurement plan." >&2
 exit 2
-# Isolate where the handshake latency comes from:
-#   A) client -> server directly, no netem, no shim
-#   B) client -> server directly, netem delay only
-#   C) client -> shim -> shim -> server, netem delay only
 BIN="$HOME/quicbed_gen33/bin"
 QBED="$(cd "$(dirname "$0")" && pwd)"
 mount -t tmpfs none /run 2>/dev/null

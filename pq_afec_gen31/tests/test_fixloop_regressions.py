@@ -1,4 +1,3 @@
-"""Offline parser, selection, and retry regressions. No measurement subprocesses."""
 import argparse
 import contextlib
 import io

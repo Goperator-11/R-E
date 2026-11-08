@@ -1,21 +1,11 @@
-# -*- coding: utf-8 -*-
-"""
-E10 - figures for the R&E report (research content 4: "그래프로 시각화")
-
-Reads the JSON produced by E1/E3/E4/E5/E6/E7/E8/E9 and draws the report
-figures.  Run on Windows python (matplotlib lives there); everything it needs
-is already on disk, so it does not re-run any experiment.
-
-Output: experiments/figures/*.png
-"""
 import json
 import os
 import sys
 
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt          # noqa: E402
-from matplotlib import font_manager      # noqa: E402
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RESULTS = os.path.join(HERE, "results")
@@ -61,7 +51,6 @@ def save(fig, name):
     return p
 
 
-# ------------------------------------------------------------------ fig 1
 def fig_mlkem(e1):
     kems = ["ML-KEM-512", "ML-KEM-768", "ML-KEM-1024"]
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
@@ -103,7 +92,6 @@ def fig_mlkem(e1):
     return save(fig, "fig1_mlkem_performance.png")
 
 
-# ------------------------------------------------------------------ fig 2
 def fig_split(e4, e5, e3):
     cap = e3["recommended_INITIAL_CRYPTO_CAPACITY"]
     nxt = e3["recommended_next_packet_capacity"]
@@ -152,7 +140,6 @@ def fig_split(e4, e5, e3):
     return save(fig, "fig2_clienthello_split.png")
 
 
-# ------------------------------------------------------------------ fig 3
 def fig_exchange(e6):
     ge = [(k, v) for k, v in e6["configs"].items() if v.get("model") == "gemodel"]
     uni = [(k, v) for k, v in e6["configs"].items() if v.get("model") == "bernoulli"]
@@ -186,7 +173,6 @@ def fig_exchange(e6):
     return save(fig, "fig3_netem_ge_exchange.png")
 
 
-# ------------------------------------------------------------------ fig 4
 def fig_corr_trap(e6):
     items = sorted(((v["corr"], v["loss_rate"] * 100)
                     for k, v in e6["configs"].items()
@@ -212,7 +198,6 @@ def fig_corr_trap(e6):
     return save(fig, "fig4_netem_correlation_trap.png")
 
 
-# ------------------------------------------------------------------ fig 5
 def fig_validation(e9):
     fig, ax = plt.subplots(figsize=(6.6, 6.2))
     ge_x, ge_y, bi_x, bi_y = [], [], [], []
@@ -245,7 +230,6 @@ def fig_validation(e9):
     return save(fig, "fig5_model_validation.png")
 
 
-# ------------------------------------------------------------------ fig 6
 def fig_regret(e7):
     labels = ["none", "static", "rquic", "adaptive", "cached_ok",
               "cached_hi", "cached_lo"]
@@ -273,7 +257,6 @@ def fig_regret(e7):
     return save(fig, "fig6_worst_case_regret.png")
 
 
-# ------------------------------------------------------------------ fig 7
 def fig_handshake(e7):
     hs = e7["handshake"]
     names = sorted(hs, key=lambda n: e7["long"][n]["measured_loss"])
@@ -296,7 +279,6 @@ def fig_handshake(e7):
     return save(fig, "fig7_handshake_time.png")
 
 
-# ------------------------------------------------------------------ fig 8
 def fig_cpu(e8):
     keys = [k for k in e8["grid"] if "c" in e8["grid"][k]]
     keys.sort(key=lambda s: (int(s.split("_")[0][1:]), int(s.split("_")[1][1:])))
@@ -332,9 +314,7 @@ def fig_cpu(e8):
     return save(fig, "fig8_cpu_cost.png")
 
 
-# ------------------------------------------------------------------ fig 9
 def fig_testbed(e12):
-    """The live testbed: real quic-go, real ML-KEM, real XOR parity."""
     conds = []
     for label, arm in e12["arms"].items():
         if arm["condition"] not in conds:

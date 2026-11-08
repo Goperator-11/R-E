@@ -1,21 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E4 - decrypt real QUIC Initial packets and read the actual ClientHello
-
-QUIC Initial packets are protected with keys derived from the client's original
-Destination Connection ID and a well-known salt (RFC 9001 sec 5.2), so anyone
-who sees the packets can read them.  That lets us measure - not estimate - the
-exact ClientHello that ML-KEM produces on the wire, including the QUIC
-transport-parameters extension that TLS-over-TCP does not carry.
-
-This pins down the last estimated constant in afec/handshake.py:
-    ch_base   (ClientHello bytes that are NOT the key share)
-
-AES is done through the `openssl` CLI (ECB for header protection, CTR for the
-GCM keystream) so that no third-party python package is needed.
-
-Output: experiments/results/e4_quic_clienthello.json
-"""
 import hashlib
 import hmac
 import json
@@ -43,7 +25,6 @@ def _harden_console():
             pass
 
 
-# ------------------------------------------------------------------- HKDF
 def hkdf_extract(salt, ikm):
     return hmac.new(salt, ikm, hashlib.sha256).digest()
 
@@ -78,7 +59,6 @@ def initial_keys(dcid):
     return out
 
 
-# -------------------------------------------------------------- AES via CLI
 def aes_ecb_block(key, block):
     with tempfile.TemporaryDirectory() as d:
         i, o = os.path.join(d, "i"), os.path.join(d, "o")
@@ -106,7 +86,6 @@ def aes_ctr(key, counter_block, data):
             return f.read()
 
 
-# ------------------------------------------------------------ QUIC parsing
 def read_varint(buf, i):
     b = buf[i]
     pref = b >> 6
@@ -123,7 +102,6 @@ def read_varint(buf, i):
 
 
 def iter_long_packets(dgram):
-    """Yield (kind, start, pn_offset, end) for each coalesced long-header packet."""
     i = 0
     n = len(dgram)
     while i < n:
@@ -142,10 +120,10 @@ def iter_long_packets(dgram):
         dcid = dgram[j:j + dcil]; j += dcil
         scil = dgram[j]; j += 1
         scid = dgram[j:j + scil]; j += scil
-        if ptype == 3:      # Retry
+        if ptype == 3:
             yield ("Retry", i, None, n, dcid, scid)
             return
-        if ptype == 0:      # Initial has a token
+        if ptype == 0:
             tl, j = read_varint(dgram, j)
             j += tl
         length, j = read_varint(dgram, j)
@@ -159,7 +137,6 @@ def iter_long_packets(dgram):
 
 
 def decrypt_initial(dgram, start, pn_off, end, keys):
-    """Return (plaintext_payload, pn, first_byte)."""
     sample = dgram[pn_off + 4:pn_off + 4 + 16]
     if len(sample) < 16:
         return None, None, None
@@ -188,7 +165,6 @@ FRAME_NAMES = {0x00: "PADDING", 0x01: "PING", 0x02: "ACK", 0x03: "ACK_ECN",
 
 
 def parse_frames(pt):
-    """Return list of frames; CRYPTO frames carry (offset, data)."""
     out = []
     i = 0
     n = len(pt)
@@ -240,7 +216,6 @@ def parse_frames(pt):
     return out
 
 
-# ------------------------------------------------------ TLS ClientHello parse
 EXT_NAMES = {
     0: "server_name", 5: "status_request", 10: "supported_groups",
     13: "signature_algorithms", 16: "ALPN", 18: "SCT", 21: "padding",
@@ -254,13 +229,12 @@ EXT_NAMES = {
 
 
 def parse_client_hello(msg):
-    """msg = full handshake message (type 0x01 + 3-byte len + body)."""
     assert msg[0] == 0x01, "not a ClientHello"
     total = int.from_bytes(msg[1:4], "big")
     b = msg[4:4 + total]
     i = 0
-    i += 2                       # legacy_version
-    i += 32                      # random
+    i += 2
+    i += 32
     sid_len = b[i]; i += 1 + sid_len
     cs_len = int.from_bytes(b[i:i + 2], "big"); i += 2 + cs_len
     comp_len = b[i]; i += 1 + comp_len
@@ -273,7 +247,7 @@ def parse_client_hello(msg):
         body = b[i + 4:i + 4 + el]
         e = {"type": et, "name": EXT_NAMES.get(et, "ext-%d" % et),
              "len": el, "wire_len": el + 4}
-        if et == 51:  # key_share
+        if et == 51:
             kl = int.from_bytes(body[0:2], "big")
             shares, k = [], 2
             while k < 2 + kl:
@@ -299,7 +273,7 @@ def parse_server_hello(msg):
     b = msg[4:4 + total]
     i = 2 + 32
     sid_len = b[i]; i += 1 + sid_len
-    i += 2 + 1                   # cipher suite + compression
+    i += 2 + 1
     ext_total = int.from_bytes(b[i:i + 2], "big"); i += 2
     end = i + ext_total
     exts = []
@@ -316,7 +290,6 @@ def parse_server_hello(msg):
     return {"msg_wire_len": total + 4, "extensions": exts}
 
 
-# ------------------------------------------------------------------- relay
 class RawRelay(object):
     def __init__(self, host, port=443):
         infos = socket.getaddrinfo(host, port, 0, socket.SOCK_DGRAM)
@@ -395,7 +368,6 @@ def capture(host, group, alpn="h3", timeout=25):
 
 
 def analyse(dgrams):
-    """Decrypt client + server Initials, reassemble the CRYPTO streams."""
     odcid = None
     for d, buf in dgrams:
         if d != "C2S":

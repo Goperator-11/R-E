@@ -1,31 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P0 - 인수인계 문서의 환경을 그대로 세우고, 문서 단계 0 을 그대로 확인한다.
-
-문서 4절 단계 0
-    go version                    # go1.26.5 확인
-    CGO_ENABLED=0 go build -o qamp qamp.go && echo OK
-    ./qamp -mode server -addr 127.0.0.1:44433 -group X25519 -certsize 3000 &
-    sleep 1
-    ./qamp -mode client -addr 127.0.0.1:44433 -group X25519 -n 5
-
-문서 5절 환경
-    unshare -Urnm / netns peer / veth v0,v1 / 10.9.0.1,2 / MTU 1500 /
-    netem 양쪽 절반 / /tmp/qamp
-
-문서 6절 함정 - 여기서 미리 걸러 낸다
-    * MTU 변경이 loopback 에서는 조용히 무시된다 -> veth 로 눈으로 확인
-    * veth 양끝이 다른 네임스페이스에 있어야 한다 -> 확인
-    * pkill -f 는 부모 셸까지 죽인다 -> PID 로만 종료
-    * 잔존 서버 프로세스가 결과를 오염시킨다 -> 시작 전 확인
-    * 모든 실행에 timeout
-
-ML-KEM 동일성
-    "ML-KEM 도 똑같이 구현" 을 말로 두지 않고 두 가지로 보인다.
-      크기   X25519MLKEM768 키셰어 = 32 + 1184 = 1216 B (FIPS 203)
-      상호운용  Go crypto/tls <-> OpenSSL 3.5 가 실제로 핸드셰이크를 끝내는가
-
-Output: experiments/results/p0_env.json
-"""
 from __future__ import annotations
 
 import json
@@ -40,10 +12,10 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
-import padbed as B                      # noqa: E402
-import e4_quic_decrypt as E4            # noqa: E402
+import padbed as B
+import e4_quic_decrypt as E4
 
-DOC_GO = "go1.26"          # 문서는 go1.26.5. 접두만 확인한다.
+DOC_GO = "go1.26"
 DOC_PORT = 44433
 DOC_CERT = 3000
 
@@ -61,7 +33,6 @@ def check(results, name, ok, detail=""):
 
 
 def key_share_sizes(dump_path):
-    """떠 놓은 첫 비행에서 ClientHello 의 key_share 확장 크기를 읽는다."""
     with open(dump_path, "rb") as f:
         blob = f.read()
     dgrams, i = [], 0
@@ -100,19 +71,16 @@ def key_share_sizes(dump_path):
     ch = E4.parse_client_hello(msg)
     out = {"clienthello_bytes": len(msg), "key_shares": []}
     for ext in ch.get("extensions", []):
-        if ext.get("type") == 51:      # key_share
+        if ext.get("type") == 51:
             out["key_share_ext_len"] = ext.get("len")
-    # key_share 안의 개별 항목을 직접 뜯는다 (그룹별 길이가 필요하다)
     out["key_shares"] = _parse_key_share(msg)
     return out
 
 
 def _parse_key_share(msg):
-    """ClientHello 원문에서 key_share 항목 (group, len) 목록을 뽑는다."""
-    # msg = handshake header(4) + body
     i = 4
-    i += 2 + 32                                   # version + random
-    sid = msg[i]; i += 1 + sid                    # legacy_session_id
+    i += 2 + 32
+    sid = msg[i]; i += 1 + sid
     cs = int.from_bytes(msg[i:i + 2], "big"); i += 2 + cs
     cm = msg[i]; i += 1 + cm
     ext_total = int.from_bytes(msg[i:i + 2], "big"); i += 2
@@ -125,7 +93,7 @@ def _parse_key_share(msg):
         i += 4 + el
         if et != 51:
             continue
-        j = 2                                     # client_shares length
+        j = 2
         while j + 4 <= len(body):
             grp = int.from_bytes(body[j:j + 2], "big")
             kl = int.from_bytes(body[j + 2:j + 4], "big")
@@ -135,7 +103,6 @@ def _parse_key_share(msg):
 
 
 def loopback_stage0():
-    """Bounded READY wait and client run; always stop this server by PID."""
     rows, ready, returncode, error = [], False, None, ""
     with tempfile.TemporaryDirectory(prefix="padfec_p0_") as directory:
         stderr_path = os.path.join(directory, "server.stderr")
@@ -184,7 +151,6 @@ def main():
     results = []
     info = {}
 
-    # ------------------------------------------------------------ 도구 버전
     rc, out = sh("export PATH=\"$HOME/goroot/bin:$PATH\"; go version")
     info["go_version"] = out.strip()
     check(results, "Go 툴체인 (문서: go1.26.5)", rc == 0 and DOC_GO in out, out.strip())
@@ -198,7 +164,6 @@ def main():
     check(results, "문서 5절대로 /tmp/qamp 로 복사되어 있다",
           os.path.exists(B.QAMP), B.QAMP)
 
-    # -------------------------------------------- 문서 5절 환경 (netns/veth)
     B.setup(mtu=1500)
     rc, out = sh("ip netns list")
     check(results, "네임스페이스 peer 생성", B.NS in out, out.strip())
@@ -223,15 +188,11 @@ def main():
     check(results, "netem 이 v1 에도 걸림 (양쪽 절반이라야 대칭 지연)",
           ok2, out2.strip()[:70])
 
-    # ------------------------------------------------- 문서 단계 0 (loopback)
-    # 문서 4절 그대로: 127.0.0.1:44433, X25519, certsize 3000, n=5.
-    # 종료는 PID 로만 한다 (문서 6절: pkill -f 는 부모 셸까지 죽인다).
     ok, info["stage0"] = loopback_stage0()
     check(results, "문서 단계 0: 서버 기동 + 클라이언트 5회 성공", ok,
           "성공 %d/5, group_id %s"
           % (info["stage0"]["ok"], info["stage0"]["kem_ids"]))
 
-    # -------------------------------------------------- ML-KEM 동일성 (크기)
     dump = os.path.join(B.WORK, "p0_flight_mlkem.bin")
     try:
         os.unlink(dump)
@@ -244,7 +205,6 @@ def main():
     ks = key_share_sizes(dump) if os.path.exists(dump) else None
     info["key_share"] = ks
     got = {e["group"]: e["key_bytes"] for e in (ks or {}).get("key_shares", [])}
-    # 0x11EC = 4588 = X25519MLKEM768.  32(X25519) + 1184(ML-KEM-768 ek) = 1216
     complete = not err and len(rows) == 3 and all(x.get("ok") for x in rows)
     ok = complete and got.get(4588) == 1216
     check(results, "ClientHello key_share: X25519MLKEM768 = 1216 B "
@@ -255,7 +215,6 @@ def main():
     check(results, "QUIC 핸드셰이크에서 실제로 X25519MLKEM768(4588) 합의",
           complete and kem_ids == [4588], str(kem_ids))
 
-    # ---------------------------------------------- ML-KEM 동일성 (상호운용)
     rc, out = sh("sed 's/\\r$//' %s/quicbed/mlkem_interop.sh > "
                  "/tmp/mlkem_interop.sh && bash /tmp/mlkem_interop.sh"
                  % HERE.replace("\\", "/"), timeout=240)

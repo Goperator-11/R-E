@@ -90,7 +90,7 @@ int main(int argc,char**argv){
     SSL*ssl=SSL_new(ctx);SSL_set_fd(ssl,fd);
     SSL_set_tlsext_host_name(ssl,"localhost");
 
-    int r;double dl=t0+TMO; /* One deadline for TCP and TLS together. */
+    int r;double dl=t0+TMO;
     for(;;){
       if(now_ms()>=dl){r=-2;break;}
       r=SSL_connect(ssl);

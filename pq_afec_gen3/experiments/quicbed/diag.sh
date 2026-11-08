@@ -1,8 +1,4 @@
 #!/bin/bash
-# Isolate where the handshake latency comes from:
-#   A) client -> server directly, no netem, no shim
-#   B) client -> server directly, netem delay only
-#   C) client -> shim -> shim -> server, netem delay only
 BIN="$HOME/quicbed/bin"
 QBED=/mnt/c/dev/pq_afec/experiments/quicbed
 mount -t tmpfs none /run 2>/dev/null

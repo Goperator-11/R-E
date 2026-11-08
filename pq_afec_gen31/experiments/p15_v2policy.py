@@ -1,33 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P15 - v2 정책(δ·m 결합)의 후회. p11 과 같은 자로 잰다 (loop2 단계 p15).
-
-왜 따로 재나
-------------
-p11 은 m 만 쓰던 시절의 자다 - 고정팔이 {m0, m1, m2} 뿐이라 δ 지렛대가
-들어간 뒤의 정책이 **무엇을 상대로 얼마나 잃는지** 재는 자가 없었다.
-여기서는 δ 가 실제로 값을 내는 자리(x25519, 임계 사이 인증서)에서
-고정팔에 **pad(δ=1) 팔을 반드시 포함**해 잰다 - m 고정팔만 두면 "패리티
-2,636 B 로도 같은 왕복을 산다"에 가려 v2 의 값(1 바이트)이 안 보인다.
-
-설계
-----
-x25519(k=1) · RTT 50 ms. 인증서 두 자리 x 손실 세 조건:
-    2955  임계(3340) 아래 - δ 는 쓸모없고 복구만 값을 낸다
-    4032  임계 사이(3340 < 4032 < 4580) - δ=1 이 왕복 하나를 산다 (헤드라인)
-
-고정팔: m0(맨몸) / m1 / m2 / pad(ips 1281, m=0). 각 N 연결.
-auto: 빈 캐시에서 라운드당 N 연결을 측정하며 캐시를 이어받는다.
-후회는 모든 팔의 같은 후반 라운드를 같은 가중치로 비교한다. 과거의
-마지막 auto 라운드 대 고정팔 후반 평균은 legacy_final_vs_late에 남긴다.
-각 라운드의 auto 노출량은 고정팔보다 크므로 시간 균형이나 독립 확증을
-입증한 프로토콜은 아니다. 선택/평가 분리는 같은 실행 안의 진단이다.
-
-통과 기준 (loop2 에 적힌 것): 수렴 후 최악 후회 < 2 ms. p11 과 같은 자이며
-여기서 완화하지 않는다.
-
-Output: experiments/results/p15_v2policy.json
-실행:   unshare -Urnm python3 -u experiments/p15_v2policy.py
-"""
 from __future__ import annotations
 
 import os
@@ -42,24 +12,20 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
-import padbed as B                               # noqa: E402
-import blockstat as BST                          # noqa: E402
-import policy_evaluation as PE                   # noqa: E402
-from padfec import policy as POL                 # noqa: E402
+import padbed as B
+import blockstat as BST
+import policy_evaluation as PE
+from padfec import policy as POL
 
 RTT_MS = 50.0
 GROUP = "x25519"
 K = 1
-# 🩸 2026-08-21 - p11 과 같은 처방(--precise). 고정팔 표본은 auto 한
-#    라운드와 같은 크기여야 짝이 맞으므로 라운드 크기와 함께 움직인다.
-N_DEFAULT = 400               # 고정팔 표본 = auto 한 라운드와 같은 크기
+N_DEFAULT = 400
 N_PRECISE = 1600
 N = int(os.environ.get("PADFEC_P15_N")
         or (N_PRECISE if "--precise" in sys.argv else N_DEFAULT))
 CACHE = "/tmp/padfec_p15_cache.json"
 
-# (이름, cert, 손실%) - cert 4032 는 명세 4-4 의 Tranco p50 이고
-# _probe_v2policy / _probe_v2converge 와 같은 자리다.
 CONDS = [
     ("임계아래/무손실", 2955, 0.0),
     ("임계아래/손실2%", 2955, 2.0),
@@ -69,24 +35,11 @@ CONDS = [
     ("임계사이/손실5%", 4032, 5.0),
 ]
 
-# 🩸 2026-08-21 - 이 실행의 실제 업링크. netem 에 rate 를 안 걸므로 0 이 사실이다.
 UPLINK_MBPS = 0.0
 
-# 무손실 조건은 추정기가 하한(0.005)까지 내려와야 pad 로 넘어간다 - 7~8 라운드.
-#
-# 🩸 2026-08-21 - 손실 조건은 3 라운드였다. **수렴을 시험한 게 아니라 선언한
-#    것이었다.** 2026-08-20 실행의 임계사이/손실2% 를 보면 p 추정이
-#    0.0377 -> 0.0171 -> 0.0118 로 **여전히 움직이는 중**에 3 라운드에서 끊고
-#    그 값을 "수렴 후 후회"라고 불렀다. 그 조건이 곧 헤드라인 실패(+3.08 ms)였다.
-#    라운드를 무손실과 같게 8 로 맞추고, **수렴했는지를 검사로 확인한다**
-#    (아래 "수렴 판정"). 안 했으면 실패로 드러난다.
-# 🩸 2026-09-07 - 8 -> 10. 고정팔 넷과 auto 를 교대로 도는 라틴 회전이 닫히려면
-#    라운드 수가 팔 수(5)의 배수여야 각 팔이 각 자리를 같은 횟수로 겪는다.
-#    수렴 검사(마지막 세 라운드의 최빈 선택)는 그대로다.
 ROUNDS_CLEAN = 10
 ROUNDS_LOSSY = 10
 
-# 고정팔: (이름, fec, m, ips)
 FIXED = [("m0", "off", 0, 0), ("m1", "on", 1, 0), ("m2", "on", 2, 0),
          ("pad", "off", 0, 1281)]
 
@@ -96,12 +49,6 @@ def mean(v):
 
 
 def _delta_only_crossover(cert=4032, rtt_ms=RTT_MS):
-    """pad(δ=1) **단독**이 이기는 손실률의 상한. 이분탐색.
-
-    이 수가 추정기의 하한(Jeffreys, ObsCount 고정점 100 -> 4.95e-3)보다
-    작으면 **폐루프는 δ 단독을 영영 고를 수 없다** - 그건 결함이 아니라
-    인식론적 한계다. 어떤 적응 추정기도 100 표본으로 'p < 5e-5' 를
-    증명할 수 없다."""
     lo, hi = 0.0, 0.05
     for _ in range(60):
         mid = 0.5 * (lo + hi)
@@ -118,14 +65,12 @@ def _delta_only_crossover(cert=4032, rtt_ms=RTT_MS):
 
 
 def added_bytes(row):
-    """이 시행이 기준선(k*1280) 대비 실제로 더 보낸 첫 비행 바이트."""
     ff = (row.get("first_flight_bytes") or 0) + (
         row.get("first_flight_parity_bytes") or 0)
     return max(0, ff - K * 1280)
 
 
 def cache_evidence(path):
-    """Read the policy state at a collection boundary without changing it."""
     try:
         with open(path, encoding="utf-8") as stream:
             return {"available": True, "value": json.load(stream)}
@@ -134,7 +79,6 @@ def cache_evidence(path):
 
 
 def round_evidence(rows, cs, n_req):
-    """Keep joint choices and byte/RTT fields instead of inferring them from marginals."""
     n_ok = sum(1 for row in rows if row.get("ok"))
     return {"n_req": n_req, "n_failed": len(rows) - n_ok,
             "n_missing": max(0, n_req - len(rows)),
@@ -145,7 +89,6 @@ def round_evidence(rows, cs, n_req):
 
 
 def window_added_bytes(blocks, ids):
-    """Equal-round byte estimator. Old blocks lacking raw rows remain unknown."""
     selected = [b for b in blocks if b.get("round") in set(ids)]
     if len(selected) != len(set(ids)) or any("client_rows" not in b for b in selected):
         return None
@@ -159,21 +102,10 @@ def window_added_bytes(blocks, ids):
     return mean(values)
 
 
-# 🩸 2026-09-07 - **고정팔과 auto 라운드를 교대로 잰다.** 그전에는 조건마다
-#    m0 -> m1 -> m2 -> pad 를 팔당 N 판씩 통째로 돌린 뒤 auto 를 8 라운드
-#    돌렸다. p11 과 같은 병이다 - 기계의 단조 표류가 팔 이름에 얹혀 후회로
-#    계상된다(인계 §4b-4b 가 p15 의 보고 반폭을 1.25 배 과소평가로 판정했다).
-#    설계: 조건마다 서버 하나(fec=on), 라운드 r 마다 [auto 라운드 r(N 판),
-#    m0·m1·m2·pad 각 N/ROUNDS 판] 을 r 만큼 회전한 순서로. ROUNDS=10 이면
-#    다섯 팔이 각 자리를 정확히 두 번 겪는다(균형). auto 의 캐시는 조건 시작에
-#    한 번만 비우고 라운드를 넘어 이어진다(수렴을 잰다). 고정팔 표본은 그대로
-#    N 이고 auto 는 10N 이다(옛 8N). 표준오차는 배치평균(blockstat.batch_se).
-#    저널 단위는 조건이다.
 ROUNDS_ORDER = ["auto"] + [f[0] for f in FIXED]
 
 
 def run_condition(cert, loss, rounds, jr):
-    """조건 하나 - 고정팔 넷과 auto 라운드를 교대로. ({팔: rec}, auto rec)."""
     if rounds < 2 * len(ROUNDS_ORDER) or rounds % (2 * len(ROUNDS_ORDER)) or N < rounds or N % rounds:
         raise ValueError("P15 requires two complete Latin squares and N divisible by rounds")
     key = "%s|latin|%d|%.1f|r%d|n%d" % (PE.PROTOCOL, cert, loss, rounds, N)
@@ -210,8 +142,6 @@ def run_condition(cert, loss, rounds, jr):
                         extra=["-cache", CACHE, "-probe-every", "20"],
                         uplink_mbps=UPLINK_MBPS)
                     ok = [x["ms"] for x in rows if x.get("ok")]
-                    # 2026-08-21 - 마지막 행만 보면 안 된다. 그 판이 **탐색**
-                    # 이면 m_why 에 p= 가 없다. 뒤에서부터 p= 를 담은 행을 찾는다.
                     why = ""
                     mp = None
                     for _r in reversed(rows):
@@ -287,7 +217,6 @@ def run_condition(cert, loss, rounds, jr):
                      if ok else None),
             "added_bytes_mean": mean([added_bytes(x) for x in rows]),
             "blocks": fx_blocks[aname],
-            # 서버가 조건당 하나 - 조건 합이다.
             "srv_recovered": ss.get("recovered"),
             "srv_crc_fail": ss.get("recover_crc_fail"),
             "ms": ok,
@@ -372,14 +301,11 @@ def main():
         fixed_means = {a: arms[a]["mean"] for a in arms
                        if arms[a]["mean"] is not None}
         if not fixed_means or not fin or fin["mean"] is None:
-            # 🩸 2026-08-21 - 조용히 빠지면 헤드라인(max)이 저절로 좋아진다.
             out.setdefault("dropped", []).append(
                 {"cond": name, "cert": cert, "loss": loss, "why": "측정 실패"})
             print("    -> !! 측정 실패로 이 조건이 빠졌다: %s" % name,
                   flush=True)
             continue
-        # Compare the same explicit late rounds for every arm, weighted equally.
-        # The old final-auto vs five-late-fixed-round comparison remains labelled.
         try:
             if set(arms) != {a[0] for a in FIXED}:
                 raise ValueError("missing fixed candidate")
@@ -410,7 +336,6 @@ def main():
         selected = matched["selected_fixed"]
         reg_hold = matched["selected_fixed_contrast"]["mean_ms"]
 
-        # This decomposition uses the same equal-round estimator as regret_ms.
         n_probe_fin = sum(1 for t, probe in zip(fin.get("ms_rows", []), fin.get("probe_rows", []))
                           if t is not None and probe)
         probe_tax = reg_sel = None
@@ -436,24 +361,8 @@ def main():
         paired = PE.paired_contrast(late_auto, late_fixed)
         reg_paired, reg_paired_half = paired["mean_ms"], paired["half_ms"]
         se_reg, half_reg = paired["se_ms"], paired["half_ms"]
-        # Unadjusted selected-best t intervals are descriptive. The matched record
-        # also reports all candidate contrasts with a family-wise adjustment.
 
-        # 🆕 수렴 판정. "몇 라운드 돌았으니 수렴했다"가 아니라 **직접 본다**:
-        #    마지막 세 라운드의 p 추정이 상대 5% 안에서 안정적이고, 선택
-        #    분포(ips·m)가 마지막 두 라운드에 같아야 한다.
         rr = au["rounds"] if au else []
-        # 2026-08-21 정정. 처음에는 "p 추정의 표류 < 5% **그리고** 선택
-        # 분포가 마지막 두 라운드에 동일" 을 요구했다. **자가 틀렸다.**
-        #   - 선택 분포를 글자 그대로 비교하면 **탐색 배치의 지터**만으로도
-        #     달라진다(예: {2:387,0:13} vs {2:385,0:15}).
-        #   - p 추정은 Jeffreys 사전값 쪽으로 **점근적으로 기어가므로**
-        #     행동이 이미 굳은 뒤에도 계속 움직인다. 실측: 임계사이/무손실
-        #     은 r7·r8 이 ips 1281·m=1 로 같은데 p 는 0.0067 -> 0.0063.
-        # 재는 대상은 **행동의 수렴**이다: 마지막 세 라운드의 **최빈 선택**
-        # (ips, m)이 같은가. 실측 6/6 조건이 이 기준을 만족한다.
-        # p 표류는 판정이 아니라 **정보**로 남긴다 - 추정기의 정밀도가
-        # 낮다는 사실(관측 100 회에 상대오차 ~45%)은 따로 보고할 값이다.
         def _modal(dd):
             return (max(dd.items(), key=lambda kv: kv[1])[0]
                     if dd else None)
@@ -521,12 +430,8 @@ def main():
                  "예" if conv_ok else "**아니오**", conv_why),
               flush=True)
 
-    # ------------------------------------------------------------- 판정
     print()
     print("=" * 104)
-    # 🩸 2026-08-21 - 판정을 `if regs:` 안에 두면 **데이터가 없을 때 검사가
-    #    통째로 사라지고** 남은 것만으로 만점이 되어 종료코드 0 이 난다.
-    #    조건 수부터 검사하고 헤드라인은 항상 등록한다.
     add("6 조건이 전부 측정됐다 (빠진 조건이 헤드라인을 좋게 만들 수 없다)",
         len(out["regret"]) == len(CONDS),
         "%d/%d | 빠짐 %s" % (len(out["regret"]), len(CONDS),
@@ -561,7 +466,6 @@ def main():
         "최대 반폭 %s ms | 조건별 %s"
         % (("%.2f" % max(cis)) if cis else "-",
            ["%.2f" % v for v in cis]))
-    # 🆕 "수렴 후" 라고 부르려면 실제로 수렴했어야 한다.
     nconv = sum(1 for r in out["regret"] if r.get("converged"))
     add("모든 조건의 마지막 3라운드 IPS·m 각각의 최빈값이 안정적이었다",
         nconv == len(out["regret"]) and out["regret"],
@@ -570,7 +474,6 @@ def main():
                                   for r in out["regret"]
                                   if not r.get("converged")) or "전부 수렴"))
 
-    # v2 의 고유 가치: 임계사이/무손실에서 정책이 스스로 δ=1 로 간다.
     conv = next((a for a in out["auto"] if a["cert"] == 4032
                  and a["loss"] == 0.0), None)
     if conv and conv["final"]:
@@ -579,20 +482,6 @@ def main():
         add("임계사이/무손실: 마지막 라운드 IPS 1281이 과반 (FEC 결합 포함)",
             n1281 > N // 2, "ips 분포 %s | p추정 %s" % (fin["ips_used"],
                                                        fin["p_est"]))
-        # 2026-08-21 정정. 예전 검사는 "auto 추가 바이트 < m1 의 10%",
-        # 즉 **같은 왕복을 1 바이트로 산다**는 주장이었다. 2026-08-21 에
-        # 모형을 고치고 나니 **정책이 그 선택을 하지 않는다** - 그리고
-        # 하지 않는 것이 옳다:
-        #   pad(δ=1) 단독이 이기는 구간은 p < 5e-5 뿐인데,
-        #   추정기의 하한은 (0+0.5)/(100+1) = 4.95e-3 이다 (감쇠 0.99 로
-        #   ObsCount 고정점이 100). **99 배 위**라 도달할 수 없다.
-        #   도달 가능한 손실률에서는 패리티가 막아 주는 PTO(200.86 ms)가
-        #   그 바이트값보다 크다. 실측도 그렇다 - auto 의 후회가 음수다
-        #   (고정 pad 팔보다 빠르다).
-        # 그래서 **거짓이 된 주장 대신 참인 것을 잰다**:
-        #   (a) δ 지렛대를 실제로 쓴다 (위 ips 1281 검사)
-        #   (b) 최대치로 도배하지 않는다 (m2 팔보다 확실히 적게 쓴다)
-        #   (c) δ 단독 구간이 도달 불가능하다는 사실 자체를 못박는다
         ab = fin["added_bytes_mean"]
         m2b = next((r["added_bytes_mean"] for r in out["rows"]
                     if r["arm"] == "m2" and r["cert"] == 4032
@@ -609,7 +498,6 @@ def main():
             "pad 단독이 이기는 p < %.2e vs 추정기 하한 %.2e (%.0f 배)"
             % (_pcrit, _pfloor, _pfloor / max(_pcrit, 1e-12)))
 
-    # pad 고정팔의 실측 확인 - δ=1 이 실제로 왕복 하나를 산다 (헤드라인 재현)
     pad4032 = next((r for r in out["rows"] if r["arm"] == "pad"
                     and r["cert"] == 4032 and r["loss"] == 0.0), None)
     m04032 = next((r for r in out["rows"] if r["arm"] == "m0"
@@ -619,7 +507,6 @@ def main():
         add("pad(δ=1) 고정팔이 맨몸보다 1 왕복 빠르다 (임계사이/무손실)",
             d >= 0.8 * RTT_MS, "%.2f ms = %.3f RTT" % (d, d / RTT_MS))
 
-    # 서버가 조건당 하나라 고정팔·auto 에 같은 수가 복사돼 있다 - 조건별 한 번.
     crc = sum(a.get("srv_crc_fail") or 0 for a in out["auto"])
     add("모든 팔에서 복구 CRC 실패 0", crc == 0, "총 %d 건 (조건별 합)" % crc)
     _bad_se = [r["cond"] for r in out["regret"] if r.get("se_method") != "paired_rounds"]

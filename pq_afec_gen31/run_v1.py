@@ -1,31 +1,3 @@
-"""PQ-AFEC 실험 실행기 (v0.2).
-
-    python run_v1.py
-
-콘솔 출력은 ASCII만 쓴다(cp949 인코딩 에러 방지).
-
-🩸 2026-09-03 - **이 파일의 「후회」는 p11·p15·p17 의 「후회」와 다른 양이다.**
-   외부 리뷰가 "run_v1 만 방식이 다르다"고 지적했는데, 재보니 그게 아니라
-   **층이 다른 것**이었다. 정리해 둔다 - 두 수를 같은 표에 올리면 안 된다.
-
-   여기(v1 시뮬레이터: 이 파일 · verify.py · tune_cache.py)
-       후회 = total_ms(정책) / total_ms(oracle) − 1        [무차원 비율]
-       기준선 = **모형 oracle** (참 p·L 을 알고 고른 최적 고정 r)
-       대상   = 데이터 구간의 total_ms
-   저기(v2 테스트베드: p11 · p15 · p17)
-       후회 = mean(auto) − mean(최선 고정팔)                [절대 ms]
-       기준선 = **측정 argmin** (그래서 승자의 저주 보정이 따로 필요하다 -
-                p11 의 홀드아웃 분할이 그것이다. 여기는 기준선이 잡음
-                최소값이 아니라 모형값이므로 그 보정이 필요 없다.)
-       대상   = 핸드셰이크 완료시간(HCT)
-   서로 환산 불가능하다. p17 은 부호까지 뒤집혀 있다(gain).
-
-   **통일하지 않는다.** 이 파일은 2026-08-14 이후 한 번도 안 고쳐졌고
-   (단일 커밋 `6dbf9e8`) 어떤 파이프라인에도 안 물려 있으며, 그 수는
-   「정본 아님」 배너가 붙은 옛 명세로만 흘러간다. v1 정의를 v2 로 끌어오면
-   옛 명세의 수와 이 코드가 갈라진다 - 얼어붙은 코드는 얼어붙은 채 둔다.
-"""
-
 from __future__ import annotations
 
 from afec import (AdaptiveFecController, FecConfig, GilbertElliott,
@@ -34,12 +6,6 @@ from afec import (AdaptiveFecController, FecConfig, GilbertElliott,
 from afec.sim import expected_handshake_ms, simulate_data, simulate_handshake
 
 def _harden_console():
-    """로케일이 빈약한 환경(리눅스 LANG=C, Windows cp949)에서 출력 크래시 방지.
-
-    이 프로젝트는 마지막 print의 em-dash 하나로 12분 계산을 날린 적이 있다.
-    인코딩이 못 담는 문자는 ?로 강등시켜서, 출력 때문에 계산이 죽는 일은
-    구조적으로 없앤다. (표시가 깨질 뿐 계산·파일 기록은 무사하다)
-    """
     import sys
     for stream in (sys.stdout, sys.stderr):
         try:
@@ -59,7 +25,6 @@ def h(title):
     print(LINE)
 
 
-# ---------------------------------------------------------------- 1
 def exp1_sizes():
     h("[1] ML-KEM key share -> QUIC Initial packet count  (FIPS 203 / RFC 9000)")
     print(f"{'kex':<18}{'c.share':>9}{'CH bytes':>10}{'c.pkts':>8}"
@@ -73,7 +38,6 @@ def exp1_sizes():
     print("     Splitting is what makes a single packet loss cost a full PTO.")
 
 
-# ---------------------------------------------------------------- 2
 def exp2_shield():
     h("[2] Handshake shield: r* chosen by the cost function (T_recover = PTO)")
     print(f"    first PTO with no RTT sample = {pto_ms():.0f} ms  (RFC 9002 6.2.1)")
@@ -90,7 +54,6 @@ def exp2_shield():
     print("\n  -> r*=1 already appears at p=0.1%: one 1.2KB packet vs a ~1 s stall.")
 
 
-# ---------------------------------------------------------------- 3
 def exp3_handshake_sim():
     h("[3] Handshake completion time  (RTT = 30 ms, burst = 3) -- analytic")
     rtt, burst = 30.0, 3.0
@@ -119,7 +82,6 @@ def exp3_handshake_sim():
         print(f"    {p:>6.1%}{an.mean_ms:>14.0f}m{mc.mean_ms:>9.0f}m{mc.p95_ms:>9.0f}m")
 
 
-# ---------------------------------------------------------------- 4
 def exp4_data_phase():
     h("[4] Data phase: same payload, which policy finishes first?")
     cfg = FecConfig(rate_bps=50e6, delay_budget_ms=20.0)
@@ -139,8 +101,6 @@ def exp4_data_phase():
             print(f"    {r.label:<10}{r.total_ms:>10.0f}{r.goodput_mbps:>10.2f}M"
                   f"{r.overhead:>9.1%}{r.block_fail_rate:>10.2%}{r.mean_r:>8.2f}")
 
-    # 정책의 진짜 값어치는 '어떤 손실률에서 가장 좋은가'가 아니라
-    # '손실률을 모를 때 최악이 얼마나 나쁜가'다. oracle 대비 후회로 재본다.
     print(f"\n  regret vs oracle (total time, %):")
     print(f"    {'policy':<10}" + "".join(f"{p:>9.1%}" for p in probs)
           + f"{'WORST':>9}")
@@ -152,8 +112,6 @@ def exp4_data_phase():
     print("\n  -> the point is the WORST column: 'static' is only good near the loss")
     print("     rate it was tuned for. 'adaptive' stays close to oracle everywhere.")
 
-    # 짧은 연결은 성격이 전혀 다르다. 위 표는 400블록이라 학습 구간이 1%뿐이고,
-    # 실제 웹 트래픽 대부분은 30블록 수준에서 끝난다. 둘 다 보여야 공정하다.
     print("\n  same thing on SHORT connections (30 blocks, averaged over 8 seeds):")
     print(f"    {'policy':<10}" + "".join(f"{p:>9.1%}" for p in probs)
           + f"{'WORST':>9}")
@@ -175,7 +133,6 @@ def exp4_data_phase():
     print("     prior. That gap is the value of carrying state across connections.")
 
 
-# ---------------------------------------------------------------- 5
 def exp5_burst():
     h("[5] Why burstiness matters: same loss rate, different burst length")
     cfg = FecConfig(rate_bps=50e6)
@@ -204,7 +161,6 @@ def exp5_burst():
     print("       Trading latency for redundancy is the cheaper deal on bursty links.")
 
 
-# ---------------------------------------------------------------- 6
 def exp6_congestion_guard():
     h("[6] Congestion guard: identical loss, different cause")
     cfg = FecConfig(rate_bps=50e6, beta=4.0)
@@ -221,7 +177,6 @@ def exp6_congestion_guard():
     print("     points to a full queue rather than a lossy link.")
 
 
-# ---------------------------------------------------------------- 7
 def exp7_tracking():
     h("[7] Adaptation trace: loss jumps 0.5% -> 8% at block 100, back at 250")
     cfg = FecConfig(rate_bps=50e6, delay_budget_ms=20.0)
@@ -250,15 +205,7 @@ def exp7_tracking():
     print("     then decays geometrically once the surprise test stops firing.")
 
 
-# ---------------------------------------------------------------- 8
 def exp8_cache():
-    """목적지별 통계 캐시(v0.2): 짧은 연결이 반복될 때 무슨 일이 나는가.
-
-    시나리오: 같은 Wi-Fi에서 같은 목적지(/24)로 30블록짜리 연결을 반복한다.
-    첫 연결은 캐시가 비어 콜드 스타트, 이후는 직전 연결의 스냅샷을 물려받는다.
-    중간에 셀룰러로 이동하면 키가 달라져 캐시를 못 읽고(의도된 동작),
-    Wi-Fi로 돌아오면 그 망의 통계가 그대로 살아 있다.
-    """
     h("[8] Per-destination stats cache: repeated short connections (30 blocks)")
     cfg = FecConfig(rate_bps=50e6, delay_budget_ms=20.0)
     p, burst, rtt = 0.05, 4.0, 40.0
@@ -282,8 +229,8 @@ def exp8_cache():
     one("1st visit (cold)", "wifi:home", 41, 0.0)
     one("2nd visit", "wifi:home", 42, 60.0)
     one("3rd visit", "wifi:home", 43, 120.0)
-    one("move to cellular", "cell:450-05", 44, 180.0)   # 키가 달라 콜드
-    one("back on home wifi", "wifi:home", 45, 240.0)    # 망 통계가 살아 있음
+    one("move to cellular", "cell:450-05", 44, 180.0)
+    one("back on home wifi", "wifi:home", 45, 240.0)
 
     print("\n  -> the mobility line starts cold BY DESIGN: the access network is")
     print("     half of the cache key, so moving networks never reads stale stats.")

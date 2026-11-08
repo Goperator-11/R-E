@@ -1,29 +1,3 @@
-# -*- coding: utf-8 -*-
-"""손실률 추정이 수렴하면 정책이 pad(δ) 로 넘어가는가.
-
-`_probe_v2policy.py` 가 5/6 으로 끝났다. 정책은 왕복 하나를 스스로 벌었지만
-그 방법이 **δ=1 바이트가 아니라 패리티 2 개(2,636 B)** 였다. 값이 2,600 배
-다른데 왕복 수만 보면 구별이 안 된다.
-
-정책을 탓하기 전에 입력을 봐야 한다. p=0.038 이면 **패리티가 실제로 옳다** -
-pad 는 복구를 주지 않으므로 손실 한 번에 PTO 201 ms 를 문다. 문제는 결정
-규칙이 아니라 **추정이 아직 참값(0)에서 멀다**는 것이다.
-
-Jeffreys 사후평균 (손실+0.5)/(관측+1) 은 무손실이면 관측 수에 반비례해
-내려간다. 감쇠 0.99 때문에 유효기억이 ~100 이라 하한은 0.5/101 ≈ 0.005 다.
-그 근처에 닿으면 pad 가 이겨야 한다. 이 시험이 그것을 확인한다.
-
-🩸 여기서 관측이 쌓이는 속도가 곧 **탐색 정책**의 성질이다. 손실은 m=0 인
-   연결에서만 편향 없이 보이는데, m 만 있던 시절엔 m=0 후보가 맨몸 하나뿐이라
-   임계 위에서 탐색 한 번이 곧 2-RTT 였다. 그 비용 때문에 주기가 늘어나
-   400 연결에 무편향 관측이 3 회뿐이었고 p 가 사전값(0.126)에 정체했다.
-   지금은 **가장 싼 m=0 후보**(보통 pad)로 탐색하므로 주기가 훨씬 짧다.
-
-실행 (캐시를 비우고 처음부터)
-    unshare -Urnm python3 experiments/_probe_v2converge.py
-실행 (앞 실행이 배운 것을 이어받아 더 돌린다)
-    unshare -Urnm python3 experiments/_probe_v2converge.py --keep-cache --rounds 8
-"""
 import json
 import os
 import re
@@ -33,8 +7,8 @@ from collections import Counter
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import padbed                       # noqa: E402
-from padfec import policy, capacity  # noqa: E402
+import padbed
+from padfec import policy, capacity
 
 RTT_MS = 50.0
 CERT = 4032
@@ -42,16 +16,12 @@ IPS = 1280
 N = 400
 CACHE = "/tmp/padfec/v2conv.json"
 HERE = os.path.dirname(os.path.abspath(__file__))
-C_HELLO = 259        # x25519 ClientHello 바이트
+C_HELLO = 259
 H = 51
-# policy.go destCache.observe 의 감쇠. 두 계수를 매 관측마다 이만큼 줄이므로
-# 관측 수의 고정점이 1/(1-decay) 다. **여기 값을 바꾸면 policy.go 도 바꿔야
-# 한다** - 지금은 Go 쪽이 정본이고 여기서는 읽기만 한다.
 OBS_DECAY = 0.99
 
 
 def flip_threshold(s0_base):
-    """pad(δ) 가 parity 를 이기기 시작하는 손실률 상한을 이분탐색으로 찾는다."""
     lo, hi = 0.0, 0.05
     for _ in range(60):
         mid = (lo + hi) / 2.0
@@ -68,12 +38,6 @@ def flip_threshold(s0_base):
 
 
 def estimator_floor(k):
-    """Jeffreys 사후평균 + 감쇠가 무손실 경로에서 도달하는 하한 p.
-
-    관측 수는 `obs = decay*obs + 1` 의 고정점 1/(1-decay) 로 수렴하고,
-    p_conn = (손실 0 + 0.5)/(obs + 1) 이 그때 가장 작아진다.
-    연결당 확률을 데이터그램당으로 되돌리는 변환은 policy.go decide 와 같다.
-    """
     obs = 1.0 / (1.0 - OBS_DECAY)
     p_conn = 0.5 / (obs + 1.0)
     return 1.0 - (1.0 - p_conn) ** (1.0 / max(1, k))
@@ -84,8 +48,6 @@ def main(argv):
     if "--rounds" in argv:
         rounds = int(argv[argv.index("--rounds") + 1])
     keep = "--keep-cache" in argv
-    # 이어 돌린 결과를 처음부터 돌린 결과 위에 덮어쓰면 안 된다 - 둘은
-    # 다른 실험이다(전자는 캐시가 이미 배운 상태에서 출발한다).
     out_path = os.path.join(HERE, "results", "probe_v2converge%s.json"
                             % ("2" if keep else ""))
 
@@ -130,8 +92,6 @@ def main(argv):
     print()
     print("=== 판정 ===")
     first, last = out["rounds"][0], out["rounds"][-1]
-    # 탐색이 20 연결마다 한 번이므로 pad 판이 그 정도면 "탐색만" 이다.
-    # 넘어갔다고 말하려면 **평상시 선택**이 pad 여야 한다 - 과반으로 본다.
     flipped = last["ips_used"].get(1281, 0) > N // 2
     print("  p 추정: %s -> %s" % (first["p_est"], last["p_est"]))
     print("  마지막 라운드에서 ips=1281 을 쓴 비율: %.1f%%"
@@ -141,11 +101,8 @@ def main(argv):
     print("  [%s] 정책이 pad(δ=1) 로 넘어갔다" % ("OK " if flipped else "아직"))
     out["flipped"] = flipped
 
-    # 🩸 "아직" 과 "영영" 을 구별한다. 측정만 보면 둘이 똑같이 생겼는데
-    # 처방이 정반대다 - 전자는 더 돌리면 되고, 후자는 추정기나 탐색 주기를
-    # 고쳐야 한다. 그래서 문턱(모형)과 하한(추정기)을 같이 찍는다.
     k = capacity.natural_k(C_HELLO, IPS, H)
-    s0b = policy.S0_BASE_X25519   # p13 갱신: 380.0 (c=40 앵커 유도)
+    s0b = policy.S0_BASE_X25519
     thr = flip_threshold(s0b)
     floor = estimator_floor(k)
     out["flip_threshold_p"] = thr

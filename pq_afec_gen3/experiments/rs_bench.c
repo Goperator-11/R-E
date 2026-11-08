@@ -1,17 +1,3 @@
-/*
- * rs_bench.c - GF(256) Reed-Solomon erasure-coding throughput, in C.
- *
- * The python encoder in afec/rs.py is correct but ~100x slower than a real
- * implementation, and the project has been carrying "a C implementation would
- * be 100x faster" as an ASSUMPTION.  This measures it instead.
- *
- * Same construction as afec/rs.py: systematic code, Cauchy generator matrix
- * over GF(256) with the AES/QR polynomial 0x11d.
- *
- * Build:  gcc -O3 -march=native -o rs_bench rs_bench.c
- * Run:    ./rs_bench <k> <r> <symbol_bytes> <blocks>
- * Prints one JSON line.
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -71,7 +57,6 @@ int main(int argc, char **argv)
     }
     gf_init();
 
-    /* Cauchy generator: G[j][i] = 1 / (x_j ^ y_i), disjoint x and y. */
     unsigned char *G = malloc((size_t)r * k);
     for (int j = 0; j < r; j++)
         for (int i = 0; i < k; i++) {
@@ -85,7 +70,6 @@ int main(int argc, char **argv)
     for (size_t i = 0; i < (size_t)k * sym; i++)
         src[i] = (unsigned char)(i * 2654435761u >> 13);
 
-    /* ---- encode: repair[j] = sum_i G[j][i] * src[i] ---- */
     double t0 = now_s();
     unsigned long long checksum = 0;
     for (int b = 0; b < blocks; b++) {
@@ -100,14 +84,10 @@ int main(int argc, char **argv)
             }
         }
         checksum += rep[0] + rep[sym - 1];
-        src[b % ((size_t)k * sym)] ^= 1;   /* defeat over-eager hoisting */
+        src[b % ((size_t)k * sym)] ^= 1;
     }
     double enc_s = now_s() - t0;
 
-    /* ---- pure XOR parity (r = 1), what the handshake shield uses ----
-     * NOTE: the input must be mutated every iteration or the compiler hoists
-     * the whole loop out and reports an impossible ~100 GB/s.  That actually
-     * happened on the first run of this benchmark. */
     double t1 = now_s();
     for (int b = 0; b < blocks; b++) {
         unsigned char *dst = rep;

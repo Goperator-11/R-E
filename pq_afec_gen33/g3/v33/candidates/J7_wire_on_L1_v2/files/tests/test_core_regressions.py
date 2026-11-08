@@ -1,4 +1,3 @@
-"""Independent unit checks for the September 14 core audit."""
 import itertools
 import importlib.util
 import math
@@ -120,7 +119,6 @@ class CoreAudit(unittest.TestCase):
             loss = SimpleNamespace(p_safe=0.05, p=0.05, burst_safe=1 / 0.95)
             cong = SimpleNamespace(srtt=50.0, g=0.0)
             d = AdaptiveFecController(cfg, loss, cong).next_block(rate)
-            # At the iid boundary the reference is a binomial tail, not the DP.
             costs = []
             for r in range(5):
                 n = 8 + r

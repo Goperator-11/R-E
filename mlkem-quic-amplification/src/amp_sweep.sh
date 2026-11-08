@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# RTT 50 ms, no induced loss. Preserve per-connection CSV and server logs.
 set -euo pipefail
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 BIN=${BIN:-"$SCRIPT_DIR/qamp"}

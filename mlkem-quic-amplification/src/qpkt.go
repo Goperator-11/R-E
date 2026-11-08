@@ -1,11 +1,3 @@
-// qpkt — QUIC 핸드셰이크 중 송신 데이터그램을 직접 계측한다.
-//
-// quic.Transport 에 래핑한 PacketConn 을 넘겨, WriteTo/ReadFrom 을 가로채
-// 방향별 데이터그램 개수·크기를 기록한다. tcpdump 나 특별 권한이 필요 없다.
-//
-// 빌드: CGO_ENABLED=0 go build -o qpkt qpkt.go
-// 서버: ./qpkt -mode server -addr 127.0.0.1:44433 -group X25519MLKEM768
-// 측정: ./qpkt -mode client -addr 127.0.0.1:44433 -group X25519MLKEM768 -n 5
 package main
 
 import (
@@ -29,12 +21,11 @@ import (
 
 const alpn = "rne-pkt"
 
-// ---- 계측용 PacketConn 래퍼 ----
 type countConn struct {
 	net.PacketConn
 	mu       sync.Mutex
-	sent     []int // 송신 데이터그램 크기 (bytes)
-	recv     []int // 수신 데이터그램 크기
+	sent     []int
+	recv     []int
 	counting bool
 }
 

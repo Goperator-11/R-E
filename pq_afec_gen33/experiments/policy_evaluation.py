@@ -1,8 +1,3 @@
-"""Offline comparisons on explicit acquisition blocks, without success-index splits.
-
-These are within-run diagnostics. A chronological split does not establish
-independence, and a paired t interval does not remove serial or position effects.
-"""
 from __future__ import annotations
 
 import math
@@ -13,11 +8,6 @@ PROTOCOL = "matched-block-windows-v2"
 
 
 def block_window(blocks, ids, id_key):
-    """Return all requested blocks and successes, retaining failed trial counts.
-
-    Missing/duplicate blocks, malformed rows and blocks without successes are
-    errors, rather than silently shrinking a comparison to a favourable subset.
-    """
     ids = list(ids)
     if (not ids or any(type(i) is not int or i < 0 for i in ids)
             or len(set(ids)) != len(ids)):
@@ -63,7 +53,6 @@ def _mean(values):
 
 
 def paired_contrast(auto, fixed, alpha=0.05):
-    """Equal block weights. No block is dropped; caller supplies aligned IDs."""
     if len(auto) != len(fixed) or len(auto) < 2:
         raise ValueError("paired contrast needs at least two matched blocks")
     if (isinstance(alpha, bool) or not isinstance(alpha, (int, float))
@@ -87,11 +76,6 @@ def paired_contrast(auto, fixed, alpha=0.05):
 
 def matched_diagnostics(auto_blocks, fixed_blocks, selection_ids,
                         evaluation_ids, id_key, family_size=None):
-    """Select using earlier blocks and compare on identical later block IDs.
-
-    Bonferroni covers the supplied candidate/condition family only under the
-    paired-t assumptions. It does not certify independent future performance.
-    """
     selection_ids, evaluation_ids = list(selection_ids), list(evaluation_ids)
     if set(selection_ids) & set(evaluation_ids):
         raise ValueError("selection and evaluation blocks overlap")

@@ -1,4 +1,3 @@
-"""Deterministic development simulation, with no network or measured HCT input."""
 import argparse
 import copy
 import functools
@@ -116,7 +115,6 @@ def true_context(spec):
 
 @functools.lru_cache(maxsize=4096)
 def cost_catalogue(k, W, action, p, rtt, up, need):
-    """Probability atoms whose expectation is layout.evaluate(...)[J]."""
     d, lead, trail = action
     m, w = lead + trail, W + d
     ev = layout.evaluate(k, w, m, lead, p, rtt, up, need, "v3")

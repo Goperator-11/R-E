@@ -1,4 +1,3 @@
-"""Offline checks for provenance across interrupted/resumed collections."""
 import json
 import sys
 import tempfile

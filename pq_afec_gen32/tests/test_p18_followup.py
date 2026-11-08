@@ -1,4 +1,3 @@
-"""P18 interval/provenance regressions using synthetic data and mocked transport."""
 import ast
 import contextlib
 import copy

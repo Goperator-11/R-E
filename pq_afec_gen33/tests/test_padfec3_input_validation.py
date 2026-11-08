@@ -29,7 +29,6 @@ def warm_state():
     st.hct[KEY] = [80.0] * learn3.BASE_MIN
     st.hct_seq[KEY] = 0
     st.seq = 1
-    # Invalid decisions must not expire an alarm or increment this counter.
     st.n_dec = learn3.GUARD_REFRESH
     st.g_alarm[KEY] = 0
     st.g_resid[KEY] = [40.0] * learn3.GUARD_MIN
@@ -289,7 +288,6 @@ class StateValidationTests(unittest.TestCase):
         original = copy.deepcopy(data)
         with self.assertRaises((TypeError, ValueError)):
             learn3.DestState3.from_json(data)
-        # Compare JSON encoding so NaN remains comparable in corrupted fixtures.
         import json
         self.assertEqual(json.dumps(data, sort_keys=True),
                          json.dumps(original, sort_keys=True))

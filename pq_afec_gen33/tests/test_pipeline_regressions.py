@@ -1,5 +1,4 @@
 import pytest
-"""Offline regressions for measurement integrity. No netns or live traffic."""
 import argparse
 import contextlib
 import io
@@ -111,10 +110,8 @@ class StatisticsTests(unittest.TestCase):
 
     def test_t_critical_small_df_known_and_arbitrary_alpha(self):
         for alpha in (.05, .025, .0125, .01, .005, .0037):
-            # df=1 is exactly the Cauchy distribution.
             expected = 1 / math.tan(math.pi * alpha / 2)
             self.assertAlmostEqual(BST.t_crit(1, alpha), expected, delta=expected*1e-10)
-            # df=2 has a closed-form quantile.
             z = 1-alpha
             expected2 = math.sqrt(2*z*z / (1-z*z))
             self.assertAlmostEqual(BST.t_crit(2, alpha), expected2, delta=expected2*1e-10)

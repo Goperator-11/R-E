@@ -1,31 +1,3 @@
-# -*- coding: utf-8 -*-
-"""qamp.go 에 결정적 소거 주입 플래그를 추가한다. p3 가 끝난 뒤 적용한다.
-
-왜 필요한가
------------
-지금까지의 손실 실험은 netem 무작위 손실이다. 통계적으로 "꼬리가 줄었다"는
-보이지만, **그 개선이 정말 복구 때문인지**는 못 박지 못한다. 손실률이 낮으면
-FEC 팔이 우연히 운이 좋았을 수도 있고, 우리가 모르는 다른 경로로 이득을
-봤을 수도 있다. 1차 연구에서 "복구했다고 세었는데 응용까지 도달하지 않은"
-결함을 두 번 겪은 것이 정확히 이런 종류다.
-
-그래서 **어느 데이터그램을 없앨지 우리가 정한다.**
-
-  -drop-initial N   첫 비행의 N 번째 원본을 보내지 않는다 (패리티 계산에는 포함)
-  -drop-parity J    J 번째 패리티를 보내지 않는다
-  -corrupt-parity J J 번째 패리티의 한 바이트를 뒤집어 보낸다
-
-이 셋이 있으면 다음이 가능해진다.
-
-  기준선(off) + 원본 1개 소거   -> 반드시 PTO 를 맞아야 한다 (기준선이 아프다)
-  FEC(m=1)  + 원본 1개 소거   -> 반드시 복구되어 1-RTT 여야 한다
-  FEC(m=1)  + 패리티 소거     -> 기준선과 같아야 한다 (다른 경로로 몰래 이득 X)
-  FEC(m=1)  + 패리티 손상     -> CRC 가 걸러 내고 잘못된 복구를 안 넘겨야 한다
-  FEC(m=1)  + 원본 2개 소거   -> 복구 불가여야 한다 (능력을 과장하지 않는다)
-
-소거를 송신측에서 만드는 것과 링크에서 잃는 것은 서버 입장에서 구별되지
-않는다 - 어차피 도착하지 않는다. 대신 **어느 것이 사라졌는지 우리가 안다**.
-"""
 import io
 import os
 import sys
@@ -37,7 +9,6 @@ def historical_patch():
     s = io.open(P, encoding="utf-8").read()
     n = 0
 
-    # 구조체 필드
     old = """	// dumpPath: 첫 비행의 원본 데이터그램을 그대로 떨궈 둔다."""
     new = """	// 결정적 소거 주입 (검증 전용). -1 이면 아무것도 안 한다.
 	// 첫 비행에만 적용한다 - 뒤따르는 ACK 비행까지 건드리면 무엇 때문에
@@ -51,7 +22,6 @@ def historical_patch():
         s = s.replace(old, new, 1)
         n += 1
 
-    # 통계
     old = """	ParityFail   int            `json:"parity_fail"`"""
     new = """	ParityFail   int            `json:"parity_fail"`
 	DroppedOrig  int            `json:"dropped_originals"`
@@ -61,7 +31,6 @@ def historical_patch():
         s = s.replace(old, new, 1)
         n += 1
 
-    # 첫 비행인지 기억
     old = """	c.stats.Flights++
 	if c.stats.FlightSizes == nil {"""
     new = """	c.stats.Flights++
@@ -71,7 +40,6 @@ def historical_patch():
         s = s.replace(old, new, 1)
         n += 1
 
-    # 원본 전송에 소거 주입
     old = """	if sendMode == "buf" {
 		// 대조군 'buf': 패리티 없이 버퍼링만 한다. 버퍼링 자체의 비용을
 		// FEC 의 효과에서 떼어내기 위한 팔이다.
@@ -103,7 +71,6 @@ def historical_patch():
         s = s.replace(old, new, 1)
         n += 1
 
-    # off 모드는 WriteTo 에서 이미 보냈으므로 그쪽에도 소거를 건다
     old = """	var immediate int
 	var ierr error
 	if c.mode == "off" {
@@ -139,7 +106,6 @@ def historical_patch():
         s = s.replace(old, new, 1)
         n += 1
 
-    # 원본 루프 두 곳
     old = """	if k > 0 {
 		send(fl[0])
 	}
@@ -178,7 +144,6 @@ def historical_patch():
             s = s.replace(old2, new2, 1)
             n += 1
 
-    # emit 에 인덱스와 소거/손상 주입
     old = """	emit := func(pkt []byte) {
 		err := send(pkt)"""
     new = """	emit := func(j int, pkt []byte) {
@@ -207,7 +172,6 @@ def historical_patch():
         s = s.replace(old, new, 1)
         n += 1
 
-    # 생성자 + 플래그
     old = """			expectK:     expectK,"""
     new = """			expectK:     expectK,
 			dropInitial: dropInitial, dropParity: dropParity,
@@ -243,7 +207,6 @@ def historical_patch():
         s = s.replace(old, new, 1)
         n += 1
 
-    # 집계
     old = """		agg.ParityFail += st.ParityFail"""
     new = """		agg.ParityFail += st.ParityFail
 		agg.DroppedOrig += st.DroppedOrig

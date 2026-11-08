@@ -1,17 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E1 - ML-KEM performance measurement (R&E research content 1)
-
-Measures, with real OpenSSL 3.5.5 native ML-KEM:
-  (a) public key / ciphertext / private key / shared secret sizes
-  (b) keygen / encapsulation / decapsulation time
-  (c) X25519 baseline for comparison
-
-Output: experiments/results/e1_mlkem.json  +  human readable table.
-
-No third-party python packages. Requires `openssl` (>=3.5) on PATH.
-All console output is ASCII only (cp949-safe).
-"""
 import json
 import os
 import re
@@ -26,7 +12,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 RESULTS = os.path.join(HERE, "results")
 os.makedirs(RESULTS, exist_ok=True)
 
-# FIPS 203 reference sizes (bytes) - what the standard says.
 FIPS203 = {
     "ML-KEM-512":  {"ek": 800,  "dk": 1632, "ct": 768,  "ss": 32},
     "ML-KEM-768":  {"ek": 1184, "dk": 2400, "ct": 1088, "ss": 32},
@@ -53,9 +38,7 @@ def openssl_version():
     return r.stdout.decode("utf-8", "replace").strip()
 
 
-# ---------------------------------------------------------------- DER parsing
 def der_read_tlv(buf, i):
-    """Return (tag, length, value_start, next_index)."""
     tag = buf[i]
     i += 1
     n = buf[i]
@@ -68,33 +51,27 @@ def der_read_tlv(buf, i):
 
 
 def spki_raw_pubkey_len(der):
-    """SubjectPublicKeyInfo ::= SEQUENCE { alg AlgorithmIdentifier, key BIT STRING }
-    Return the length in bytes of the raw key inside the BIT STRING."""
     tag, ln, vs, nxt = der_read_tlv(der, 0)
     assert tag == 0x30, "SPKI must be SEQUENCE"
     i = vs
-    tag, ln, vs2, i = der_read_tlv(der, i)   # AlgorithmIdentifier
+    tag, ln, vs2, i = der_read_tlv(der, i)
     assert tag == 0x30
-    tag, ln, vs3, i = der_read_tlv(der, i)   # BIT STRING
+    tag, ln, vs3, i = der_read_tlv(der, i)
     assert tag == 0x03, "expected BIT STRING"
-    # first content octet = number of unused bits
     return ln - 1
 
 
 def pkcs8_privkey_octets(der):
-    """PrivateKeyInfo ::= SEQUENCE { ver, alg, privateKey OCTET STRING }
-    Return length of the OCTET STRING content (what OpenSSL actually stores)."""
     tag, ln, vs, nxt = der_read_tlv(der, 0)
     assert tag == 0x30
     i = vs
-    tag, ln, _, i = der_read_tlv(der, i)     # version INTEGER
-    tag, ln, _, i = der_read_tlv(der, i)     # AlgorithmIdentifier
-    tag, ln, vs3, i = der_read_tlv(der, i)   # privateKey OCTET STRING
+    tag, ln, _, i = der_read_tlv(der, i)
+    tag, ln, _, i = der_read_tlv(der, i)
+    tag, ln, vs3, i = der_read_tlv(der, i)
     assert tag == 0x04, "expected OCTET STRING"
     return ln, der[vs3:vs3 + min(ln, 8)]
 
 
-# ------------------------------------------------------------------ (a) sizes
 def measure_sizes(alg, workdir):
     sk_pem = os.path.join(workdir, "sk.pem")
     sk_der = os.path.join(workdir, "sk.der")
@@ -111,12 +88,10 @@ def measure_sizes(alg, workdir):
     run(["openssl", "pkey", "-in", sk_pem, "-pubout", "-out", pk_pem])
     run(["openssl", "pkey", "-in", sk_pem, "-pubout", "-outform", "DER", "-out", pk_der])
 
-    # encapsulate with the public key
     r = run(["openssl", "pkeyutl", "-encap", "-inkey", pk_pem, "-pubin",
              "-out", ct, "-secret", ss1])
     if r.returncode != 0:
         raise RuntimeError("encap %s failed: %s" % (alg, r.stderr.decode("utf-8", "replace")))
-    # decapsulate with the private key
     r = run(["openssl", "pkeyutl", "-decap", "-inkey", sk_pem, "-in", ct, "-secret", ss2])
     if r.returncode != 0:
         raise RuntimeError("decap %s failed: %s" % (alg, r.stderr.decode("utf-8", "replace")))
@@ -144,7 +119,6 @@ def measure_sizes(alg, workdir):
     }
 
 
-# ----------------------------------------------------------------- (b) timing
 SPEED_RE = re.compile(
     r"^\s*(\S+)\s+([0-9.]+)s\s+([0-9.]+)s\s+([0-9.]+)s\s+"
     r"([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\s*$")

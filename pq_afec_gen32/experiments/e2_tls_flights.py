@@ -1,21 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E2 - real TLS 1.3 handshake flight sizes (R&E research content 1)
-
-Runs a REAL handshake between `openssl s_server` and `openssl s_client`
-through a byte-counting TCP proxy, and records every TLS record in order.
-Repeats for each key-exchange group so we can see exactly how many bytes
-ML-KEM adds to the ClientHello and to the server flight.
-
-This replaces the three estimated constants in afec/handshake.py:
-    ch_base = 350          (ClientHello minus the key share)
-    cert_chain = 3000      (server certificate flight)
-    INITIAL_CRYPTO_CAPACITY = 1150   (computed separately in e3)
-
-Output: experiments/results/e2_tls_flights.json
-
-Standard library only. ASCII console output.
-"""
 import json
 import os
 import socket
@@ -62,10 +44,7 @@ def sh(cmd, check=True):
     return r
 
 
-# --------------------------------------------------------------------- PKI
 def build_chain(kind):
-    """Build root -> intermediate -> leaf. kind in {'rsa2048','ecdsa256'}.
-    Returns (leaf_key, leaf_cert, chain_file)."""
     d = os.path.join(PKI, kind)
     os.makedirs(d, exist_ok=True)
     p = lambda n: os.path.join(d, n)
@@ -83,13 +62,11 @@ def build_chain(kind):
     for name in ("root", "inter", "leaf"):
         genkey(p(name + ".key"))
 
-    # root (self-signed CA)
     sh(["openssl", "req", "-x509", "-new", "-key", p("root.key"),
         "-subj", "/C=KR/O=PQ-AFEC Test/CN=PQ-AFEC Test Root CA",
         "-days", "30", "-addext", "basicConstraints=critical,CA:TRUE",
         "-out", p("root.crt")])
 
-    # intermediate CSR + sign by root
     sh(["openssl", "req", "-new", "-key", p("inter.key"),
         "-subj", "/C=KR/O=PQ-AFEC Test/CN=PQ-AFEC Test Intermediate CA",
         "-out", p("inter.csr")])
@@ -99,7 +76,6 @@ def build_chain(kind):
         "-CAkey", p("root.key"), "-CAcreateserial", "-days", "30",
         "-extfile", p("inter.ext"), "-out", p("inter.crt")])
 
-    # leaf CSR + sign by intermediate
     sh(["openssl", "req", "-new", "-key", p("leaf.key"),
         "-subj", "/C=KR/O=PQ-AFEC Test/CN=localhost", "-out", p("leaf.csr")])
     with open(p("leaf.ext"), "w") as f:
@@ -119,10 +95,8 @@ def build_chain(kind):
 
 
 def chain_wire_bytes(chain_file):
-    """DER bytes of every cert in the chain (what actually goes on the wire)."""
     r = sh(["openssl", "crl2pkcs7", "-nocrl", "-certfile", chain_file,
             "-outform", "DER"])
-    # simpler: convert each PEM cert separately
     with open(chain_file, "rb") as f:
         pem = f.read()
     parts = pem.split(b"-----END CERTIFICATE-----")
@@ -139,7 +113,6 @@ def chain_wire_bytes(chain_file):
     return total, each
 
 
-# ------------------------------------------------------------------- proxy
 def free_port():
     s = socket.socket()
     s.bind(("127.0.0.1", 0))
@@ -149,8 +122,6 @@ def free_port():
 
 
 class RecordSplitter(object):
-    """Feed raw TLS stream bytes, get complete records out."""
-
     def __init__(self):
         self.buf = b""
 
@@ -169,7 +140,6 @@ class RecordSplitter(object):
 
 
 def plaintext_hs_messages(body):
-    """For an unencrypted handshake record, list (msg_type, msg_len)."""
     out = []
     i = 0
     while i + 4 <= len(body):
@@ -286,7 +256,6 @@ def handshake_once(group, key, chain, sigalg_note):
 
 
 def summarise(log):
-    """Split the record log into flights (maximal same-direction runs)."""
     flights = []
     cur = None
     for e in log:

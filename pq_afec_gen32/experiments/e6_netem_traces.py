@@ -1,24 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E6 - loss-trace collection over a real netem link (R&E research content 2)
-
-Builds a two-namespace veth testbed with NO root privileges (unshare -r -m -n),
-applies a sweep of netem loss models, fires 100k sequenced UDP probes through
-each, and stores the exact loss mask.
-
-From every mask we compute the measured loss rate and the mean loss-burst
-length, which gives the **netem <-> Gilbert-Elliott exchange table** that links
-the simulator's channel model to a real kernel network stack.
-
-Must be run inside the namespace, e.g.
-    unshare -r -m -n python3 e6_netem_traces.py
-
-Output:
-    experiments/results/e6_netem.json          summary + exchange table
-    experiments/traces/<config>.mask           raw loss masks (bit i = arrived)
-
-Standard library only.  ASCII console output.
-"""
 import argparse
 import json
 import os
@@ -57,7 +36,6 @@ def run(cmd, check=True, quiet=True):
     return r
 
 
-# ------------------------------------------------------------------ testbed
 def setup_testbed():
     run("mount -t tmpfs none /run", check=False)
     os.makedirs("/run/netns", exist_ok=True)
@@ -72,7 +50,6 @@ def setup_testbed():
     run("ip netns exec rx ip addr add %s/24 dev veth-rx" % RX_IP)
     run("ip netns exec rx ip link set veth-rx up")
     run("ip netns exec rx ip link set lo up")
-    # keep the queue deep enough that netem's own limit never drops for us
     run("ip link set dev veth-tx txqueuelen 10000", check=False)
 
 
@@ -86,7 +63,6 @@ def set_netem(spec):
     return r.stdout.strip()
 
 
-# ------------------------------------------------------------------ analysis
 def analyse_mask(path, n):
     with open(path, "rb") as f:
         bm = f.read()
@@ -120,7 +96,6 @@ def analyse_mask(path, n):
     mean_gap = (sum(good_runs) / len(good_runs)) if good_runs else 0.0
     loss_rate = losses / n if n else 0.0
 
-    # conditional loss probability - the direct test of independence
     pair_ll = pair_gl = 0
     prev = None
     for i in range(n):
@@ -135,12 +110,10 @@ def analyse_mask(path, n):
     p_loss_given_loss = pair_ll / losses if losses else 0.0
     p_loss_given_ok = pair_gl / arrived if arrived else 0.0
 
-    # Gilbert-Elliott fit: q_bg = 1/mean_burst, q_gb = 1/mean_gap
     q_bg = 1.0 / mean_burst if mean_burst else 0.0
     q_gb = 1.0 / mean_gap if mean_gap else 0.0
     ge_steady = q_gb / (q_gb + q_bg) if (q_gb + q_bg) else 0.0
 
-    # longest burst matters for FEC: it sets the worst block
     return {
         "n": n, "arrived": arrived, "lost": losses,
         "loss_rate": loss_rate,
@@ -163,15 +136,7 @@ def _hist(runs):
     return h
 
 
-# ------------------------------------------------------------------- config
 def gemodel_for(p_target, burst_target):
-    """netem `loss gemodel p r` that realises (loss rate, mean burst).
-
-    netem's gemodel is exactly our Gilbert-Elliott with p = G->B, r = B->G,
-    loss 100% in bad and 0% in good (the defaults), so
-        mean burst   = 1/r
-        steady loss  = p/(p+r)
-    """
     r = 1.0 / burst_target
     p = p_target * r / (1.0 - p_target)
     return p, r
@@ -184,9 +149,6 @@ def build_configs():
         cfgs.append(("uniform_%d" % pct, "loss %d%%" % pct,
                      {"model": "bernoulli", "p_target": pct / 100.0,
                       "burst_target": 1.0}))
-    # netem `loss PERCENT CORRELATION` (random 모델 + 상관).
-    # ⚠️ 2026-08-17 실측: 상관을 켜면 **실효 손실률이 명목값과 크게 달라진다**
-    # (5% 25% -> 실측 0.18%). 상관 0부터 훑어서 이게 재현되는지 확인한다.
     for pct, corr in ((5, 0), (5, 10), (5, 25), (5, 50), (5, 75), (5, 90)):
         spec = "loss %d%%" % pct if corr == 0 else "loss %d%% %d%%" % (pct, corr)
         cfgs.append(("corr_%d_%d" % (pct, corr), spec,
@@ -202,7 +164,6 @@ def build_configs():
     return cfgs
 
 
-# --------------------------------------------------------------------- main
 def one_run(name, spec, n, pps, size):
     qdisc = set_netem(spec)
     mask = os.path.join(TRACES, name + ".mask")
@@ -257,8 +218,6 @@ def main():
     if a.only:
         cfgs = [c for c in cfgs if a.only in c[0]]
 
-    # --only로 조각 실행할 때 기존 결과를 날리지 않게 병합한다.
-    # (한 번 실수로 덮어쓸 뻔했다 - 조각 실행은 기본이 병합이어야 한다)
     path = os.path.join(RESULTS, "e6_netem.json")
     out = {"n": a.n, "pps": a.pps, "size": a.size, "configs": {}}
     if os.path.exists(path):

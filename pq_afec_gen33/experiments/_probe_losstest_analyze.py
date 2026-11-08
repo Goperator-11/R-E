@@ -1,23 +1,9 @@
-# -*- coding: utf-8 -*-
-"""손실 실험 분석 — 두 비용식의 **구조**를 공정하게 비교한다.
-
-공정하게 하려면 두 가지를 먼저 정리해야 한다.
-
-1. **t_tx 를 빼야 한다.** 모형의 기본값은 업링크 10 Mbps 인데 이 테스트베드는
-   netem 이 지연·손실만 걸 뿐 대역 제한이 없다. 실측이 그것을 그대로 보여준다 —
-   무손실에서 m=1 은 52.465, m=2 는 52.466 ms 로 **차이가 0.001 ms** 인데
-   모형은 +1.06 ms 를 매긴다. 테스트베드 대조에서는 uplink 를 무한으로 둔다.
-
-2. **자유 상수를 각 구조에 똑같이 하나씩 준다.** 옛 식이 "우연히 맞은" 것인지
-   보려면 T_recover 를 고정하면 안 된다. 두 구조 모두 (기저 오프셋 c0,
-   복구비용 T_rec) 두 개를 최소제곱으로 맞춘 뒤 **잔차**를 비교한다.
-"""
 import json
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from padfec import policy, quantum   # noqa: E402
+from padfec import policy, quantum
 
 RTT = 50.0
 IPS = 1280
@@ -42,7 +28,6 @@ def binom(n, k, q):
 
 
 def shape_old(k, m, w, p, burst, sf):
-    """옛 구조: (모든 상태의 E[n]) 과 (p_fail) 계수를 따로 돌려준다."""
     parity = policy.parity_datagram_bytes(w, k)
     q = 1.0 - p
     n = 0.0
@@ -53,18 +38,15 @@ def shape_old(k, m, w, p, burst, sf):
             n += pi * pj * (2.0 if sf > quantum.allowed(i * w + j * parity)
                             else 1.0)
     pf = policy.p_fail_of({"k": k, "m": m}, p, burst)
-    return n * RTT, pf          # J = n*RTT + pf*T_rec + c0
+    return n * RTT, pf
 
 
 def shape_new(k, m, w, p, burst, sf):
-    """새 구조: (복구 성공 상태만의 E[n]) 과 (p_fail) 계수."""
     o = policy.flight_outcome(k, m, w, p, burst, sf)
-    # J = n*RTT + pf*(RTT + T_rec) + c0  ->  기저 = n*RTT + pf*RTT
     return (o["n_rtt_expected"] + o["p_fail"]) * RTT, o["p_fail"]
 
 
 def fit(rows, shape):
-    """y = base + pf*T + c0 를 (T, c0) 에 대해 최소제곱."""
     A = []
     y = []
     for r in rows:

@@ -1,4 +1,3 @@
-"""Report late-stage status without hiding failures behind stale counters."""
 import sys
 import unittest
 from pathlib import Path

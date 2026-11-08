@@ -51,7 +51,6 @@ class BuildStagingTests(unittest.TestCase):
             log = home / 'compiler-calls.jsonl'
             env = dict(os.environ, HOME=str(home), STAGE_TEST_LOG=str(log))
             env.pop('QAMP_GEN33_OUT', None)
-            # Replace only the installation path in a scratch copy of the builder.
             source = ROOT / 'experiments/quicbed'
             scratch = home / 'source'
             shutil.copytree(source, scratch)

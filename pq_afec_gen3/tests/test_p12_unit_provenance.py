@@ -1,4 +1,3 @@
-"""Stored P12 p50 and old origin must survive a cached reanalysis."""
 import ast
 import datetime as dt
 from pathlib import Path

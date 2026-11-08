@@ -1,21 +1,8 @@
-"""PQ-AFEC 해부 데모 - 알고리즘이 실제로 어떻게 결정하는지 다섯 장면.
-
-    python demo.py        (VS Code에서는 우상단 Run 버튼)
-
-장면 1: 블록 하나의 결정 해부 - 추정기 상태 -> 비용표 J(r) -> argmin
-장면 2: 콜드 스타트 30블록 - 피드백 지연, 학습, 실패, 히스테리시스
-장면 3: 핸드셰이크 - 같은 비용식에 T_recover만 999ms로 바꾼 것
-장면 4: 목적지 캐시 - 두 번째 연결은 배운 채로 시작
-장면 5: 급변 - 놀라움 2연속 -> 확정 -> 증거 리셋 + 이후 4블록 부스트
-
-각 출력이 코드 어디서 나오는지는 장면 머리 주석에 적어 뒀다.
-"""
 import random
 import sys
 
 
 def _harden_console():
-    """빈약한 로케일에서 출력 크래시 방지 (표시만 ?로 강등)."""
     for stream in (sys.stdout, sys.stderr):
         try:
             stream.reconfigure(errors="replace")
@@ -35,11 +22,8 @@ cfg = FecConfig(rate_bps=50e6, delay_budget_ms=20.0)
 
 print("#" * 74)
 print("# 장면 1. 블록 하나의 해부 - 결정이 나오기까지")
-# 관련 코드: estimator.py(LossEstimator.p/se/p_safe), channel.py(fail_curve),
-#            controller.py(choose_redundancy의 비용표)
 print("#" * 74)
 
-# 어느 정도 학습된 상태를 만든다: 5% 손실, 버스트 4 채널을 40블록 관측
 rng = random.Random(7)
 sampler = ChannelSampler(GilbertElliott.from_burst(0.05, 4.0), rng)
 est = LossEstimator(p_init=0.01, z=cfg.risk_z)
@@ -77,15 +61,13 @@ print(f"[1d] 결정: r* = {d.r}  (이중화 {d.r}/{k} = {d.r/k:.0%}, "
 print()
 print("#" * 74)
 print("# 장면 2. 콜드 스타트 30블록 여정 (참채널 p=5%, L=4, RTT 40ms)")
-# 관련 코드: controller.py(next_block/_apply_hysteresis, on_feedback),
-#            estimator.py(observe_mask의 놀라움 검정)
 print("#" * 74)
 rng = random.Random(11)
 sampler = ChannelSampler(GilbertElliott.from_burst(0.05, 4.0), rng)
 ctrl = AdaptiveFecController(cfg)
 ctrl.cong.observe_rtt(rtt)
 pending = []
-LAG = 3   # 피드백은 1 RTT 늦게 온다 = 약 3블록
+LAG = 3
 print(f"{'blk':>4} {'p_hat':>7} {'p_safe':>7} {'L_hat':>6} {'r':>3} "
       f"{'손실':>4} {'결과':>8} {'비고'}")
 fails = saves = 0
@@ -114,7 +96,6 @@ print(f"  => 30블록: FEC 복구 {saves}회, 복구실패(재전송) {fails}회
 print()
 print("#" * 74)
 print("# 장면 3. 핸드셰이크 - 같은 식, T_recover만 다르다")
-# 관련 코드: handshake.py(profile/shield), controller.py(pto_ms)
 print("#" * 74)
 prof = profile(768)
 print(f"[3a] ML-KEM-768 하이브리드 크기 계산")
@@ -139,7 +120,6 @@ print(f"[3d] 효과 (해석해, 손실 2%): 평균 {base.mean_ms:.0f}ms -> {fec.
 print()
 print("#" * 74)
 print("# 장면 4. 캐시 - 두 번째 연결은 배운 채로 시작한다")
-# 관련 코드: cache.py(PathStatsCache.lookup/store), sim.py(policy="cached")
 print("#" * 74)
 cache = PathStatsCache()
 pr1 = cache.lookup("wifi:home", "203.0.113.10", now=0.0)
@@ -168,7 +148,6 @@ print(f"[4d] 셀룰러로 이동 -> lookup source={pr3.source} "
 print()
 print("#" * 74)
 print("# 장면 5. 급변 - 손실 0.5%에서 10%로 뛰는 순간")
-# 관련 코드: estimator.py(_is_surprising의 위쪽 꼬리/하향 SPRT, 부스트 로직)
 print("#" * 74)
 rng = random.Random(3)
 ctrl = AdaptiveFecController(cfg)
@@ -185,7 +164,7 @@ print(f"{'blk':>4} {'손실':>4} {'streak':>6} {'jumped':>6} {'boost':>5} "
 for i in range(10):
     d = ctrl.next_block()
     mask = s2.send(d.k + d.r)
-    ctrl.on_feedback(mask, rtt_ms=rtt)   # 추적을 단순히 보이려 지연 생략
+    ctrl.on_feedback(mask, rtt_ms=rtt)
     print(f"{i:>4} {sum(mask):>4} {ctrl.loss._streak:>6} "
           f"{str(ctrl.loss.jumped):>6} {ctrl.loss._boost_left:>5} "
           f"{ctrl.loss.p:>7.4f} {ctrl.loss.p_safe:>7.4f} {d.r:>3}")

@@ -1,6 +1,4 @@
-﻿# 실험 진행을 눈으로 보기 위한 실시간 감시 창.
-# 파이프라인 자체는 별도 백그라운드에서 돌고 있고, 이 창은 그 상태를 읽어 보여준다.
-$ErrorActionPreference = "SilentlyContinue"
+﻿$ErrorActionPreference = "SilentlyContinue"
 $env:PYTHONIOENCODING = "utf-8"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $host.UI.RawUI.WindowTitle = "PQ-AFEC 실험 진행 감시"
@@ -13,10 +11,8 @@ while ($true) {
     Write-Host ("  " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss")) -ForegroundColor DarkGray
     Write-Host ("=" * 88) -ForegroundColor DarkGray
 
-    # 1) 파이프라인 단계 상태
     python -I -B experiments\pipeline.py --status 2>$null | Select-Object -Skip 2
 
-    # 2) 저널(단위 단위 진행)
     Write-Host ""
     Write-Host "--- 저널: 단계 내부 진행 (중단해도 여기서부터 이어짐) ---" -ForegroundColor Yellow
     Get-ChildItem experiments\state\*_units.jsonl 2>$null | ForEach-Object {
@@ -24,12 +20,10 @@ while ($true) {
         "{0,-14} {1,4} 단위" -f $_.BaseName.Replace("_units",""), $n
     }
 
-    # 3) WSL 안에서 실제로 도는 프로세스
     Write-Host ""
     Write-Host "--- WSL 안에서 실제로 도는 프로세스 ---" -ForegroundColor Yellow
     wsl -d Ubuntu -- bash -lc "ps -eo etime,pcpu,comm,args --sort=-pcpu 2>/dev/null | grep -E 'python3|qdata|qserver|qclient' | grep -v grep | head -6 | cut -c1-84" 2>$null
 
-    # 4) 현재 단계 로그 꼬리
     Write-Host ""
     Write-Host "--- 최근 로그 ---" -ForegroundColor Yellow
     $log = Get-ChildItem experiments\state\log_*.txt 2>$null |

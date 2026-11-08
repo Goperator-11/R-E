@@ -1,42 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-FEC shim pair for the QUIC testbed - a REAL forward-erasure-correction tunnel.
-
-    qclient -> shim tx -> [ veth + netem ] -> shim rx -> qserver
-
-The tx side watches for the client's FIRST Initial flight (the ClientHello,
-which ML-KEM splits across two 1200-byte datagrams) and, when FEC is enabled,
-appends one **real XOR parity packet** over that flight.  The parity packet is
-a genuine extra datagram on the wire: it is exposed to netem loss exactly like
-the originals are.
-
-The rx side forwards every original the moment it arrives (so protection costs
-no latency on the happy path) and, as soon as it holds k-1 originals plus the
-parity, reconstructs the missing one by XOR and forwards it.  A late duplicate
-is harmless - QUIC dedupes by packet number, which is what a real FEC-enabled
-stack would rely on too.
-
-Both arms (fec on / off) run the same code path and the same tx-side flight
-buffering delay, so the comparison is not tilted by the shim itself.
-
-Wire format (shim to shim, present in BOTH arms):
-    0-1  magic 0xAF 0xEC
-    2    type   0 = data, 1 = parity
-    3    flight id, 0 = passthrough, 1..255 = protected flight (rotates)
-    4    index within the flight
-    5    count of originals in the flight
-    6-7  payload length (big endian)
-    8..  payload
-
-🩸 The flight id is NOT a boolean.  It was, in the first version, and the rx
-side then carried its `delivered` set across connections: from the second
-handshake onward the Initial packets of every new connection were treated as
-duplicates of the first one's and silently dropped, so every trial paid a full
-PTO.  It showed up as a suspiciously constant 222 ms (= 200 ms PTO + 22 ms RTT)
-on every arm, which is what caught it.
-
-Standard library only.  ASCII output.
-"""
 import argparse
 import json
 import os
@@ -75,8 +36,6 @@ def unpack(buf):
 
 
 def is_initial(d):
-    """QUIC long header, type Initial (RFC 9000 17.2.2). Header bits 0-1 of the
-    type field are visible; header protection only covers the low 4 bits."""
     return len(d) > 5 and (d[0] & 0x80) and (d[0] & 0x40) and ((d[0] & 0x30) >> 4) == 0
 
 
@@ -87,10 +46,7 @@ def xor_into(acc, data):
     return bytes(a ^ b for a, b in zip(acc, data))
 
 
-# ------------------------------------------------------------------ tx side
 class ShimTx(object):
-    """Listens for the local QUIC client, tunnels to the rx shim."""
-
     def __init__(self, listen, peer, fec, flight_ms, stats_path,
                  dup_initial=0):
         self.sock_in = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -105,11 +61,8 @@ class ShimTx(object):
         self.stats_path = stats_path
         self.stop = threading.Event()
         self.client = None
-        self.state = {}          # client addr -> {'buf', 'done', 't', 'fid'}
+        self.state = {}
         self._next_fid = 0
-        # flight_sizes: how many Initial datagrams the ClientHello occupied.
-        # This is the direct MTU-1500 test of the split hypothesis: x25519
-        # should be 1, X25519MLKEM768 should be 2.
         self.stats = {"flights": 0, "parity_sent": 0, "dup_sent": 0,
                       "c2s": 0, "s2c": 0,
                       "flight_sizes": {}}
@@ -160,20 +113,6 @@ class ShimTx(object):
             if not st["done"] and is_initial(d):
                 st["buf"].append(d)
                 st["t"] = time.perf_counter()
-                # 🔬 증폭 예산 실험용 모드 (E20).
-                #
-                # 우리 패리티는 rx 심이 흡수하고 서버로 안 넘긴다. 그래서
-                # 서버의 QUIC 스택이 보는 바이트가 안 늘고, RFC 9000 8.1 의
-                # 3배 예산도 그대로다 - 즉 "핸드셰이크 FEC 가 증폭 예산을
-                # 키운다"는 가설은 **우리 구현으로는 성립 자체가 불가**하다.
-                #
-                # 메커니즘 자체가 참인지 보려면 서버가 **연결에 귀속시켜 셀 수
-                # 있는** 바이트를 실제로 더 보내야 한다. XOR 패리티는 QUIC
-                # 계층에서 쓰레기라 귀속이 안 될 수 있으므로, 대신 Initial
-                # 데이터그램을 **그대로 복제**한다. 유효한 DCID 를 가진 정상
-                # 패킷이라 서버가 연결에 귀속시키고, 패킷 번호가 중복이라
-                # 폐기하지만 바이트는 센다. 이건 동시에 **반복부호(r=1)**,
-                # 즉 가장 단순한 FEC 이기도 하다.
                 for _ in range(self.dup_initial):
                     self.sock_out.sendto(pack(T_DATA, 0, 0, 1, d), self.peer)
                     self.stats["dup_sent"] += 1
@@ -228,17 +167,10 @@ class ShimTx(object):
             pass
 
 
-# ------------------------------------------------------------------ rx side
 class ShimRx(object):
-    """Receives the tunnel, recovers, delivers to the local QUIC server."""
-
     def __init__(self, listen, target, stats_path, trace_path=""):
-        # 🔬 E20 검증용 바이트 타임라인.
-        # rx 심은 서버 바로 앞에 있으므로 여기서 재면 서버의 QUIC 스택이
-        # 실제로 '받은 바이트'와 '보낸 바이트'가 그대로 보인다. RFC 9000
-        # 8.1 의 3배 예산은 구현을 안 뜯어도 이 두 수열로 드러난다.
         self.trace_path = trace_path
-        self.trace = []          # (t_ms, 'to_srv'|'from_srv', nbytes)
+        self.trace = []
         self.t0 = time.perf_counter()
         self.sock_in = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock_in.bind(listen)
@@ -249,9 +181,6 @@ class ShimRx(object):
         self.stats_path = stats_path
         self.stop = threading.Event()
         self.peer = None
-        # per-flight state, keyed by the flight id the tx shim stamps in.
-        # Keeping this global across connections is exactly the bug that
-        # made every trial after the first one pay a PTO.
         self.flights = {}
         self.stats = {"recovered": 0, "delivered": 0, "parity_rx": 0,
                       "unrecoverable_seen": 0, "flights": 0,
@@ -270,20 +199,13 @@ class ShimRx(object):
             self.trace.append(((time.perf_counter() - self.t0) * 1000.0,
                                kind, n))
 
-    # 🩸 The flight id is one byte, so it wraps every 255 connections.  The
-    # first version reused the stale entry on wrap, which made connections
-    # 256+ look like duplicates and cost each of them a full PTO.  With
-    # n=300 per arm that is 15% of trials - it showed up as p90 = 222 ms in
-    # the NO-LOSS condition, which is impossible and is what gave it away.
-    # A TTL separates reuses: consecutive uses of one id are >=255
-    # connections apart (seconds), a live flight lasts milliseconds.
     FLIGHT_TTL_S = 1.0
 
     def _fl(self, fid):
         now = time.perf_counter()
         fl = self.flights.get(fid)
         if fl is not None and (now - fl["t"]) > self.FLIGHT_TTL_S:
-            fl = None                        # stale: this is a new flight
+            fl = None
             self.stats["flight_id_wraps"] += 1
         if fl is None:
             fl = self.flights[fid] = {"parts": {}, "parity": None,
@@ -310,15 +232,11 @@ class ShimRx(object):
             if len(missing) > 1:
                 self.stats["unrecoverable_seen"] += 1
             return
-        # Reconstructed originals are absent from parts, which records physical
-        # arrivals. A repeated parity must not count an already delivered repair.
         if missing[0] in fl["delivered"]:
             return
         acc = fl["parity"]
         for i, d in fl["parts"].items():
             acc = xor_into(acc, d)
-        # the XOR was taken over zero-padded payloads; QUIC Initial datagrams
-        # in a flight are the same size, so no length ambiguity in practice
         self.stats["recovered"] += 1
         self._deliver(fl, missing[0], acc)
 
@@ -350,7 +268,7 @@ class ShimRx(object):
                 self._try_recover(fl)
                 continue
             fl["parts"][index] = payload
-            self._deliver(fl, index, payload)  # forward at once, no added delay
+            self._deliver(fl, index, payload)
             self._try_recover(fl)
 
     def _from_server(self):
@@ -398,16 +316,12 @@ def addr(s):
 
 
 def install_dump_on_term(obj):
-    """The orchestrator stops shims with SIGTERM; without this the stats file
-    is never written and the recovery counters silently read as missing."""
     def handler(signum, frame):
         try:
             path = obj.stats_path
             if path:
                 with open(path, "w") as f:
                     f.write(repr(obj.stats))
-            # 🩸 트레이스도 여기서 안 쓰면 SIGTERM 으로 죽는 심의
-            # 타임라인이 통째로 사라진다(stats 때와 같은 실수).
             obj._dump_trace()
         finally:
             os._exit(0)

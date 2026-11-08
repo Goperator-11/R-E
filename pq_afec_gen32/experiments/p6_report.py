@@ -1,33 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P6 - 보고서와 요약 PDF 를 결과 파일에서 직접 생성한다.
-
-숫자를 손으로 옮겨 적지 않는다. `results/*.json` 만 읽어서 쓴다.
-그래야 실험을 다시 돌렸을 때 보고서가 조용히 낡지 않는다.
-
-이 원칙을 어긴 자리가 있었다(2026-08-20 정정). 머리말은 "손으로 옮기지
-않는다"고 선언해 놓고 본문에는 손으로 옮긴 수가 셋 있었다.
-
-  - 용량 초과분 "63 B" / "용량 1,382 B" / "C=1,445 B"  -> p1 에서 계산
-  - 같은 사실을 서두에서는 "약 50~70 B" 라고 달리 적음  -> 한 곳에서 계산
-  - "서버는 정확히 3배에서 멈춘다(증폭비 3.00)"          -> e21 + p2 에서 계산
-
-특히 마지막 것은 **조건을 지운 수**였다. 3.00 은 `3B` 가 서버 패킷 크기
-`P` 의 배수일 때만 나오고, 일반적으로 허용량은 `ceil(3B/P)·P` 라 3 배를
-초과한다. 조건 없이 "정확히 3배"라고 적으면 같은 보고서 3 장의 양자화
-모형과 정면으로 충돌한다. 이제 조건과 함께 원자료에서 뽑아 쓴다.
-
-읽는 파일
-  p1 비행 구조 · p2 임계 · p3 손실 효과 · p4 모형 · p5 감사
-  p7 결정적 검증 · p8 재현성 · p9 교차환경 · p10 완성도 · p11 폐루프 후회
-  p12 양자 경계 절벽(있으면) · probe_cliff_*(있으면) · e21 바이트 타임라인
-
-산출물
-  docs/PADFEC 실측 보고서.md
-  docs/ML-KEM QUIC 핸드셰이크 FEC 요약.pdf  (A4, 조판에 따라 여러 쪽)
-
-이 파일의 요약 PDF 를 "한 장"이라고 부르지 않는다 — 실제로는 A4 두 쪽이
-나온다. 쪽수를 세지 않고 이름만 "한 장"으로 두면 그것도 손으로 옮긴 수다.
-"""
 from __future__ import annotations
 
 import argparse
@@ -48,14 +18,6 @@ RESULTS = os.path.join(HERE, "results")
 DOCS = os.path.join(ROOT, "docs")
 sys.path.insert(0, ROOT)
 
-# 🩸 2026-08-26 - **Edge 를 더했다.** 이 PC 에서 Chrome 이 없어져(Edge 만 남음)
-#    `chrome 을 못 찾아 PDF 는 건너뛴다` 가 찍히며 **한 장 요약 PDF 가 조용히
-#    안 만들어지고 있었다.** 단계는 0 을 내고 통과했으므로 루프도 안 잡았다 -
-#    산출물이 빠지는데 아무도 실패하지 않는 자리다. Edge 는 같은 Chromium 이라
-#    `--headless --print-to-pdf` 가 그대로 된다.
-#    (outputs 에 PDF 를 적지 않은 것은 그대로 둔다. 브라우저가 아예 없는
-#     기계에서도 보고서 .md 는 나와야 하기 때문이다 - 대신 아래에서 **못
-#     찾았다는 사실을 반드시 찍는다.**)
 CHROME = [
     r"C:\Program Files\Google\Chrome\Application\chrome.exe",
     r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
@@ -81,16 +43,10 @@ def fmt(v, nd=1, dash="-"):
 
 
 def sgn(v, nd=2, dash="-"):
-    """부호를 붙여 포맷. None 이면 대시(후회처럼 음수가 의미 있는 값에 쓴다)."""
     return dash if v is None else ("%%+.%df" % nd) % v
 
 
 def cell(s, n=None):
-    """표 칸에 넣을 텍스트를 안전하게 만든다.
-
-    결과 JSON 의 detail 에는 파이프(`|`)가 섞여 있다(예: "off ... | on ...").
-    그대로 넣으면 마크다운 표의 열이 밀려서 **보고서가 조용히 틀린다**.
-    """
     s = "" if s is None else str(s)
     if n:
         s = s[:n]
@@ -98,42 +54,24 @@ def cell(s, n=None):
 
 
 def com(v):
-    """천 단위 구분. None 이면 대시."""
     return "-" if v is None else "{:,}".format(int(round(v)))
 
 
 def present(d):
-    """파일이 **있었는가**. 파이썬에서 빈 dict 는 거짓이라 `if p12:` 로 쓰면
-    빈 결과와 없는 결과가 구분되지 않고 절이 통째로 사라진다. 그러면 독자는
-    실험을 안 한 것으로 읽는다 — 실제로는 돌았는데 결과가 빈 것인데도.
-    """
     return d is not None
 
 
 def empty_note(name):
-    """있지만 빈 결과. 절을 지우지 말고 한 줄이라도 남긴다."""
     return ("> `%s` 는 **있지만 비어 있다**(빈 객체). 실험이 돌았는데 결과가 "
             "비었다는 뜻이므로, 이 절을 지우지 않고 그 사실만 남긴다." % name)
 
 
-# ===================================================================== 사실 추출
-# 아래 함수들이 이 파일의 핵심이다. 본문에 쓰는 수는 **여기서만** 만들어지고,
-# 문장은 그 결과를 포맷할 뿐이다. 같은 사실을 두 곳에서 다르게 적는 사고를
-# 막으려면 사실이 한 군데서만 나와야 한다.
-
 def cap_facts(p1):
-    """용량 부등식 `C ≤ (k−1)(W−h−f)` 의 위반 폭을 p1 원자료에서 센다.
-
-    JSON 의 `capacity` 를 그대로 쓰고, 꼬리표를 f=0 으로 잡은 경우
-    `(k−1)(W−h)` 도 같은 자리에서 다시 센다(결론이 f 에 강건한지 보려고).
-    수치는 라운드마다 흔들리므로 단일 상수로 굳히지 않고, **최소 초과분과
-    그 설정 + 전체 범위**를 함께 돌려준다.
-    """
     rows = []
     for c in (p1 or {}).get("capacity_checks", []):
         k, W, h, C = c["k"], float(c["W"]), float(c["h"]), float(c["C"])
         cap = float(c.get("capacity") or 0.0)
-        cap0 = max(0.0, (k - 1) * (W - h))          # f = 0 일 때의 우변
+        cap0 = max(0.0, (k - 1) * (W - h))
         rows.append({
             "group": c["group"], "ips": c["ips"] or int(W), "k": k, "W": W,
             "h": h, "C": C, "capacity": cap, "excess": C - cap,
@@ -143,9 +81,6 @@ def cap_facts(p1):
         })
     if not rows:
         return None
-    # 🩸 초과분 통계는 **k≥2 행에서만** 낸다. k=1 은 우변이 0 이라 초과분이
-    # 곧 C 자신이고, §2 표도 그 8행을 빼고 그린다. 섞어서 최대/최소를 내면
-    # 본문의 "전체 범위"가 표에 없는 행에서 나와 대조가 불가능해진다.
     pool = [r for r in rows if r["k"] >= 2] or [r for r in rows
                                                 if r["violates"]] or rows
     best = min(pool, key=lambda r: r["excess"])
@@ -159,8 +94,6 @@ def cap_facts(p1):
         "min": best,
         "max_excess": max(r["excess"] for r in pool),
         "min_excess_f0": min(r["excess_f0"] for r in pool),
-        # f=0 대조는 **best 와 같은 행**에서 뽑는다. 다른 행의 최소값과
-        # 화살표로 이으면 "76.0 B → 60.0 B" 가 서로 다른 설정의 수가 된다.
         "excess_f0_at_min": best["excess_f0"],
         "f_implied": sorted({round(r["f_implied"], 1) for r in pool
                              if r["f_implied"] is not None}),
@@ -168,7 +101,6 @@ def cap_facts(p1):
 
 
 def cap_phrase(cf, bold="**"):
-    """용량 초과분을 한 문장으로. 서두와 본문이 **같은 문자열 생성기**를 쓴다."""
     if not cf:
         return "용량 자료 없음"
     b = cf["min"]
@@ -179,14 +111,6 @@ def cap_phrase(cf, bold="**"):
 
 
 def sweep_rows(p2):
-    """`ips_sweep` 에서 **표와 계산이 함께 쓸** 행만 고른다.
-
-    🩸 amp_facts 는 `first_flight_bytes` 로, §3-2 표는 `threshold_lo` 로
-    걸렀다. 술어가 다르면 본문의 "훑은 N개 설정"과 표의 줄 수가 어긋난다.
-    술어를 여기 한 곳에 둔다. 그리고 `first_flight_bytes` 를 `r.get()` 으로
-    받는다 — 0 이면 A(B)/B 가 ZeroDivisionError, 키가 없으면 KeyError 로
-    **보고서 생성이 통째로 죽는다**(둘 다 재현됨).
-    """
     out = []
     for r in (p2 or {}).get("ips_sweep", []) or []:
         if not r.get("first_flight_bytes"):
@@ -198,17 +122,10 @@ def sweep_rows(p2):
 
 
 def amp_facts(p2, e21):
-    """증폭비를 원자료에서 계산한다.
-
-    두 종류를 구분해서 돌려준다.
-      obs   e21 바이트 타임라인에서 **관측된** 정지 지점 (tx == 3·rx 인가)
-      sweep p2 ips_sweep 각 점의 허용량/첫비행 = `ceil(3B/P)·P / B`
-    "증폭비 3.00" 은 obs 중 특수 조건에서만 나오는 값이므로 조건을 함께 든다.
-    """
     from padfec import amplif
     P = amplif.SERVER_PACKET_SIZE
     sweep = []
-    for r in sweep_rows(p2):            # §3-2 표와 **같은 술어**를 쓴다
+    for r in sweep_rows(p2):
         b = r["first_flight_bytes"]
         al = amplif.allowed_bytes(b)
         sweep.append({"group": r["group"], "ips": r["ips"], "B": b,
@@ -236,11 +153,6 @@ def amp_facts(p2, e21):
 
 
 def s0_levels(p2):
-    """s0 = 허용량 − 임계 중앙값. ips 마다 다시 뽑으면 **계단**이 드러난다.
-
-    s0 를 그룹당 단일값으로 쓰면 안 된다 — 허용량 계단을 넘는 ips 에서
-    값이 갈린다. 그 사실을 여기서 데이터로 확인한다.
-    """
     from padfec import amplif
     by = {}
     for r in sweep_rows(p2):
@@ -259,12 +171,6 @@ def s0_levels(p2):
 
 
 def model_facts(p4, p2):
-    """양자화 모형의 예측 대 실측. **적중이 왜 적중인지**까지 같이 판정한다.
-
-    p4 는 s0 를 기준선 팔에서 역산해 놓고 그 팔의 임계를 다시 예측한다 —
-    그 팔에서 맞는 것은 검증이 아니라 항등식이다. p2 의 `s0_est` 와 p4 의
-    `s0` 가 같은 팔을 찾아 표시한다.
-    """
     if not p4:
         return None
     s0 = p4.get("s0") or {}
@@ -292,24 +198,10 @@ def model_facts(p4, p2):
             "any_miss_is_identity": any(r["identity"] for r in miss)}
 
 
-# 인수인계 문서(2026-08-18) 표에 적힌 첫 비행 바이트. **인용값**이므로 그룹과
-# 함께 적어 둔다. 우리 값과의 대조는 아래에서 그룹 단위로 **계산**한다 —
-# "다르다/같다"를 문장에 굳혀 놓으면 우리 값이 바뀌어도 문장이 안 바뀐다.
-# (실제로 그 사고가 났다: 우리 X25519MLKEM768 2,560 B 를 놓고 "문서의
-#  2,560 B / 3,840 B 와 다르다"고 적었다.)
 HANDOVER_FIRST_FLIGHT = {"x25519": 2560, "X25519MLKEM768": 3840}
 
 
 def handover_facts(base, base_k=None):
-    """기본 설정 첫 비행 B(우리 실측)를 인수인계 문서 표와 **그룹 단위**로 댄다.
-
-    base: {그룹: k·W}, base_k: {그룹: k}. 돌려주는 것은 그룹별 비교 결과와
-    요약 플래그뿐이고, 판정 문장은 이 결과에서 파생시킨다.
-
-    🩸 차이가 "데이터그램 하나(W) 몫"인지도 **여기서 나눠서** 판정한다.
-    예전 본문은 그 문구를 문장에 굳혀 놓고 차이값을 W 와 대보지 않았다 —
-    차이가 2W 가 되어도 문장은 "하나" 그대로였다.
-    """
     base_k = base_k or {}
     rows = []
     for g in sorted(set(base) | set(HANDOVER_FIRST_FLIGHT)):
@@ -322,7 +214,6 @@ def handover_facts(base, base_k=None):
         rows.append({
             "group": g, "ours": ours, "doc": doc, "k": k, "W": W,
             "diff": diff,
-            # 차이가 데이터그램 몇 개 몫인가. 정수 배가 아니면 exact_W=False.
             "n_W": q,
             "exact_W": (abs(q - round(q)) < 1e-9) if q is not None else None,
             "same": (ours == doc) if (ours is not None and doc is not None)
@@ -330,8 +221,6 @@ def handover_facts(base, base_k=None):
         })
     cmp_rows = [r for r in rows if r["same"] is not None]
     diff_rows = [r for r in cmp_rows if not r["same"]]
-    # 문서의 어떤 그룹 값이 **우리의 다른 그룹** 값과 같은가. 헷갈림의 원인이
-    # 여기 있으므로(문서 x25519 2,560 = 우리 ML-KEM 2,560) 계산으로 찾는다.
     cross = []
     for r in cmp_rows:
         for g2, v2 in sorted(base.items()):
@@ -349,21 +238,6 @@ def handover_facts(base, base_k=None):
 
 
 def _match_check(checks, tag, vkey, v):
-    """p11 의 검사 목록에서 `tag` 에 해당하는 검사 **하나**를 짝짓는다.
-
-    🩸 예전 방식은 `'%+.2f' % v` 를 각 검사의 detail 전체에서 `in` 으로
-    찾았다. 그런데 p11 의 detail 은 머리값 뒤에 **조건별 값 목록**을 같이
-    담는다(`"최악 +3.61 ms | 조건별 ['+0.1', '+1.6', …]"`). 그래서 값이
-    남의 검사 목록 안에 우연히 들어 있으면 **엉뚱한 검사에 붙는다** —
-    그 검사의 통과/실패가 그대로 인쇄된다.
-
-    그래서 짝짓기를 이름/키로 바꾼다.
-      ① p11 이 기계용 키(`key`/`tag`/`id`/`metric`)를 내보내면 그것으로.
-      ② 없으면 detail 의 **머리 조각**(첫 `|` 앞, 조건별 목록이 시작되기
-         전)에서만 값을 찾는다. 목록 안의 값은 애초에 후보가 안 된다.
-    어느 쪽이든 **후보가 정확히 하나일 때만** 붙인다. 둘 이상이면 모른다고
-    적는다(criterion 이 "대응하는 검사를 p11 에서 못 찾음" 을 찍는다).
-    """
     for kf in ("key", "tag", "id", "metric"):
         named = [c for c in checks
                  if str(c.get(kf, "")) in (tag, vkey)]
@@ -412,7 +286,6 @@ def p10_test_facts(result):
 
 
 def p18_consumer_notes(result):
-    """Read new metadata and legacy values without inventing historical scope."""
     facts = sample_facts(None, result) or {}
     notes = []
     levels = facts.get("p18_confidence_levels") or []
@@ -465,7 +338,6 @@ def p18_consumer_notes(result):
 
 
 def p20_consumer_notes(result):
-    """Keep plug-in target provenance separate from recorded sufficiency verdicts."""
     pairs = [p for c in result.get("conds", []) for p in c.get("pairs", [])]
     if not pairs and not result.get("input_coverage") and not result.get("input_provenance"):
         return []
@@ -517,7 +389,6 @@ def p20_consumer_notes(result):
 
 
 def late_stage_summary(results):
-    """Surface late-stage failures even when the main report predates a stage."""
     lines = ["", "## 후속 정책·모형 검증 기록", "",
              "아래 표는 입력 결과의 기록이다. 이번 코드에서의 유효성은 출처 목록과 함께 확인한다.",
              "통과 개수는 연구 가설의 확증 여부와 다르다. 누락·실패를 통과로 세지 않는다.", "",
@@ -560,7 +431,6 @@ def late_stage_summary(results):
 
 
 def late_stage_html(results):
-    # Keep failure details in PDF as well as Markdown; escape data before HTML.
     text = prose_style(late_stage_summary(results))
     return ('<section style="break-before:page;font-size:9pt">'
             '<pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-family:inherit">'
@@ -568,7 +438,6 @@ def late_stage_html(results):
 
 
 def adapt_value_facts(p17):
-    """Descriptive same-data candidate selection gain, not a true oracle bound."""
     if not p17:
         return None
     conds = []
@@ -595,7 +464,6 @@ def adapt_value_facts(p17):
 
 
 def ruler_facts(p11, p17):
-    """Compare recorded CI widths with 1 ms; position ranges are diagnostics."""
     tol = 1.0
     bars = []
     half = (p11 or {}).get("worst_ci95_half_ms")
@@ -612,7 +480,6 @@ def ruler_facts(p11, p17):
 
 
 def sample_facts(p17, p18):
-    """Read sample diagnostics and stored contrasts without changing verdicts."""
     out = {}
     vs = (p18 or {}).get("verdict") or []
     und = [v for v in vs if v.get("significant") is not True]
@@ -675,17 +542,6 @@ def sample_facts(p17, p18):
 
 
 def regret_facts(p11):
-    """p11 의 후회 검사 두 개를 짝지어 붙인다.
-
-    🩸 여태 보고서는 "(<5 ms 통과)" 와 "(<2 ms 기준 실패)" 를 코드에 굳혀
-    두고 p11 이 있기만 하면 찍었다. 가짜 p11(late=0.812, ok=True)로 확인한
-    결과 통과한 검사를 "실패"로 인쇄했다. 판정 문구를 굳히지 않는 것은
-    그대로 두고, **짝짓는 방법**만 `_match_check` 로 옮겼다(값 부분일치가
-    남의 검사에 붙던 문제).
-
-    기준값(5/2 ms)은 p11 이 필드로 내보내면 그것을 쓰고, 안 내보내면
-    수를 만들어 내지 않고 검사 이름을 그대로 인용한다.
-    """
     if not p11:
         return None
     out = {}
@@ -708,12 +564,10 @@ def regret_facts(p11):
 
 
 def verdict(ok):
-    """검사 결과를 문구로. ok 가 없으면 **판정하지 않는다**(모른다고 적는다)."""
     return "판정 없음" if ok is None else ("통과" if ok else "**실패**")
 
 
 def criterion(f):
-    """검사 기준을 한 조각으로. 기준값 필드가 있으면 수로, 없으면 이름 인용."""
     if f.get("limit") is not None:
         return "기준 < %s ms — %s" % (fmt(f["limit"], 0), verdict(f["ok"]))
     if f.get("label"):
@@ -721,31 +575,18 @@ def criterion(f):
     return "대응하는 검사를 p11 에서 못 찾음"
 
 
-# 🩸 이 목록의 **순서가 곧 우선순위**다(아래 dedup 이 먼저 온 것을 남긴다).
-# `probe_cliff.json` 은 그룹 접미사가 붙기 전의 옛 이름이고 지금은
-# `probe_cliff_x25519.json` 으로 개명됐다. 목록 순서대로 실으면 옛 파일이
-# 남아 있을 때 **새 파일이 조용히 버려진다**. 그래서 main() 에서 파일
-# mtime 이 최신인 것부터 싣는다 — 이름 순서에 기대지 않는다.
 CLIFF_FILES = ("probe_cliff.json", "probe_cliff_x25519.json",
                "probe_cliff_X25519MLKEM768.json")
 
-# 서버 바이트 직접 측정으로 s0 를 재는 판(`_probe_s0.py`). 있으면 싣는다.
 S0_FILES = ("probe_s0_x25519.json", "probe_s0_X25519MLKEM768.json")
 
 
 def mtime(name):
-    """`results/` 안 파일의 수정 시각. 없으면 -1(가장 낮은 우선순위)."""
     p = os.path.join(RESULTS, name)
     return os.path.getmtime(p) if os.path.exists(p) else -1.0
 
 
 def cliff_facts(files):
-    """`probe_cliff_*.json` 에서 절벽을 **계산**한다.
-
-    files: [(파일명, dict)]. 없으면 None 을 돌려주고 절은 조용히 빠진다.
-    각 파일에서 ips 오름차순으로 n_rtt 가 2 → 1 로 꺾이는 지점을 찾아
-    경계 ips · 늘어난 바이트 · 줄어든 p50 · 그것이 RTT 의 몇 배인지를 낸다.
-    """
     out = []
     seen = set()
     for name, d in files:
@@ -756,7 +597,7 @@ def cliff_facts(files):
         rows = sorted(rows, key=lambda r: r["ips"])
         g = d.get("group") or rows[0].get("group") or "-"
         key = (g, d.get("cert"), tuple(r["ips"] for r in rows))
-        if key in seen:            # probe_cliff.json 과 _x25519.json 이 같은 판일 수 있다
+        if key in seen:
             continue
         seen.add(key)
         rtt = d.get("rtt_ms")
@@ -776,7 +617,6 @@ def cliff_facts(files):
                         "ms_per_byte": (gain / d_b) if (gain is not None
                                                         and d_b) else None}
                 break
-        # 부정 시험: n_rtt 가 같은 이웃 쌍(경계를 안 넘은 쌍)
         same = [(a, b) for a, b in zip(rows, rows[1:])
                 if a["n_rtt_obs"] == b["n_rtt_obs"]]
         out.append({"file": name, "group": g, "cert": d.get("cert"),
@@ -787,12 +627,6 @@ def cliff_facts(files):
                     "passed": d.get("passed"), "total": d.get("total")})
     if not out:
         return None
-    # 🩸 "k 와 무관하게 경계가 같다"는 v2 의 헤드라인 주장이다. 그 판정은
-    # **경계를 실제로 찾은 판**에서만 나와야 한다. 예전 코드는 경계를 못 찾은
-    # 판을 조용히 빼고 `same_boundary` 를 냈으면서, 렌더 쪽은 `len(sets) > 1`
-    # 로 문턱을 삼아 **한 판만 경계를 잡아도 "두 판의 경계가 같다"** 고
-    # 인쇄했다. k 목록도 경계 없는 판의 k 를 끌어왔다. 그래서 경계를 찾은
-    # 판만 따로 담고, 못 찾은 판은 지우지 말고 그 사실을 남긴다.
     with_edge = [o for o in out if o["edge"]]
     no_edge = [o for o in out if not o["edge"]]
     edges = [o["edge"]["hi"]["ips"] for o in with_edge]
@@ -801,7 +635,6 @@ def cliff_facts(files):
             "no_edge": no_edge,
             "n_edge": len(with_edge),
             "boundary_ips": sorted(set(edges)),
-            # 판 하나로는 "k 무관"을 말할 수 없다 — 최소 두 판이 필요하다.
             "same_boundary": len(with_edge) > 1 and len(set(edges)) == 1,
             "ks": sorted({o["k"] for o in with_edge if o["k"] is not None}),
             "ks_no_edge": sorted({o["k"] for o in no_edge
@@ -809,16 +642,6 @@ def cliff_facts(files):
 
 
 def s0_probe_facts(files):
-    """`probe_s0_*.json` — 서버 바이트를 직접 세어 `s0` 를 잰 판.
-
-    files: [(파일명, dict)]. 없으면 None 이고 절은 조용히 빠진다(load 관례).
-
-    이 판이 왜 따로 필요한가. 임계 이분탐색은 s0 를 **역산**해서 얻는데,
-    그러면 s0 를 넣어 만든 예측을 같은 s0 로 검증하는 자리가 생긴다. 여기서는
-    클라이언트가 시행마다 기록한 `server_bytes` 에서 `s0 = S − cert` 를 직접
-    빼므로 임계를 거치지 않는다. 우리가 만드는 수는 없다 — 파일에 있는
-    `slope_per_pkt` · `mae_const` · `mae_pkt` 를 그대로 나른다.
-    """
     out = []
     seen = set()
     for name, d in files:
@@ -828,7 +651,7 @@ def s0_probe_facts(files):
             continue
         g = d.get("group") or "-"
         key = (g, tuple(r.get("cert") for r in rows))
-        if key in seen:            # 같은 판이 두 이름으로 있을 수 있다
+        if key in seen:
             continue
         seen.add(key)
         rows = sorted(rows, key=lambda r: r.get("cert") or 0)
@@ -838,7 +661,6 @@ def s0_probe_facts(files):
             "n": d.get("n"), "rows": rows,
             "slope": d.get("slope_per_pkt"),
             "mae_const": mc, "mae_pkt": mp,
-            # 상수 모형 기각 여부는 **두 오차의 비교**로만 판정한다.
             "pkt_better": (mp < mc) if (mc is not None and mp is not None)
                           else None,
             "n_pkt_lo": min(r["n_pkt"] for r in rows),
@@ -880,8 +702,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
     A("> 이 문서는 `experiments/results/*.json` 에서 직접 생성된다. "
       "숫자를 손으로 옮기지 않는다.")
     A("")
-    # 있는데 빈 결과와 아예 없는 결과는 다른 사실이다. 빈 것을 조용히 빼면
-    # 독자는 "안 한 실험"으로 읽는다.
     blank = [n for n, v in (("p1", p1), ("p2", p2), ("p3", p3), ("p4", p4),
                             ("p5", p5), ("p7", p7), ("p8", p8), ("p9", p9),
                             ("p10", p10), ("p11", p11), ("p12", p12),
@@ -899,11 +719,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
     lim = (af or {}).get("at_limit") or []
     if lim:
         o = lim[0]
-        # 🩸 `ratio_lo`/`arg_hi` 는 amp_facts 가 **sweep 이 있을 때만** 넣는
-        # 키다. p2 의 이분탐색이 실패해 `threshold_lo` 가 전부 null 이면
-        # sweep_rows 가 빈 리스트를 주고 그 키들이 아예 안 생긴다 — 예전
-        # 코드는 여기서 KeyError 로 **보고서 생성이 통째로 죽었다**(재현됨).
-        # 없으면 그 문장만 통째로 뺀다. 수를 지어내지 않는다.
         rlo, rhi = (af or {}).get("ratio_lo"), (af or {}).get("ratio_hi")
         ahi = (af or {}).get("arg_hi")
         if rlo is not None and rhi is not None and ahi is not None:
@@ -950,7 +765,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
       "필요하다. 회계와 배치는 4장에 적었다.")
     A("")
 
-    # ------------------------------------------------------------ 1. 비행 구조
     A("## 1. 첫 비행의 구조 (실측)")
     A("")
     A("클라이언트가 실제로 내보낸 첫 비행을 그대로 떠서 RFC 9001 §5.2 의 "
@@ -973,7 +787,7 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
              min(pcts), max(pcts)))
     base, base_k = {}, {}
     for c in (p1 or {}).get("capacity_checks", []):
-        if not c["ips"]:                       # ips=0 = quic-go 기본값
+        if not c["ips"]:
             base[c["group"]] = c["k"] * c["W"]
             base_k[c["group"]] = c["k"]
     if base:
@@ -985,8 +799,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
               % (" · ".join(multi),
                  " / ".join(str(base_k[g]) for g in multi))) if multi else ""))
         A("")
-        # 인수인계 문서 표와의 대조는 **그룹 단위 계산**이다. 문장에 "다르다"를
-        # 굳혀 놓으면 우리 값이 문서와 같아져도 문장이 안 바뀐다.
         hf = handover_facts(base)
         A("| 그룹 | 우리 실측 B = k·W | 인수인계 문서(2026-08-18) 표 | 차이 |")
         A("|---|---|---|---|")
@@ -1023,7 +835,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                           for c in hf["cross"]))
     A("")
 
-    # -------------------------------------------------------- 2. 용량 정리
     A("## 2. 왜 '공짜 FEC' 가 안 되는가 — 용량 정리")
     A("")
     A("손실 단위는 데이터그램이다. 하나가 통째로 사라지면 그 안에 있던 "
@@ -1049,7 +860,7 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         A("|---|---|---|---|---|---|---|---|")
         for r in cf["rows"]:
             if r["k"] < 2:
-                continue        # 우변이 0 이라 표에 실을 것이 없다
+                continue
             A("| %s | %s | %d | %.0f | %.1f | **+%.1f** | %.1f | +%.1f |"
               % (r["group"], r["ips"], r["k"], r["C"], r["capacity"],
                  r["excess"], r["capacity_f0"], r["excess_f0"]))
@@ -1075,7 +886,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
       "\"데이터를 억지로 해석하지 말고 있는 그대로 기록하십시오.\"")
     A("")
 
-    # -------------------------------------------------------- 3. 증폭 임계
     A("## 3. 증폭 임계 (RFC 9000 §8.1)")
     A("")
     A("RFC 9000 §8.1 은 주소 검증 전 서버가 **받은 바이트의 3 배를 넘겨 "
@@ -1124,7 +934,7 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         A("| 그룹 | Initial 크기 | 첫 비행 B | 예산 3B | 허용 A(B) | **A(B)/B** | 측정 임계 | s0 = A(B) − 임계 |")
         A("|---|---|---|---|---|---|---|---|")
         from padfec import amplif
-        for r in sweep_rows(p2):       # amp_facts 와 **같은 술어**
+        for r in sweep_rows(p2):
             cb = r["first_flight_bytes"]
             al = amplif.allowed_bytes(cb)
             mid = 0.5 * (r["threshold_lo"] + r["threshold_hi"])
@@ -1180,7 +990,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                  r["threshold_lo"], r["threshold_hi"]))
         A("")
 
-        # ------------------------------------------- 3-4. 모형의 예측 대 실측
         if mf:
             A("### 3-4. 양자화 모형은 어디까지 맞는가 (있는 그대로)")
             A("")
@@ -1219,7 +1028,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
               "**아직 확정하지 못했다.**")
             A("")
 
-        # -------------------------------------- 3-5. s0 는 단일값이 아니다
         if s0f:
             A("### 3-5. s0 는 그룹당 하나가 아니라 두 단계다")
             A("")
@@ -1247,7 +1055,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
               "된다** — 어느 ips 에서 뽑은 값인지 함께 적어야 한다.")
             A("")
 
-    # -------------------------------------------------------- 4. 두 이득의 배타성
     A("## 4. 하나의 패리티로 두 이득을 동시에 가질 수 없다")
     A("")
     A("설계 도중 발견한 제약이며, 이 연구에서 가장 중요한 구현 지식이다.")
@@ -1273,7 +1080,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
       "넘지 않는다. 구현은 이 불변식을 **런타임에 강제**한다.")
     A("")
 
-    # -------------------------------------------------------- 5. 효과
     A("## 5. 손실 조건에서의 효과 (문서 단계 4)")
     A("")
     if p3:
@@ -1295,7 +1101,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
           % (p3["total_recovered"], p3["recover_crc_fail"]))
         A("")
 
-    # -------------------------------------------------------- 6. 검증
     A("## 6. 검증")
     A("")
     if p5:
@@ -1389,9 +1194,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                           for g, v in sorted(mf["s0"].items())))
         A("")
 
-    # ------------------------------------------- 7~ 뒤쪽 절은 번호를 계산한다
-    # (p10/p11/p12 는 있을 때만 실리므로 고정 번호를 못 쓴다. 0~6 은 본문에서
-    #  서로를 가리키므로 그대로 둔다.)
     nxt = [7]
 
     def sec(title):
@@ -1401,7 +1203,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         A("")
         return n
 
-    # -------------------------------------------------------- 완성도 (p10)
     if present(p10):
         sec("완성도 — 설계했지만 아직 안 되는 것")
     if present(p10) and not p10:
@@ -1454,7 +1255,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                 A("판정불능·진단 %d개는 통과 집계에서 제외했다." % len(_p10_facts["excluded"]))
                 A("")
 
-    # ------------------------------------------------------ 폐루프 후회 (p11)
     if present(p11):
         sec("폐루프가 최선을 고르는가 — 후회")
     if present(p11) and not p11:
@@ -1470,8 +1270,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
           % (p11.get("group", "-"), fmt(p11.get("n"), 0),
              fmt(p11.get("rtt_ms"), 0)))
         A("")
-        # 🩸 판정 문구를 코드에 굳히지 않는다. 대소 비교와 통과/실패는 전부
-        # p11 의 값과 checks 에서 파생시킨다(가짜 p11 로 확인한 사고).
         rf = regret_facts(p11)
         A("**두 값을 함께 봐야 한다.** 전 구간 최악 후회는 **%s ms**(%s), "
           "수렴 후(후반 절반) 최악 후회는 **%s ms**(%s) 다."
@@ -1519,8 +1317,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                                 fmt(p11.get("total"), 0)))
             A("")
             failed = [c.get("check") for c in ck if not c.get("ok")]
-            # 짝이 되는 후회 검사 중 **통과한 쪽**만 든다. 무관한 검사까지
-            # 나열하면 "이것만 인용하면 가려진다"는 말이 성립하지 않는다.
             sibling = [f["label"] for f in (rf["all"], rf["late"])
                        if f.get("ok") and f.get("label")]
             if failed:
@@ -1541,10 +1337,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                   "한다 — 하나만 적으면 조건이 지워진다.")
                 A("")
 
-    # ------------------------------- 적응이 벌 수 있는 것 (p17, 선택)
-    # 🩸 이 절은 8 장 바로 뒤여야 한다. 8 장이 "폐루프가 최선을 고르는가"를
-    #    묻는데, 이 절은 그보다 **앞선 질문**에 답한다 — 애초에 적응해서 벌
-    #    것이 있는가. 순서가 뒤집히면 0 이 실패처럼 읽힌다.
     _av = adapt_value_facts(p17)
     if _av:
         sec("손실 구간별 후보 선택의 관측 이득 (p17)")
@@ -1577,7 +1369,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
           "적응이 불가능하거나 필요 없다는 결론으로 확대하지 않는다.")
         A("")
 
-    # ------------------------------------------- 양자 경계 절벽 (p12, 선택)
     if present(p12):
         sec("양자 경계 절벽 (p12)")
     if present(p12) and not p12:
@@ -1587,12 +1378,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         A("명세 §8 의 검증 계획 `p12` — `ips` 를 계단 경계 좌우로 훑어 임계가 "
           "**한 칸(≈P)** 뛰는지 본다.")
         A("")
-        # 🩸 행 목록의 키는 추측이 아니라 **p12_quantum.py 의 출력 dict** 다.
-        #   본선: "configs" (measure() 가 만든 설정 행)
-        #   건식: "runs"    (smoke() 가 만든 probe 행)
-        # 나머지는 스키마가 또 바뀔 때를 위한 별칭이고, "results" 는 아래
-        # checks 탐색과 겹치므로 **배타 처리**한다(같은 자료를 두 번 그리면
-        # 판정표가 표 두 개로 나와 독자가 다른 실험으로 읽는다).
         rows = None
         for key in ("configs", "runs", "ips_sweep", "sweep", "points",
                     "rows", "results"):
@@ -1618,9 +1403,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                      fmt(r.get("boundary_ips"), 0)))
             A("")
         elif rows:
-            # 🩸 폴백 표도 반드시 cell() 을 거친다. detail 에 파이프가 든 행이
-            # 실제로 있고(현재 보고서에 5개), 그대로 넣으면 열이 밀려서
-            # **보고서가 조용히 틀린다**. 헤더도 값이므로 같이 거른다.
             keys = []
             for r in rows[1]:
                 for k in r:
@@ -1635,7 +1417,7 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
             A("")
         used = rows[0] if rows else None
         for key in ("checks", "results"):
-            if key == used:        # 행 표에 이미 쓴 자료를 두 번 그리지 않는다
+            if key == used:
                 continue
             v = p12.get(key)
             if not isinstance(v, list) or not v:
@@ -1655,8 +1437,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                                 fmt(p12.get("total"), 0)))
             A("")
 
-    # --------------------------- 양자 경계 절벽 직접 실측 (probe_cliff, 선택)
-    # load() 관례대로 파일이 **있으면** 싣고 없으면 조용히 건너뛴다.
     if cliff:
         sec("1 바이트 절벽 — 경계를 직접 밟아 본 결과")
         A("명세 §2 따름정리(`Δ_min = 1`)를 인증서를 고정한 채 `ips` 만 바꿔 "
@@ -1726,9 +1506,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                     A("%s / %s 통과." % (fmt(s["passed"], 0),
                                         fmt(s["total"], 0)))
             A("")
-        # 🩸 아래 판정은 **경계를 실제로 찾은 판**(`with_edge`)에서만 뽑는다.
-        # 판 수·k 목록·"같다"를 전체 판 수로 세면, 한 판만 경계를 잡아도
-        # "k 와 무관하게 경계가 같다"가 인쇄된다.
         if cliff["same_boundary"]:
             A("**경계를 찾은 %d판 전부에서 경계 ips 가 %d 로 같다**(k = %s). "
               "따름정리의 \"k 와 무관하게 Δ_min = 1\" 이 실측으로 확인된다 — "
@@ -1759,8 +1536,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
                            for o in cliff["no_edge"])))
         A("")
 
-    # ------------------------ s0 패킷항 직접 측정 (probe_s0_*, 선택)
-    # load() 관례대로 파일이 **있으면** 싣고 없으면 조용히 건너뛴다.
     if s0p:
         sec("s0 는 상수가 아니다 — 서버 패킷 수 항을 직접 쟀다")
         A("임계 이분탐색으로 얻은 `s0` 는 **역산값**이라, 그 s0 로 만든 예측을 "
@@ -1830,7 +1605,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
               % (" · ".join("%s %s B/패킷" % (o["group"], fmt(o["slope"], 1))
                             for o in s0p["sets"] if o["slope"] is not None)))
             A("")
-        # ⚠ 이 단서를 빼면 두 방법의 절편을 나란히 놓고 "다르다"고 읽게 된다.
         A("> ⚠ **절편은 비교할 수 없다.** 여기 쓴 `S` 는 `server_bytes` 이고, "
           "그 안에는 첫 비행 말고 **꼬리 바이트**(ACK · HANDSHAKE_DONE · "
           "NewSessionTicket)가 함께 들어 있다. 그래서 이 방법의 절편은 임계 "
@@ -1839,7 +1613,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
           "차이는 모형의 불일치로 읽으면 안 된다.")
         A("")
 
-    # -------------------------------------------------------- 한계
     sec("한계 — 이 결과가 말하지 않는 것")
     A("- 보호 대상은 **클라이언트 → 서버 방향의 첫 비행뿐**이다. 서버 비행에는 "
       "패딩이 없고(인증서로 꽉 찬다) 서버에게 쓸 수 있는 무료 바이트도 없다. "
@@ -1856,8 +1629,6 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
       "식별하지 않아 RFC 준수를 입증하지 못한다. 엄격한 3 배 제한을 적용한 "
       "서버에서도 정책의 이득이 유지되는지는 별도로 검증해야 한다."
       % (("%.2f 배" % af["ratio_hi"]) if (af or {}).get("sweep") else "미측정"))
-    # 🩸 "수렴 후 기준을 못 맞춘다"는 **그 검사가 실패했을 때만** 쓴다.
-    # 아무 검사나 하나 실패하면 찍던 옛 코드는 통과한 판에도 실패를 적었다.
     _rf = regret_facts(p11)
     if _rf and _rf["late"]["ok"] is False:
         A("- 폐루프 정책은 **수렴 후 후회 기준(%s)을 아직 못 맞춘다**"
@@ -1867,13 +1638,8 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
              if _rf["late"]["limit"] is not None
              else cell(_rf["late"]["label"]) or "p11 의 수렴 후 검사",
              sgn(_rf["late"]["value"], 3)))
-    # 🩸 2026-08-26 도현님 지시 이행: 자(허용집합 1 ms)는 건드리지 않고
-    #    **한계로 적는다.** 조건부인 이유는 위 _rf 와 같다 - 정밀도가 자
-    #    아래로 내려가면 이 문단은 스스로 사라져야 한다.
     _rk = ruler_facts(p11, p17)
     if _rk and _rk["finer"]:
-        # 🩸 2026-09-07 - 뒷문장의 수(필요 표본 · p17/p18 부호)를 원자료에서
-        #    읽는다(sample_facts). 없으면 그 문장은 빠진다.
         _sf = sample_facts(p17, p18) or {}
         _tail = ""
         if _sf.get("p18_n_plugin") and _sf.get("p18_n_now"):
@@ -1983,7 +1749,6 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
       '④ 패리티는 도착 순서와 손실 위치에 따라 복구 또는 증폭 신용에 기여한다. '
       '복구에 쓴 바이트를 추가 신용으로 중복 계산할 수 없고, 복구 한도를 넘는 손실에는 재전송이 필요하다.</div>')
 
-    # 1. 비행 구조
     A('<h2>1. 첫 비행 구조 (Initial 키로 복호해 실측)</h2>')
     A('<table><tr><th>그룹</th><th>Initial</th><th>k</th><th>C</th>'
       '<th>PADDING</th><th>채움률</th><th>제자리 가능?</th></tr>')
@@ -2000,7 +1765,6 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
       'x25519 는 <b>원리적으로</b> 비행 내부 보호가 불가능하다. '
       'ML-KEM 은 k=2 지만 채움률이 절반을 넘어 역시 불가.</div>')
 
-    # 2. 임계
     A('<div class="cols"><div>')
     A('<h2>2. 증폭 임계 — 팀 자료 재현</h2>')
     A('<table><tr><th>그룹</th><th>팀</th><th>우리</th><th>일치</th></tr>')
@@ -2018,7 +1782,7 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
     A('<h2>3. 바이트만 늘려도 임계가 이동 (허용=ceil(3B/P)·P)</h2>')
     A('<table><tr><th>그룹</th><th>Initial</th><th>첫비행 B</th>'
       '<th>허용 A</th><th>A/B</th><th>임계</th></tr>')
-    for r in sweep_rows(p2):           # 본문 §3-2 와 **같은 술어**
+    for r in sweep_rows(p2):
         cb = r["first_flight_bytes"]
         al = amplif.allowed_bytes(cb)
         A('<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td>'
@@ -2029,7 +1793,6 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
     A('</table>')
     A('</div></div>')
 
-    # 4. 패리티 효과
     A('<h2>4. 패리티가 임계를 밀어올린다</h2>')
     A('<table><tr><th>그룹</th><th>팔</th><th>클라 바이트</th><th>임계</th>'
       '<th>기준선 대비</th></tr>')
@@ -2049,7 +1812,6 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
              "k" if d > 0 else "", d))
     A('</table>')
 
-    # 5. 손실 효과
     A('<h2>5. 손실 조건 효과 (c2s 손실, cert %s B, RTT %s ms)</h2>'
       % ((p3 or {}).get("cert", "?"), fmt((p3 or {}).get("rtt_ms"), 0)))
     A('<table><tr><th>그룹</th><th>손실</th><th>팔</th><th>p50</th>'
@@ -2067,12 +1829,9 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
              fmt(100 * (r["pto_rate"] or 0)), r["srv_recovered"]))
     A('</table>')
 
-    # 6. 검증
     A('<h2>6. 검증</h2><ul>')
     if cliff and cliff["with_edge"]:
         seg = []
-        # 🩸 본문과 같은 규칙 — **경계를 찾은 판만** 센다. "k 에 무관" 은
-        # same_boundary(경계를 찾은 판이 둘 이상이고 그 값이 하나)일 때만.
         for s in cliff["with_edge"]:
             e = s["edge"]
             seg.append("%s%s ips %d→%d, %s→%s ms%s"
@@ -2104,8 +1863,6 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
           '용량 정리 완전탐색 반례 탐색, 불변식</li>'
           % (p5["passed"], p5["total"]))
     if p11:
-        # 🩸 여기서도 판정 문구를 굳히지 않는다. 통과/실패는 p11 의 checks 에서,
-        # 두 값의 대소는 실제 비교에서 나온다.
         rf = regret_facts(p11)
 
         def _crit(f):
@@ -2169,7 +1926,6 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
 
 
 def prose_style(text):
-    """Keep generated prose punctuation consistent with the project style."""
     text = text.translate(str.maketrans({'—': ':', '–': '~', '“': '"', '”': '"'}))
     for marker in ('⚠️', '⚠', '✅', '❌', '🩸', '⭐', '🆕', '🔴', '🟡', '🔵'):
         text = text.replace(marker, '')
@@ -2177,7 +1933,6 @@ def prose_style(text):
 
 
 def source_manifest():
-    """Record input hashes and pipeline state without changing stored results."""
     try:
         import loop2
         state_path = os.path.join(HERE, "state", "loop2.json")
@@ -2236,7 +1991,6 @@ def manifest_markdown(manifest):
 
 
 def render_pdf(chrome, html, out):
-    """Publish a valid PDF atomically, preserving any previous report on failure."""
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="padfec-report-", ignore_cleanup_errors=True) as tmpdir:
         source = os.path.join(tmpdir, "report.html")
@@ -2260,7 +2014,6 @@ def render_pdf(chrome, html, out):
                 with open(candidate, "rb") as f:
                     content = f.read()
                 if content.startswith(b"%PDF-") and b"%%EOF" in content[-1024:]:
-                    # Use a sibling temporary file for atomic replacement across volumes.
                     with tempfile.NamedTemporaryFile(dir=os.path.dirname(os.path.abspath(out)),
                                                       suffix=".pdf", delete=False) as f:
                         ready = f.name
@@ -2299,18 +2052,10 @@ def main(argv=None):
     p9 = load("p9_crossenv.json")
     p10 = load("p10_completeness.json")
     p11 = load("p11_adaptive.json")
-    # 🩸 p17 은 판정에 안 쓰고 **자기 정밀도(자리 효과)를 읽으려고만** 싣는다.
-    #    없으면 ruler_facts 가 None 을 내고 해당 한계 문단이 빠진다.
     p17 = load("p17_adaptive_value.json")
-    # 🩸 2026-09-07 - p18 은 「한계」절의 필요 표본·m3-m2 부호를 읽으려고 싣는다
-    #    (sample_facts). 그전에는 그 수가 문장에 박혀 있었다.
     p18 = load("p18_mmax.json")
-    # p12 는 아직 만드는 중일 수 있다. load() 관례대로 없으면 None 이고,
-    # 그때는 해당 절을 통째로 건너뛴다(조용히).
     p12 = load("p12_quantum.json")
     e21 = load("e21_budget_trace.json")
-    # 경계 절벽 직접 실측. 파일 이름이 판마다 다르므로(그룹 접미사가 붙기도
-    # 하고 안 붙기도 한다) 후보를 전부 훑고 **있는 것만** 싣는다.
     cliff_files = [(n, load(n)) for n in CLIFF_FILES]
     cliff_files = [(n, d) for n, d in cliff_files if d]
     cliff = cliff_facts(cliff_files)
@@ -2326,7 +2071,6 @@ def main(argv=None):
     if absent:
         print("없어서 건너뛴 절:", ", ".join(absent))
     if blank:
-        # 빈 것을 "없는 것"과 같이 취급하면 절이 통째로 사라진다. 구분해 찍는다.
         print("있지만 비어 있는 결과(절은 남긴다):", ", ".join(blank))
     if cliff:
         print("경계 절벽 자료 %d판: %s"
@@ -2372,7 +2116,6 @@ def main(argv=None):
     if unverified:
         warning = ("저장된 과거 결과 요약. 현재 코드에서 재검증 미확인: "
                    + ", ".join(unverified))
-        # Insert into the body after CSS, preserving a complete HTML document.
         notice = '<p style="font-size:9pt;border:1px solid #555;padding:6px">' + html_escape.escape(warning) + '</p>'
         html = html.replace("</style>", "</style>" + notice, 1)
     if not render_pdf(chrome, html, out):

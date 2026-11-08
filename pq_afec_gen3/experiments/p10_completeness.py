@@ -1,23 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P10 - 알고리즘의 **완성도**를 잰다. 잘 되는 것 말고 아직 안 되는 것을 찾는다.
-
-p5/p7/p8 은 "설계한 대로 도는가"를 본다. 여기서는 다른 것을 묻는다.
-
-    설계했지만 구현 안 된 것은 무엇인가
-    한 번도 시험하지 않은 영역은 어디인가
-    악의적인 입력을 받으면 어떻게 되는가
-
-한 번도 안 해 본 것들을 골랐다. 지금까지의 측정은 전부
-**순차 단일 연결 / RTT 50 ms / 손실 <= 5% / 정상 입력**이었다.
-
-  C1 동시 연결      여러 클라이언트가 겹칠 때 서버 자료구조가 섞이지 않는가
-  C2 극단 RTT       5 ms 와 300 ms 에서도 성립하는가 (타이머 상수가 RTT 에 묶여 있나)
-  C3 극단 손실      20% 에서 무너지지 않는가
-  C4 기형/악성 패리티 공격자가 만든 패리티에 서버가 죽거나 오작동하지 않는가
-  C5 장수명 서버    한 프로세스로 오래 돌 때 자료구조가 새지 않는가
-
-Output: experiments/results/p10_completeness.json
-"""
 from __future__ import annotations
 
 import json
@@ -37,7 +17,7 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
-import padbed as B                      # noqa: E402
+import padbed as B
 
 RTT_MS = 50.0
 CERT = 2955
@@ -57,7 +37,6 @@ def add(results, name, ok, detail, kind="시험"):
 
 
 def validate_client_rows(rows, expected, error=""):
-    """Reject incomplete or malformed runs before computing any success metric."""
     if error:
         raise ValueError("클라이언트 실행 오류: %s" % error)
     if len(rows) != expected:
@@ -95,14 +74,7 @@ def complete_summary(summary, expected):
                     for key in ("p50", "p95")))
 
 
-# ------------------------------------------------------------- C1 동시 연결
 def c1_concurrent(results):
-    """여러 클라이언트를 동시에 돌린다.
-
-    지금까지 모든 측정이 순차 단일 연결이었다. 서버의 recent/flights 는
-    연결이 섞여 들어와도 CRC 를 DCID 안에서만 맞추게 되어 있지만,
-    실제로 겹쳐 본 적이 없다.
-    """
     B.set_netem(RTT_MS / 2.0, loss_c2s=3.0)
     p, sp = B.start_server(CERT, fec="on")
     qamp = B.require_bin()
@@ -153,7 +125,6 @@ def c1_concurrent(results):
     return {"ok": tot_ok, "n": tot_n, "srv": ss, "clients": out}
 
 
-# ------------------------------------------------------------- C2 극단 RTT
 def tail_rate(v, thresh):
     if not v:
         return None
@@ -161,48 +132,10 @@ def tail_rate(v, thresh):
 
 
 def c2_rtt(results):
-    """RTT 를 극단으로 밀었을 때 두 가지를 따로 잰다.
-
-    🩸 처음에는 손실을 건 채 p95 만 비교했는데, 60 시행 x 3% 손실이면 손실
-    사건이 5 개뿐이라 95 분위가 또 경계에 놓인다. RTT 5 ms 에서
-    off 9.2 -> on 9.4 가 나왔는데 이게 오버헤드인지 잡음인지 구분이 안 됐다.
-
-    그래서 둘을 갈라 잰다.
-      비용  손실 0 에서 p50 차이 = **순수 오버헤드**
-      효과  손실 3% 에서 꼬리 비율(왕복 추가 시행 비율) 차이
-    """
     rows = []
     for rtt in (5.0, 50.0, 300.0):
-        # 🩸 2026-08-28 - 꼬리 기준이 `1.5 * rtt` 였다. 그 식은 **핸드셰이크가
-        #    딱 1 왕복**이라고 가정한다. 실제로는 RTT 에 비례하지 않는 고정
-        #    비용(암호 연산·직렬화·스케줄링)이 약 2 ms 붙는다 - 실측 세 점이
-        #    전부 같은 값을 말한다:
-        #        RTT   5 무손실 p50   6.94  (= RTT + 1.94)
-        #        RTT  50 무손실 p50  52.45  (= RTT + 2.45)
-        #        RTT 300 무손실 p50 302.10  (= RTT + 2.10)
-        #    그래서 기준까지의 여유가 RTT 마다 딴판이 된다:
-        #        RTT   5   7.50 - 7.09 =   0.41 ms  (왕복의  8%)
-        #        RTT  50  75.00 - 52.08 = 22.92 ms  (왕복의 46%)
-        #        RTT 300 450.00 - 302.19 = 147.81 ms (왕복의 49%)
-        #    RTT 5 에서는 자에 분해능이 없다. 2026-08-28 바퀴에서 중앙값이
-        #    **0.15 ms** 움직이자 표본의 58% 가 기준을 넘어가 꼬리가
-        #    11.5% -> 70.0% 로 찍혔다. FEC 가 나빠진 게 아니라 자가 무너진
-        #    것이다(RTT 50·300 에서는 같은 검사가 8.0%->0.5%, 2.0%->0.0% 로
-        #    주장대로 작동했다).
-        #
-        #    고친 기준: **기준선 팔(off)의 무손실 중앙값 + 0.5 왕복.**
-        #    이 검사의 진짜 주장은 「왕복이 하나 더 붙었나」이고, 그 판단의
-        #    기준점은 RTT 의 배수가 아니라 **손실 없을 때 실제로 걸린 시간**
-        #    이다. 두 팔에 같은 절대 기준을 써야 팔끼리 견줄 수 있으므로
-        #    off 팔 하나에서만 뽑는다(그러면 FEC 의 고정 오버헤드도 정직하게
-        #    FEC 쪽 꼬리에 잡힌다).
-        #
-        #    ⚠ `-gap` 은 **핸드셰이크 사이**의 간격이지(client.go:47
-        #    "gap between handshakes") 핸드셰이크 안의 간격이 아니다.
-        #    한 번의 지연에 영향을 주지 않으므로 RTT 에 맞춰 줄일 것이 없다.
         rec = {"rtt": rtt}
 
-        # (1) 비용 - 손실 0 에서 순수 오버헤드
         for arm, fec in (("off", "off"), ("on", "on")):
             B.set_netem(rtt / 2.0)
             p, sp = B.start_server(CERT, fec=fec)
@@ -212,8 +145,6 @@ def c2_rtt(results):
             finally:
                 B.stop_server(p)
             s = B.summarize(r, rtt_ms=rtt)
-            # p95 도 남긴다 - 아래 분해능 검사가 **이 팔 자신의 흔들림**을
-            # 자로 삼는다. 없으면 "여유가 충분한가"를 물을 수가 없다.
             rec["cost_" + arm] = {"p50": s["p50"], "mean": s["mean"],
                                   "p95": s["p95"], "ok": s["ok"], "n": s["n"]}
         cost_valid = all(complete_summary(rec["cost_" + arm], 150)
@@ -222,9 +153,6 @@ def c2_rtt(results):
                     if cost_valid else None)
         rec["overhead_ms"] = overhead
 
-        # 기준선 팔의 무손실 중앙값에서 기준을 뽑는다(위 🩸 참고).
-        # 못 재면 옛 식으로 물러서되, **물러섰다는 사실을 기록에 남긴다** -
-        # 조용히 옛 자로 채점하면 이 수리가 없던 일이 된다.
         _base = rec["cost_off"]["p50"]
         if _base is None:
             tail_thresh = 1.5 * rtt
@@ -237,7 +165,6 @@ def c2_rtt(results):
         rec["tail_headroom_ms"] = (
             tail_thresh - rec["cost_on"]["p50"] if cost_valid else None)
 
-        # (2) 효과 - 손실 3% 에서 꼬리 비율
         for arm, fec in (("off", "off"), ("on", "on")):
             B.set_netem(rtt / 2.0, loss_c2s=3.0)
             p, sp = B.start_server(CERT, fec=fec)
@@ -249,11 +176,6 @@ def c2_rtt(results):
             ss = B.read_server_stats(sp)
             s = B.summarize(r, rtt_ms=rtt)
             ms = [x["ms"] for x in r if x.get("ok")]
-            # 🩸 2026-08-28 - **연결별 ms 를 남긴다.** 2026-08-28 바퀴에서
-            #    이 검사가 붉어졌을 때 요약(tail/p50/ok/n)만 남아 있어서
-            #    **새 기준으로 재채점을 할 수 없었다.** 자를 고치면 옛
-            #    원자료를 다시 채점할 수 있어야 한다 - 안 그러면 자를 고칠
-            #    때마다 그 전 측정이 통째로 버려진다.
             rec["eff_" + arm] = {"tail": tail_rate(ms, tail_thresh),
                                  "p50": s["p50"], "ok": s["ok"], "n": s["n"],
                                  "rec": ss.get("recovered"),
@@ -263,18 +185,6 @@ def c2_rtt(results):
                                  "ms": ms}
         rows.append(rec)
 
-        # 🩸 2026-08-27 - **한쪽 꼬리만 본다.** 옛 조건은 `abs(overhead) < 1`
-        #    이었다. 이 검사의 주장은 「FEC 를 켜도 **비용이 안 든다**」이고,
-        #    팔이 기준선보다 **빨랐다**는 사실은 그 주장을 반박하지 않는다.
-        #    그런데 양쪽 꼬리를 보면 빠른 쪽도 실패로 찍힌다 - 실제로
-        #    2026-08-27 바퀴에서 RTT 50 이 **-1.13 ms**(더 빠름)로 붉어졌다.
-        #    p16 검사 2 가 2026-08-21 에 정확히 같은 이유로 같은 수리를
-        #    받았다("팔이 base 보다 빨랐다는 사실은 그 주장을 반박하지
-        #    않는다"). 같은 병이 다른 계기에 남아 있었다.
-        #
-        #    음수 쪽은 **감추지 않는다** - detail 에 그대로 적고, 그 크기가
-        #    자를 넘으면 「표류 의심」으로 드러낸다. 빠른 쪽으로 1 ms 를
-        #    넘는 것은 비용이 아니라 **측정이 흔들린다**는 신호이기 때문이다.
         _drift = "" if overhead is None or overhead > -1.0 else (
             "  ⚠ 기준선보다 %.2f ms 빨랐다 - 비용이 아니라 표류 의심"
             % (-overhead))
@@ -287,11 +197,6 @@ def c2_rtt(results):
 
         a, b = rec["eff_off"], rec["eff_on"]
 
-        # 🩸 2026-08-28 - **자에 분해능이 있는지 먼저 묻는다.** 위 🩸 에서
-        #    본 병은 "기준이 틀렸다"만이 아니라 "기준이 틀렸는데도 검사가
-        #    당당히 합격/불합격을 말했다"는 것이다. 기준까지의 여유가 이 팔
-        #    자신의 흔들림(무손실 p95-p50)에 묻히면, 이 검사는 FEC 가 아니라
-        #    잡음을 재는 것이다. 그때는 통과도 실패도 말하지 않는다.
         _jit = None
         if rec["cost_on"]["p95"] is not None and rec["cost_on"]["p50"] is not None:
             _jit = rec["cost_on"]["p95"] - rec["cost_on"]["p50"]
@@ -311,9 +216,6 @@ def c2_rtt(results):
                "?" if _head is None else "%.2f" % _head,
                "?" if _jit is None else "%.2f" % _jit))
 
-        # 분해능이 없으면 꼬리 비교는 **판정하지 않는다.** 조용히 통과시키면
-        # 진짜 회귀가 숨고, 조용히 실패시키면 오늘처럼 멀쩡한 알고리즘이
-        # 붉어진다. 둘 다 거짓말이므로 판정을 유보하고 그 사실을 적는다.
         if not _ruler_ok:
             add(results,
                 "C2 RTT %.0f ms - 손실 3%% 에서 꼬리 비율이 줄어드는가" % rtt,
@@ -336,7 +238,6 @@ def c2_rtt(results):
     return rows
 
 
-# ------------------------------------------------------------ C3 극단 손실
 def c3_highloss(results):
     rows = []
     for loss in (20.0,):
@@ -371,7 +272,6 @@ def c3_highloss(results):
     return rows
 
 
-# ----------------------------------------------------- C4 기형/악성 패리티
 def craft(dcid, k, m, index, symlen, crcs, lens, sym, blen=None):
     body = b"PFEC" + bytes([1]) + struct.pack(">H", 7) \
         + bytes([k, m, index]) + struct.pack(">H", symlen)
@@ -388,11 +288,6 @@ def craft(dcid, k, m, index, symlen, crcs, lens, sym, blen=None):
 
 
 def c4_malformed(results):
-    """공격자가 만든 패리티를 서버에 직접 던진다.
-
-    우리 파서는 공격자 입력을 받는 자리다. 여기서 죽거나, 남의 연결을
-    건드리거나, 회계를 뚫으면 안 된다.
-    """
     B.set_netem(RTT_MS / 2.0)
     p, sp = B.start_server(CERT, fec="on")
     dcid = bytes(range(8))
@@ -425,7 +320,6 @@ def c4_malformed(results):
     time.sleep(0.6)
     alive_before = p.poll() is None
 
-    # 공격 뒤에도 정상 연결이 되는가
     try:
         r, cs, err = run_client_checked(GROUP, 30, fec="on", m=1, gap_ms=8,
                                         timeout_s=8, expect_k=K)
@@ -447,15 +341,7 @@ def c4_malformed(results):
     return {"sent": sent, "alive": alive_before, "srv": ss}
 
 
-# ----------------------------------------------------------- C5 장수명 서버
 def c5_longrun(results):
-    """한 서버로 오래 돌 때 처지는가.
-
-    🩸 처음에는 "처짐 < 2 ms" 같은 절대 기준을 썼는데 그게 틀렸다. 기준선(off)
-    도 같이 처지기 때문이다 - 실제로 off 가 -3.11 / +3.51 ms, on 이
-    -2.14 / +1.53 ms 로 **기준선이 더 흔들렸고 방향도 일정하지 않았다.**
-    호스트 스케줄링 잡음이지 우리 자료구조가 아니다. 그래서 기준선 대비로 본다.
-    """
     rec = {}
     for arm, fec in (("off", "off"), ("on", "on")):
         B.set_netem(RTT_MS / 2.0, loss_c2s=3.0)
@@ -491,9 +377,7 @@ def c5_longrun(results):
     return rec
 
 
-# --------------------------------------------------- 설계 대비 구현 재고조사
 def inventory(results):
-    """Source inventory only; the separate experiment stages establish behavior."""
     from padfec import policy
 
     sources, fingerprints = {}, {}
@@ -502,7 +386,6 @@ def inventory(results):
         with open(path, "rb") as stream:
             raw = stream.read()
         fingerprints[name] = hashlib.sha256(raw).hexdigest()
-        # Checking named code paths is narrower than finding a word in comments.
         sources[name] = re.sub(r"//[^\n]*|/\*.*?\*/", "", raw.decode("utf-8"),
                                flags=re.S)
     qamp, policy_go = sources["qamp.go"], sources["policy.go"]

@@ -1,4 +1,3 @@
-"""P7 result classification checks without network namespaces or live trials."""
 import contextlib
 import io
 import math

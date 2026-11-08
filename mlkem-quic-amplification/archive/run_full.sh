@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# 확장 스윕 (B) — MTU 1500 + 타임아웃 적용
 set -u
 QUICK="${1:-full}"
 PORT=45577

@@ -1,27 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P9 - 두 개의 서로 다른 실험 환경에서 같은 값이 나오는가.
-
-같은 결론이 하네스에 의존하면 그건 하네스의 성질이지 QUIC 의 성질이 아니다.
-그래서 완전히 다른 두 테스트베드에서 같은 것을 재고 대조한다.
-
-  환경 A - 인수인계 문서 환경 (2차)
-      qamp 한 바이너리가 quic.Transport{Conn: countConn} 으로 직결.
-      netns `peer`, veth v0/v1, 포트 44433, /tmp/qamp.
-      클라이언트와 서버 사이에 우리 프로세스가 **없다**.
-
-  환경 B - 1차 연구 환경
-      qclient --(UDP)--> shim tx --(veth)--> shim rx --(UDP)--> qserver
-      netns `rx`, veth veth-tx/veth-rx, 포트 4433.
-      클라이언트는 quic.DialAddr 를 쓰고(소켓을 라이브러리가 만든다),
-      경로 한가운데에 파이썬 중계 프로세스가 두 개 끼어 있다.
-      비행 묶기(3 ms), 1바이트 flight id 같은 이 환경 고유의 성질이 있다.
-
-둘은 코드도, 프로세스 구조도, 네임스페이스·장치·포트 이름도 다르다.
-그런데도 증폭 임계가 같은 칸에서 나오면, 그 임계는 우리 구현이 아니라
-RFC 9000 8.1 과 quic-go 의 성질이다.
-
-Output: experiments/results/p9_crossenv.json
-"""
 from __future__ import annotations
 
 import os
@@ -33,9 +9,9 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
-import padbed as B                               # noqa: E402
-import e20_amplification as E20                  # noqa: E402
-from _journal import Journal, code_fingerprint   # noqa: E402
+import padbed as B
+import e20_amplification as E20
+from _journal import Journal, code_fingerprint
 
 RTT_MS = 50.0
 N_PROBE = 15
@@ -51,13 +27,11 @@ def sh(cmd):
 
 
 def teardown_all():
-    """두 환경이 같은 주소를 쓰므로 갈아탈 때 완전히 걷어낸다."""
     for c in ("ip link del v0", "ip netns del peer",
               "ip link del veth-tx", "ip netns del rx"):
         sh(c)
 
 
-# ------------------------------------------------------------ 환경 A (문서)
 def probe_a(group, k, cert, n, jr):
     key = "A|%s|c%d|n%d" % (group, cert, n)
     if jr.has(key):
@@ -76,7 +50,6 @@ def probe_a(group, k, cert, n, jr):
     return rec
 
 
-# ------------------------------------------------------------ 환경 B (1차)
 def probe_b(group, cert, n, jr):
     key = "B|%s|c%d|n%d" % (group, cert, n)
     if jr.has(key):
@@ -144,7 +117,6 @@ def main():
 
     out = {"rtt_ms": RTT_MS, "team": TEAM, "A": {}, "B": {}, "compare": []}
 
-    # ------------------------------------------------------------ 환경 A
     log("=" * 100)
     log("환경 A - 인수인계 문서 환경 (qamp 직결, netns peer, v0/v1, :44433)")
     log("=" * 100)
@@ -161,7 +133,6 @@ def main():
         log("    => 임계 %s ~ %s B (첫 비행 %s B)"
             % (th["lo"], th["hi"], ref.get("first_flight_bytes")))
 
-    # ------------------------------------------------------------ 환경 B
     log("")
     log("=" * 100)
     log("환경 B - 1차 연구 환경 (qclient -> 심 -> 심 -> qserver, "
@@ -180,7 +151,6 @@ def main():
                                "note": th["note"]}
             log("    => 임계 %s ~ %s B" % (th["lo"], th["hi"]))
 
-    # ------------------------------------------------------------ 대조
     log("")
     log("=" * 100)
     log("두 환경 + 팀 자료 대조")
@@ -220,7 +190,7 @@ def main():
     out["all_agree"] = allok
 
     teardown_all()
-    B.setup()          # 다음 단계를 위해 문서 환경으로 되돌려 둔다
+    B.setup()
     print("saved:", B.save("p9_crossenv.json", out))
     return 0 if allok else 1
 

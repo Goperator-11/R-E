@@ -1,23 +1,4 @@
 #!/usr/bin/env bash
-# ============================================================
-#  run_baseline.sh — 2단계 기준선 스윕 (TLS 1.3 / TCP)
-#
-#  KEM 5종 × RTT 4수준 × 손실 5수준 × {균일, 버스트} 조건에서
-#  핸드셰이크 완료 시간(HCT)을 측정한다.
-#
-#  전 과정이 비특권 네트워크 네임스페이스 안에서 실행되므로
-#  sudo가 필요 없고, 호스트 네트워크에 영향을 주지 않는다.
-#
-#  사전 준비:
-#    conda activate oreo_34
-#    gcc -O2 hct_client.c -o hct_client \
-#        -I$CONDA_PREFIX/include -L$CONDA_PREFIX/lib -lssl -lcrypto \
-#        -Wl,-rpath,$CONDA_PREFIX/lib -lm
-#
-#  실행:
-#    bash run_baseline.sh            # 전체 스윕
-#    bash run_baseline.sh quick      # 축소판 (동작 확인용, 약 2분)
-# ============================================================
 set -u
 
 QUICK="${1:-full}"
@@ -27,18 +8,16 @@ BIN="$(pwd)/hct_client"
 CERT="$(pwd)/c.pem"
 KEY="$(pwd)/k.pem"
 
-# ---------- 실험 조건 ----------
 GROUPS="X25519 MLKEM512 MLKEM768 MLKEM1024 X25519MLKEM768"
 if [ "$QUICK" = "quick" ]; then
   RTTS="0 100"; LOSSES="0 2"; MODELS="uniform"; ITERS=50; WARMUP=10
 else
-  RTTS="0 10 50 100 200"          # 목표 왕복 지연 (ms)
-  LOSSES="0 0.5 1 2 5"            # 프레임 손실률 (%)
-  MODELS="uniform burst"          # 균일 랜덤 / Gilbert-Elliott 버스트
+  RTTS="0 10 50 100 200"
+  LOSSES="0 0.5 1 2 5"
+  MODELS="uniform burst"
   ITERS=500; WARMUP=20
 fi
 
-# ---------- 사전 점검 ----------
 [ -x "$BIN" ]  || { echo "오류: hct_client 없음. 먼저 컴파일하세요."; exit 1; }
 [ -f "$CERT" ] || {
   echo "인증서 생성 중..."
@@ -49,7 +28,6 @@ fi
 mkdir -p "$OUT"
 echo "출력 디렉터리: $OUT"
 
-# ---------- 네임스페이스 안에서 전체 스윕 실행 ----------
 export OUT BIN CERT KEY PORT GROUPS RTTS LOSSES MODELS ITERS WARMUP
 
 unshare -Urn bash <<'INNER'

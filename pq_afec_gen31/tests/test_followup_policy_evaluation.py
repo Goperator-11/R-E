@@ -1,4 +1,3 @@
-"""Offline acquisition-window regressions; no network, netns or measurements."""
 import contextlib
 import copy
 import io
@@ -42,7 +41,7 @@ class WindowTests(unittest.TestCase):
         _, evaluation = PE.block_window(blocks, [2], "round")
         self.assertEqual(train, [1])
         self.assertEqual(evaluation, [9, 9, 9, 9])
-        self.assertNotEqual(train, [1, 9])  # old success-array half
+        self.assertNotEqual(train, [1, 9])
 
     def test_missing_duplicate_empty_and_nonfinite_blocks_fail_closed(self):
         examples = [[], [block(1, [1]), block(1, [2])], [block(1, [None])],

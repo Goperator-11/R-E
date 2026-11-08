@@ -1,8 +1,6 @@
 #!/bin/bash
 echo "The historical live demo is disabled in gen33; a new isolated measurement protocol is required." >&2
 exit 2
-# A visible walk-through of the testbed: build it, show it, run real ML-KEM
-# QUIC handshakes through it with loss, and print what the FEC shim did.
 BIN="$HOME/quicbed_gen33/bin"
 QBED="$(cd "$(dirname "$0")" && pwd)"
 W=/tmp/livedemo

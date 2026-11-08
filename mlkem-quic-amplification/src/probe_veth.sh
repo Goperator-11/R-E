@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# veth 격리 방식 3가지를 순서대로 시험해 사용 가능한 것을 찾는다
 echo "=== 방식 A: 중첩 netns (ip netns) ==="
 unshare -Urnm bash -c '
 mount -t tmpfs none /run 2>/dev/null || echo "  tmpfs mount 실패"

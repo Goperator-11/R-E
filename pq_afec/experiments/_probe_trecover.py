@@ -1,22 +1,3 @@
-# -*- coding: utf-8 -*-
-"""T_recover 를 **결정적 소거**로 직접 잰다.
-
-왜 이 방법인가
---------------
-무작위 손실(netem)로는 손실 사건이 n=180 중 ~9 회뿐이라 평균이 잡음에 묻힌다
-(손실 실험의 잔차 RMSE 6.5 ms 가 그것이다). `-drop-initial` 로 **매 판마다**
-첫 비행의 특정 데이터그램을 버리면, 모든 표본이 손실 사건이 되어
-회복 비용이 한 번에 나온다.
-
-    T_recover = (소거 판 HCT) - (정상 판 HCT)
-
-세 팔
-    A 정상                      기준선
-    B 소거 + FEC 없음           회복 비용 그대로
-    C 소거 + 패리티 m=1         FEC 가 실제로 복구하는가 (A 로 돌아와야 한다)
-
-실행: unshare -Urnm python3 trec.py
-"""
 import json
 import os
 import sys
@@ -24,12 +5,12 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import padbed   # noqa: E402
+import padbed
 
 RTT_MS = 50.0
 N = 60
 WARMUP = 10
-CERT = 2308          # 명세 4-4 Tranco p5. 예측 임계 3340 아래 -> 정상은 1-RTT
+CERT = 2308
 IPS = 1280
 
 CASES = [
@@ -47,7 +28,7 @@ def main():
     padbed.require_root()
     padbed.require_bin()
     padbed.setup(mtu=1500)
-    padbed.set_netem(RTT_MS / 2.0, 0.0, 0.0)   # 손실 0 — 소거는 우리가 건다
+    padbed.set_netem(RTT_MS / 2.0, 0.0, 0.0)
 
     out = {"rtt_ms": RTT_MS, "cert": CERT, "ips": IPS, "n": N, "rows": []}
     srv = None

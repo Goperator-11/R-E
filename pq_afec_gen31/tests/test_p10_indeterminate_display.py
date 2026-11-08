@@ -1,4 +1,3 @@
-"""P10 unresolved effect is neither a displayed pass nor a counted failure."""
 import ast
 import contextlib
 import io

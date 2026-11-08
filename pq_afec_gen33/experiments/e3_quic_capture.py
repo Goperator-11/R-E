@@ -1,22 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E3 - QUIC Initial packet framing: analytic budget + REAL capture
-
-Part A: exact QUIC Initial CRYPTO capacity from RFC 9000 / RFC 9001 framing.
-        This replaces the estimated INITIAL_CRYPTO_CAPACITY = 1150.
-
-Part B: real QUIC handshakes (openssl s_client -quic) relayed through a local
-        UDP proxy that records every datagram and parses the long headers, so
-        we can COUNT how many Initial packets the ClientHello is split into
-        with and without ML-KEM.  This is the direct test of hypothesis H1
-        ("ML-KEM forces the ClientHello across multiple Initial packets").
-
-Output: experiments/results/e3_quic.json
-
-Standard library only.  ASCII console output.
-Network: makes ordinary outbound QUIC (UDP/443) connections to public web
-servers, exactly like a browser would.
-"""
 import json
 import os
 import socket
@@ -39,9 +20,7 @@ def _harden_console():
             pass
 
 
-# =========================================================== Part A: analytic
 def varint_len(v):
-    """RFC 9000 sec 16 variable-length integer encoding size."""
     if v < 2 ** 6:
         return 1
     if v < 2 ** 14:
@@ -53,29 +32,8 @@ def varint_len(v):
 
 def initial_crypto_capacity(datagram=1200, dcid=8, scid=8, pn_len=4,
                             token_len=0, crypto_offset=0, aead_tag=16):
-    """Bytes of TLS handshake data that fit in the CRYPTO frame of ONE Initial
-    packet that fills a `datagram`-byte UDP payload.
-
-    Long header (RFC 9000 sec 17.2.2 Initial Packet):
-      1  first byte (form/fixed/type/reserved/pn_len)
-      4  version
-      1  DCID Len  + dcid
-      1  SCID Len  + scid
-      v  Token Length (varint) + token
-      v  Length (varint)  -- covers packet number + payload + AEAD tag
-      p  Packet Number (1..4)
-    Then the protected payload and a 16-byte AEAD tag (RFC 9001 sec 5.3,
-    AEAD_AES_128_GCM).
-
-    CRYPTO frame (RFC 9000 sec 19.6):
-      1  frame type 0x06
-      v  Offset (varint)
-      v  Length (varint)
-    """
     fixed = 1 + 4 + 1 + dcid + 1 + scid
     tok = varint_len(token_len) + token_len
-    # Length field must encode (pn_len + payload + tag). For a 1200B datagram
-    # that value is > 63 and < 16384, so it is a 2-byte varint.
     len_field = 2
     header = fixed + tok + len_field + pn_len
     payload_budget = datagram - header - aead_tag
@@ -91,21 +49,16 @@ def initial_crypto_capacity(datagram=1200, dcid=8, scid=8, pn_len=4,
 
 
 def split_count(ch_bytes, cap_first, cap_next):
-    """How many Initial packets a ClientHello of ch_bytes needs."""
     if ch_bytes <= cap_first:
         return 1
     rest = ch_bytes - cap_first
     return 1 + (rest + cap_next - 1) // cap_next
 
 
-# ============================================================ Part B: capture
 LONG_TYPES = {0: "Initial", 1: "0-RTT", 2: "Handshake", 3: "Retry"}
 
 
 def parse_quic_datagram(buf):
-    """Parse coalesced QUIC packets in one UDP datagram.
-    Only the cleartext outer framing is read (header protection covers just the
-    low 4 bits of the first byte and the packet number, which we do not need)."""
     pkts = []
     i = 0
     n = len(buf)
@@ -131,10 +84,10 @@ def parse_quic_datagram(buf):
         scil = buf[j]; j += 1
         scid = buf[j:j + scil]; j += scil
         tok_len = 0
-        if ptype == 0:  # Initial carries a token
+        if ptype == 0:
             tok_len, j = read_varint(buf, j)
             j += tok_len
-        if ptype == 3:  # Retry: rest of datagram
+        if ptype == 3:
             pkts.append({"form": "long", "type": "Retry", "bytes": n - i,
                          "dcid_len": dcil, "scid_len": scil})
             break
@@ -261,7 +214,6 @@ def quic_handshake_through_relay(host, group, alpn="h3", timeout=25):
 
 
 def summarise_capture(log):
-    """Client Initial packets that carry the ClientHello, and server flight."""
     c_init = []
     s_init = []
     s_hs = []
@@ -281,7 +233,6 @@ def summarise_capture(log):
                     s_hs.append(p["packet_bytes"])
     c2s_dgrams = [e["udp_bytes"] for e in log if e["dir"] == "C2S"]
     s2c_dgrams = [e["udp_bytes"] for e in log if e["dir"] == "S2C"]
-    # the ClientHello flight = leading run of C2S datagrams before any S2C
     ch_flight = []
     for e in log:
         if e["dir"] == "S2C":
@@ -309,7 +260,6 @@ def summarise_capture(log):
     }
 
 
-# ===================================================================== main
 def main():
     _harden_console()
     print("=" * 78)
@@ -317,7 +267,6 @@ def main():
     print("=" * 78)
     out = {"analytic": {}, "capture": {}}
 
-    # ---- Part A
     print("")
     print("[A] analytic CRYPTO capacity of one Initial packet (RFC 9000/9001)")
     print("-" * 78)
@@ -346,7 +295,6 @@ def main():
     print("  -> INITIAL_CRYPTO_CAPACITY (first packet)  = %d" % base["crypto_capacity"])
     print("     capacity of each following Initial      = %d" % nxt["crypto_capacity"])
 
-    # measured ClientHello sizes from E2, if available
     e2p = os.path.join(RESULTS, "e2_tls_flights.json")
     if os.path.exists(e2p):
         with open(e2p, encoding="utf-8") as f:
@@ -366,7 +314,6 @@ def main():
             print("  %-22s %10d %8d" % (h["group"], ch, n))
         out["predicted_split_tcp_ch"] = pred
 
-    # ---- Part B
     hosts = os.environ.get("E3_HOSTS", "cloudflare.com,www.google.com").split(",")
     groups = os.environ.get(
         "E3_GROUPS", "x25519,X25519MLKEM768,SecP256r1MLKEM768,MLKEM768").split(",")

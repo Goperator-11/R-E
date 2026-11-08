@@ -1,4 +1,3 @@
-"""P16 pure-function and mocked collection regressions. Never execute main."""
 import ast
 import copy
 import datetime

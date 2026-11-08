@@ -1,18 +1,4 @@
 #!/bin/bash
-# 실험 환경 명세서 3-1 을 그대로 구현한다.
-#
-#   [기본 ns]  v0 10.9.0.1/24  <-- veth -->  v1 10.9.0.2/24  [peer ns]
-#              클라이언트                      서버
-#              MTU 1500                        MTU 1500
-#
-# 명세 3-2 의 교훈을 그대로 지킨다:
-#   1차 loopback+netem  -> 실패 (MTU 65536 이 조용히 유지됨)
-#   2차 단일 netns+veth -> 실패 (커널이 loopback 경로로 우회)
-#   3차 중첩 netns+veth -> 성공
-# 그래서 여기서는 **적용 여부를 반드시 확인**한다(ip link show / ip route get / ping).
-#
-# 사용: netbed.sh <RTT_ms> <LOSS> <명령...>
-#   LOSS 는 "5%"(균일) 또는 "gemodel 5% 50%"(버스트) 형태.
 set -e
 
 RTT_MS="${1:-50}"
@@ -30,7 +16,6 @@ fi
 export RTT_MS HALF NETEM_LOSS
 export INNER_CMD="$*"
 
-# 명세: sudo 없이 비특권 사용자 네임스페이스에서 수행한다.
 exec unshare -Urnm bash -c '
 set -e
 mount -t tmpfs none /run 2>/dev/null || true

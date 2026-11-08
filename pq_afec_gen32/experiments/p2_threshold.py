@@ -1,27 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P2 - 증폭 임계를 이분탐색으로 찾고, 패리티가 그것을 얼마나 밀어올리는지 잰다.
-
-재는 것
-  1. 각 (그룹, 팔)의 1-RTT -> 2-RTT 임계 인증서 크기
-  2. 팀 자료(3,300~3,400 / 5,900~6,000 B)와의 대조
-  3. 교환비 - 클라이언트 1 B 가 사들이는 인증서 여유 B (이론값 3.0)
-  4. 인수인계 문서 1-3 의 결정적 실험 재현: 알고리즘을 고정하고
-     InitialPacketSize(=패딩)만 늘려도 임계가 이동하는가
-  5. 바이트 회계 - 우리가 서버 예산을 부풀리지 않았는가
-
-팔
-  off  기준선
-  buf  버퍼링만 (패리티 없음). 버퍼링 비용을 FEC 효과에서 떼어낸다.
-  on1  패리티 1개
-  on2  패리티 2개
-
-고정 격자 대신 이분탐색을 쓴다. 임계가 이산적이고 단조라서 8번쯤이면
-100 B 해상도로 좁혀지고, 격자를 촘촘히 까는 것보다 20배쯤 싸다.
-경계가 흐릿하면(20~80%가 2-RTT) n 을 키워 다시 잰다 - 1차에서 격자가
-성기어 "메커니즘 거짓" 이라는 틀린 판정을 낸 적이 있다.
-
-Output: experiments/results/p2_threshold.json
-"""
 from __future__ import annotations
 
 import os
@@ -32,46 +8,33 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, ROOT)
 
-import padbed as B                               # noqa: E402
-from padfec import amplif                        # noqa: E402
-from _journal import Journal, code_fingerprint   # noqa: E402
+import padbed as B
+from padfec import amplif
+from _journal import Journal, code_fingerprint
 
 RTT_MS = 50.0
 N_PROBE = 15
 N_CONFIRM = 40
-RESOLUTION = 100          # 인증서 바이트 해상도
-# 🩸 상한은 16,000 B 다. 그 위(22,000 B)에서는 quic-go 클라이언트가
-# CRYPTO_BUFFER_EXCEEDED 로 핸드셰이크 자체를 실패한다(수신 CRYPTO 버퍼 한계).
-# 처음에 22,000 을 썼더니 **실패한 시행의 two_rtt_rate 가 None** 이 되고,
-# 그것이 "2-RTT 가 아니다" = "1-RTT" 로 읽혀 모든 팔의 임계가 통째로
-# 사라졌다. 실패는 1-RTT 가 아니다 - 아래 is_two_rtt 에서 따로 처리한다.
+RESOLUTION = 100
 LO, HI = 1500, 16000
 
 ARMS = [("off", "off", 1), ("buf", "buf", 1), ("on1", "on", 1),
         ("on2", "on", 2)]
-GROUPS = [("x25519", 1), ("X25519MLKEM768", 2)]   # (그룹, 자연 k)
+GROUPS = [("x25519", 1), ("X25519MLKEM768", 2)]
 
 TEAM = {"x25519": (3300, 3400), "X25519MLKEM768": (5900, 6000)}
 
 
 def probe(group, arm_fec, m, cert, k, n, jr):
-    """이 인증서 크기에서 2-RTT 비율을 잰다."""
     key = "%s|%s|m%d|c%d|n%d" % (group, arm_fec, m, cert, n)
     if jr.has(key):
         return jr.get(key)
     p, sp = B.start_server(cert, fec=("on" if arm_fec == "on" else arm_fec))
     rows, cs, err = B.run_client(group, n, fec=arm_fec, m=m, gap_ms=15,
                                  expect_k=k)
-    # 🩸 순서가 중요하다. 서버는 종료 신호를 받을 때 통계를 마지막으로
-    # 기록하므로, **먼저 죽이고 나서 읽어야** 마지막 시행들이 반영된다.
-    # 반대로 하면 복구 건수가 실제보다 적게 보고된다(40회 중 39회로 나왔다).
     B.stop_server(p)
     ss = B.read_server_stats(sp)
     s = B.summarize(rows, rtt_ms=RTT_MS)
-    # 🩸 2026-08-20 p13. 증폭 예산에 드는 패리티는 **첫 비행 몫뿐**이다.
-    # bytes_parity/n(연결 전체 평균)은 ACK 비행의 패리티까지 섞는데, 그 몫은
-    # 서버 첫 응답보다 한 왕복 늦게 도착해 예산과 무관하다. 이 오합산이
-    # p4 임계 예측을 FEC 팔에서 4,000~8,000 B 씩 빗나가게 한 진범이었다.
     ffp = sorted(r.get("first_flight_parity_bytes") or 0 for r in rows)
     rec = {"cert": cert, "n": s["n"], "ok": s["ok"], "p50": s["p50"],
            "two_rtt_rate": s["two_rtt_rate"],
@@ -89,7 +52,6 @@ def probe(group, arm_fec, m, cert, k, n, jr):
 
 
 def is_two_rtt(rec):
-    """2-RTT 인가. 성공한 시행이 없으면 판정 불가(None)를 돌려준다."""
     if (not rec.get("ok") or rec.get("ok") != rec.get("n")
             or rec.get("valid") is False or rec.get("error")):
         return None
@@ -121,7 +83,6 @@ def bisect_threshold(group, arm_fec, m, k, jr, log):
                     "note": "cert %d 에서 핸드셰이크 실패 - 판정 불가" % mid}
         rate = r["two_rtt_rate"] or 0.0
         if 0.2 < rate < 0.8:
-            # 흐릿한 경계는 표본을 키워 다시 본다
             r = probe(group, arm_fec, m, mid, k, N_CONFIRM, jr)
             if is_two_rtt(r) is None:
                 return {"lo": None, "hi": None,
@@ -160,12 +121,7 @@ def main():
             log("")
             log("[%s / %s] 임계 이분탐색" % (group, arm))
             th = bisect_threshold(group, fec, m, k, jr, log)
-            # 이 팔의 클라이언트 첫 비행 바이트(패리티 포함)를 확인용으로 하나 더
             ref = probe(group, fec, m, 3000, k, N_PROBE, jr)
-            # 🩸 p13 수정: 예산 회계는 첫 비행 원본 + **첫 비행** 패리티다.
-            # 예전에는 연결 전체 패리티 평균(parity_bytes_per_conn)을 더해
-            # ACK 비행 몫까지 섞였다(on1 인데 ~2,640 B). 옛 합계는
-            # client_bytes_total_legacy 로 남겨 무엇이 바뀌었는지 보이게 한다.
             client_bytes = (ref["first_flight_bytes"] or 0) + (
                 ref.get("ff_parity_bytes_med", 0) if fec == "on" else 0)
             legacy = (ref["first_flight_bytes"] or 0) + (
@@ -186,7 +142,6 @@ def main():
                 % (th["lo"], th["hi"], client_bytes,
                    amplif.budget(client_bytes)))
 
-    # ------------------------------------- 문서 1-3 재현: 바이트만 늘려도 이동?
     log("")
     log("=" * 92)
     log("인수인계 문서 1-3 재현 - 알고리즘 고정, InitialPacketSize(패딩)만 변경")
@@ -198,7 +153,6 @@ def main():
                 rec = jr.get(key)
             else:
                 lo, hi = LO, HI
-                # 이분탐색을 ips 를 건 채로 다시
                 def pr(cert, n):
                     kk = "%s|off|ips%d|c%d|n%d" % (group, ips, cert, n)
                     if jr.has(kk):
@@ -240,7 +194,6 @@ def main():
                 % (rec["group"], rec["ips"], rec["first_flight_bytes"],
                    rec["threshold_lo"], rec["threshold_hi"]))
 
-    # ------------------------------------------------------------- 교환비
     log("")
     log("=" * 92)
     log("교환비 - 클라이언트 1 B 가 사들이는 인증서 여유 (이론값 3.0)")
@@ -261,7 +214,6 @@ def main():
                            "d_threshold": dt, "ratio": dt / float(db)})
                 log("  %-16s 클라 +%-5d B  ->  임계 +%-6.0f B   비 %.2f"
                     % (group, db, dt, dt / float(db)))
-    # FEC 팔에서도: 패리티가 만든 임계 이동 / 패리티 바이트
     for group, _k in GROUPS:
         base = [r for r in out["thresholds"]
                 if r["group"] == group and r["arm"] == "off"]
@@ -288,7 +240,6 @@ def main():
         out["exchange"]["mean_ratio"] = sum(rs) / len(rs)
         log("  인접 두 점의 비 평균 %.2f  <- 계단 때문에 의미가 약하다"
             % out["exchange"]["mean_ratio"])
-    # 전 구간 회귀 기울기 (양자화를 평균해 없앤다)
     for group, _k in GROUPS:
         pts = [(r["first_flight_bytes"],
                 0.5 * (r["threshold_lo"] + r["threshold_hi"]))
@@ -304,7 +255,6 @@ def main():
             out["exchange"]["slope_" + group] = slope
             log("  %-16s 전 구간 회귀 기울기 %.2f (이론 3.00)"
                 % (group, slope if slope is not None else -1))
-    # 양자화 모형이 관측 임계를 맞추는가
     log("")
     log("양자화 모형 대조  허용 = ceil(3*클라 / 1280) * 1280,  임계 = 허용 - s0")
     s0s = []
@@ -320,7 +270,6 @@ def main():
                f["s0_mid"]))
     out["s0_estimates"] = [{"group": g, "s0": v} for g, v in s0s]
 
-    # ------------------------------------------------------- 팀 자료 대조
     log("")
     log("팀 자료 대조")
     for group, (tlo, thi) in TEAM.items():
@@ -337,13 +286,6 @@ def main():
                "일치" if agree else "불일치"))
         o["team_agrees"] = agree
 
-    # ------------------------------------------------------------ 판정
-    # 2026-08-21 - 이 단계는 그전까지 **무조건 `return 0`** 이었다.
-    # 증폭 임계는 이 연구의 **핵심 관측**이고 p4·p9·p12 가 전부 여기에
-    # 얹혀 있는데, 이분탐색이 실패해 임계를 못 정해도, 팀 자료와
-    # 어긋나도, 팔 순서가 뒤집혀도 loop2 에 "완료" 로 남았다.
-    # 여기 넣는 것은 전부 **이미 계산돼 있던 값**이다 - 재지 않고
-    # 버려지고 있었다(team_agrees 가 대표적이다).
     checks = []
 
     def add(name, ok, detail):

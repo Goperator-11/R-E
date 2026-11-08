@@ -533,8 +533,6 @@ func p3ValidateMass(xs []float64, n int, name string) error {
 	return nil
 }
 
-// p3BinNeededChecked preserves binNeeded's floating-point comparisons while
-// keeping its integer byte products exact and limiting correction to one step.
 func p3BinNeededChecked(s float64, baseBin int, cPkt float64) (int, error) {
 	if !p3Finite(s) || s <= 0 || !p3Finite(cPkt) || cPkt < 0 || cPkt >= serverPacketSize {
 		return 0, errors.New("invalid server bytes or c_pkt for bin calculation")
@@ -845,8 +843,6 @@ func p3Context(st *p3State, w int, u, rtt, cPkt float64) (*p3Ctx, bool) {
 	return &p3Ctx{K: k, S: s, NNeed: nNeed, W: w, U: u, RTT: rtt}, true
 }
 
-// p3PredictStep advances the channel prior without treating a skipped observation
-// as evidence for either loss outcome or for a particular hazard.
 func p3PredictStep(post [][]float64, w []float64) ([][]float64, []float64) {
 	inv := 1.0 / float64(p3NG)
 	newPost := make([][]float64, p3NH)
@@ -1714,8 +1710,6 @@ func p3CloneState(st *p3State) *p3State {
 	return &next
 }
 
-// candidate and commit are called with c.mu held. Failed policy calls never
-// publish their candidate, including destination creation and RTT metadata.
 func (c *destCache3) candidate(addr string) *cache3Entry {
 	e := c.Dests[addr]
 	if e == nil {

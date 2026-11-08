@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Sequenced UDP probe - one half of the netem loss-trace collector.
-
-  --role recv : bind, record which sequence numbers arrived, write a bitmap
-  --role send : send N sequenced datagrams at a fixed rate, then sentinels
-
-The receiver writes a raw bitmap (bit i set = packet i arrived) so that the
-exact loss pattern - not just the loss rate - can be replayed later through
-the simulator.  Standard library only, ASCII output.
-"""
 import argparse
 import os
 import socket
@@ -43,7 +32,6 @@ def recv_main(a):
     sentinels = 0
     first_t = None
     last_t = None
-    # signal readiness
     with open(a.ready, "w") as f:
         f.write("ready\n")
     while True:
@@ -102,10 +90,9 @@ def send_main(a):
                 break
             except OSError as e:
                 errs += 1
-                if errs > a.n:      # give up rather than spin forever
+                if errs > a.n:
                     break
                 time.sleep(0.0005)
-        # pacing: absolute schedule so drift does not accumulate
         target = t0 + (i + 1) * interval
         now = time.perf_counter()
         gap = target - now

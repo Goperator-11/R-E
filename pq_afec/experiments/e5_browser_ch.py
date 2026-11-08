@@ -1,20 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E5 - real browser ClientHello sizes (the other end of the ch_base range)
-
-`openssl s_client` sends a minimal ClientHello (measured in E4: 232 bytes of
-non-key-share content).  Real browsers send much larger ones (GREASE, ALPN,
-SNI, session tickets, compressed certificates, ...).  Because the Initial
-CRYPTO budget is a hard 1150 bytes, ch_base decides whether a given ML-KEM
-parameter set splits the ClientHello or not, so we need both ends of the range.
-
-Part A: Chrome over TLS/TCP to a local listener  -> browser ch_base (TCP)
-Part B: Chrome over QUIC through a recording relay to a real server
-        -> browser ch_base (QUIC, includes quic_transport_parameters)
-        Best effort: needs --host-resolver-rules to work and UDP/443 free.
-
-Output: experiments/results/e5_browser_ch.json
-"""
 import json
 import os
 import shutil
@@ -30,7 +13,7 @@ RESULTS = os.path.join(HERE, "results")
 os.makedirs(RESULTS, exist_ok=True)
 sys.path.insert(0, HERE)
 
-from e4_quic_decrypt import (  # noqa: E402
+from e4_quic_decrypt import (
     iter_long_packets, initial_keys, decrypt_initial, parse_frames,
     parse_client_hello, EXT_NAMES)
 
@@ -60,9 +43,7 @@ def find_browser():
     return None
 
 
-# ------------------------------------------------------ Part A: TCP listener
 def capture_tcp_clienthello(timeout=25):
-    """Accept one TCP connection, read the TLS record holding the ClientHello."""
     srv = socket.socket()
     srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     srv.bind(("127.0.0.1", 0))
@@ -112,7 +93,6 @@ def capture_tcp_clienthello(timeout=25):
     return port, t, result
 
 
-# ---------------------------------------------------- Part B: QUIC relay@443
 class Relay443(object):
     def __init__(self, host, port=443):
         infos = socket.getaddrinfo(host, port, 0, socket.SOCK_DGRAM)
@@ -255,7 +235,6 @@ def main():
               "--no-default-browser-check", "--disable-extensions",
               "--disable-background-networking", "--no-sandbox"]
 
-    # ---- Part A: TLS over TCP
     print("")
     print("[A] browser ClientHello over TLS/TCP (local listener)")
     port, t, res = capture_tcp_clienthello()
@@ -284,7 +263,6 @@ def main():
     else:
         print("  FAILED: %s" % res.get("error", "no ClientHello captured"))
 
-    # ---- Part B: QUIC through relay on udp/443
     print("")
     print("[B] browser ClientHello over QUIC (relay on udp/443 -> cloudflare.com)")
     host = os.environ.get("E5_HOST", "cloudflare.com")

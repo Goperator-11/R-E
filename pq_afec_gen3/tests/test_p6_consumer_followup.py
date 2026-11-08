@@ -1,4 +1,3 @@
-"""Pure P6 consumer checks, without report main, rendering, or experiments."""
 import ast
 import copy
 from pathlib import Path

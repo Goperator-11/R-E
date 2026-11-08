@@ -1,11 +1,3 @@
-// qamp — QUIC 증폭 제한(RFC 9000 §8.1) 실험 도구
-//
-// 서버 인증서 크기를 조절해 증폭 예산 초과 여부에 따른 핸드셰이크 비용을 측정한다.
-// 송수신 데이터그램을 직접 계측하므로 tcpdump·특별 권한이 필요 없다.
-//
-// 빌드: CGO_ENABLED=0 go build -o qamp qamp.go
-// 서버: ./qamp -mode server -addr 10.9.0.2:44433 -group X25519MLKEM768 -certsize 16000
-// 측정: ./qamp -mode client -addr 10.9.0.2:44433 -group X25519MLKEM768 -n 500 -summary
 package main
 
 import (
@@ -36,7 +28,6 @@ import (
 
 const alpn = "rne-amp"
 
-// ---------- 데이터그램 계측 래퍼 ----------
 type countConn struct {
 	net.PacketConn
 	mu       sync.Mutex
@@ -88,10 +79,6 @@ func sum(a []int) int {
 	return t
 }
 
-// ---------- 인증서 생성 (크기 조절) ----------
-// 더미 확장에 패딩을 넣어 목표 바이트 수에 맞춘다.
-// 실제 ML-DSA 서명을 쓰지 않고 전송 바이트만 재현하는 방식으로,
-// Kempf 외(NIST 5th PQC Conf, 2024)의 "inflated certificate chain"과 동일한 접근.
 func makeCert(target int) (tls.Certificate, int) {
 	build := func(pad int) ([]byte, *ecdsa.PrivateKey) {
 		key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
@@ -123,7 +110,6 @@ func makeCert(target int) (tls.Certificate, int) {
 		return der, key
 	}
 
-	// 1차: 패딩 없이 기준 크기 측정
 	base, _ := build(0)
 	pad := 0
 	if target > len(base) {
@@ -131,7 +117,6 @@ func makeCert(target int) (tls.Certificate, int) {
 	}
 	der, key := build(pad)
 
-	// 2차 보정 (ASN.1 길이 인코딩 오차)
 	if diff := target - len(der); pad > 0 && diff != 0 && pad+diff > 0 {
 		der, key = build(pad + diff)
 	}
@@ -246,8 +231,6 @@ func runClient(addr, group string, n, warmup, timeoutMs, initialSize int, csvPat
 
 	for attempt := 0; attempt < n+warmup; attempt++ {
 		i := attempt - warmup
-		// Separate sockets prevent delayed packets from the preceding connection
-		// entering this connection's byte counters.
 		pc, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.IPv4zero, Port: 0})
 		if err != nil {
 			log.Fatal(err)

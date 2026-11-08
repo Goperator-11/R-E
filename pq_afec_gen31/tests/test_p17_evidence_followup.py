@@ -1,4 +1,3 @@
-"""Oracle rounding, conditional adaptation lag and actual telemetry denominators."""
 import ast
 import math
 from pathlib import Path

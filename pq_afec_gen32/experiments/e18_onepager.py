@@ -1,16 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E18 - one-page summary of the whole study, straight from the result JSON.
-
-Every number is read from experiments/results/*.json at build time, so the
-sheet cannot drift from the raw data.  Renders A4 portrait via headless Chrome.
-
-Templating note: the page is full of CSS percent signs, so %-formatting is a
-trap (it dies on `width:100%;`).  Values are pre-formatted into strings and
-substituted with plain @@KEY@@ replacement instead.
-
-    python experiments/e18_onepager.py [--out <path.pdf>]
-"""
 import argparse
 import json
 import os

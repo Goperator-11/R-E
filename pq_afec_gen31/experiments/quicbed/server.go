@@ -1,9 +1,3 @@
-// QUIC server for the PQ-AFEC testbed.
-//
-// Go's crypto/tls speaks X25519MLKEM768 natively, so this is a REAL ML-KEM
-// QUIC handshake - not an emulation.  The certificate chain is padded to a
-// configurable DER size so the server flight matches what a real web server
-// sends (measured in E3: Cloudflare 2,955 B, Google 5,299 B).
 package main
 
 import (
@@ -40,8 +34,6 @@ func makeCert(padTo int) tls.Certificate {
 		IsCA:         false,
 		BasicConstraintsValid: true,
 	}
-	// Pad with a dummy non-critical extension until the DER hits the target
-	// size, so the server's Handshake flight is realistically large.
 	der, err := x509.CreateCertificate(rand.Reader, tmpl, tmpl, &key.PublicKey, key)
 	if err != nil {
 		panic(err)

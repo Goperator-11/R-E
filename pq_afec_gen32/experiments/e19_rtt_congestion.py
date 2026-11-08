@@ -1,40 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E19 - RTT sweep and CONGESTION reproduction  (연구 내용 2, 1차에서 빠진 부분)
-
-계획서 「2. 실험 환경 구축」은 세 가지를 재현하라고 한다:
-    RTT 변화 · 패킷 손실률 증가 · 네트워크 혼잡 상황
-1차는 **손실만** 했다. 이 파일이 나머지 둘을 채운다.
-
-혼잡을 빼먹은 것이 특히 아팠던 이유
-------------------------------------
-알고리즘의 비용식은 J(r) = (1+β·g)·t_tx(r) + P_fail·T_recover 이고, g 는
-"이 손실이 혼잡 때문인가"라는 확신도다. 설계의 핵심 주장 중 하나가
-**"혼잡 손실에 이중화로 대응해 상황을 악화시키는 사고를 구조적으로 막는다"**
-인데, 1차는 혼잡을 한 번도 만들어 보지 않아 그 주장을 검증하지 못했다.
-
-혼잡을 만드는 법: netem 은 손실·지연만 준다. 큐가 차서 생기는 지연은
-**대역 제한(tbf)** 이 있어야 나온다. tbf 로 링크 용량을 못박고 그 위로
-제안 부하를 올리면 큐가 부풀고 RTT 가 오른다 - 그게 진짜 혼잡이다.
-
-부수 효과: 1차의 마지막 미해결 문제도 이걸로 풀린다. 버스트 조건에서
-송신측이 병목이 됐던 것은 링크에 대역 상한이 없어 혼잡제어의 동작점이
-오직 손실로만 정해졌기 때문이다. 대역을 명시하면 동작점이 정의된다.
-
-측정
-----
-A. RTT 스윕      : 설정 RTT 대비 실측 RTT (netem delay 가 정확한가)
-B. 혼잡 계단     : 대역의 50/80/100/120% 부하 -> 큐 지연, 손실, RTT 팽창
-C. 판별력 검증   : CongestionDetector.g 가
-                   혼잡(큐 팽창)에서 1 로,
-                   링크 오류(netem loss, 큐 비어 있음)에서 0 으로 가는가
-                   ← 알고리즘의 핵심 주장
-
-네임스페이스 안에서 실행 (root 불필요):
-    unshare -r -m -n python3 experiments/e19_rtt_congestion.py
-
-Output: experiments/results/e19_rtt_congestion.json
-"""
 import argparse
 import json
 import os
@@ -49,8 +12,8 @@ sys.path.insert(0, ROOT)
 sys.path.insert(0, HERE)
 os.makedirs(RESULTS, exist_ok=True)
 
-from _journal import Journal, code_fingerprint      # noqa: E402
-from afec.estimator import CongestionDetector       # noqa: E402
+from _journal import Journal, code_fingerprint
+from afec.estimator import CongestionDetector
 
 TX, RX = "10.9.0.1", "10.9.0.2"
 PORT = 39101
@@ -97,7 +60,6 @@ def clear_qdisc():
 
 
 def set_delay(one_way_ms, loss_spec=""):
-    """netem delay only, symmetric. RTT = 2 x one_way."""
     clear_qdisc()
     spec = "delay %.3fms %s" % (one_way_ms, loss_spec)
     run("tc qdisc add dev veth-tx root netem limit 50000 %s" % spec)
@@ -106,11 +68,6 @@ def set_delay(one_way_ms, loss_spec=""):
 
 
 def set_shaped(rate_mbit, one_way_ms, burst_kb=32, limit_kb=256, loss_spec=""):
-    """tbf(대역 제한) 위에 netem(지연) - 큐가 차면 진짜 큐 지연이 생긴다.
-
-    tbf 를 root 에 두고 netem 을 그 자식으로 붙인다. 이렇게 해야 토큰이
-    모자랄 때 tbf 의 큐에 쌓이면서 지연이 늘어난다(= 혼잡).
-    """
     clear_qdisc()
     for dev, pre in (("veth-tx", ""), ("veth-rx", "ip netns exec rx ")):
         run("%stc qdisc add dev %s root handle 1: tbf rate %.3fmbit "
@@ -131,7 +88,6 @@ def ping_rtt(n=30):
 
 
 def probe(n, pps, size=1200, idle=4.0):
-    """순번 UDP 프로브를 흘려 손실과 도착 시각을 잰다."""
     mask = os.path.join(WORK, "m.bin")
     ready = os.path.join(WORK, "ready")
     for f in (mask, ready):
@@ -188,7 +144,6 @@ def main():
     out = {"rate_mbit": a.rate_mbit, "probe_n": a.probe_n, "size": a.size,
            "rtt_sweep": {}, "congestion": {}, "detector": {}}
 
-    # ---------------------------------------------------------- A. RTT 스윕
     print("")
     print("[A] RTT 스윕 — netem delay 가 설정대로 나오는가")
     print("%10s %12s %12s %12s %10s" %
@@ -208,7 +163,6 @@ def main():
         print("%9.0fms %11.2fms %11.2fms %11.2fms %9.1f%%" %
               (rtt, rec.get("min", 0), rec.get("avg", 0), rec.get("max", 0), err))
 
-    # -------------------------------------------------- B. 혼잡 계단 (tbf)
     print("")
     print("[B] 혼잡 계단 — 대역 %.0f Mbit/s 에 부하를 올린다" % a.rate_mbit)
     print("   (netem 은 손실·지연만 준다. 큐가 차서 생기는 지연은 대역 제한이")
@@ -227,7 +181,6 @@ def main():
             idle = ping_rtt(20)
             pps = cap_pps * load / 100.0
             n = max(int(pps * 6), 2000)
-            # 부하를 거는 동안 RTT 를 잰다
             sender = subprocess.Popen(
                 [sys.executable, PROBE, "--role", "send", "--host", RX,
                  "--port", str(PORT), "--n", str(n), "--pps", str(pps),
@@ -247,7 +200,6 @@ def main():
         print("%7.0f%% %10.0f %11.2fms %11.2fms %11.1f%% %9.4f" %
               (load, rec["offered_pps"], i, b, 100 * infl, rec["loss_rate"]))
 
-    # ------------------------------------------- C. 혼잡 판별력 (핵심 검증)
     print("")
     print("[C] 혼잡 판별력 — g 가 '왜 잃었는가'를 실제로 구분하는가")
     print("   설계의 핵심 주장: 혼잡 손실에 이중화로 대응하면 상황이 악화되므로")
@@ -255,9 +207,7 @@ def main():
     print("%-26s %12s %12s %8s" % ("시나리오", "기저 RTT", "관측 RTT", "g"))
     print("-" * 62)
     scenarios = []
-    # 1) 링크 오류: 손실은 있는데 큐는 비어 있다
     scenarios.append(("링크 오류 (손실 5%, 큐 여유)", False, "loss 5%", 40.0))
-    # 2) 혼잡: 손실 설정은 없는데 큐가 차서 지연이 오른다
     scenarios.append(("혼잡 (대역 초과, 손실설정 없음)", True, "", 120.0))
     for label, shaped, loss, load in scenarios:
         key = "det/%s" % label
@@ -281,7 +231,6 @@ def main():
             sender.wait(timeout=120)
             rec = {"idle": idle, "busy": busy}
             jr.record(key, rec)
-        # 실제 제어기에 그 RTT 표본을 먹여 g 를 뽑는다
         det = CongestionDetector()
         for _ in range(30):
             det.observe_rtt(rec["idle"].get("min", base_rtt_ms))
@@ -293,7 +242,6 @@ def main():
         print("%-26s %11.2fms %11.2fms %8.2f" %
               (label, rec["idle"].get("avg", 0), rec["busy"].get("avg", 0), g))
 
-    # ---------------------------- D. 그래서 이중화가 실제로 눌리는가 (마지막 고리)
     print("")
     print("[D] 측정된 g 를 비용식에 넣으면 이중화가 실제로 눌리는가")
     print("   판별만 잘해도 소용없다. J = (1+β·g)·t_tx + P_fail·T_recover 에서")
@@ -306,7 +254,6 @@ def main():
     link_r = cong_r = None
     for label, v in out["detector"].items():
         g = v["g"]
-        # 같은 손실률(5%)을 주고 g 만 다르게 해서 g 의 효과만 분리한다
         d = choose_redundancy(k, 0.05, 2.0, 2.0 * base_rtt_ms, g, cfg)
         v["r_under_g"] = d.r
         v["overhead_under_g"] = d.r / k if k else 0
@@ -324,7 +271,6 @@ def main():
 
     clear_qdisc()
 
-    # ------------------------------------------------------------ 자기검사
     print("")
     print("자기검사")
     ok = True

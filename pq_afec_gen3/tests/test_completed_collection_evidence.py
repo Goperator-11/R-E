@@ -1,4 +1,3 @@
-"""Failed returned rows must never count as successful collection coverage."""
 import ast
 import datetime as dt
 import math

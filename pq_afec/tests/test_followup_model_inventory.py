@@ -1,4 +1,3 @@
-"""Offline checks for sample guidance, source inventory and incomplete P10 runs."""
 import contextlib
 import io
 import json

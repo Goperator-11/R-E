@@ -1,22 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E17 - verify the audit claims, then verify the FIXES
-
-A multi-agent audit produced a list of alleged defects, but its refutation
-stage died on a usage limit, so every claim arrived UNVERIFIED.  This script
-reproduced all 8 against the real code (all 8 confirmed, 2026-08-18), and now
-guards the fixes.
-
-⚠️ A subtlety that bit once already: after fixing, a check must exercise the
-FIXED CODE PATH, not the old phenomenon.  For example H10 was fixed by making
-shield() use GilbertElliott.for_prior(); GilbertElliott.from_burst(p, 1.0)
-still has ft = 0, and always will - that is what L=1 means.  Testing the
-constructor would keep reporting a defect that no longer reaches any decision.
-So each check below asks: does the DECISION the algorithm actually makes still
-have the defect?
-
-Each check prints CONFIRMED (defect still reaches a decision) or refuted.
-"""
 import math
 import os
 import sys
@@ -25,11 +6,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 
-from afec import FecConfig, PathStatsCache, profile, shield   # noqa: E402
-from afec.channel import GilbertElliott                       # noqa: E402
-from afec.controller import choose_redundancy, pto_ms         # noqa: E402
-from afec.estimator import LossEstimator                      # noqa: E402
-from afec.sim import expected_handshake_ms                    # noqa: E402
+from afec import FecConfig, PathStatsCache, profile, shield
+from afec.channel import GilbertElliott
+from afec.controller import choose_redundancy, pto_ms
+from afec.estimator import LossEstimator
+from afec.sim import expected_handshake_ms
 
 RESULTS = []
 
@@ -48,10 +29,7 @@ def _harden():
             pass
 
 
-# ------------------------------------------------------------------ H2
 def h2_shield_rmax():
-    """고친 뒤의 질문: 흔한 구간에서 상한이 여전히 답을 자르는가, 그리고
-    상한이 걸릴 때 그 사실이 보고되는가."""
     print("")
     print("[H2] 핸드셰이크 r*을 J가 정하는가, 빌려온 임계값이 정하는가")
     cfg = FecConfig(rate_bps=10e6)
@@ -76,11 +54,7 @@ def h2_shield_rmax():
             % (len(bound_common), len(unreported)))
 
 
-# ----------------------------------------------------------------- H10
 def h10_burst_one_kills_pto():
-    """고친 뒤의 질문: 버스트 정보가 없을 때(L=1) shield 의 **결정 안에서**
-    전멸 확률이 0으로 죽는가. from_burst(p,1.0) 자체가 ft=0 인 것은 L=1 의
-    정의라 정상이다 - 문제는 그게 사전값 기본 경로에 쓰이느냐였다."""
     print("")
     print("[H10] 버스트 정보가 없을 때 PTO 항이 살아 있는가")
     from afec.channel import GilbertElliott as GE
@@ -98,10 +72,7 @@ def h10_burst_one_kills_pto():
             "%d/3 조건에서 ft=0" % len(zero))
 
 
-# ------------------------------------------------------------------ H7
 def h7_srtt_inverts_ordering():
-    """고친 뒤의 질문: 캐시된 srtt 를 주면 shield 안에서 부분 손실이 전멸보다
-    비싸지는가(= 회복 대가가 PTO 기저를 넘는가)."""
     print("")
     print("[H7] 캐시 srtt에서 부분손실이 전멸보다 비싸지는가")
     prof = profile(768)
@@ -118,10 +89,7 @@ def h7_srtt_inverts_ordering():
             "%d/7 설정에서 역전" % len(bad))
 
 
-# ------------------------------------------------------------------ H1
 def h1_server_two_spaces():
-    """고친 뒤의 질문: shield(side='server')와 해석해가 **Initial 공간**을
-    PTO 기준으로 쓰는가."""
     print("")
     print("[H1] 서버 PTO 기준이 Initial 공간인가, 플라이트 전체인가")
     prof = profile(768)
@@ -144,11 +112,7 @@ def h1_server_two_spaces():
             "shield k=%d, 해석해 무변화 %d건" % (d.k, len(same)))
 
 
-# ------------------------------------------------------------------ E2
 def e2_prior_weight_touches_ewma():
-    """Claim: seed_mass = min(prior_weight, 100.0) tracks prior_weight below
-    100, so the EWMA mass DOES depend on cache confidence - contradicting the
-    documented invariant that w acts on uncertainty only."""
     print("\n[E2] prior_weight가 EWMA 질량을 건드리는가 (문서화된 불변식 위반)")
     rows = []
     for w in (100.0, 80.0, 48.0, 25.0):
@@ -156,7 +120,6 @@ def e2_prior_weight_touches_ewma():
         rows.append((w, e._sent))
         print("       prior_weight=%6.1f -> EWMA 질량 _sent=%6.1f" % (w, e._sent))
     differs = len(set(round(s, 6) for _, s in rows)) > 1
-    # and does it change the estimate trajectory?
     traj = {}
     for w in (100.0, 30.0):
         e = LossEstimator(p_init=0.01, burst_init=4.0, prior_weight=w)
@@ -174,11 +137,7 @@ def e2_prior_weight_touches_ewma():
             % ("다름" if differs else "같음", 100 * rel))
 
 
-# ------------------------------------------------------------------ E1
 def e1_cached_burst_never_moves():
-    """Claim: the cached burst is never updated by lossless blocks and is not
-    cleared by the phase-change reset, so a stale bursty prior survives forever
-    and permanently inflates se."""
     print("\n[E1] 캐시된 버스트가 무손실 관측으로 갱신되는가")
     e = LossEstimator(p_init=0.20, burst_init=6.0, prior_weight=100.0)
     b0 = e.burst
@@ -187,13 +146,11 @@ def e1_cached_burst_never_moves():
     b1 = e.burst
     print("       무손실 300블록(19,200심볼) 관측 후: burst %.3f -> %.3f, "
           "p_hat %.5f" % (b0, b1, e.p))
-    # does the phase-change reset clear it?
     e2 = LossEstimator(p_init=0.20, burst_init=6.0, prior_weight=100.0)
     for _ in range(60):
         e2.observe_mask([False] * 64)
     print("       jumped=%s 인데 burst=%.3f (사전값 그대로면 리셋이 안 건드림)"
           % (e2.jumped, e2.burst))
-    # cost of the stale burst
     cfg = FecConfig(rate_bps=50e6, delay_budget_ms=20.0)
     e_stale = LossEstimator(p_init=0.0004, burst_init=6.0, prior_weight=100.0)
     e_true = LossEstimator(p_init=0.0004, burst_init=1.0, prior_weight=100.0)
@@ -208,14 +165,7 @@ def e1_cached_burst_never_moves():
             "300블록 무손실에도 burst 불변, r %d vs %d" % (r_stale, r_true))
 
 
-# ------------------------------------------------------------------ E4
 def e4_up_surprise_drops_cusum():
-    """고친 뒤의 질문: 상단 검정이 걸리는 블록에서도 하단 CUSUM 이 갱신되는가.
-
-    ⚠️ '값이 안 변한 블록 수'로 재면 안 된다 - S = max(0, S+llr) 의 바닥
-    클램프가 대부분이라 정상 동작까지 결함으로 잡힌다(실측 122개 전부 클램프).
-    S 를 양수로 올려둔 뒤 손실이 많은 블록을 먹여 **내려가는지**를 본다.
-    """
     print("")
     print("[E4] 상단 검정이 걸린 블록에서 하단 CUSUM이 갱신되는가")
     e = LossEstimator(p_init=0.02, burst_init=1.0, prior_weight=100.0)
@@ -229,10 +179,7 @@ def e4_up_surprise_drops_cusum():
             "S가 %s" % ("그대로" if after >= before - 1e-12 else "내려감"))
 
 
-# ------------------------------------------------------------------ C5
 def c5_default_prior_bypasses_cap():
-    """Claim: prior_out_cap is applied inside _get only, so the cache-miss
-    (default) path returns a weight above the cap."""
     print("\n[C5] 캐시 미스 경로가 반출 상한을 우회하는가")
     c = PathStatsCache(prior_out_cap=50.0)
     miss = c.lookup("wifi:home", "203.0.113.10", now=0.0)

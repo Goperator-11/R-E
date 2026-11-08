@@ -1,19 +1,9 @@
-# -*- coding: utf-8 -*-
-"""T_recover 가 RTT 에 비례하는가, 고정 상수인가.
-
-이 물음이 기본값을 어떻게 고쳐야 하는지를 정한다.
-  - RTT 에 비례하면  -> t_recover = c * rtt  (지금 형태를 계수만 고치면 된다)
-  - 고정 상수면      -> t_recover = 상수      (RTT 배수로 쓰는 것 자체가 틀렸다)
-
-k=1(전멸 -> ACK 없음 -> PTO)과 k=2(부분 도착 -> ACK -> 즉시 재전송)를
-RTT 3점에서 각각 잰다.
-"""
 import json
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import padbed   # noqa: E402
+import padbed
 
 N = 40
 WARMUP = 8

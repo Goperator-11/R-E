@@ -1,4 +1,3 @@
-"""Regression tests for reproducible reports and atomic PDF publication."""
 import importlib.util
 import json
 from pathlib import Path

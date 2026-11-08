@@ -1,23 +1,3 @@
-/* ============================================================
- *  hct_client.c  —  TLS 1.3 핸드셰이크 완료 시간(HCT) 측정 클라이언트
- *
- *  R&E: ML-KEM 적용 시 전송 성능 개선을 위한 QUIC 기반 적응형 FEC 연구
- *  2단계 기준선 측정용 (TLS/TCP). QUIC 단계에서 비교 기준이 됨.
- *
- *  한 프로세스 안에서 핸드셰이크를 N회 반복하므로 프로세스 기동
- *  오버헤드(15~20ms)가 신호를 덮지 않는다.
- *
- *  빌드:
- *    gcc -O2 hct_client.c -o hct_client \
- *        -I$CONDA_PREFIX/include -L$CONDA_PREFIX/lib -lssl -lcrypto \
- *        -Wl,-rpath,$CONDA_PREFIX/lib
- *
- *  사용:
- *    ./hct_client <host> <port> <group> <iters> <warmup> [출력.csv]
- *  예:
- *    ./hct_client 127.0.0.1 44555 MLKEM768 500 20 out.csv
- * ============================================================ */
-
 #define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,7 +25,6 @@ static int cmp_double(const void *a, const void *b) {
     return (x > y) - (x < y);
 }
 
-/* 정렬된 배열에서 백분위수 (선형보간) */
 static double pct(double *sorted, int n, double p) {
     if (n <= 0) return 0.0;
     if (n == 1) return sorted[0];
@@ -74,19 +53,14 @@ int main(int argc, char **argv) {
     SSL_CTX *ctx = SSL_CTX_new(TLS_client_method());
     if (!ctx) { ERR_print_errors_fp(stderr); return 1; }
 
-    /* TLS 1.3 고정 — 버전 협상 변동을 제거 */
     SSL_CTX_set_min_proto_version(ctx, TLS1_3_VERSION);
     SSL_CTX_set_max_proto_version(ctx, TLS1_3_VERSION);
 
-    /* 자체 서명 인증서 사용이므로 검증 생략 (측정 대상은 키 교환) */
     SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, NULL);
 
-    /* 세션 재개가 섞이면 측정이 오염된다. 전체 핸드셰이크만 측정. */
     SSL_CTX_set_session_cache_mode(ctx, SSL_SESS_CACHE_OFF);
     SSL_CTX_set_options(ctx, SSL_OP_NO_TICKET);
 
-    /* ★ 핵심: 키 교환 그룹 지정 (MLKEM512 / MLKEM768 / MLKEM1024 /
-       X25519 / X25519MLKEM768 / SecP256r1MLKEM768 등) */
     if (SSL_CTX_set1_groups_list(ctx, group) != 1) {
         fprintf(stderr, "그룹 '%s' 설정 실패 — 이 OpenSSL 빌드가 지원하지 않습니다\n", group);
         ERR_print_errors_fp(stderr);
@@ -127,7 +101,6 @@ int main(int argc, char **argv) {
         int fd = socket(AF_INET, SOCK_STREAM, 0);
         if (fd < 0) { perror("socket"); fail++; continue; }
 
-        /* Nagle 비활성화: 소량 데이터의 지연 전송을 방지 */
         int one = 1;
         setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &one, sizeof one);
 
@@ -148,7 +121,6 @@ int main(int argc, char **argv) {
         double t2 = now_ms();
 
         if (r == 1) {
-            /* 실제로 협상된 그룹을 확인 — 요청한 것과 다르면 측정이 무의미 */
             int nid = SSL_get_negotiated_group(ssl);
             const char *n = OBJ_nid2sn(nid);
             if (n) neg_name = n;
@@ -177,7 +149,6 @@ int main(int argc, char **argv) {
 
     if (fp) fclose(fp);
 
-    /* --- 통계 (성공 건만) --- */
     int n = 0;
     for (int i = 0; i < iters; i++) if (all_ms[i] > 0.0) n++;
 

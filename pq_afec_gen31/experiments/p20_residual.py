@@ -1,69 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P20 - 잔차 해부: 모형이 **어디에서** 틀리는가를 원자료에서 직접 캔다.
-
-왜 이 단계가 필요한가
----------------------
-지금 루프의 눈은 「검사가 붉다/푸르다」 하나뿐이다. 붉어지면 세 가지가
-구분되지 않는다.
-
-    (a) 모형의 **값**이 틀렸다 (J 가 몇 ms 어긋난다)
-    (b) 모형의 **선택**이 틀렸다 (다른 m 을 고른다)
-    (c) 아무것도 안 틀렸고 **못 잰 것**이다 (표본 부족)
-
-이 셋을 가르려면 평균 하나가 아니라 **분포를 갈라 봐야 한다.** 실제로
-2026-08-27 에 p17 의 「손실 15% 에서 m3 이 m2 보다 나쁘다」를 손으로 갈라
-보니 셋 다 아니었다 — 1-RTT 무리도 2-RTT 무리도 모형과 맞았고, 어긋난
-것은 **3% 짜리 PTO 꼬리 하나**였다. 평균만 보면 「모형이 부호를 틀렸다」로
-읽히지만, 갈라 보면 「무거운 꼬리를 750 판으로 재려 했다」가 답이다.
-
-그래서 이 단계는 새 실측을 하지 않는다. **이미 있는 원자료를 다시 읽는다.**
-Windows 에서 몇 초에 돈다(WSL 도 root 도 필요 없다).
-
-무엇을 재나
------------
-조건마다 팔별로 지연 구간을 셋으로 나눈다. 경계는 RTT의 배수다.
-
-    ontime  기준선 + 0.5·RTT 미만
-    extra   기준선 + 0.5·RTT 이상, 기준선 + 2.5·RTT 미만
-    timeout 기준선 + 2.5·RTT 이상
-
-기준선은 그 조건에서 **가장 빠른 팔의 중앙값**이다. 절대 시각을 맞추려는
-것이 아니라 지연을 구간으로 나누려는 것이다. 이름만으로 실제 1-RTT,
-재전송, PTO 이벤트를 확인한 것은 아니다. 성공 지연 배열에 없는 실패도
-포함하지 않는다. 모든 팔이 느린 조건에서는 기준선 자체가 2RTT 이상일 수 있다.
-
-모형은 별도의 경로 확률을 다음과 같이 묶는다:
-
-    P(제때)     = 1 - p_two_rtt - p_fail
-    P(한 판 더) = p_two_rtt + p_fail_ack
-    P(시간초과) = p_fail_pto
-
-두 분류가 같은 사건을 가리키는지는 검증하지 않았다. 관측 기준선과 모형
-경로의 기준 시점, RTT에 따른 PTO 구간 대응이 다를 수 있다. 비율 잔차는
-이 차이를 포함하는 진단이며 모형 적합성의 통과·실패 판정으로 세지 않는다.
-진단은 diagnostics, 자료 존재와 표본 충분성 검사는 checks에 따로 저장한다.
-
-그리고 팔쌍마다
-    측정 Δ(팔i - 팔j) ± 95% 반폭   vs   모형 ΔJ
-를 놓고, 반폭이 |Δ| 보다 크면 **판정 불능**으로 표시하고 **필요 표본 N** 을
-같이 적는다. p18 이 이미 갖고 있던 관례(`n_needed_per_arm`)를 p11·p15·p16·
-p17 전부에 옮기는 것이다 — 「수정 대기 목록」 A-3 후보 ②·D-5 가 그것이다.
-
-무거운 꼬리를 어떻게 다루나
----------------------------
-PTO 무리는 빈도 3% 에 값 260 ms 라 평균의 분산을 혼자 지배한다. 그래서
-평균 하나만 보고 부호를 말하면 안 된다. 세 가지를 나란히 낸다.
-
-    mean      전부 (연구가 주장하는 값. 이게 정본이다)
-    trimmed   위아래 5% 를 자른 평균 (꼬리를 뺀 본체가 어디 있는지)
-    class     무리별 (비율 × 값) 분해 - 차이가 **어느 무리에서** 나왔는가
-
-셋이 갈리면 그 자체가 결과다: 「본체는 같고 꼬리만 다르다」는 「모형이
-틀렸다」가 아니라 「꼬리를 재려면 표본이 N 필요하다」는 뜻이다.
-
-⚠️ 한계 — 이 단계는 **모형을 검증하지 않는다.** 모형과 측정이 어긋난
-   자리를 **찾아서 이름을 붙일 뿐**이다. 고칠지 더 잴지는 사람이 정한다.
-"""
 from __future__ import annotations
 
 import json
@@ -76,21 +10,17 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-from padfec import policy as POL  # noqa: E402
-from padfec import quantum as QU  # noqa: E402
+from padfec import policy as POL
+from padfec import quantum as QU
 
 RES = os.path.join(ROOT, "experiments", "results")
 STATE = os.path.join(ROOT, "experiments", "state")
 OUT = os.path.join(RES, "p20_residual.json")
 
-# 실측 C — padbed.measured_C 와 같은 값이어야 한다. padbed 는 root 와 WSL 을
-# 요구하므로(harden/require_root) 여기서는 import 하지 않고 p1 이 남긴 실측
-# 결과를 읽는다. 못 읽으면 그때만 아래 예비값을 쓰고 그 사실을 결과에 적는다.
 C_FALLBACK = {"x25519": 271, "X25519MLKEM768": 1448}
 
 ALPHA = 0.05
 
-# These are the existing fixed-arm designs consumed below, not new trials.
 INPUT_FILES = {"p15": "p15_v2policy.json", "p16": "p16_uplink.json",
                "p17": "p17_adaptive_value.json", "p18": "p18_mmax.json"}
 P17_CONDITIONS = ("2Mbps", "RTT200", "무제한", "큰cert")
@@ -99,7 +29,6 @@ P18_CONDITIONS = ("m_max2포기·무손실", "임계사이·버스트3",
 
 
 def input_manifest(res, state):
-    """Snapshot the files actually read; missing sources remain explicit."""
     data, provenance, problems = {}, {}, []
     for stage, filename in INPUT_FILES.items():
         path = os.path.join(res, filename)
@@ -139,7 +68,6 @@ def input_manifest(res, state):
             entry["error"] = "%s: %s" % (type(e).__name__, e)
             problems.append("%s input: %s" % (stage, entry["error"]))
         provenance[stage] = entry
-    # C is a separate model input, not a latency source.
     c_path = os.path.join(res, "p1_flight.json")
     try:
         with open(c_path, "rb") as f:
@@ -154,7 +82,6 @@ def input_manifest(res, state):
 
 
 def selected_p17_units(meta, journal):
-    """Keep the current selection rule, rejecting a different result generation."""
     fingerprints = [r.get("fp") for r in journal if r.get("fp")]
     newest = fingerprints[-1] if fingerprints else None
     expected = meta.get("journal_fp") or (meta.get("journal_provenance") or {}).get("fingerprint")
@@ -170,7 +97,6 @@ def selected_p17_units(meta, journal):
 
 
 def p17_success_blocks(row, arm):
-    """Partition successful latencies using each segment's explicit success count."""
     samples = row["arms"][arm]["ms"]
     if (not isinstance(samples, list)
             or any(type(x) not in (int, float) or not math.isfinite(x) or x <= 0
@@ -203,7 +129,6 @@ def p17_success_blocks(row, arm):
 
 
 def source_coverage(data, conds, problems=()):
-    """Check the expected design and denominators before counting a partial report."""
     failures = list(problems)
     expected, seen = {}, {}
 
@@ -321,14 +246,11 @@ def source_coverage(data, conds, problems=()):
 
 
 def measured_C(group):
-    """p1(첫 비행 구조 실측)이 잰 C. 없으면 예비값 + 표시."""
     try:
         d = json.load(open(os.path.join(RES, "p1_flight.json"),
                           encoding="utf-8"))
     except Exception:
         return C_FALLBACK.get(group), "fallback"
-    # p1 은 그룹마다 여러 ips 로 돌린다. C(ClientHello 순 바이트)는 ips 와
-    # 무관한 상수여야 하므로 **패딩을 안 준 판(ips=0)** 의 crypto_total 을 쓴다.
     best = None
     for run in d.get("runs", []):
         if run.get("group") != group or not run.get("valid"):
@@ -377,7 +299,6 @@ def z_of(alpha=ALPHA):
 
 
 def diff_ci(a, b, alpha=ALPHA):
-    """Independent-arm normal approximation; no block or multiplicity adjustment."""
     sa, sb = se(a), se(b)
     if sa is None or sb is None:
         return None, None
@@ -385,12 +306,6 @@ def diff_ci(a, b, alpha=ALPHA):
 
 
 def n_needed(a, b, target_delta, alpha=ALPHA, power=0.80):
-    """|Δ| = target_delta 를 유의하게 잡으려면 팔당 몇 판이 필요한가.
-
-    표준 두 표본 검정력 식.  n = 2 (z_{1-a/2} + z_{power})^2 s^2 / d^2
-    분산은 두 팔의 합동 표본분산을 쓴다. **자를 넓히는 대신 표본을 말한다** —
-    이 저장소가 반복해 온 원칙이고, p18 이 이미 쓰는 관례다.
-    """
     if not target_delta:
         return None
     sa, sb = sd(a), sd(b)
@@ -400,25 +315,15 @@ def n_needed(a, b, target_delta, alpha=ALPHA, power=0.80):
     za = z_of(alpha)
     zb = statistics.NormalDist().inv_cdf(power)
     d = abs(float(target_delta))
-    # Operational reporting cutoffs, not proof that a different design cannot
-    # resolve the effect. Preserve the existing thresholds and numeric formula.
     if d < 0.01:
-        # 이 테스트베드의 팔 평균 표준오차가 ~0.03 ms 다. 그보다 작은
-        # 크기를 목표로 삼으면 N 이 천문학적으로 나와 무의미하다.
         return "분해능아래"
     n = int(math.ceil(2.0 * (za + zb) ** 2 * s2 / (d * d)))
-    # 2026-08-27 - **실행 불가능한 수는 처방이 아니다.** 모형이 0.01 ms 를
-    #    주장하는데 그 조건의 표준편차가 28 ms 면 산술적으로 1.2e9 판이
-    #    필요하다 - 맞는 계산이지만 「이만큼 더 재라」는 말은 아니다.
-    #    실제로 그런 줄이 검사 5 의 detail 에 찍혀 나왔다(3000<1200656579).
-    #    현실적 상한을 넘으면 **못 잰다고 말한다.**
     if n > 1000000:
         return "분해능아래"
     return n
 
 
 def wilson(k, n, alpha=ALPHA):
-    """이항 비율의 Wilson 구간. 0/n 과 n/n 에서도 무너지지 않는다."""
     if n <= 0:
         return (0.0, 0.0, 0.0)
     z = z_of(alpha)
@@ -430,7 +335,6 @@ def wilson(k, n, alpha=ALPHA):
 
 
 def classify(ms, base, rtt):
-    """세 무리로 가른다. 경계는 RTT 로 잡는다 (머리말)."""
     t1 = base + 0.5 * rtt
     t2 = base + 2.5 * rtt
     out = {"ontime": [], "extra": [], "timeout": []}
@@ -446,11 +350,6 @@ def classify(ms, base, rtt):
 
 def model_arm(group, cert, rtt, loss_pct, burst, uplink, m, W=1280,
               max_steps=2, delta_per_dgram=0):
-    """이 조건에서 m 을 강제했을 때 모형이 말하는 것 전부.
-
-    p18.model_j 와 같은 경로를 타되 J 하나가 아니라 **무리 비율까지** 꺼낸다.
-    그래야 위의 대조가 성립한다.
-    """
     C, src = measured_C(group)
     if C is None:
         return None
@@ -461,13 +360,8 @@ def model_arm(group, cert, rtt, loss_pct, burst, uplink, m, W=1280,
                           s0_base=s0_base, c_pkt=POL.C_PKT_POLICY_DEFAULT,
                           W=W, max_steps=max_steps, m_max=max(m, 1),
                           uplink_mbps=uplink)
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         return {"err": "%s: %s" % (type(e).__name__, e)}
-    # 🩸 고정팔은 **δ 를 안 준다.** 그러므로 같은 m 중에서 J 가 가장 낮은
-    #    후보를 고르면 안 된다 - m=0 자리에서 그것은 `pad`(δ>0) 를 집어
-    #    "m0 팔이 1-RTT 를 잡는다" 는 틀린 예측을 만든다. 실제로 p15
-    #    cert 4032 에서 none 은 J=100(2-RTT)인데 pad 는 J=50 이고, 측정은
-    #    100% 2-RTT 였다. 팔이 실제로 보내는 것(δ=0)과 같은 후보를 고른다.
     if delta_per_dgram:
         if (type(delta_per_dgram) is not int or delta_per_dgram < 0 or m != 0
                 or W + delta_per_dgram > POL.QUICGO_MAX_IPS):
@@ -476,7 +370,6 @@ def model_arm(group, cert, rtt, loss_pct, burst, uplink, m, W=1280,
         if base is None:
             return {"err": "고정 padding 평가의 기준 후보 없음"}
         k0 = base["k"]
-        # Score the recorded fixed delta, not the best generated padding lever.
         cand = QU._candidate(
             "pad", 0, delta_per_dgram, C, W, 51, 16, cert, None,
             k0 * W, QU.bin_index(k0 * W, QU.P_SERVER), QU.P_SERVER,
@@ -493,14 +386,6 @@ def model_arm(group, cert, rtt, loss_pct, burst, uplink, m, W=1280,
             return {"err": "m=%d, delta=0 후보 없음" % m}
         c = min(cs, key=lambda e: e["j_ms"])
     p_two = c.get("p_two_rtt", 0.0)
-    # 🩸 2026-08-27 - 실패 가지가 셋이 됐다(policy.last_original_pmf).
-    #    시간 축으로 어디에 떨어지는지로 무리에 배정한다 (기준선 대비 증분):
-    #      시간 임계      9/8·RTT   -> 0.5~2.5·RTT 사이 = 「한 판 더」
-    #      표본 있는 PTO  3·RTT     -> 2.5·RTT 초과      = 「시간초과」
-    #      표본 없는 PTO  200.86 ms -> legacy assignment to 「시간초과」
-    # This branch assignment is not the empirical median-relative classifier.
-    # In particular, 200.86 ms is below 2.5*RTT at RTT 200 ms. Keep the existing
-    # model values, but report that event definitions have not been aligned.
     p_pto = (c.get("p_fail_pto", 0.0) + c.get("p_fail_pto_sampled", 0.0))
     p_ack = c.get("p_fail_ack", 0.0)
     return {
@@ -510,7 +395,6 @@ def model_arm(group, cert, rtt, loss_pct, burst, uplink, m, W=1280,
         "p_fail": c.get("p_fail"),
         "chosen_by_policy": d["choice"]["m"],
         "fixed_delta_per_dgram": delta_per_dgram,
-        # 세 무리의 모형 질량. 합은 1 이다.
         "P_ontime": max(0.0, 1.0 - p_two - p_pto - p_ack),
         "P_extra": p_two + p_ack,
         "P_timeout": p_pto,
@@ -520,7 +404,6 @@ def model_arm(group, cert, rtt, loss_pct, burst, uplink, m, W=1280,
 
 def analyse_condition(name, group, cert, rtt, loss_pct, burst, uplink,
                       arms, source):
-    """arms = {팔이름: {"m": int, "ms": [ms...]}}"""
     live = {k: v for k, v in arms.items() if v.get("ms")}
     if len(live) < 1:
         return None
@@ -550,21 +433,16 @@ def analyse_condition(name, group, cert, rtt, loss_pct, burst, uplink,
             row["classes"][cname] = {
                 "n": len(v), "frac": ph, "frac_lo": lo, "frac_hi": hi,
                 "mean": mean(v),
-                # 이 무리가 전체 평균에 얹는 몫. 세 몫의 합이 평균이다.
                 "share_ms": (ph * mean(v)) if v else 0.0,
             }
         if mod and "err" not in mod:
-            # Residuals include the documented model/observation class mismatch.
             row["class_residual"] = {}
             for cname, pkey in (("ontime", "P_ontime"),
                                 ("extra", "P_extra"),
                                 ("timeout", "P_timeout")):
                 c = row["classes"][cname]
-                # 모형 질량은 부동소수 때문에 1.0 을 아주 조금 넘을 수 있다.
                 pm = min(1.0, max(0.0, mod[pkey]))
                 err_pp = 100.0 * (pm - c["frac"])
-                # 0.05%p 아래는 잡음으로 본다 (n=400~1500 이면 한 판이
-                # 0.07~0.25%p 다 - 그보다 작은 어긋남은 셀 수 없다).
                 row["class_residual"][cname] = {
                     "model": pm, "meas": c["frac"],
                     "err_pp": err_pp,
@@ -573,7 +451,6 @@ def analyse_condition(name, group, cert, rtt, loss_pct, burst, uplink,
                 }
         rows.append(row)
 
-    # 팔쌍 대조 — 모형 ΔJ 대 측정 Δ평균.
     pairs = []
     names = [r["arm"] for r in rows]
     for i in range(len(names)):
@@ -588,7 +465,6 @@ def analyse_condition(name, group, cert, rtt, loss_pct, burst, uplink,
             dj = None
             if "j_ms" in mi and "j_ms" in mj:
                 dj = mi["j_ms"] - mj["j_ms"]
-            # 본체(꼬리 제외) 차이도 같이 낸다.
             dt = None
             if ri["trimmed_mean"] is not None and rj["trimmed_mean"] is not None:
                 dt = ri["trimmed_mean"] - rj["trimmed_mean"]
@@ -599,22 +475,13 @@ def analyse_condition(name, group, cert, rtt, loss_pct, burst, uplink,
                 elif dj is None:
                     verdict = "모형없음"
                 elif abs(dj) < 1e-9:
-                    # 2026-08-27 - 모형이 **동점**이라 한 쌍에서 부호를
-                    #    따지면 안 된다. `(dj > 0) == (dm > 0)` 는 dj=0 일 때
-                    #    항상 False 라 무조건 「부호반대」가 되고, 게다가 팔
-                    #    순서를 뒤집으면 라벨이 뒤집힌다(dm 의 부호만 바뀌므로).
-                    #    판정이 자료가 아니라 **팔을 어느 쪽으로 뺐는지**에
-                    #    달리는 것은 자가 아니다.
                     verdict = "모형동점"
                 elif (dj > 0) == (dm > 0):
                     verdict = "부호일치"
                 else:
                     verdict = "부호반대"
-            # Keep the existing numerical target. A near-zero model difference
-            # falls back to the observed same-data difference, which is exploratory.
             tgt = dj if (dj is not None and abs(dj) >= 1e-6) else dm
             need = n_needed(va, vb, tgt)
-            # 무리별로 차이가 어디서 왔는지 쪼갠다.
             by_class = {}
             for cname in ("ontime", "extra", "timeout"):
                 by_class[cname] = (ri["classes"][cname]["share_ms"]
@@ -633,8 +500,6 @@ def analyse_condition(name, group, cert, rtt, loss_pct, burst, uplink,
                 "n_target_source": ("model_delta" if dj is not None and abs(dj) >= 1e-6
                                     else "observed_same_data_delta"),
                 "delta_by_class_ms": by_class,
-                # 차이의 몇 %가 꼬리(시간초과)에서 왔나. 1 에 가까우면
-                # **본체는 같고 꼬리만 다르다**는 뜻이다.
                 "tail_share_of_delta": (
                     (by_class["timeout"] / dm) if dm not in (None, 0) else None),
             })
@@ -646,38 +511,17 @@ def analyse_condition(name, group, cert, rtt, loss_pct, burst, uplink,
     }
 
 
-# ---------------------------------------------------------------------------
-# 각 계기의 원자료를 이 단계가 읽을 수 있는 꼴로 옮긴다.
-# 계기마다 저장 방식이 달라서(어떤 것은 results, 어떤 것은 state/*.jsonl)
-# **읽는 규칙을 여기 한 곳에만** 둔다.
-# ---------------------------------------------------------------------------
-
 def load_p17():
     path = os.path.join(STATE, "p17_units.jsonl")
     res = os.path.join(RES, "p17_adaptive_value.json")
     if not (os.path.exists(path) and os.path.exists(res)):
         return []
     meta = json.load(open(res, encoding="utf-8"))
-    # 🩸 2026-09-01/09-07 - **조건별 cert·RTT·uplink 를 저널 줄에서 읽는다.**
-    #    옛 코드는 결과 파일 머리의 모듈 상수(cert 9000, RTT 50)를 모든 조건에
-    #    썼고, uplink 는 조건 이름으로 추측했다(`"2Mbps" in cond`). 08-28 에 p17
-    #    이 조건마다 cert·RTT 를 다르게 주기 시작한 뒤로 큰cert(16000)·RTT200
-    #    조건에서 세 값 중 둘이 틀려 있었다 - 이 단계는 「모형이 어느 무리에서
-    #    틀리는가」를 재므로 입력이 틀리면 모형이 맞는데도 틀린 것으로 나온다
-    #    (진단서가 최악으로 지목하던 `p17|RTT200|loss2` 가 정확히 그 자리다).
-    #    p17 은 이제 rec 에 cert·rtt_ms·up_policy·netem_rate_mbit 을 담는다.
-    #    옛 세대 저널에는 없으므로 그때만 추측하되, **추측했다고 찍는다.**
     meta_rtt = meta["rtt_ms"]
     meta_cert = meta["cert"]
     group = meta["group"]
     conds_meta = {c["cond"]: c for c in (meta.get("conds") or [])}
     out = []
-    # 2026-08-27 - **세대(fp)를 확인한다.** 이 jsonl 은 계기의 저널이라
-    #    코드 지문이 다른 **여러 세대의 줄이 한 파일에 남아 있다** (앞
-    #    세대 줄은 지워지지 않는다). 세대를 안 보고 전부 읽으면 옛 측정과
-    #    새 측정을 한 조건 안에서 섞어 대조하게 된다 - 이 저장소가 「겹쳐
-    #    돌아 오염」으로 두 번 겪은 것과 같은 종류의 사고다.
-    #    **가장 최근 세대만** 쓰고, 버린 세대 수를 결과에 적는다.
     _rows = [json.loads(l) for l in open(path, encoding="utf-8") if l.strip()]
     _newest, _selected = selected_p17_units(meta, _rows)
     for _r in _selected:
@@ -747,7 +591,6 @@ def load_p15():
 
 
 def p16_pad_input(arm):
-    """Require explicit configuration and complete matching client evidence."""
     ev = arm.get("ips_evidence") or {}
     ips, base, k = (ev.get("requested_ips"), ev.get("base_ips"),
                     ev.get("expected_k"))
@@ -803,12 +646,6 @@ def load_p16():
 
 
 def residual_report(conds, input_coverage=None, input_provenance=None):
-    """Summarize existing analyses without rerunning trials or changing models."""
-    # ------------------------------------------------------------------
-    # 판정. 이 단계는 **모형을 통과/실패시키지 않는다** — 어긋난 자리를
-    # 이름 붙여 세는 것이 일이다. 그래서 검사는 「자료가 말이 되는가」와
-    # 「어긋남을 우리가 못 보고 있지 않은가」 두 종류뿐이다.
-    # ------------------------------------------------------------------
     checks = []
     diagnostics = []
 
@@ -854,13 +691,6 @@ def residual_report(conds, input_coverage=None, input_provenance=None):
                      for cond, arm, err in missing_models)))
 
     undecid = [p for c in conds for p in c["pairs"] if p["verdict"] == "판정불능"]
-    # 2026-08-27 - 「필요 표본을 말한다」의 뜻을 분명히 한다. 수를 못 내는
-    #    경우가 둘 있고 둘은 전혀 다르다.
-    #      (a) 효과/표본 수가 n_needed의 실용적 계산 경계 밖이다.
-    #          이는 다른 실험 설계에서도 측정 불가능하다는 뜻은 아니다.
-    #      (b) 계산이 아예 안 됐다 -> 그건 계기 결함이다.
-    #    옛 판은 (a) 를 None 으로 두고 `all(...)` 로 봐서 **(a) 가 하나라도
-    #    있으면 실패**했다. 못 잴 것을 못 잰다고 말한 것을 벌한 셈이다.
     _no_n = [p for p in undecid if p["n_needed_per_arm"] is None]
     _unmeas = [p for p in undecid
                if p["n_needed_per_arm"] == "분해능아래"]
@@ -871,10 +701,6 @@ def residual_report(conds, input_coverage=None, input_provenance=None):
            len(undecid) - len(_unmeas) - len(_no_n), len(_unmeas),
            len(_no_n)))
 
-    # 이 저장소가 반복해 온 실수: 「한 번 잰 것을 증거로 삼기」. 표본이
-    # 모형의 주장 크기를 잡기에 모자란 쌍이 얼마나 되는지 대놓고 센다.
-    # The existing numeric sufficiency rule excludes the reporting-cutoff label;
-    # keep that label separate rather than asserting an absolute physical limit.
     underpow = [(c["cond"], p["pair"], p["n_per_arm"], p["n_needed_per_arm"])
                 for c in conds for p in c["pairs"]
                 if isinstance(p["n_needed_per_arm"], int)
@@ -948,7 +774,7 @@ def main():
     for loader in (load_p17, load_p18, load_p15, load_p16):
         try:
             recs.extend(loader())
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             input_problems.append("%s: %s" % (loader.__name__, e))
             print("  [경고] %s: %s" % (loader.__name__, e), flush=True)
 
@@ -967,7 +793,6 @@ def main():
         if r:
             conds.append(r)
 
-    # Refuse mixed input snapshots if another writer replaced a consumed file.
     for entry in provenance.values():
         if not entry.get("available"):
             continue
@@ -1029,15 +854,6 @@ def main():
                      ("%.0f%%" % (100 * p["tail_share_of_delta"]))
                      if p["tail_share_of_delta"] is not None else "-"))
     print()
-    # 2026-08-27 - **로그 규약을 루프의 분류기와 맞춘다.**
-    #    처음에 `[ok  ]/[FAIL]` 과 `4/5` 로 찍었다. fixloop 의 분류기는
-    #    `[실패]` 줄과 `N / M 통과` 줄을 찾는데 둘 다 없으니
-    #    **「검사에 닿기 전에 끊겼다(도중에죽음)」로 오진**했고, 그 오진이
-    #    되풀이되자 fixloop 이 「환경사고 반복 - 멈춤」으로 **바퀴 전체를
-    #    세웠다**(2026-08-27 16:02). 계기는 멀쩡히 4/5 를 찍고 있었다.
-    #
-    #    교훈: 이 저장소에서 단계의 stdout 은 사람이 읽는 글이 아니라
-    #    **루프가 읽는 규약**이다. 새 단계를 더할 때는 형식부터 맞춘다.
     for c in checks:
         print("[%s] %-58s %s" % ("통과" if c["ok"] else "실패",
                                  c["check"][:58], c["detail"][:90]))

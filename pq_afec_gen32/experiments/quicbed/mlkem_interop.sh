@@ -1,18 +1,10 @@
 #!/bin/bash
-# ML-KEM 동일성 확인 - 크기와 상호운용.
-#
-# 인수인계 문서의 환경에는 OpenSSL 3.5 가 있다. 우리 Go 구현이 그것과
-# 같은 ML-KEM 인지, 말이 아니라 두 가지로 보인다.
-#   1) FIPS 203 이 정한 크기가 나오는가
-#   2) Go 클라이언트가 OpenSSL 서버와 X25519MLKEM768 로 핸드셰이크를 끝내는가
-#      (서로 다른 두 구현이 같은 비밀에 도달해야만 끝난다)
 set -u
 D=/tmp/mlkem
 rm -rf "$D"
 mkdir -p "$D"
 cd "$D" || exit 2
 
-# WSL 은 세션이 내려가면 /tmp 를 비운다. 없으면 빌드본에서 복사한다.
 for B in qamp mlkemcheck; do
     if [ ! -x "/tmp/$B" ] && [ -x "$HOME/quicbed/bin/$B" ]; then
         cp "$HOME/quicbed/bin/$B" "/tmp/$B"
@@ -55,7 +47,6 @@ for GRP in X25519MLKEM768 x25519; do
         >"$D/srv_$GRP.log" 2>&1 &
     SRV=$!
     sleep 1.2
-    # 문서 6절: 모든 실행에 timeout 을 붙인다
     timeout 30 /tmp/mlkemcheck -addr 127.0.0.1:44443 -group "$GRP"
     RC=$?
     kill "$SRV" 2>/dev/null

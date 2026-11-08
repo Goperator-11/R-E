@@ -1,17 +1,3 @@
-# -*- coding: utf-8 -*-
-"""P18: fixed m=1..4 observations and model comparisons.
-
-The current Python/Go adaptive default cap is 3. The m2-to-m4 contrast is a
-fixed-arm counterfactual, not a direct adaptive-cap intervention. Historical
-condition labels are retained so old journal keys keep their original meaning.
-
-HCT is conditional on successful trials; failures remain in trial_coverage.
-Five primary comparisons use alpha=.05/5. Connection intervals use a normal
-approximation, while Latin-square intervals use Student t with block-cell means.
-The wider half-width rule and all original performance thresholds are retained.
-Each selected half-width is paired with its own estimate. Additive/independent
-Latin-square errors and iid connection errors are assumptions, not guarantees.
-"""
 import copy
 from datetime import datetime, timezone
 import math
@@ -30,7 +16,7 @@ import blockstat as BST
 
 RTT_MS = 50.0
 GROUP = "X25519MLKEM768"
-K = 2  # Flush hint; actual first-flight k remains in trial_records.
+K = 2
 N_DEFAULT = 250
 N_PRECISE = 750
 N = int(os.environ.get("PADFEC_P18_N")
@@ -49,7 +35,6 @@ def mean(v):
     return (sum(v) / len(v)) if v else None
 
 def se(v):
-    """평균의 표준오차."""
     if not v or len(v) < 2:
         return None
     mu = sum(v) / len(v)
@@ -57,28 +42,17 @@ def se(v):
     return math.sqrt(var / len(v))
 
 def model_j(cert, L, p, up, m):
-    """이 조건에서 m 을 강제했을 때 모형이 말하는 J.
-
-    🩸 2026-08-25 - C 가 `1146` 으로 박혀 있었다. 우리가 재는 그룹은
-       X25519MLKEM768 이고 실측 C 는 1448 이다(1146 은 어느 그룹도
-       아니다). natural_k 가 1 vs 2 로 갈려 **모형이 k=1 로** 계산했고,
-       그래서 m=2->m=4 예측 이득이 +17.27 ms 로 부풀었다. 바른 C 로는
-       +2.38 ms 이고 실측 +1.43 ms 가 그 60% 다 - 검사 6 이 잡은 것은
-       알고리즘이 아니라 이 상수였다. padbed.measured_C 로 읽는다.
-    """
     d = POL.decide_v2(C=B.measured_C(GROUP), cert_bytes=cert,
                       rtt_ms=RTT_MS, p=p / 100.0,
                       burst=L, s0_base=POL.S0_BASE_MLKEM,
                       c_pkt=POL.C_PKT_POLICY_DEFAULT, W=1280,
                       max_steps=2, m_max=max(m, 1), uplink_mbps=up)
-    # run_cond fixes IPS at 1280. Padding/combo candidates measure another arm.
     cs = [c["j_ms"] for c in d["candidates"]
           if c["m"] == m and c.get("delta_per_dgram", 0) == 0
           and c.get("W_eff", 1280) == 1280]
     return min(cs) if cs else None
 
 def trial_coverage(rows, conditions, arms):
-    """Check the same complete-trial contract used for journal eligibility."""
     expected = {c[0]: c[5] for c in conditions}
     nseg = len(conditions) * len(arms) ** 2
     planned = sum(c[5] * len(arms) ** 2 for c in conditions)
@@ -114,7 +88,6 @@ def trial_coverage(rows, conditions, arms):
                 problems.append("%s block%s m%s: 계획 %s, 기록 %s, 성공 %s, 오류 %s"
                                 % (name, s.get("block"), s.get("m"), n,
                                    count, ok, s.get("err") or "없음"))
-    # Include wholly absent segments/conditions in missing-record accounting.
     missing = max(missing, max(0, planned - recorded))
     return {"planned_n": planned, "recorded_n": recorded, "ok_n": successes,
             "failed_n": failed, "missing_n": missing,
@@ -124,7 +97,6 @@ def trial_coverage(rows, conditions, arms):
             "hct_scope": "successful_trials_only"}
 
 def pos_effect(rec):
-    """자리별 구간 평균의 범위. 인과적 순서 효과로 해석하지 않는다."""
     by = {}
     for s in rec["segments"]:
         if s["mean"] is not None:
@@ -133,7 +105,6 @@ def pos_effect(rec):
     return (max(v) - min(v)) if len(v) >= 2 else 0.0
 
 def gain_ci(a, b, alpha):
-    """Pooled successful-trial difference and normal-iid half-width."""
     sa, sb = se(a), se(b)
     if sa is None or sb is None:
         return None, None
@@ -142,7 +113,6 @@ def gain_ci(a, b, alpha):
 
 
 def decision_gain(v):
-    """Prefer the estimate belonging to the selected interval; read old data too."""
     if "decision_gain_m2_to_m4" in v:
         return v["decision_gain_m2_to_m4"]
     return v["obs_gain_m2_to_m4"]
@@ -164,7 +134,6 @@ def unit_key(name, cert, L, loss, up, n_conn):
 
 def attach_unit_provenance(rec, jr, key, *, journaled, started_at=None,
                            finished_at=None):
-    """Keep journal values immutable; preserve absent dates in historical units."""
     if journaled:
         unit = jr.provenance([key])["units"][0]
         meta = dict(unit, fingerprint=jr.fingerprint, journaled=True,
@@ -183,7 +152,6 @@ def attach_unit_provenance(rec, jr, key, *, journaled, started_at=None,
 
 
 def result_provenance(rows, jr):
-    """Report consumed journal units and new incomplete units separately."""
     units = [copy.deepcopy(r.get("unit_provenance")) for r in rows]
     units = [u for u in units if u is not None]
     return dict(schema_version=1, fingerprint=jr.fingerprint,
@@ -206,18 +174,11 @@ def run_cond(name, cert, L, loss, up, n_conn, jr):
     seg, err = [], ""
     p, sp = B.start_server(cert, fec="on")
     try:
-        # 라틴 방격: 블록마다 순서를 한 칸씩 돌린다 -> 각 팔이 각 자리 1 번
         for blk in range(len(ARMS)):
             B.set_netem(RTT_MS / 2.0, loss_c2s=loss, burst_len=L,
                         rate_up_mbit=up)
             order = ARMS[blk:] + ARMS[:blk]
             for pos, m in enumerate(order):
-                # 🩸 2026-08-26 - 대역이 걸리면 gap 을 벌린다. gap 8 ms 로
-                # 붙여 돌리면 앞 연결의 *뒤따르는* 패리티가 다음 연결의 첫
-                # 비행 뒤에 줄을 서서, m 이 클수록 불리해진다(2 Mbps 에서
-                # m3-m2 가 gap 8 이면 +5.11 ms, gap 600 이면 +0.02 ms).
-                # 큐를 다음 연결에 떠넘긴 것이지 악수의 비용이 아니다.
-                # p17_adaptive_value.py 의 같은 주석과 같은 근거다.
                 rows, cs, e = B.run_client(GROUP, n_conn, fec="on", m=m,
                                            gap_ms=(50 if up > 0 else 8),
                                            timeout_s=10,
@@ -274,7 +235,6 @@ def analyse_condition(rec, mdl, alpha):
                           if s["mean"] is not None])
     blocked, blocked_half = BST.contrast(an, 2, 4, alpha) if an.get("ok") else (None, None)
     half = max(normal_half or 0.0, blocked_half or 0.0)
-    # Keep the historical wider-width rule, but pair it with its own estimand.
     use_latin = blocked_half is not None and blocked_half > (normal_half or 0.0)
     estimate = blocked if use_latin else pooled
     method = "latin_square_t" if use_latin else "normal_iid"
@@ -314,7 +274,6 @@ def add_result(out, name, ok, detail, *, counted=True, emit=False):
 
 
 def build_result(rows, models, conditions, *, provenance=None, emit=False):
-    """Pure assembly for stored-data/mock validation; no I/O or collection."""
     out = dict(schema_version=2, rtt_ms=RTT_MS, group=GROUP, n=N, arms=ARMS,
                rows=rows, verdict=[], checks=[], diagnostics=[],
                current_adaptive_default_m_max=POL.M_MAX_DEFAULT,

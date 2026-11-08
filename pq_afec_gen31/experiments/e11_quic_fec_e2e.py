@@ -1,34 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-E11 - REAL end-to-end: ML-KEM + QUIC + FEC, measured (not simulated)
-
-Everything up to E10 either measured packets (real) or replayed measured loss
-traces through the simulator (modelled).  The one link that was never actually
-exercised is **FEC on a live QUIC handshake**.  This closes it.
-
-    openssl s_client -quic  ->  [ loss-injecting relay + FEC shim ]  ->  real server
-
-The relay sits on the datagram path and does three things:
-
-  1. drops datagrams according to a loss model (Bernoulli, Gilbert-Elliott, or
-     replay of a mask measured over real netem in E6),
-  2. buffers the client's first Initial flight so it can act on it as a UNIT,
-  3. in `--fec` mode, adds one parity slot to that flight: the loss process now
-     sees K+1 slots, and the flight is delivered intact iff at most one slot is
-     lost - which is exactly the delivery behaviour of an XOR/RS(K+1, K) parity
-     packet.  Recovery is done by replaying the buffered original, so the
-     DELIVERY OUTCOME is identical to real FEC while the QUIC stack, the
-     ML-KEM key exchange and the timing are all real.
-
-The same buffering delay is applied in both arms, so the FEC arm is not given a
-free head start.
-
-What is real here: the TLS/QUIC stack, ML-KEM, the packets, the timers, the
-handshake completion time.  What is emulated: the parity packet's contents
-(the relay does not XOR payloads, it replays the original it already holds).
-
-Output: experiments/results/e11_quic_fec.json
-"""
 import argparse
 import json
 import os
@@ -49,7 +18,7 @@ os.makedirs(RESULTS, exist_ok=True)
 sys.path.insert(0, ROOT)
 sys.path.insert(0, HERE)
 
-from e3_quic_capture import parse_quic_datagram      # noqa: E402
+from e3_quic_capture import parse_quic_datagram
 
 
 def _harden():
@@ -60,7 +29,6 @@ def _harden():
             pass
 
 
-# ------------------------------------------------------------- loss models
 class BernoulliLoss:
     name = "bernoulli"
 
@@ -114,10 +82,7 @@ def make_loss(kind, p, burst, rng, trace=None):
     return BernoulliLoss(p, rng)
 
 
-# -------------------------------------------------------------------- relay
 class FecRelay(object):
-    """UDP relay that injects loss and optionally protects the Initial flight."""
-
     def __init__(self, host, port, loss_c2s, loss_s2c, fec, flight_ms):
         infos = socket.getaddrinfo(host, port, 0, socket.SOCK_DGRAM)
         v4 = [i for i in infos if i[0] == socket.AF_INET]
@@ -145,16 +110,10 @@ class FecRelay(object):
         self._flight = []
         self._flight_done = False
         self._server_seen = False
-        # ⚠️ 핸드셰이크 시간은 **릴레이에서** 잰다. openssl s_client 프로세스의
-        # 수명으로 재면 기동 오버헤드(실측 약 1.7초)가 신호를 통째로 덮는다.
-        # t_first_c2s = 클라이언트의 첫 데이터그램
-        # t_first_1rtt = 클라이언트가 처음으로 short header(1-RTT) 패킷을 보낸 시각
-        #                = 핸드셰이크가 클라이언트 관점에서 끝난 순간
         self.t_first_c2s = None
         self.t_first_s2c = None
         self.t_first_1rtt = None
 
-    # ---- helpers
     @staticmethod
     def _is_initial(buf):
         try:
@@ -172,7 +131,6 @@ class FecRelay(object):
             pass
 
     def _flush_flight(self):
-        """Apply the loss process to the whole first Initial flight at once."""
         pkts = self._flight
         self._flight = []
         self._flight_done = True
@@ -191,8 +149,6 @@ class FecRelay(object):
         self.stats["c2s_datagrams"] += k
 
         if self.fec:
-            # RS(k+1, k) / XOR parity: the flight survives iff at most one slot
-            # of the k+1 is lost.  Recovery replays the buffered original.
             if n_lost <= 1:
                 if n_lost == 1:
                     self.stats["flight_recovered"] += 1
@@ -200,7 +156,6 @@ class FecRelay(object):
                     self._send_up(d)
                 return
             self.stats["flight_unrecoverable"] += 1
-            # more than one slot gone: whatever originals survive still go out
             for idx, d in enumerate(pkts):
                 if not drops[idx]:
                     self._send_up(d)
@@ -214,7 +169,6 @@ class FecRelay(object):
             else:
                 self._send_up(d)
 
-    # ---- pumps
     def _from_client(self):
         last_initial = None
         while not self.stop.is_set():
@@ -232,9 +186,8 @@ class FecRelay(object):
             if self.t_first_c2s is None:
                 self.t_first_c2s = now
             if data and not (data[0] & 0x80) and self.t_first_1rtt is None:
-                self.t_first_1rtt = now      # short header = handshake done
+                self.t_first_1rtt = now
             if not self._flight_done and self._is_initial(data) and not self._server_seen:
-                # first Initial flight: hold it so it can be treated as a unit
                 self._flight.append(data)
                 last_initial = time.perf_counter()
                 continue
@@ -281,7 +234,6 @@ class FecRelay(object):
                 pass
 
 
-# ------------------------------------------------------------------- trial
 def one_trial(host, group, loss_kind, p, burst, fec, rng, trace, flight_ms,
               timeout):
     relay = FecRelay(host, 443,
@@ -333,7 +285,6 @@ def main():
     ap.add_argument("--pace-ms", type=float, default=60.0)
     a = ap.parse_args()
 
-    # arms: (label, group, loss kind, p, burst, fec)
     arms = [
         ("baseline_x25519_noloss", "x25519", "none", 0.0, 1.0, False),
         ("baseline_mlkem_noloss", "X25519MLKEM768", "none", 0.0, 1.0, False),
@@ -397,7 +348,6 @@ def main():
     print("")
     print("saved: %s" % path)
 
-    # ---- the comparisons that matter
     def cmp(a_lab, b_lab, what):
         A, B = out["arms"].get(a_lab), out["arms"].get(b_lab)
         if not A or not B:

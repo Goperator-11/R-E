@@ -1,4 +1,3 @@
-"""Read-only run provenance check; never imports or executes the experiment runner."""
 from __future__ import annotations
 
 import argparse
@@ -49,7 +48,6 @@ def classify_stage(sid, outputs, state, runtime, started, snapshot):
         finished = datetime.strptime(rec.get("finished", ""), "%Y-%m-%d %H:%M")
     except ValueError:
         return row
-    # Runner timestamps have minute resolution; compare at the same resolution.
     if finished < started.replace(second=0, microsecond=0):
         return row
     events = [e for e in state.get("history", []) if e.get("stage") == sid
@@ -76,7 +74,6 @@ def classify_stage(sid, outputs, state, runtime, started, snapshot):
                 row["issues"].append(f"output_hash_mismatch:{relative}")
             if datetime.fromtimestamp(after.st_mtime) < started:
                 row["issues"].append(f"historical_output:{relative}")
-            # Preserve exactly the bytes examined, even if they show a discrepancy.
             destination = inside(snapshot, relative)
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_bytes(data)
@@ -119,7 +116,6 @@ def check_sources(manifest, repos):
 def run(args):
     runtime = args.runtime.resolve()
     root = args.output_dir.resolve()
-    # Output locations cannot be placed inside any measured or distribution tree.
     for protected in [runtime, *args.repo]:
         if root.is_relative_to(protected.resolve()):
             raise ValueError("Audit output must be outside measurement and repository roots")
@@ -171,7 +167,7 @@ def run(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description='Read-only run provenance check; never imports or executes the experiment runner.')
     parser.add_argument("--runtime", type=Path, required=True)
     parser.add_argument("--repo", action="append", type=Path, default=[])
     parser.add_argument("--manifest", type=Path, required=True)

@@ -1,31 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-PQ-AFEC research pipeline - runs the whole R&E study to completion and can be
-stopped at any moment without losing work or getting into a weird state.
-
-    python experiments/pipeline.py --status     # what is done, what is not
-    python experiments/pipeline.py              # run everything that is not done
-    python experiments/pipeline.py --loop       # keep retrying until it is all done
-    python experiments/pipeline.py --force e7   # redo one stage (and its dependents)
-
-How resume works, in two layers
--------------------------------
-1. STAGE level (this file).  Each stage records status + a fingerprint in
-   experiments/state/pipeline.json (written atomically).  A stage is skipped
-   only if it is `done`, its fingerprint still matches, and every declared
-   output file still exists.  A stage left in `running` by a crash is treated
-   as unfinished and re-run.  Editing a stage's script changes its fingerprint,
-   which invalidates that stage AND everything downstream of it - so results
-   can never silently mix two versions of the code.
-
-2. UNIT level (experiments/_journal.py).  The long sweeps append one JSONL line
-   per finished unit (per trace, per condition, per arm).  On restart they read
-   the journal and only compute what is missing, so an interruption costs at
-   most one unit, not the whole stage.
-
-Everything is idempotent: running the pipeline twice in a row does nothing the
-second time.
-"""
 import argparse
 import hashlib
 import json
@@ -41,7 +13,7 @@ STATE = os.path.join(STATE_DIR, "pipeline.json")
 RESULTS = os.path.join(HERE, "results")
 sys.path.insert(0, HERE)
 from generation import load_config
-from _journal import atomic_write_json      # noqa: E402
+from _journal import atomic_write_json
 
 GENCONFIG = load_config(ROOT)
 WSL_ROOT = GENCONFIG["wsl_root"]
@@ -60,7 +32,7 @@ class Stage(object):
                  deps=(), timeout=7200, optional=False, note=""):
         self.id = sid
         self.title = title
-        self.runner = runner          # 'win' | 'wsl' | 'wsl-unshare'
+        self.runner = runner
         self.cmd = cmd
         self.outputs = list(outputs)
         self.scripts = list(scripts)
@@ -87,7 +59,6 @@ class Stage(object):
         return all(os.path.exists(os.path.join(ROOT, o)) for o in self.outputs)
 
 
-# --------------------------------------------------------------------- stages
 def build_stages():
     py = sys.executable
     S = []
@@ -211,10 +182,6 @@ def build_stages():
         scripts=["experiments/e13_data_phase_live.py",
                  "experiments/quicbed/shim_data.py",
                  "experiments/quicbed/dataapp.go",
-                 # ⚠️ e13은 **진짜 제어기와 진짜 RS**를 돌린다. afec/ 가 바뀌면
-                 # 결과도 바뀌므로 지문에 넣어야 한다. 안 넣었더니 알고리즘을
-                 # 8군데 고친 뒤에도 단계가 '완료'로 남아, 옛 제어기가 만든
-                 # 결과가 보고서에 그대로 실릴 뻔했다 (2026-08-18).
                  "afec/controller.py", "afec/estimator.py",
                  "afec/channel.py", "afec/rs.py"],
         deps=["quicbed"], timeout=10800, optional=True,
@@ -244,15 +211,12 @@ def build_stages():
         "win", [py, "experiments/e14_report.py"],
         outputs=["docs/실측 결과표.md"],
         scripts=["experiments/e14_report.py"],
-        # e12/e13/e15 도 표에 들어가므로 의존성에 넣는다. 안 넣으면 그것들이
-        # 갱신돼도 결과표가 옛 수치를 들고 있게 된다(실제로 그럴 뻔했다).
         deps=["e1", "e6", "e7", "e8", "e9", "e12", "e13", "e15", "e19"],
         timeout=1200))
 
     return S
 
 
-# ---------------------------------------------------------------------- state
 def load_state():
     if not os.path.exists(STATE):
         return {"stages": {}, "history": []}
@@ -260,7 +224,6 @@ def load_state():
         with open(STATE, encoding="utf-8") as f:
             return json.load(f)
     except Exception:
-        # a corrupt state file must never wedge the pipeline
         bad = STATE + ".corrupt"
         try:
             os.replace(STATE, bad)
@@ -288,14 +251,12 @@ def stage_status(stage, st):
 
 
 def resolve(stages, st, force):
-    """Return the ids that need to run, honouring dependencies."""
     by_id = {s.id: s for s in stages}
     need = set(force)
     for s in stages:
         status, _ = stage_status(s, st)
         if status != "done":
             need.add(s.id)
-    # anything downstream of a stage that will re-run must re-run too
     changed = True
     while changed:
         changed = False
@@ -309,7 +270,6 @@ def resolve(stages, st, force):
     return order, by_id
 
 
-# ----------------------------------------------------------------- execution
 def run_stage(stage, verbose=True):
     t0 = time.time()
     if stage.runner == "win":
@@ -324,8 +284,6 @@ def run_stage(stage, verbose=True):
     env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONUNBUFFERED"] = "1"
     try:
-        # 🩸 2026-08-26 - loop2.run_stage 와 같은 구멍. encoding 을 안 주면
-        #    부모 로캘(cp949)로 자식의 UTF-8 을 풀어 로그가 통째로 깨진다.
         p = subprocess.run(cmd, capture_output=True, text=True,
                            encoding="utf-8", errors="replace",
                            timeout=stage.timeout, env=env, shell=shell,
@@ -397,9 +355,6 @@ def main():
         return 0
 
     if a.adopt:
-        # 이 세션에서 이미 돌려 산출물이 있는 단계를 상태에 등록한다.
-        # ⚠️ 스크립트를 고친 단계는 인수하면 안 된다 - 새 지문에 옛 결과를
-        #    붙이는 꼴이라 나중에 "왜 이 숫자가 나왔지"를 못 푼다.
         st = load_state()
         by_id = {s.id: s for s in stages}
         for sid in a.adopt:

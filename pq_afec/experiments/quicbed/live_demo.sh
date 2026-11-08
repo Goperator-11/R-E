@@ -1,6 +1,4 @@
 #!/bin/bash
-# A visible walk-through of the testbed: build it, show it, run real ML-KEM
-# QUIC handshakes through it with loss, and print what the FEC shim did.
 BIN="$HOME/quicbed/bin"
 QBED=/mnt/c/dev/pq_afec/experiments/quicbed
 W=/tmp/livedemo
