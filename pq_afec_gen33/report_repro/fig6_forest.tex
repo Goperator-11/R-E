@@ -1,0 +1,164 @@
+\documentclass[border={1.5mm 0.6mm}]{standalone}
+\input{figstyle.tex}
+\pgfplotsset{
+  genzero/.style={ink,only marks,mark=diamond*,mark size=1.5pt,mark options={solid,fill=ink,line width=0.2pt}},
+  genone/.style={ink,only marks,mark=triangle*,mark size=1.5pt,mark options={solid,fill=white,line width=0.45pt}},
+}
+\begin{document}
+\figsize
+\begin{tikzpicture}
+\path (0,-7.6mm) rectangle (150mm,60.700mm);
+\begin{axis}[name=A,at={(37mm,0)},anchor=south west,scale only axis,width=86mm,height=54.500mm,
+  xmin=-1.8513,xmax=2.1463,ymin=0,ymax=54.500,xtick={-1.7076,-1.0414,-0.3010,0.0000,0.3010,1.0414,1.7076,2.0043},xticklabels={{$-50$},{$-10$},{$-1$},{$0$},{$1$},{$10$},{$50$},{$100$}},minor xtick={-1.3222,-0.7782,-0.4771,0.4771,0.7782,1.3222},xtick pos=bottom,
+  ytick=\empty,
+  xlabel style={inner ysep=0pt,yshift=-0.4mm},
+  xlabel={$\Delta$ = gen-2 auto $-$ v3 auto (ms), signed log scale}]
+\addplot[ink,line width=0.5pt,forget plot] coordinates {(0,0)(0,54.500)};
+\addplot[ink,line width=0.45pt,dash pattern=on 2pt off 1.5pt,forget plot] coordinates {(-0.3010,0)(-0.3010,54.500)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(1.3957,49.875)(1.5249,49.875)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(1.4036,47.725)(1.5144,47.725)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(1.0105,45.275)(1.1603,45.275)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(1.0805,43.125)(1.1681,43.125)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(0.2535,37.675)(0.5911,37.675)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(0.3649,35.525)(0.5609,35.525)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(1.0052,33.075)(1.2820,33.075)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(1.0105,30.925)(1.4035,30.925)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(-0.1513,28.475)(0.3785,28.475)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(0.0350,26.325)(0.1826,26.325)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(-0.1154,23.875)(0.2491,23.875)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(0.0264,21.725)(0.2929,21.725)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(-1.7714,16.075)(-1.5396,16.075)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(0.5963,13.225)(0.8062,13.225)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(-0.7936,10.375)(1.6599,10.375)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(0.7498,7.525)(0.8736,7.525)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(2.0715,4.675)(2.0861,4.675)};
+\addplot[ink,line width=0.45pt,forget plot] coordinates {(2.0602,1.825)(2.0833,1.825)};
+\addplot[genzero,forget plot] coordinates {(1.4651,49.875) (1.0918,45.275) (0.4543,37.675) (1.1653,33.075) (0.1723,28.475) (0.0917,23.875) (-1.6708,16.075) (0.7138,13.225)};
+\addplot[genone,forget plot] coordinates {(1.4625,47.725) (1.1265,43.125) (0.4739,35.525) (1.2500,30.925) (0.1150,26.325) (0.1798,21.725) (1.3168,10.375) (0.8161,7.525) (2.0788,4.675) (2.0719,1.825)};
+\addplot[genzero,forget plot] coordinates {(1.0000,52.600)};
+\node[font=\smallsize,anchor=west,inner sep=0pt] at (axis cs:1.0700,52.600) {v3.0};
+\addplot[genone,forget plot] coordinates {(1.4914,52.600)};
+\node[font=\smallsize,anchor=west,inner sep=0pt] at (axis cs:1.5614,52.600) {v3.1};
+\node[font=\smallsize,anchor=east,inner sep=0pt] at (axis cs:-0.3510,40.400) {margin $-1$ ms};
+\end{axis}
+\draw[ink,line width=0.45pt] (0.1mm,54.500mm) -- (35.600mm,54.500mm);
+\draw[ink,line width=0.45pt] (124.400mm,54.500mm) -- (149.9mm,54.500mm);
+\draw[ink,line width=0.45pt] (0.1mm,0) -- (35.600mm,0);
+\draw[ink,line width=0.45pt] (124.400mm,0) -- (149.9mm,0);
+\node[font=\smallsize,anchor=south east,inner sep=0pt,align=right] at (8.600mm,55.400mm) {Cert\\(B)};
+\node[font=\smallsize,anchor=south east,inner sep=0pt,align=right] at (14.800mm,55.400mm) {RTT\\(ms)};
+\node[font=\smallsize,anchor=south east,inner sep=0pt,align=right] at (26.400mm,55.400mm) {Uplink\\(Mbps)};
+\node[font=\smallsize,anchor=south east,inner sep=0pt,align=right] at (34.000mm,55.400mm) {Loss\\(\%)};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (75.626mm,55.800mm) {$\leftarrow$ gen-2 faster};
+\node[font=\smallsize,anchor=base west,inner sep=0pt] at (78.026mm,55.800mm) {v3 faster $\rightarrow$};
+\node[font=\smallsize,anchor=south east,inner sep=0pt,align=right] at (132.000mm,55.400mm) {$\Delta$\\(ms)};
+\node[font=\smallsize,anchor=south,inner sep=0pt,align=center] at (142.100mm,55.400mm) {95\% CI\\(ms)};
+\node[font=\figsize,anchor=base west,inner sep=0pt] at (0.200mm,51.650mm) {Primary (S)};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,47.980mm) {16,000};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,47.980mm) {50};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,47.980mm) {2};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,47.980mm) {2$\leftrightarrow$15};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,49.055mm) {28.2};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,49.055mm) {23.9};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,49.055mm) {32.5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,46.905mm) {28.0};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,46.905mm) {24.3};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,46.905mm) {31.7};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,43.380mm) {9,000};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,43.380mm) {200};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,43.380mm) {2};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,43.380mm) {2$\leftrightarrow$15};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,44.455mm) {11.4};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,44.455mm) {9.2};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,44.455mm) {13.5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,42.305mm) {12.4};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,42.305mm) {11.0};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,42.305mm) {13.7};
+\node[font=\figsize,anchor=base west,inner sep=0pt] at (0.200mm,39.450mm) {Carried over (D)};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,35.780mm) {9,000};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,35.780mm) {50};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,35.780mm) {2};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,35.780mm) {2$\leftrightarrow$15};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,36.855mm) {1.8};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,36.855mm) {0.8};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,36.855mm) {2.9};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,34.705mm) {2.0};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,34.705mm) {1.3};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,34.705mm) {2.6};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,31.180mm) {4,032};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,31.180mm) {50};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,31.180mm) {unlimited};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,31.180mm) {15$^{\dagger}$};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,32.255mm) {13.6};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,32.255mm) {9.1};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,32.255mm) {18.1};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,30.105mm) {16.8};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,30.105mm) {9.2};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,30.105mm) {24.3};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,26.580mm) {9,000};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,26.580mm) {50};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,26.580mm) {unlimited};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,26.580mm) {5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,27.655mm) {0.5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,27.655mm) {$-$0.4};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,27.655mm) {1.4};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,25.505mm) {0.3};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,25.505mm) {0.1};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,25.505mm) {0.5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,21.980mm) {4,032$^{*}$};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,21.980mm) {50};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,21.980mm) {unlimited};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,21.980mm) {5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,23.055mm) {0.2};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,23.055mm) {$-$0.3};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,23.055mm) {0.8};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,20.905mm) {0.5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,20.905mm) {0.1};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,20.905mm) {1.0};
+\node[font=\figsize,anchor=base west,inner sep=0pt] at (0.200mm,18.050mm) {Held out (H)};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,15.255mm) {6,000};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,15.255mm) {80};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,15.255mm) {10};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,15.255mm) {1$\leftrightarrow$8};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,15.255mm) {$-$45.9};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,15.255mm) {$-$58.1};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,15.255mm) {$-$33.6};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,12.405mm) {8,000};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,12.405mm) {120};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,12.405mm) {5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,12.405mm) {1$\leftrightarrow$8};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,12.405mm) {4.2};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,12.405mm) {2.9};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,12.405mm) {5.4};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,9.555mm) {6,000};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,9.555mm) {120};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,9.555mm) {10};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,9.555mm) {1$\leftrightarrow$8};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,9.555mm) {19.7};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,9.555mm) {$-$5.2};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,9.555mm) {44.7};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,6.705mm) {8,000};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,6.705mm) {120};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,6.705mm) {10};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,6.705mm) {1$\leftrightarrow$8};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,6.705mm) {5.5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,6.705mm) {4.6};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,6.705mm) {6.5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,3.855mm) {12,000};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,3.855mm) {120};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,3.855mm) {5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,3.855mm) {1$\leftrightarrow$8};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,3.855mm) {118.9};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,3.855mm) {116.9};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,3.855mm) {120.9};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (8.600mm,1.005mm) {14,000};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (14.800mm,1.005mm) {120};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (26.400mm,1.005mm) {5};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (34.000mm,1.005mm) {1$\leftrightarrow$8};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (132.000mm,1.005mm) {117.0};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (141.000mm,1.005mm) {113.9};
+\node[font=\smallsize,anchor=base east,inner sep=0pt] at (149.600mm,1.005mm) {120.1};
+\pgfresetboundingbox
+\path (0,-7.6mm) rectangle (150mm,60.700mm);
+\end{tikzpicture}
+\end{document}

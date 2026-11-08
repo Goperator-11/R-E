@@ -1,0 +1,126 @@
+{
+  "source_kind": "model_candidate_calculation",
+  "conditions": {
+    "W": 1280,
+    "S_grid_start": 1500,
+    "S_grid_end": 60000,
+    "S_step": 5,
+    "c_pkt": 41.983,
+    "UDP_MAX": 1452,
+    "cap_check_S": 9000.0,
+    "cap_check_W": [
+      1280,
+      1452
+    ]
+  },
+  "model_cap_W": [
+    1407,
+    1401,
+    1395,
+    1389
+  ],
+  "wire_safe_cap_W_eff": [
+    1400,
+    1394,
+    1388,
+    1382
+  ],
+  "grid": {
+    "1": {
+      "s_points": 11701,
+      "exceed_s_points": 0,
+      "exceed_s_intervals_5B": [],
+      "shapes": []
+    },
+    "2": {
+      "s_points": 11701,
+      "exceed_s_points": 0,
+      "exceed_s_intervals_5B": [],
+      "shapes": []
+    },
+    "3": {
+      "s_points": 11701,
+      "exceed_s_points": 248,
+      "exceed_s_intervals_5B": [
+        [
+          25140,
+          26375
+        ]
+      ],
+      "shapes": [
+        {
+          "delta": 114,
+          "W_eff": 1394,
+          "model_bytes": 1451,
+          "wire_worst_bytes": 1458
+        }
+      ]
+    },
+    "4": {
+      "s_points": 11701,
+      "exceed_s_points": 248,
+      "exceed_s_intervals_5B": [
+        [
+          16600,
+          17835
+        ]
+      ],
+      "shapes": [
+        {
+          "delta": 107,
+          "W_eff": 1387,
+          "model_bytes": 1450,
+          "wire_worst_bytes": 1457
+        }
+      ]
+    }
+  },
+  "integer_edge_checks": {
+    "3": [
+      {
+        "S": 25138,
+        "has_exceed_candidate": false
+      },
+      {
+        "S": 25139,
+        "has_exceed_candidate": true
+      },
+      {
+        "S": 26376,
+        "has_exceed_candidate": true
+      },
+      {
+        "S": 26377,
+        "has_exceed_candidate": false
+      }
+    ],
+    "4": [
+      {
+        "S": 16598,
+        "has_exceed_candidate": false
+      },
+      {
+        "S": 16599,
+        "has_exceed_candidate": true
+      },
+      {
+        "S": 17836,
+        "has_exceed_candidate": true
+      },
+      {
+        "S": 17837,
+        "has_exceed_candidate": false
+      }
+    ]
+  },
+  "source_sha256_before": {
+    "padfec3/decide3.py": "a0d1fe8db52dfdf8d33ec5620995df7eb7c472ce9365ee132d98324b8abc8380",
+    "padfec/policy.py": "abfb04a8019e0a443e94d28063be1643d3438fd8865122a70c96195f8f69c016"
+  },
+  "source_sha256_after": {
+    "padfec3/decide3.py": "a0d1fe8db52dfdf8d33ec5620995df7eb7c472ce9365ee132d98324b8abc8380",
+    "padfec/policy.py": "abfb04a8019e0a443e94d28063be1643d3438fd8865122a70c96195f8f69c016"
+  },
+  "elapsed_seconds": 1.379,
+  "pass": true
+}

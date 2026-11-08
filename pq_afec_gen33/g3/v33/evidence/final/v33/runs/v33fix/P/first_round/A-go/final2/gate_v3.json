@@ -1,0 +1,2136 @@
+{
+ "schema": "padfec3.gate_v3_parity/2",
+ "started_utc": "2026-11-01T18:00:12.117296+00:00",
+ "label": "deterministic cross-language parity check of experiments/quicbed/policy3.go (policy v3.3-dev) against padfec3/learn3.py + decide3.py + layout.py; no network, no measurement data",
+ "verdict": "C:/dev/codex_handoff/state/evo/verdict_v3.md section 3 C",
+ "criteria": {
+  "primitive": "a_pre identical; J, e, p_two_rtt, p_fail, p_one_rtt abs <= 1e-9",
+  "decision": "action, mode, n_need, n_cands, cand_hash, n_tied, n2, reeval_cond, alt identical; ej, jmin, score, pen_chosen, alt_ej, alt_score abs <= 1e-9; candidate order and n2 identical, candidate ej and pen abs <= 1e-9",
+  "j_abs_tol_ms": 1e-09,
+  "posterior_rel_tol": 1e-12,
+  "trajectory": "every step: action, why, y, updated, n2, reeval, alarm, n_alarm, skip identical; ej, pen, common, resid abs <= 1e-9; step p_mean rel <= 1e-12; snapshots: post_h, w, combined, state.post, state.w rel <= 1e-12; state.g_resid and state.g_common abs <= 1e-9 with identical shape; windows, counters, n_dec, n_reeval, g_alarm identical"
+ },
+ "host": {
+  "python": "3.14.4",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43"
+ },
+ "binary": {
+  "path": "/home/scien/v33fix_tmp/A-go/bin/qamp",
+  "exists": true,
+  "sha256": "8be4c740b95376fb9dfa865b3bec3e139ae5a8296b8151f87446457200a1a5f4",
+  "sha256_file": "8be4c740b95376fb9dfa865b3bec3e139ae5a8296b8151f87446457200a1a5f4",
+  "srcsha": "bf6b75c31c2c818cffee7299b07d59479cf1b6ac1c3efad998b8654b70477324",
+  "source_fingerprint_now": "bf6b75c31c2c818cffee7299b07d59479cf1b6ac1c3efad998b8654b70477324"
+ },
+ "reference": {
+  "path": "../../Users/scien/AppData/Local/Temp/claude/C--Users-scien/98dad099-940c-4208-8359-61078035dc93/scratchpad/v33fix/A-go/v3gate/v3ref.json",
+  "sha256": "84d60a1b30180cc2478930c627fbf0aeef057e5b84a66ac9770e3b3d559e1f0e",
+  "schema": "padfec3.policy3_reference/2",
+  "seeds": {
+   "decisions": 20261002,
+   "primitives": 20261003,
+   "cliff_primitives": 20261031,
+   "penalties": 20261032,
+   "trajectories": [
+    31,
+    32,
+    33,
+    34,
+    35
+   ]
+  },
+  "sources": {
+   "g3/policy3_reference_gen.py": {
+    "recorded": "ba7b2a838ae9f372113f4d193fdc267a85abdd8072fa5b823df386154eb9e417",
+    "now": "ba7b2a838ae9f372113f4d193fdc267a85abdd8072fa5b823df386154eb9e417",
+    "same": true
+   },
+   "padfec/policy.py": {
+    "recorded": "abfb04a8019e0a443e94d28063be1643d3438fd8865122a70c96195f8f69c016",
+    "now": "abfb04a8019e0a443e94d28063be1643d3438fd8865122a70c96195f8f69c016",
+    "same": true
+   },
+   "padfec/quantum.py": {
+    "recorded": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "now": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "same": true
+   },
+   "padfec/table.py": {
+    "recorded": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "now": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+    "same": true
+   },
+   "padfec3/decide3.py": {
+    "recorded": "a0d1fe8db52dfdf8d33ec5620995df7eb7c472ce9365ee132d98324b8abc8380",
+    "now": "a0d1fe8db52dfdf8d33ec5620995df7eb7c472ce9365ee132d98324b8abc8380",
+    "same": true
+   },
+   "padfec3/layout.py": {
+    "recorded": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+    "now": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+    "same": true
+   },
+   "padfec3/learn3.py": {
+    "recorded": "4a7164a7ddb3054a2b4ce2b9b0d40012a8e787bfe976ac0eedba7ee374b4e177",
+    "now": "4a7164a7ddb3054a2b4ce2b9b0d40012a8e787bfe976ac0eedba7ee374b4e177",
+    "same": true
+   }
+  }
+ },
+ "coverage_reference": {
+  "n": 6720,
+  "k": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "W": [
+   1200,
+   1280,
+   1350
+  ],
+  "cert": [
+   1000,
+   2308,
+   3000,
+   3200,
+   4032,
+   5609,
+   5800,
+   6500,
+   8000,
+   9000,
+   10800,
+   12000,
+   14000,
+   16000
+  ],
+  "s0_base": [
+   382.45,
+   1472.0
+  ],
+  "rtt": [
+   10.0,
+   50.0,
+   100.0,
+   200.0
+  ],
+  "u": [
+   0.0,
+   2.0,
+   5.0,
+   10.0,
+   100.0
+  ],
+  "distinct_contexts": 6720,
+  "post_kinds": {
+   "full": 338,
+   "mix2": 1015,
+   "mix4": 654,
+   "point": 4713
+  },
+  "point_posterior_grid_points": 26,
+  "grid_points": 26,
+  "distinct_actions": 122,
+  "tied_decisions": 1317,
+  "lead_not_legacy": 5736,
+  "modes": {
+   "combo": 543,
+   "none": 99,
+   "pad": 14,
+   "parity": 6064
+  },
+  "with_penalties": 1344,
+  "penalised_choice": 48,
+  "nominal2_choice": 94,
+  "reeval_cond": 94,
+  "no_alt": 0,
+  "a_pre_positive": 4032
+ },
+ "go_timing_s": {
+  "wall": 7.124040603637695,
+  "inner": {
+   "decisions": 1.974703845,
+   "primitives": 0.239513374,
+   "trajectories": 4.77683697
+  }
+ },
+ "constants": {
+  "pass": true,
+  "differences": {}
+ },
+ "primitives": {
+  "count_python": 2800,
+  "count_go": 2800,
+  "ids": {
+   "n": 2800,
+   "mismatches": 0,
+   "first_mismatch": null
+  },
+  "fields": {
+   "J": {
+    "n": 2800,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 2800,
+    "first_over": null
+   },
+   "e": {
+    "n": 2800,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 2800,
+    "first_over": null
+   },
+   "p_two_rtt": {
+    "n": 2800,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 2800,
+    "first_over": null
+   },
+   "p_fail": {
+    "n": 2800,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 2800,
+    "first_over": null
+   },
+   "p_one_rtt": {
+    "n": 2800,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 2800,
+    "first_over": null
+   }
+  },
+  "exact": {
+   "a_pre": {
+    "n": 2800,
+    "mismatches": 0,
+    "first_mismatch": null
+   }
+  },
+  "a_pre_positive": 1730,
+  "pass": true
+ },
+ "decisions": {
+  "count_python": 6720,
+  "count_go": 6720,
+  "errors": {
+   "n": 6720,
+   "mismatches": 0,
+   "first_mismatch": null
+  },
+  "with_penalties": 1344,
+  "exact": {
+   "action": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "mode": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "n_need": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "n_cands": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "cand_hash": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "n_tied": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "n2": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "reeval_cond": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "alt": {
+    "n": 6720,
+    "mismatches": 0,
+    "first_mismatch": null
+   }
+  },
+  "close": {
+   "ej": {
+    "n": 6720,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 6720,
+    "first_over": null
+   },
+   "jmin": {
+    "n": 6720,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 6720,
+    "first_over": null
+   },
+   "score": {
+    "n": 6720,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 6720,
+    "first_over": null
+   },
+   "pen_chosen": {
+    "n": 6720,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 6720,
+    "first_over": null
+   },
+   "alt_ej": {
+    "n": 6720,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 6720,
+    "first_over": null
+   },
+   "alt_score": {
+    "n": 6720,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 6720,
+    "first_over": null
+   }
+  },
+  "candidate_lists": {
+   "records": 2016,
+   "order": {
+    "n": 2016,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "n2": {
+    "n": 35943,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "ej": {
+    "n": 35943,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 35943,
+    "first_over": null
+   },
+   "pen": {
+    "n": 35943,
+    "tolerance": 1e-09,
+    "error": "abs",
+    "max_error": 0.0,
+    "over_tolerance": 0,
+    "bit_exact": 35943,
+    "first_over": null
+   }
+  },
+  "pass": true
+ },
+ "trajectories": {
+  "count_python": 5,
+  "count_go": 5,
+  "each": [
+   {
+    "id": "T1_bigcert",
+    "steps_python": 10000,
+    "steps_go": 10000,
+    "coverage": {
+     "reeval": 166,
+     "alarm_steps": 268,
+     "max_alarmed": 2,
+     "n2_steps": 2490,
+     "penalised_steps": 104,
+     "residuals": 9993,
+     "skips": {
+      "guard": 294,
+      "nominal2": 2490
+     },
+     "updates": 7207
+    },
+    "step_exact": {
+     "a": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "why": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "y": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "upd": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "n2": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "reeval": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "alarm": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "n_alarm": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "skip": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     }
+    },
+    "step_close": {
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "pen": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "common": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "resid": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     }
+    },
+    "decisions": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 10000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "step_p_mean": {
+     "n": 10000,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "snapshots_python": 10,
+    "snapshots_go": 10,
+    "snapshot_exact": {
+     "n": 160,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "posterior": {
+     "n": 2970,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2970,
+     "first_over": null
+    },
+    "guard_state": {
+     "n": 1610,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 1610,
+     "first_over": null
+    },
+    "pass": true
+   },
+   {
+    "id": "T2_rtt200",
+    "steps_python": 10000,
+    "steps_go": 10000,
+    "coverage": {
+     "reeval": 0,
+     "alarm_steps": 0,
+     "max_alarmed": 0,
+     "n2_steps": 0,
+     "penalised_steps": 0,
+     "residuals": 9995,
+     "skips": {},
+     "updates": 9991
+    },
+    "step_exact": {
+     "a": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "why": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "y": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "upd": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "n2": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "reeval": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "alarm": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "n_alarm": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "skip": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     }
+    },
+    "step_close": {
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "pen": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "common": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "resid": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     }
+    },
+    "decisions": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 10000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "step_p_mean": {
+     "n": 10000,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "snapshots_python": 10,
+    "snapshots_go": 10,
+    "snapshot_exact": {
+     "n": 160,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "posterior": {
+     "n": 2970,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2970,
+     "first_over": null
+    },
+    "guard_state": {
+     "n": 1280,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 1280,
+     "first_over": null
+    },
+    "pass": true
+   },
+   {
+    "id": "T3_x25519_unlimited",
+    "steps_python": 10000,
+    "steps_go": 10000,
+    "coverage": {
+     "reeval": 0,
+     "alarm_steps": 0,
+     "max_alarmed": 0,
+     "n2_steps": 0,
+     "penalised_steps": 0,
+     "residuals": 9996,
+     "skips": {},
+     "updates": 9991
+    },
+    "step_exact": {
+     "a": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "why": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "y": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "upd": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "n2": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "reeval": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "alarm": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "n_alarm": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "skip": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     }
+    },
+    "step_close": {
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "pen": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "common": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "resid": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     }
+    },
+    "decisions": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 10000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "step_p_mean": {
+     "n": 10000,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "snapshots_python": 10,
+    "snapshots_go": 10,
+    "snapshot_exact": {
+     "n": 160,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "posterior": {
+     "n": 2970,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2970,
+     "first_over": null
+    },
+    "guard_state": {
+     "n": 960,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 960,
+     "first_over": null
+    },
+    "pass": true
+   },
+   {
+    "id": "T4_shielded_rtt200",
+    "steps_python": 10000,
+    "steps_go": 10000,
+    "coverage": {
+     "reeval": 0,
+     "alarm_steps": 0,
+     "max_alarmed": 0,
+     "n2_steps": 9999,
+     "penalised_steps": 0,
+     "residuals": 9994,
+     "skips": {
+      "shield": 9991
+     },
+     "updates": 0
+    },
+    "step_exact": {
+     "a": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "why": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "y": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "upd": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "n2": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "reeval": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "alarm": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "n_alarm": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "skip": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     }
+    },
+    "step_close": {
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "pen": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "common": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "resid": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     }
+    },
+    "decisions": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 10000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "step_p_mean": {
+     "n": 10000,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "snapshots_python": 10,
+    "snapshots_go": 10,
+    "snapshot_exact": {
+     "n": 160,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "posterior": {
+     "n": 2970,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2970,
+     "first_over": null
+    },
+    "guard_state": {
+     "n": 960,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 960,
+     "first_over": null
+    },
+    "pass": true
+   },
+   {
+    "id": "T5_guard_c6000_u10",
+    "steps_python": 10000,
+    "steps_go": 10000,
+    "coverage": {
+     "reeval": 0,
+     "alarm_steps": 0,
+     "max_alarmed": 1,
+     "n2_steps": 0,
+     "penalised_steps": 0,
+     "residuals": 9995,
+     "skips": {
+      "guard": 122
+     },
+     "updates": 9869
+    },
+    "step_exact": {
+     "a": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "why": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "y": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "upd": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "n2": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "reeval": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "alarm": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "n_alarm": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "skip": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     }
+    },
+    "step_close": {
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "pen": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "common": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "resid": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     }
+    },
+    "decisions": {
+     "n": 10000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 10000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "step_p_mean": {
+     "n": 10000,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 10000,
+     "first_over": null
+    },
+    "snapshots_python": 10,
+    "snapshots_go": 10,
+    "snapshot_exact": {
+     "n": 160,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "posterior": {
+     "n": 2970,
+     "tolerance": 1e-12,
+     "error": "rel",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2970,
+     "first_over": null
+    },
+    "guard_state": {
+     "n": 1608,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 1608,
+     "first_over": null
+    },
+    "pass": true
+   }
+  ],
+  "pass": true
+ },
+ "fresh_input": {
+  "path": "/mnt/c/Users/scien/AppData/Local/Temp/claude/C--Users-scien/98dad099-940c-4208-8359-61078035dc93/scratchpad/v33fix/A-go/final2/gate_v3_fresh_1557_1793556114481471804.json",
+  "sha256": "7e3566cad42dad1193ebf223108ef4ee4326985d84e8cb08f07ba509788d4c0d",
+  "preserved": true
+ },
+ "fresh": {
+  "seed": 20261005,
+  "python_s": 94.10412931442261,
+  "go_wall_s": 5.715897798538208,
+  "coverage": {
+   "n": 5000,
+   "k": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "W": [
+    1200,
+    1280,
+    1350
+   ],
+   "cert": [
+    1000,
+    2308,
+    3000,
+    3200,
+    4032,
+    5609,
+    5800,
+    6500,
+    8000,
+    9000,
+    10800,
+    12000,
+    14000,
+    16000
+   ],
+   "s0_base": [
+    382.45,
+    1472.0
+   ],
+   "rtt": [
+    10.0,
+    50.0,
+    100.0,
+    200.0
+   ],
+   "u": [
+    0.0,
+    2.0,
+    5.0,
+    10.0,
+    100.0
+   ],
+   "distinct_contexts": 3482,
+   "post_kinds": {
+    "full": 207,
+    "mix2": 738,
+    "mix4": 536,
+    "point": 3519
+   },
+   "point_posterior_grid_points": 26,
+   "grid_points": 26,
+   "distinct_actions": 113,
+   "tied_decisions": 969,
+   "lead_not_legacy": 4284,
+   "modes": {
+    "combo": 459,
+    "none": 53,
+    "pad": 13,
+    "parity": 4475
+   },
+   "with_penalties": 1000,
+   "penalised_choice": 37,
+   "nominal2_choice": 81,
+   "reeval_cond": 81,
+   "no_alt": 0,
+   "a_pre_positive": 2996
+  },
+  "primitives": {
+   "count_python": 2600,
+   "count_go": 2600,
+   "ids": {
+    "n": 2600,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "fields": {
+    "J": {
+     "n": 2600,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2600,
+     "first_over": null
+    },
+    "e": {
+     "n": 2600,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2600,
+     "first_over": null
+    },
+    "p_two_rtt": {
+     "n": 2600,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2600,
+     "first_over": null
+    },
+    "p_fail": {
+     "n": 2600,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2600,
+     "first_over": null
+    },
+    "p_one_rtt": {
+     "n": 2600,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 2600,
+     "first_over": null
+    }
+   },
+   "exact": {
+    "a_pre": {
+     "n": 2600,
+     "mismatches": 0,
+     "first_mismatch": null
+    }
+   },
+   "a_pre_positive": 1494,
+   "pass": true
+  },
+  "decisions": {
+   "count_python": 5000,
+   "count_go": 5000,
+   "errors": {
+    "n": 5000,
+    "mismatches": 0,
+    "first_mismatch": null
+   },
+   "with_penalties": 1000,
+   "exact": {
+    "action": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "mode": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "n_need": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "n_cands": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "cand_hash": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "n_tied": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "n2": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "reeval_cond": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "alt": {
+     "n": 5000,
+     "mismatches": 0,
+     "first_mismatch": null
+    }
+   },
+   "close": {
+    "ej": {
+     "n": 5000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 5000,
+     "first_over": null
+    },
+    "jmin": {
+     "n": 5000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 5000,
+     "first_over": null
+    },
+    "score": {
+     "n": 5000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 5000,
+     "first_over": null
+    },
+    "pen_chosen": {
+     "n": 5000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 5000,
+     "first_over": null
+    },
+    "alt_ej": {
+     "n": 5000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 5000,
+     "first_over": null
+    },
+    "alt_score": {
+     "n": 5000,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 5000,
+     "first_over": null
+    }
+   },
+   "candidate_lists": {
+    "records": 1500,
+    "order": {
+     "n": 1500,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "n2": {
+     "n": 26904,
+     "mismatches": 0,
+     "first_mismatch": null
+    },
+    "ej": {
+     "n": 26904,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 26904,
+     "first_over": null
+    },
+    "pen": {
+     "n": 26904,
+     "tolerance": 1e-09,
+     "error": "abs",
+     "max_error": 0.0,
+     "over_tolerance": 0,
+     "bit_exact": 26904,
+     "first_over": null
+    }
+   },
+   "pass": true
+  },
+  "trajectories": {
+   "count_python": 4,
+   "count_go": 4,
+   "each": [
+    {
+     "id": "F1_cert12000_k3",
+     "steps_python": 10000,
+     "steps_go": 10000,
+     "coverage": {
+      "reeval": 0,
+      "alarm_steps": 0,
+      "max_alarmed": 0,
+      "n2_steps": 0,
+      "penalised_steps": 0,
+      "residuals": 9997,
+      "skips": {},
+      "updates": 9991
+     },
+     "step_exact": {
+      "a": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "why": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "y": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "upd": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "n2": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "reeval": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "alarm": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "n_alarm": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "skip": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      }
+     },
+     "step_close": {
+      "ej": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "pen": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "common": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "resid": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      }
+     },
+     "decisions": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "step_p_mean": {
+      "n": 10000,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "snapshots_python": 10,
+     "snapshots_go": 10,
+     "snapshot_exact": {
+      "n": 160,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "posterior": {
+      "n": 2970,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 2970,
+      "first_over": null
+     },
+     "guard_state": {
+      "n": 1280,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 1280,
+      "first_over": null
+     },
+     "pass": true
+    },
+    {
+     "id": "F2_cert6000_rtt20",
+     "steps_python": 10000,
+     "steps_go": 10000,
+     "coverage": {
+      "reeval": 0,
+      "alarm_steps": 0,
+      "max_alarmed": 0,
+      "n2_steps": 0,
+      "penalised_steps": 0,
+      "residuals": 9989,
+      "skips": {},
+      "updates": 9991
+     },
+     "step_exact": {
+      "a": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "why": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "y": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "upd": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "n2": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "reeval": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "alarm": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "n_alarm": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "skip": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      }
+     },
+     "step_close": {
+      "ej": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "pen": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "common": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "resid": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      }
+     },
+     "decisions": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "step_p_mean": {
+      "n": 10000,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "snapshots_python": 10,
+     "snapshots_go": 10,
+     "snapshot_exact": {
+      "n": 160,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "posterior": {
+      "n": 2970,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 2970,
+      "first_over": null
+     },
+     "guard_state": {
+      "n": 1280,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 1280,
+      "first_over": null
+     },
+     "pass": true
+    },
+    {
+     "id": "F3_reeval_cert16000_rtt30",
+     "steps_python": 10000,
+     "steps_go": 10000,
+     "coverage": {
+      "reeval": 293,
+      "alarm_steps": 0,
+      "max_alarmed": 0,
+      "n2_steps": 4395,
+      "penalised_steps": 0,
+      "residuals": 9998,
+      "skips": {
+       "nominal2": 4395
+      },
+      "updates": 5596
+     },
+     "step_exact": {
+      "a": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "why": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "y": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "upd": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "n2": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "reeval": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "alarm": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "n_alarm": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "skip": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      }
+     },
+     "step_close": {
+      "ej": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "pen": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "common": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "resid": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      }
+     },
+     "decisions": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "step_p_mean": {
+      "n": 10000,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "snapshots_python": 10,
+     "snapshots_go": 10,
+     "snapshot_exact": {
+      "n": 160,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "posterior": {
+      "n": 2970,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 2970,
+      "first_over": null
+     },
+     "guard_state": {
+      "n": 1280,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 1280,
+      "first_over": null
+     },
+     "pass": true
+    },
+    {
+     "id": "F4_guard_cert14000_w1350",
+     "steps_python": 10000,
+     "steps_go": 10000,
+     "coverage": {
+      "reeval": 0,
+      "alarm_steps": 72,
+      "max_alarmed": 2,
+      "n2_steps": 0,
+      "penalised_steps": 7,
+      "residuals": 9996,
+      "skips": {
+       "guard": 84
+      },
+      "updates": 9907
+     },
+     "step_exact": {
+      "a": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "why": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "y": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "upd": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "n2": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "reeval": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "alarm": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "n_alarm": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      },
+      "skip": {
+       "n": 10000,
+       "mismatches": 0,
+       "first_mismatch": null
+      }
+     },
+     "step_close": {
+      "ej": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "pen": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "common": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      },
+      "resid": {
+       "n": 10000,
+       "tolerance": 1e-09,
+       "error": "abs",
+       "max_error": 0.0,
+       "over_tolerance": 0,
+       "bit_exact": 10000,
+       "first_over": null
+      }
+     },
+     "decisions": {
+      "n": 10000,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "ej": {
+      "n": 10000,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "step_p_mean": {
+      "n": 10000,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 10000,
+      "first_over": null
+     },
+     "snapshots_python": 10,
+     "snapshots_go": 10,
+     "snapshot_exact": {
+      "n": 160,
+      "mismatches": 0,
+      "first_mismatch": null
+     },
+     "posterior": {
+      "n": 2970,
+      "tolerance": 1e-12,
+      "error": "rel",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 2970,
+      "first_over": null
+     },
+     "guard_state": {
+      "n": 1231,
+      "tolerance": 1e-09,
+      "error": "abs",
+      "max_error": 0.0,
+      "over_tolerance": 0,
+      "bit_exact": 1231,
+      "first_over": null
+     },
+     "pass": true
+    }
+   ],
+   "pass": true
+  },
+  "trajectory_specs": [
+   {
+    "id": "F1_cert12000_k3",
+    "seed": 35,
+    "cert": 12000,
+    "s0_base": 1472.0,
+    "k": 3,
+    "W": 1350,
+    "u": 5.0,
+    "rtt_true": 100.0,
+    "schedule": [
+     [
+      0.01,
+      300
+     ],
+     [
+      0.08,
+      300
+     ]
+    ]
+   },
+   {
+    "id": "F2_cert6000_rtt20",
+    "seed": 36,
+    "cert": 6000,
+    "s0_base": 1472.0,
+    "k": 2,
+    "W": 1280,
+    "u": 1.0,
+    "rtt_true": 20.0,
+    "schedule": [
+     [
+      0.0,
+      400
+     ],
+     [
+      0.12,
+      200
+     ]
+    ]
+   },
+   {
+    "id": "F3_reeval_cert16000_rtt30",
+    "seed": 37,
+    "cert": 16000,
+    "s0_base": 382.45,
+    "k": 2,
+    "W": 1280,
+    "u": 2.0,
+    "rtt_true": 30.0,
+    "schedule": [
+     [
+      0.03,
+      400
+     ],
+     [
+      0.18,
+      400
+     ]
+    ]
+   },
+   {
+    "id": "F4_guard_cert14000_w1350",
+    "seed": 39,
+    "cert": 14000,
+    "s0_base": 1472.0,
+    "k": 2,
+    "W": 1350,
+    "u": 2.0,
+    "rtt_true": 45.0,
+    "schedule": [
+     [
+      0.02,
+      350
+     ],
+     [
+      0.16,
+      350
+     ]
+    ],
+    "common_ms": 1.5,
+    "bias": [
+     {
+      "action": [
+       0,
+       3,
+       1
+      ],
+      "rtt_mult": 0.8,
+      "prob": 0.7
+     }
+    ]
+   }
+  ],
+  "pass": true
+ },
+ "sections": {
+  "constants": true,
+  "primitives": true,
+  "decisions": true,
+  "trajectories": true,
+  "fresh": true
+ },
+ "problems": [],
+ "pass": true,
+ "elapsed_s": 109.21889066696167,
+ "finished_utc": "2026-11-01T18:02:01.336189+00:00"
+}

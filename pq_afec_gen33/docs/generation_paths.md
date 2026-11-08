@@ -27,9 +27,9 @@ Python 역사 경로는 지정한 AST 상수 또는 시험 함수의 문자열�
 검증 명령은 다음과 같다. 측정 잠금이 있을 때는 실행하지 않는다.
 
 ```powershell
-python -I -B -m pytest tests/test_gen32_runner_isolation.py tests/test_no_foreign_paths.py -q -p no:cacheprovider
+python -I -B -m pytest tests/test_gen33_runner_isolation.py tests/test_no_foreign_paths.py -q -p no:cacheprovider
 wsl -d Ubuntu -- bash /mnt/c/dev/pq_afec_gen33/experiments/quicbed/build_gen33.sh
-wsl -d Ubuntu -- python3 -I -B -m unittest discover -s /mnt/c/dev/pq_afec_gen33/tests -p test_gen32_build_staging.py -v
+wsl -d Ubuntu -- python3 -I -B -m unittest discover -s /mnt/c/dev/pq_afec_gen33/tests -p test_gen33_build_staging.py -v
 wsl -d Ubuntu -- python3 -I -B /mnt/c/dev/pq_afec_gen33/experiments/gate_v3_parity.py --out /mnt/c/dev/codex_handoff/v33/runs/manual_parity.json
 ```
 

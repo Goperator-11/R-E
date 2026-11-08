@@ -353,6 +353,9 @@ func (s *decodeConn) feedOne(d []byte) {
 	s.mu.Lock()
 	s.expireLocked(time.Now())
 	s.stats.BytesIn += int64(n)
+	if s.mode != "off" && fb == nil && fecMagicAtBody(b[:n]) {
+		s.stats.FecParseFail++
+	}
 	ca := s.acctLocked(addr, b[:n], false)
 	s.mu.Unlock()
 	if fb == nil {
@@ -585,6 +588,13 @@ func appendVarint2(b []byte, v uint64) []byte {
 const fecMagicLen = 4
 
 var fecMagic = []byte{'P', 'F', 'E', 'C'}
+
+func fecMagicAtBody(d []byte) bool {
+	h := parseLongHdr(d)
+	i := h.bodyOff + 3
+	return h.ok && h.typ == 0 && h.bodyOff < len(d) && d[h.bodyOff] == 0 &&
+		i+fecMagicLen <= len(d) && string(d[i:i+fecMagicLen]) == string(fecMagic)
+}
 
 const fecVer = 1
 
@@ -1050,6 +1060,7 @@ func (c *countConn) counts() (int, int64, int, int64) {
 
 // ------------------------------------------------------- 클라이언트 쪽 FEC
 type clientStats struct {
+	ClientSCID                string            `json:"client_scid,omitempty"`
 	ExtraSent                 extraSent         `json:"extra_sent"`
 	RetransLayout             string            `json:"retrans_layout"`
 	FlightTrace               flightTrace       `json:"flight_trace"`
@@ -1694,6 +1705,7 @@ func (c *fecConn) snapshot() clientStats {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	s := c.stats
+	s.ClientSCID = fmt.Sprintf("%x", c.ownCID)
 	s.FlightTrace = s.FlightTrace.clone()
 	fs := map[string]int{}
 	for k, v := range s.FlightSizes {
@@ -1739,6 +1751,8 @@ type serverStats struct {
 	FirstFlightNonInitialLong int   `json:"first_flight_non_initial_long"`
 	Originals                 int   `json:"originals"`
 	Parities                  int   `json:"parities"`
+	FecParseFail              int   `json:"fec_parse_fail"`
+	FecOversizeRead           int   `json:"fec_oversize_read,omitempty"`
 	Recovered                 int   `json:"recovered"`
 	// 🩸 2026-08-28 (2 단계 감사) - **비행당 복구가 한 번뿐인지 보는 계수.**
 	//    Recovered 는 복원한 **원본 개수**라 한 번에 여럿을 세므로,
@@ -1951,6 +1965,8 @@ type decodeConn struct {
 	writeMu  sync.Mutex
 	udp      udpMessageConn
 	readMeta packetMeta
+	wideRead bool
+	wideBuf  []byte
 	closed   bool
 	accounts *accountBook
 	countConn
@@ -2380,7 +2396,15 @@ again:
 	}
 	s.mu.Unlock()
 
-	n, addr, err := s.readWire(b)
+	wire := b
+	wide := s.wideRead && s.mode != "off" && len(b) < udpMaxPayload
+	if wide {
+		if s.wideBuf == nil {
+			s.wideBuf = make([]byte, udpMaxPayload)
+		}
+		wire = s.wideBuf
+	}
+	wireN, addr, err := s.readWire(wire)
 	if err != nil {
 		if ne, ok := err.(net.Error); s.hold != nil && ok && ne.Timeout() {
 			s.mu.Lock()
@@ -2392,7 +2416,14 @@ again:
 				goto again
 			}
 		}
-		return n, addr, err
+		if wide && wireN > 0 {
+			wireN = copy(b, wire[:min(wireN, len(wire))])
+		}
+		return wireN, addr, err
+	}
+	n := copy(b, wire[:wireN])
+	if wireN > n {
+		s.readMeta = s.readMeta.truncated(true)
 	}
 	s.countRx(n)
 	s.mu.Lock()
@@ -2410,7 +2441,7 @@ again:
 	// 않는 팔이므로 파싱을 건너뛰고 전부 원본으로 센다.
 	var fb *fecBlock
 	if s.mode != "off" {
-		fb = parseFecBlock(b[:n])
+		fb = parseFecBlock(wire[:wireN])
 	}
 	// C1: 클라이언트의 두 번째 비행(Handshake) 이 오면 첫 비행 회계를 잠그고
 	// 회신한다. 이 시점에는 주소 검증이 끝나 증폭 한도가 해제돼 있으므로
@@ -2421,6 +2452,12 @@ again:
 	s.mu.Lock()
 	s.expireLocked(time.Now())
 	s.stats.BytesIn += int64(n)
+	if s.mode != "off" && fb == nil && fecMagicAtBody(wire[:wireN]) {
+		s.stats.FecParseFail++
+	}
+	if wireN > n {
+		s.stats.FecOversizeRead++
+	}
 	if !hs.ok {
 		s.stats.HdrShort++
 	} else if hs.typ == 0 {
@@ -2460,7 +2497,7 @@ again:
 		// Record physical arrivals before the decoder can replace a parity with
 		// a reconstructed original. Initial retransmissions remain identifiable.
 		if !ca.FbSent && hs.ok && hs.typ == 0 && !isHandshake {
-			crc := crc32.ChecksumIEEE(b[:n])
+			crc := crc32.ChecksumIEEE(wire[:wireN])
 			if !inCRC(ca.RxCRC, crc) {
 				if len(ca.RxCRC) < fbCRCCap {
 					ca.RxCRC = append(ca.RxCRC, crc)
@@ -2483,7 +2520,7 @@ again:
 	}
 	if s.hold != nil {
 		s.mu.Lock()
-		s.holdReceiveLocked(b[:n], fb, addr, ca, s.hold.now(), s.readMeta)
+		s.holdReceiveLocked(b[:n], wireN, fb, addr, ca, s.hold.now(), s.readMeta)
 		s.mu.Unlock()
 		goto again
 	}
@@ -2690,6 +2727,7 @@ func runServer(addr string, certSize int, certFile string, mode string, statsPat
 		feedback:        feedback,
 		feedbackVersion: feedbackVersion,
 		profile:         profile,
+		wideRead:        wideReadFor(profile),
 		certMeta:        &certMeta,
 		flights:         map[string]*flightRec{}}
 	if hold != nil {
@@ -2805,6 +2843,7 @@ func runServer(addr string, certSize int, certFile string, mode string, statsPat
 
 // ------------------------------------------------------------------ 클라이언트
 type trial struct {
+	ClientSCID                string                   `json:"client_scid"`
 	Profile                   string                   `json:"profile,omitempty"`
 	RevisitGuard              *revisitGuardObservation `json:"revisit_guard,omitempty"`
 	Revisit                   revisitObservation       `json:"revisit"`
@@ -2867,6 +2906,7 @@ func measuredPathRTT(stats quic.ConnectionStats) (float64, bool) {
 }
 
 func recordFinalSendStats(t *trial, agg *clientStats, fin clientStats) {
+	t.ClientSCID = fin.ClientSCID
 	if t.Arrivals.Src == "" {
 		t.Arrivals = p3Arrivals{Src: "none"}
 	}
@@ -3077,12 +3117,9 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 		// 대기 중에 받은 회신이 통계에 안 잡힌다 - 2026-08-23 에 실제로
 		// 그래서 "회신 0 건"으로 오진했다(서버는 20/20 보냈고 파싱도
 		// 정상이었다). HCT(el)는 이미 위에서 찍혔으므로 측정에는 영향 없다.
-		var feedbackWaitElapsed time.Duration
-		feedbackWaitReceived := false
+		var window feedbackWindow
 		if feedback && err == nil {
-			waitStart := time.Now()
-			feedbackWaitReceived = fc.waitFeedback(feedbackWait)
-			feedbackWaitElapsed = time.Since(waitStart)
+			window = collectFeedbackWindow(observer.serverBytes, conn.ConnectionStats, func() bool { return fc.waitFeedback(feedbackWait) })
 		}
 		st := fc.snapshot()
 		_, _, _, srvBytes := fc.counts()
@@ -3123,15 +3160,17 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 		t.SrvBytes = srvBytes
 		t.HandshakeEndNS = int64(el)
 		t.FeedbackWaitLimitMS = float64(feedbackWait) / float64(time.Millisecond)
-		t.FeedbackWaitNS = int64(feedbackWaitElapsed)
-		t.FeedbackWaitReceived = feedbackWaitReceived
+		t.FeedbackWaitNS = int64(window.Elapsed)
+		t.FeedbackWaitReceived = window.Received
 		if err != nil {
 			t.Err = err.Error()
 		} else {
 			cs := conn.ConnectionState().TLS
 			t.CipherID = cs.CipherSuite
 			t.KEM = uint16(cs.CurveID)
-			t.PathRTTMS, t.PathRTTValid = measuredPathRTT(conn.ConnectionStats())
+			currentStats := conn.ConnectionStats()
+			t.PathRTTMS, t.PathRTTValid = measuredPathRTT(window.policyStats(currentStats))
+			window.AfterWaitRTTMS, window.AfterWaitRTTValid = measuredPathRTT(currentStats)
 			if t.PathRTTValid {
 				t.PathRTTSource = "quic_ack_min_rtt"
 				if mode == "auto" {
@@ -3154,7 +3193,7 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 		var obs3Err error
 		if mode == "auto3" {
 			obs3Info, obs3After, obs3Err = c3.observePred(addr, plan3.Action, plan3.jPred(), hct, err == nil,
-				st.FirstFlightDgrams, float64(srvBytes), t.PathRTTMS, t.PathRTTValid,
+				st.FirstFlightDgrams, float64(window.policyServerBytes(srvBytes)), t.PathRTTMS, t.PathRTTValid,
 				wSize, uplinkMbps, cPktDefault, &t.Arrivals)
 			if obs3Err != nil {
 				fmt.Fprintln(os.Stderr, "auto3 observe:", obs3Err)
@@ -3174,6 +3213,8 @@ func runClient(addr, group string, n int, timeout, gap time.Duration,
 		t.RevisitGuard = fc.revisitGuardSnapshot()
 		if mode == "auto3" {
 			row := auto3Row(t, plan3, obs3Info, obs3Err, obs3After)
+			row.PolicyUplinkMbps = uplinkMbps
+			window.annotate(&row)
 			enc.Encode(&row)
 		} else {
 			enc.Encode(&t)
@@ -3711,6 +3752,10 @@ func profileName(profile string) string {
 	return profile
 }
 
+func wideReadFor(profile string) bool {
+	return profile != profileSealed31
+}
+
 func applyRunProfile(profile string, explicit map[string]bool, s *runSettings) error {
 	switch profile {
 	case "":
@@ -3904,6 +3949,7 @@ func main() {
 		"-layout v3 의 선행 신용 패리티 수 (-1 = 레거시 [m>=2])")
 	cache3 := flag.String("cache3", "",
 		"-fec auto3 의 목적지별 학습 상태 파일 (gen-2 -cache 와 따로 둔다)")
+	exploreRate := flag.Float64("p3-explore-rate-ms", 0, "-fec auto3 none 경로의 탐색 원장 적립 ms/연결 (0 = 끔)")
 	leadHold := flag.Bool("lead-hold", false, "서버의 v3 선행 패리티 보류 복호")
 	holdRate := flag.Int64("lead-hold-uplink-kbps", 2000, "보류 기한의 명시 업링크 kbps, 0은 무제한")
 	holdMargin := flag.Duration("lead-hold-margin", time.Millisecond, "보류 기한의 여유 시간")
@@ -4003,12 +4049,24 @@ func main() {
 			os.Exit(2)
 		}
 		if fmode == "auto3" {
+			if err := checkAuto3Uplink(explicit); err != nil {
+				fmt.Fprintln(os.Stderr, err)
+				os.Exit(2)
+			}
 			if err := checkAuto3Flags(layoutSet, *layout, *lead, *ips); err != nil {
 				fmt.Fprintln(os.Stderr, "auto3:", err)
 				os.Exit(2)
 			}
-		} else if *cache3 != "" {
-			fmt.Fprintln(os.Stderr, "auto3: -cache3 needs -fec auto3")
+			if !p3Finite(*exploreRate) || *exploreRate < 0 {
+				fmt.Fprintln(os.Stderr, "auto3: -p3-explore-rate-ms must be finite and >= 0")
+				os.Exit(2)
+			}
+			p3ExploreRateMs = *exploreRate
+			if warning := auto3ParityWarning(*ips, *expectK); warning != "" {
+				fmt.Fprintln(os.Stderr, warning)
+			}
+		} else if *cache3 != "" || *exploreRate != 0 {
+			fmt.Fprintln(os.Stderr, "auto3: -cache3 and -p3-explore-rate-ms need -fec auto3")
 			os.Exit(2)
 		} else if err := checkLayoutFlags(*layout, *lead, fmode, *m); err != nil {
 			fmt.Fprintln(os.Stderr, "layout:", err)

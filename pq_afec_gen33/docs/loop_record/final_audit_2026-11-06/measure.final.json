@@ -1,0 +1,938 @@
+{
+ "id": "verify_measure",
+ "summary": "감사 32개 항목을 feb0b1850 사본과 봉인 저널로 다시 확인했고 통째로 틀린 항목은 없지만 21개는 그대로 실행하면 실패하거나 과장이 있어 고쳤다. 그대로 두면 깨지는 것이 다섯이다: MS-08 서버 명령은 -certsize가 빠져 rc 2로 죽고(직접 실행), MS-05는 qamp.sha256을 복사하지 않아 gate_v3_parity가 실패하고(직접 실행), MS-03의 p21 williams는 2·3팔만 받고, MS-20은 95×61=5,795라 자기 합격선 5,800과 필요 표본 6,095를 못 넘고, MS-21의 c1_seen은 행에 없는 필드다. MS-17은 m4L3 첫 비행 parity 바이트가 봉인에서도 5304~5352로 흔들리는데 '일정'을 요구했고 rtt200 범위의 m4L2 팔이 팔 목록에 없었다. MS-02는 D50 기본값이 이미 있어 측정을 막지 않으므로 should로 내렸고 MS-07도 should로 내렸으며 MS-01은 설치가 도현님 몫이라 답 전에는 설치·측정을 시작하지 않게 고쳤다. 새로 넣은 MS-33은 봉인 측정 커널 6.18.35.2와 지금 6.18.54.1의 차이이고, HEAD 재빌드 sha 06520d52·srcsha bb31e590·Go PASS 266·gate_v3_parity 전체 pass·gate_l1_go 738,663 비트 일치와 저널 수치는 재현했다.",
+ "items": [
+  {
+   "id": "MS-01",
+   "kind": "decision",
+   "priority": "must",
+   "title": "최소 측정 묶음(smoke, A/A, X1, X9, X6 최소판)을 최종 작업에 넣을지",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:357",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:415",
+    "C:/dev/codex_handoff/v33/state/DECISIONS_NEEDED.md:11",
+    "C:/dev/codex_handoff/v33/state/DECISIONS_NEEDED.md:20"
+   ],
+   "problem": "활성 정책 v3.3.1-dev는 네트워크 측정이 0건이고 X1(신규성 방어)·X9(방향 전환 근거)·X6이 한 번도 안 돌았다. 안 돌리면 보고서의 v3.3 절은 시뮬레이션과 관문뿐이고 같은 바이트 비교는 후속 연구로 남는다. 돌리면 러너 작성 2~3시간과 측정 3.5시간이 든다.",
+   "evidence": "LOOP_STATE: T7 todo, X1 X6 X9 todo, iterations 63, status stopped. 시간은 봉인 저널 p31_run1_*_units.jsonl의 started_at~finished_at 합으로 직접 쟀다: S_bigcert 0.162 s/연결(13,500행, 2185 s), S_rtt200 0.285(13,500행, 3849 s), H c6000 RTT120 0.190, D_p11_2955_l0 0.065, AA_bigcert 0.185, SEQ_mbps2_l15 0.133. TASKS.md:357에 '설치 시점은 도현님이 정한다'가 있다.",
+   "fix": "권장값: 넣는다. 묶음은 MS-17~MS-21이고 전부 development, confirmatory false다. 봉인, 보류 추첨, 확증 판정은 하지 않는다(D3 유지). 측정 직전에 gen33 바이너리를 설치하는 것도 이 결정에 포함한다(MS-05). X9 결과를 변경보고·덱에 반영하지 않는 D12도 유지한다. 답이 오기 전에는 네트워크를 쓰지 않는 코드·문서 과제(MS-03, MS-04, MS-06의 문서, MS-13, MS-14, MS-16)까지만 하고 MS-05의 설치와 MS-17 이후는 시작하지 않는다. 안 넣기로 정하면 MS-03~MS-22를 건너뛰고 MS-23 문장을 적용한다.",
+   "acceptance": "DECISIONS_NEEDED.md의 새 행에 결과와 날짜가 적혀 있다. grep -n 'D53' C:/dev/codex_handoff/v33/state/DECISIONS_NEEDED.md",
+   "depends": [],
+   "est_minutes": 5,
+   "codex_can_do": false,
+   "source_ids": [
+    "D3",
+    "D12",
+    "T7",
+    "X1",
+    "X6",
+    "X9",
+    "A5-17"
+   ],
+   "verdict": "partly",
+   "verify_note": "LOOP_STATE를 다시 읽었다: iterations 63, status stopped, measurement null, T7·X1·X6·X9 todo. 저널 시간도 다시 쟀다: S_bigcert 13,500행 2185 s 0.162, S_rtt200 13,500행 3849 s 0.285, H c6000 0.190, D_p11_2955_l0 0.065, AA 0.185, SEQ 0.133으로 모두 일치. 고친 점 하나: 기본값 '넣는다'를 답 없이 적용하면 TASKS.md:357 '설치 시점은 도현님이 정한다'를 넘어간다. 도현님 요청은 코드·문서 수정이고 측정은 그 밖이다. 그래서 권장값으로 두고 답이 오기 전에는 설치와 측정을 시작하지 않게 고쳤다."
+  },
+  {
+   "id": "MS-02",
+   "kind": "decision",
+   "priority": "should",
+   "title": "D50 확정: T7·X의 Initial 크기 W를 1280 B로 고정",
+   "where": [
+    "C:/dev/codex_handoff/v33/state/DECISIONS_NEEDED.md:143",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:2941",
+    "C:/dev/pq_afec_gen33/experiments/p21_gencompare.py:2323",
+    "C:/dev/pq_afec_gen33/experiments/p21_gencompare.py:101"
+   ],
+   "problem": "D50 기본값 W 1280은 이미 있어서 측정을 막지는 않는다. 그래도 D50 문장은 '-ips로 명시'이고 봉인 러너는 -ips가 없어 계획 파일에 어느 쪽을 쓸지 한 번 확정해야 한다. 상한 위 W를 셀로 넣으면 v3.3.1-dev의 parity 후보가 0개라 PAD-FEC 측정이 아니게 된다.",
+   "evidence": "직접 계산(padfec3.decide3.candidates3, c_pkt 41.983): W 1280 k 2에서 S 2955·9000·16000 모두 m>0 후보 14개, W 1401 k 2도 14개, W 1402 k 2와 W 1406 k 2는 0개. 봉인 저널 run1+run2 합계 ips_used: g3auto 1280 48,803행·1281 4,797행, g2auto 1280 46,640행·1281 6,954행·1406 6행, 고정 팔은 0(플래그 없음, 실제 1280). p21 run_client에 -ips가 없다. W1 15셀도 전부 w 1280(g3/v33/bench_protocol.json).",
+   "fix": "기본값: 모든 팔 W 1280. 봉인 러너와 같게 -ips를 주지 않는다(gen33은 qamp.go:2941과 inflation.go:39가 1280으로 둔다). D50 행에 '-ips 없이, 실행값 1280'을 덧붙인다. 상한 위 W는 측정 묶음에 넣지 않는다. 답이 없어도 이 기본값으로 진행한다.",
+   "acceptance": "측정 결과 JSON의 checks.w_bound가 pass: gen33 행 전부 ips_eff 1280 이상이고 m_used>0인 행은 ips_eff 1401 이하이며 parity 데이터그램 크기 1452 B 이하. grep -n 'D50' C:/dev/codex_handoff/v33/state/DECISIONS_NEEDED.md 행에 '-ips 없이'가 있다.",
+   "depends": [],
+   "est_minutes": 2,
+   "codex_can_do": false,
+   "source_ids": [
+    "D50",
+    "D-E4"
+   ],
+   "verdict": "partly",
+   "verify_note": "수치는 전부 맞다. candidates3(2,1280,S,41.983)는 16개이고 m>0은 14개, W 1401은 15개이고 m>0은 14개, W 1402·1406은 (0,0,0) 하나뿐이다. 봉인 합계 g3auto 1280 48,803·1281 4,797, g2auto 1280 46,640·1281 6,954·1406 6, 고정 팔 0도 다시 셌다. 과장: 'W가 미정이면 측정 계획이 시작되지 않는다'는 틀렸다. DECISIONS_NEEDED.md:139가 정하기 전까지 기본값대로 진행하라고 하고 D50 기본값이 이미 1280 B다. 그래서 must가 아니고 확인만 받으면 된다. 어긋난 곳 둘: D50은 '-ips로 명시'인데 이 항목은 '-ips 없이'다. 실행값은 같다(inflation.go:39가 n=0을 1280으로 친다, qamp.go:3045~3046은 -ips 1280이면 같은 값을 넣는다). 봉인 러너와 같게 하려면 '-ips 없이'가 맞으므로 D50 문장을 고친다. 합격 조건 'ips_eff 1280 이상 1401 이하'는 m=0에서 δ가 큰 padding 행동을 틀리게 떨어뜨린다. devreport --check-w는 어느 항목에서도 만들지 않으므로 MS-13 checks로 옮겼다."
+  },
+  {
+   "id": "MS-03",
+   "kind": "code",
+   "priority": "must",
+   "title": "T7 측정 러너 experiments/v33/devbed.py 작성",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:394",
+    "C:/dev/pq_afec_gen33/experiments/v33"
+   ],
+   "problem": "러너 파일이 없어 어떤 측정도 시작할 수 없다. --dry-run도 칠 수 없다. T7 카드의 완료 기준(--dry-run, --smoke)을 만족하는 코드가 0줄이다.",
+   "evidence": "git ls-files | grep -iE 'devbed|v33_dev|t7' 출력은 docs/T7_conditions_v31.md 한 줄뿐. ls experiments/v33/lib: No such file. 사본에서 python3 experiments/v33/devbed.py --dry-run: can't open file, rc=2. ls g3/v33/results: No such file.",
+   "fix": "experiments/v33/devbed.py(800줄 이하)와 experiments/v33/lib/{netbed,arms,blocks,report}.py를 만든다. CLI는 --plan <json>, --dry-run, --smoke, --run, --resume, --report-only. 필수 동작: (1) 팔 표는 계획 JSON에서 읽고 gen33 팔 v33none(-feedback 없음)과 v33c1(양쪽 -feedback)을 따로 둔다. 동결 팔 경로는 ~/frozen/g3c_6baf2b52/qamp, ~/frozen/g2_d98b05d7/qamp이다. (2) 행마다 바이너리 sha, srcsha, 계획 sha를 남긴다. (3) 블록 안 Williams 회전(p21_gencompare.py의 williams, order_for를 옮긴다), auto 팔은 궤적마다 새 캐시, 첫 300연결은 번인으로 따로 집계. (4) 단위 저널로 재개, 결과와 저널 파일 이름에 실행 ID를 넣고 같은 이름이면 거부. (5) MEASURE_LOCK 쓰기와 해제. (6) 모든 결과에 label development, confirmatory false. (7) 상태를 자료 없음·판정 실패·판정 통과 세 값으로 구분. (8) A/A 블록의 표류와 구간 반폭이 계획의 판정 허용 오차보다 크면 판정불능으로 표시. (9) 셀·팔별 유효 RTT 비율이 90% 미만이면 경고(T4_observation_result.md:25). 코드에 주석을 달지 않는다. 더할 것: (10) 팔 순서는 p21 williams를 옮기지 말고 n팔 일반 Williams 정사각으로 새로 쓴다(짝수 n은 n행, 홀수 n은 2n행). (11) 1-RTT 분류는 p21_gencompare.py:796의 one_rtt와 pre_decision_bytes, 세그먼트 뒤 대기는 632행의 settle_s를 옮긴다. (12) 스크립트 머리에서 ROOT를 sys.path에 넣는다(v33/bench.py:18~19 방식). (13) 옛 세대 저장소 경로 문자열을 소스에 넣지 않는다. (14) tests/test_v33_devbed.py를 같이 만들고 Windows python에서 돌게 tc·ip 호출은 함수로 분리해 시험에서 가짜로 바꾼다.",
+   "acceptance": "wsl -d Ubuntu --exec bash -c 'cd /mnt/c/dev/pq_afec_gen33 && PYTHONDONTWRITEBYTECODE=1 python3 -I -B experiments/v33/devbed.py --plan g3/v33/plans/final_bundle_v1.json --dry-run' 가 rc 0이고 팔·셀·연결 수·예상 시간을 출력하며 파일을 쓰지 않는다. Windows에서 python -I -B -m pytest tests/test_v33_devbed.py tests/test_gen32_runner_isolation.py tests/test_no_foreign_paths.py -q -p no:cacheprovider 통과. test_v33_devbed에 6팔 순서가 각 팔 앞뒤 쌍을 한 번씩 갖는지 보는 시험이 있다.",
+   "depends": [
+    "MS-01",
+    "MS-04",
+    "MS-14"
+   ],
+   "est_minutes": 180,
+   "codex_can_do": true,
+   "source_ids": [
+    "T7",
+    "A6-15",
+    "A6-12",
+    "A5-10",
+    "A5-11",
+    "Q-03",
+    "Q-04",
+    "Q-06",
+    "Q-07"
+   ],
+   "verdict": "partly",
+   "verify_note": "러너가 없는 것은 맞다. 사본에서 python -I -B experiments/v33/devbed.py --dry-run은 can't open file이고 git ls-files에 devbed는 없다(netbed는 옛 experiments/quicbed/netbed_spec.sh 하나). fix에 그대로 따르면 깨지는 곳이 있다. p21_gencompare.py:332의 williams는 n이 2·3일 때만 값을 돌려주고 나머지는 ValueError인데 MS-18은 6팔, MS-21은 4팔, MS-17은 6팔이다. MS-06·MS-21이 쓰는 1-RTT 분류의 정의가 카드에 없다(p21:796 one_rtt, 규칙 1137행). python3 -I는 스크립트 폴더를 sys.path에서 뺀다(WSL에서 sys.path 직접 확인). v33/bench.py:18~19처럼 ROOT를 넣어야 lib를 부를 수 있다. tests/test_no_foreign_paths.py가 experiments 아래 모든 .py에서 옛 세대 저장소 경로 문자열을 잡으므로 동결 경로는 계획 JSON으로 빼야 한다. 동결 바이너리 ~/frozen/...는 그 정규식에 안 걸린다. WSL python3에는 pytest가 없어서 시험은 Windows python으로 돈다."
+  },
+  {
+   "id": "MS-04",
+   "kind": "code",
+   "priority": "must",
+   "title": "netem·netns 경로가 gen33에서 전부 차단되어 있고 g3bed는 gen33 바이너리와 안 맞는다",
+   "where": [
+    "C:/dev/pq_afec_gen33/experiments/padbed.py:79",
+    "C:/dev/pq_afec_gen33/experiments/padbed.py:95",
+    "C:/dev/pq_afec_gen33/experiments/padbed.py:146",
+    "C:/dev/pq_afec_gen33/experiments/g3bed.py:19",
+    "C:/dev/pq_afec_gen33/experiments/g3bed.py:244",
+    "C:/dev/pq_afec_gen33/experiments/g3bed.py:396",
+    "C:/dev/pq_afec_gen33/experiments/p21_gencompare.py:3108",
+    "C:/dev/pq_afec_gen33/tests/test_gen32_runner_isolation.py:46",
+    "C:/dev/pq_afec_gen33/README.md:93"
+   ],
+   "problem": "T7이 padbed를 그대로 부르면 첫 tc 호출에서 RuntimeError로 죽는다. 울타리를 지우면 isolation 시험이 깨지고 옛 러너가 풀린다. g3bed는 BINS가 /tmp/qamp_g3로 박혀 있고 srcsha 계산이 build_gen33.sh와 달라 맞는 바이너리도 '다른 소스'로 판정한다. gen33의 T1~T6 smoke는 전부 Python UDP 중계기로 돌아서 netem 경로는 gen33 바이너리로 한 번도 돈 적이 없다.",
+   "evidence": "사본 /tmp/finalaudit_measure/py/repo에서: p21_gencompare.py --dry-run rc=2 'historical v3.1 stage-3 runner is disabled', g3_stage0.py --dry-run rc=2, g3_m1confirm.py --dry-run rc=2. padbed.run('true'): RuntimeError Legacy live measurements are disabled in gen32. g3bed.quicbed_sources 지문 baa169686b23… 대 build_gen33 srcsha bb31e5904d22…. gate_v3_parity.py:78 quicbed_fingerprint는 bb31e590과 일치(runs/v33fix/INT/gates.out). v33/observation_smoke.py:78 class Relay, netem 언급은 v33 안에서 rtt_reference_report.py 한 곳뿐. WSL 읽기 확인: go1.26.6, ~/gopath/pkg/mod에 quic-go@v0.61.0·v0.62.0, tc iproute2-6.19.0, CONFIG_NET_SCH_NETEM=m, CONFIG_VETH=y, CONFIG_IFB=m, Python 3.14.4, nproc 28, 메모리 7 GB, sudo -n rc=1(interactive authentication is required). 권한 확인을 위해 unshare -Urnm 안에서 일회용 veth와 netem delay 1ms qdisc를 만들었고 veth_ok, netem_ok가 나왔다. 패킷은 보내지 않았고 네임스페이스와 함께 사라졌다. 이 한 번은 읽기 확인을 넘어선 동작이다. sudo가 없어도 unshare로 돌릴 수 있다.",
+   "fix": "padbed의 울타리는 그대로 두고 experiments/v33/lib/netbed.py를 새로 만든다. padbed.setup(146행)과 set_netem(246행), _netem_spec(214행)의 명령을 그대로 옮기되 run에 refuse_legacy_live가 없게 하고, loss_s2c를 인자로 받아 X9 양방향 조건을 낼 수 있게 한다. 시작 시 geteuid 0(unshare 안)인지 확인하고, netem 설정 뒤 tc qdisc show 출력을 저널에 남긴다. CPU 고정은 padbed._cpu_list 규칙(앞 4개)을 쓴다. srcsha 검사는 gate_v3_parity.quicbed_fingerprint를 쓴다. g3bed.new_conns는 쓰지 않는다(MS-09). setup을 옮길 때 mount tmpfs /run, static_arp(padbed.py:179), verify_link(194행)를 빼지 않는다. static_arp를 빼면 무손실에서 40회 중 1회 2-RTT가 난다고 적혀 있다. _netem_spec은 차단이 없어 복사 대신 import해도 된다. padbed.set_netem은 loss_s2c를 이미 받는다.",
+   "acceptance": "python -I -B -m pytest tests/test_gen32_runner_isolation.py -q -p no:cacheprovider 통과(울타리 유지). wsl -d Ubuntu --exec bash -c 'cd /mnt/c/dev/pq_afec_gen33 && unshare -Urnm python3 -I -B experiments/v33/lib/netbed.py --selftest' 가 tc 출력에 delay 25ms, rate 2Mbit, loss 2%를 보이고 rc 0.",
+   "depends": [],
+   "est_minutes": 45,
+   "codex_can_do": true,
+   "source_ids": [
+    "T7",
+    "A6-13"
+   ],
+   "verdict": "confirmed",
+   "verify_note": "사본에서 다시 돌렸다. p21_gencompare, g3_stage0, g3_m1confirm --dry-run 모두 'disabled' 문구로 끝나고 tests/test_gen32_runner_isolation.py와 test_no_foreign_paths 7 passed(그 시험이 rc 2와 padbed.run RuntimeError를 잡는다). g3bed.quicbed_sources 지문 baa169686b23…, gate_v3_parity.quicbed_fingerprint bb31e5904d22…, HEAD 빌드 srcsha bb31e590…. v33/observation_smoke.py:78 class Relay 확인. 네임스페이스 안 veth·netem은 금지 범위라 다시 돌리지 않았다(미확인). 감사자의 일회용 veth·netem 실행은 규칙 3을 넘은 것이고 본인도 적어 두었다. 근거는 그것 말고도 있다: docs/S5_test_hygiene.md:23의 bootstrap_wsl --check, 봉인 저널의 tc_c2s 줄, netbed_spec.sh의 같은 절차. 단 봉인 때 커널은 달랐다(MS-33). 작은 정정: experiments/quicbed/netbed_spec.sh는 차단이 없으나 rate도 stats도 없어 러너가 아니므로 '전부 차단'은 padbed·g3bed·p21 경로라는 뜻으로 읽는다."
+  },
+  {
+   "id": "MS-05",
+   "kind": "measure",
+   "priority": "must",
+   "title": "설치된 gen33 qamp가 v33fix 이전 판이다. 설치, 동결, 관문 재실행",
+   "where": [
+    "C:/dev/pq_afec_gen33/genconfig.json:4",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/build_gen33.sh:19",
+    "C:/dev/pq_afec_gen33/experiments/gate_v3_parity.py:497",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:357"
+   ],
+   "problem": "지금 ~/quicbed_gen33/bin/qamp로 측정하면 v3.3-dev(상태 판본 4)를 재게 되고 -conn-log, -profile, -feedback-version, -client-tracer 플래그가 없어 러너가 시작도 못 한다. gate_v3_parity 기본 실행도 srcsha 불일치로 실패한다.",
+   "evidence": "~/quicbed_gen33/bin/qamp sha256 41424293588f…, qamp.srcsha 9798aa226a1a…, 수정 시각 11-01 08:19. ~/quicbed_gen33/bin/qamp -mode client -profile sealed31 -n 0: 'flag provided but not defined: -profile'. strings로 conn-log·sealed31·feedback-version 0건. 작업 트리 srcsha(/mnt/c 읽기)와 archive 사본 srcsha 모두 bb31e5904d22…. 사본 빌드 결과 sha256 06520d52c2f5…, Go PASS 266, SKIP 2, FAIL 0, real 37.75 s. runs/v33fix/INT/go의 qamp와 같은 sha이고 그 빌드로 gate_v3_parity pass True, gate_l1_go passed True(gates.out). 옛 판은 ~/quicbed_gen33/stage.mBIfxw/build_record에 남아 있다. 동결본: ~/frozen 아래 g2_d98b05d7, g3_d519b331, g3b_ad5246f3, g3c_6baf2b52, gen32_85f54cf5 디렉터리에 qamp가 있고 sha256 앞자리가 폴더 이름과 모두 같다. guard_baseline.json wsl 5개 값과 현재 값 일치.",
+   "fix": "Go 소스와 시험 수정을 모두 끝낸 뒤(MS-26, MS-29 포함)에만 한다. (1) WSL에서 bash /mnt/c/dev/pq_afec_gen33/experiments/quicbed/build_gen33.sh --race (GEN33_KEEP_STAGES 기본 0이라 stage는 지워지지 않는다). (2) qamp.sha256을 읽어 ~/frozen/gen33_<sha 앞 8자>/ 를 만들고 qamp, qamp.sha256, qamp.srcsha, qamp.buildinfo를 복사한 뒤 chmod a-w. qamp.sha256을 빼면 (3)이 실패한다. (3) python3 -I -B experiments/gate_v3_parity.py --bin ~/frozen/gen33_<sha8>/qamp --out <임시 폴더>/gate_v3.json, gate_l1_go.py도 같은 바이너리로 --ref g3/v33/V33FIX_policy_reference_v1.json --out <임시 파일>. --no-fresh를 쓰지 않는다. (4) 계획 JSON에 sha와 srcsha를 적는다. Go와 시험을 안 고쳤다면 sha는 06520d52…, srcsha는 bb31e590…여야 한다. 시험 파일만 고쳤다면 sha는 같고 srcsha만 달라진다.",
+   "acceptance": "wsl -d Ubuntu --exec bash -c 'sha256sum ~/frozen/gen33_*/qamp; cat ~/quicbed_gen33/bin/qamp.sha256; ~/frozen/gen33_*/qamp -h 2>&1 | grep -c conn-log' 에서 두 sha가 같고 grep 1. gate_v3_parity 결과 pass true, problems []. gate_l1_go passed true.",
+   "depends": [
+    "MS-01",
+    "MS-06",
+    "MS-26",
+    "MS-29"
+   ],
+   "est_minutes": 20,
+   "codex_can_do": true,
+   "source_ids": [
+    "G1",
+    "T7"
+   ],
+   "verdict": "partly",
+   "verify_note": "진단은 맞다. ~/quicbed_gen33/bin/qamp sha 41424293…, srcsha 9798aa22…, -h에 conn-log·profile 0건을 다시 봤다. 사본 빌드 sha 06520d52…, srcsha bb31e590…, PASS 266, SKIP 2, real 35.87 s로 재현했다. 동결 5개 sha도 폴더 이름과 같다. fix는 그대로 하면 실패한다. (2)가 qamp.sha256을 복사하지 않는데 gate_v3_parity.py:495~496은 없으면 'binary does not match its qamp.sha256'을 낸다. 직접 돌렸다: sha 파일 없이 --no-fresh는 rc 1에 그 문구, sha 파일을 두면 그 문구가 사라지고, 전체 실행(2분 40초)은 rc 0, pass True, problems []다. gate_l1_go는 sha 파일을 안 보고 passed True, 잎 738,663 비트 일치(4.8 s). --out은 디렉터리면 IsADirectoryError이므로 파일 경로다. srcsha는 모든 *.go(시험 포함)를 묶으므로 MS-26이나 MS-29가 시험·소스를 고치면 bb31e590이 아니게 되어 이 항목은 그 뒤에 와야 한다. -h | grep -c conn-log는 1로 합격 조건이 맞다."
+  },
+  {
+   "id": "MS-06",
+   "kind": "code",
+   "priority": "must",
+   "title": "sealed31의 feedback-wait 200 ms 때문에 RTT200에서 1-RTT 연결의 C1 회신만 사라진다",
+   "where": [
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:16",
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:20",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/observation.go:277",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:3703",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:3730",
+    "C:/dev/pq_afec_gen33/docs/T4_observation_result.md:29"
+   ],
+   "problem": "서버는 클라이언트의 첫 Handshake 데이터그램을 받아야 회신한다. 1-RTT 연결은 그 데이터그램이 HCT 무렵 나가므로 회신은 HCT+RTT에 도착한다. RTT 200 ms에서 200 ms 대기로는 받지 못한다. 2-RTT 연결은 첫 Handshake ACK가 한 왕복 먼저 나가 회신이 HCT 직후에 온다. 그래서 T7 문서 예시대로 S_rtt200에서 v33c1을 돌리면 도착 증거가 2-RTT 연결에만 생기는 선택 편향이 들어가고, c1 경로를 쟀다고 쓸 수 없게 된다. sealed31은 다른 -feedback-wait를 거부해서 프로필 안에서는 고칠 수 없다.",
+   "evidence": "T4_observation_result.md:29: T4_smoke_v2의 RTT200 세 번째 연결은 HCT 219.213 ms 뒤 202.599704 ms까지 기다리고 회신 없이 닫았다(서버는 보냈다). T4_smoke_v3·v4 원자료를 직접 읽었다. auto3_rtt200 행은 HCT 403.4~404.8 ms(2-RTT), 대기 1.1~5.2 ms, received true. observation.go:277: !hasHandshake(data)이면 회신 안 함. 사본 바이너리: qamp -mode client -profile sealed31 -feedback-wait 1s -n 0 출력 '-profile sealed31 fixes feedback-wait'. 개별 플래그 조합 -udp-path basic -retrans-layout repeat_first -feedback-wait 700ms -client-tracer=false -expect-k 2 -fec auto3 -feedback -n 0은 정상 종료. RTT200 1-RTT 연결 전체의 회신 수신 비율은 미확인(C1을 켠 netem 실측이 없다).",
+   "fix": "Go는 고치지 않는다(바이너리 sha 유지). v33c1 클라이언트만 -profile을 쓰지 않고 개별 플래그로 낸다: -fec auto3 -cache3 <path> -feedback -feedback-wait <max(200 ms, 2.5×RTT)> -retrans-layout repeat_first -client-tracer=false -expect-k <k>. S_rtt200은 500 ms다. 서버는 다른 팔과 같게 -profile sealed31 -fec on -feedback -certsize N -cert-file <pem>으로 둔다(판본 2가 된다). docs/T7_conditions_v31.md 16행과 18~21행의 예시를 이렇게 바꾸고 이유를 적는다. 러너는 v33c1 행의 feedback_wait_received를 one_rtt 분류(MS-03)로 나눠 세고, 어느 부류든 행이 20개 이상인데 95% 미만이면 그 셀을 c1 경로 측정으로 보고하지 않는다.",
+   "acceptance": "--smoke 출력의 S_rtt200 v33c1에서 feedback_wait_limit_ms가 500, 셀 전체 feedback_wait_received 비율 0.85 이상. X6 본측정 결과에 feedback_received_rate_by_class가 있고 행 20개 이상인 부류는 0.95 이상이거나 그 셀이 c1 측정에서 빠졌다고 표시된다. grep -n 'feedback-wait' docs/T7_conditions_v31.md에 새 예시가 보인다.",
+   "depends": [],
+   "est_minutes": 30,
+   "codex_can_do": true,
+   "source_ids": [
+    "D23",
+    "F4"
+   ],
+   "verdict": "partly",
+   "verify_note": "핵심은 맞다. observation.go:277은 Handshake를 받아야 회신하고, T4_smoke_v3·v4의 auto3_rtt200 행을 직접 읽으니 HCT 403.4~404.8 ms, 대기 1.1~5.2 ms, received True다. T4_observation_result.md:29의 202.6 ms 미수신도 있다. 규모는 감사보다 크다. 봉인 S_rtt200 run1에서 g3auto의 ms<300 행이 4,418/4,500(98.2%)이라 이 셀의 거의 모든 연결이 1-RTT다. 200 ms 대기로 돌리면 v33c1이 사실상 none 경로를 재게 된다. 실제 netem에서 1-RTT 행의 수신 비율은 미확인이다(T4 표본 RTT200은 전부 2-RTT이고 중계기였다). 플래그는 -n 0으로 확인했다: -profile sealed31 -feedback-wait 1s는 rc 2 '-profile sealed31 fixes feedback-wait', 개별 플래그 조합은 rc 0. 고친 점 둘. 서버는 프로필을 뺄 이유가 없다. 서버 쪽 sealed31은 feedback-wait를 안 쓰고 -profile sealed31 -fec on -feedback -certsize 16000 -cert-file이 실행된다(직접 실행). 합격 조건의 '1-RTT·2-RTT 각각 0.95'는 20연결 smoke에서 2-RTT 행이 몇 개뿐이라 판정이 안 된다."
+  },
+  {
+   "id": "MS-07",
+   "kind": "doc",
+   "priority": "should",
+   "title": "T7 문서의 v33auto 예시만 -expect-k가 빠져 비교 팔과 첫 비행 해제 방식이 다르다",
+   "where": [
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:13",
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:20",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_testbed.md:343",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_testbed.md:350",
+    "C:/dev/pq_afec_gen33/experiments/p21_gencompare.py:2323",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:3743"
+   ],
+   "problem": "봉인 러너는 모든 팔에 -expect-k <k>를 주었다. T7 문서의 v33auto 예시는 생략하고 sealed31은 생략 시 0(타이머 300 us)으로 둔다. 예시를 그대로 옮기면 gen33 auto 팔만 parity 해제가 300 us 타이머를 타고 v31auto·g2auto는 expected_k로 즉시 풀려 팔 차이에 섞인다.",
+   "evidence": "V33FIX_testbed.md:343 봉인 재현: expectation k 2, scope all_flights, source explicit. :350 v33auto: k 0, scope timer_only, source explicit_timer. p21_gencompare.py run_client: argv에 '-expect-k', str(prof['expect_k']) (2323~2336행). 효과 크기는 미확인이다.",
+   "fix": "T7_conditions_v31.md 20행 클라이언트 예시에 -expect-k 2를 넣고, v33none과 v33c1 팔 정의에 셀의 k를 넣는다. 러너는 gen33 행의 flight_expectation.source가 explicit인지 확인한다.",
+   "acceptance": "--smoke 결과 gen33 모든 행 flight_expectation.source == 'explicit', k가 셀의 k와 같음. grep -n 'expect-k' docs/T7_conditions_v31.md의 v33auto 예시 줄에 값이 있다.",
+   "depends": [],
+   "est_minutes": 15,
+   "codex_can_do": true,
+   "source_ids": [
+    "D26",
+    "A3-14"
+   ],
+   "verdict": "partly",
+   "verify_note": "사실은 맞다. T7 문서 20행에 -expect-k가 없고 flight_input.go:9~20과 wireRun을 읽으니 sealed31에서 생략하면 explicit_timer, timer_only가 되고 명시하면 explicit, all_flights다. V33FIX_testbed.md:343·350 출력도 같다. 그러나 must는 과하다. MS-21이 플래그를 직접 적고 MS-17이 flight_expectation.source를 검사하므로 측정 숫자는 이 문서 때문에 틀리지 않는다. 남는 것은 문서 예시를 베꼈을 때의 오해이고 MS-06이 같은 줄을 어차피 고치므로 그때 함께 고친다. 효과 크기는 미확인."
+  },
+  {
+   "id": "MS-08",
+   "kind": "measure",
+   "priority": "must",
+   "title": "동결 서버는 -cert-file이 없고 인증서가 흔들린다. 모든 팔을 같은 gen33 서버와 같은 인증서에 붙인다",
+   "where": [
+    "C:/dev/pq_afec_gen33/docs/T1_certificate_result.md:17",
+    "C:/dev/pq_afec_gen33/docs/S4_port_result.md:17",
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:36",
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:48",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/certificate.go:170",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:401"
+   ],
+   "problem": "팔마다 그 세대 서버를 쓰면 복호기 차이(S4 수정분)와 서버 첫 비행 바이트 차이가 정책 차이에 섞인다. 동결 서버의 DER은 프로세스마다 다르고 gen33은 목표와 정확히 같아서, 같은 certsize라도 서버 바이트가 5~8 B 다르다. byte 경계에 있는 셀(p15_4032, H c6000처럼 δ=1을 고르는 셀)에서는 이 차이가 1-RTT 여부를 바꿀 수 있다.",
+   "evidence": "makeCert 후보 판정: gen33은 고쳐졌다. 사본에서 qamp -mode certgen -certsize 16000 -dry-run 두 번 모두 der_bytes 16000, der_sha256 50f4134c…로 같다. 동결본은 그대로다. -h 플래그 목록에 g2_d98b05d7, g3c_6baf2b52, gen32_85f54cf5 모두 cert-file 없음. 봉인 저널의 서버 cert_der를 직접 읽었다: S_bigcert 16005~16008, S_rtt200 9006~9009, D_p15_4032 4038~4041, H c6000 6005~6007, D_p11_2955 2960~2963. p31 g3auto·g2auto 행에서 D_p15_4032는 ips 1281이 g3auto 1,599/1,600(l0), H c6000 g2auto 1,798/1,800이라 이 셀들이 byte 경계에 있다. 동결 클라이언트와 gen33 서버 조합은 -fec on -m 1, n=4 loopback만 확인됐다(V33FIX_testbed.md:170). v3 lead 배치 동결 클라이언트는 미확인.",
+   "fix": "측정 셀마다 gen33 동결 바이너리로 qamp -mode certgen -certsize N -cert-file ~/v33_runs/<id>/certs/cert_N.pem을 한 번 만들고 팔별 포트의 서버 프로세스를 모두 그 파일로 띄운다: qamp -mode server -addr 10.9.0.2:<port> -profile sealed31 -fec on -certsize N -cert-file <pem> -stats <path> -conn-log <path>. -certsize를 빼면 rc 2로 죽는다. docs/T7_conditions_v31.md의 서버 인증서 줄에 이 조건을 한 줄 더한다. 인증서 PEM에는 개인키가 있으므로 저장소에 넣지 않는다(D40). 결과에는 sha만 남긴다. 동결 클라이언트 팔도 이 서버에 붙이고, 세대 자기 서버와의 차이는 MS-18에서 잰다. 보고할 때 '봉인 측정과 서버가 다르다'를 적는다.",
+   "acceptance": "결과 JSON의 checks.server_uniform이 pass: 셀마다 certificate.der_sha256 값 1개, certificate.der_bytes == certsize, server_binary_sha256 값 1개(MS-18 제외). git -C C:/dev/pq_afec_gen33 ls-files | grep -c '\\.pem$' 가 12에서 늘지 않음.",
+   "depends": [
+    "MS-05"
+   ],
+   "est_minutes": 30,
+   "codex_can_do": true,
+   "source_ids": [
+    "T1",
+    "A6-M03",
+    "A6-10",
+    "D5",
+    "D22"
+   ],
+   "verdict": "partly",
+   "verify_note": "저널 값은 다시 읽어 모두 맞다: cert_der S_bigcert 16005~16008, S_rtt200 9006~9009, D_p15_4032 4038~4041, H c6000 6005~6007, D_p11_2955 2960~2963, ips 1281 g3auto 1,599/1,600, g2auto 1,798/1,800. -h에 cert-file은 g2·g3c·gen32 0, gen33 1. certgen -dry-run 두 번 der_bytes 16000, der_sha256 50f4134c…로 같다. fix의 서버 명령은 그대로면 죽는다. certificate.go:150은 파일 DER이 -certsize와 다르면 거부하고 -certsize 기본값은 2955다. 직접 실행: -cert-file만 주면 'certificate DER does not match target 2955', rc 2. -certsize 16000을 더하면 READY이고 stats에 profile sealed31, udp_path basic, feedback_version 2, conn_log, certificate.der_bytes 16000이 나온다(loopback 포트 0, 패킷 없음). devreport --check-server는 어느 항목에서도 만들지 않아 MS-13 checks로 옮겼다. 추적 중인 .pem 12개는 전부 공개 인증서(PRIVATE KEY 0)다. 1-RTT가 실제로 바뀌는지는 미확인이고 추정이다."
+  },
+  {
+   "id": "MS-09",
+   "kind": "code",
+   "priority": "must",
+   "title": "서버 연결별 기록: Go에는 -conn-log가 있으나 읽는 Python이 없고 옛 reader는 조용히 빈 값을 낸다",
+   "where": [
+    "C:/dev/pq_afec_gen33/experiments/g3bed.py:335",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:2628",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:2751",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:3893",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_testbed.md:59",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_testbed.md:392"
+   ],
+   "problem": "주기 stats에는 conns가 비어 있고 최종 stats에만 살아 있는 계정이 들어간다. g3bed.new_conns를 그대로 쓰면 gen33 서버에서 연결별 기록이 항상 빈 목록이고 오류가 나지 않아 바이트·B_eff 분석이 비어 버린다. 후보 판정: Go는 고쳐졌고 Python은 여전히 없다.",
+   "evidence": "qamp.go:2628 includeConns 분기, 2751~2772 주기 writeStats(false), SIGTERM에서만 writeStats(true). grep -rln 'conn-log|conn_log' experiments --include=*.py 결과 0건. g3bed.py:335~343은 stats['conns']만 읽는다. Go 시험 TestConnLogRecordsEveryAccountOnceBeforeExpiry는 HEAD 사본 go test에서 PASS(전체 PASS 266). 연결 행에 client_scid가 없어 행과 conn-log 줄의 직접 대응은 불가능하다(trial 구조체에 CID 필드 없음, 서버 connAcct에만 qamp.go:1866~1867). first_rx_ns는 UnixNano(qamp.go:2440).",
+   "fix": "lib/report.py에 read_conn_log(path)를 넣는다. 서버는 팔·블록 단위로 띄우고 SIGTERM으로 끝낸 뒤 줄을 읽는다. 연결별 집계 키는 (cell, trajectory, arm, block)이다. 줄 수와 서버 stats의 conn_log.lines, 오류 0, pending 0, conn_acct_evicted_lru 0을 확인하고 어긋나면 그 단위를 자료 없음으로 표시한다. 세그먼트 바이트는 p21과 같이 server_delta.bytes_in, parities, recovered, credit_parities로 낸다. 동결 서버(MS-18 대조 팔)만 stats conns를 읽는다. 시작마다 -conn-log 경로를 새로 준다(있으면 rc 2). SIGTERM 전에 settle_s(p21:632)만큼 기다린다. 반환 코드가 0이 아니면(SIGKILL 포함) 그 단위를 자료 없음으로 표시한다.",
+   "acceptance": "pytest tests/test_v33_devbed.py::test_conn_log_roundtrip 통과. --smoke 뒤 각 단위에 conn_log.errors == 0, conn_log.pending == 0, conn_log.lines >= tls_accepted이고 실패 행이 없는 단위에서는 같다.",
+   "depends": [
+    "MS-03"
+   ],
+   "est_minutes": 30,
+   "codex_can_do": true,
+   "source_ids": [
+    "F2",
+    "A8-09",
+    "T5"
+   ],
+   "verdict": "partly",
+   "verify_note": "맞다. qamp.go:2628 분기, 주기 writeStats(false), SIGTERM의 writeStats(true)를 읽었고 experiments 아래 .py에 conn-log·conn_log 읽는 코드는 없다. 시험 TestConnLogRecordsEveryAccountOnceBeforeExpiry는 내 사본 빌드 PASS 266 안에 있다. padbed.stop_server가 SIGTERM 뒤 3초 대기라 그대로 쓸 수 있다. 과장 하나: '직접 대응은 불가능'은 지나치다. 팔·블록마다 서버를 따로 띄우고 연결이 차례로 돌면 first_rx_ns 정렬로 행과 줄을 맞출 수 있다(실패 행 제외). 합격 조건의 '서버 수락 연결 수'는 stats의 tls_accepted다."
+  },
+  {
+   "id": "MS-10",
+   "kind": "measure",
+   "priority": "must",
+   "title": "클라이언트 parity 과소 계수는 동결 gen-2에 그대로다. 바이트 비용은 서버 계수만 쓴다",
+   "where": [
+    "C:/dev/pq_afec_gen33/experiments/p21_gencompare.py:1139",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:2869",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp_finalstats_test.go",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:401"
+   ],
+   "problem": "g2auto의 클라이언트 행으로 업링크 비용을 내면 gen-2가 실제보다 싸게 나온다. p21의 uplink_bytes_per_conn 식을 옮기면 같은 오류가 다시 들어간다.",
+   "evidence": "봉인 저널을 직접 다시 셌다. D_p11_2955_l0: 클라이언트 parity_sent g2auto 4,532, g3auto 7,991. 서버 server_delta.parities g2auto 8,579, g3auto 7,991. D_p11_9000_l0: 4,994 대 9,462, g3auto 7,993 대 7,993. D_p15_4032_l0(k=1): 9,198 대 9,198. bytes_in/연결: 11,000.9 대 10,545.6, 11,728.8 대 10,547.6, 10,225.8 대 9,252.0. 판정: k=2 gen-2에서 47.2% 누락이 여전히 참(바이너리가 동결). gen33은 recordFinalSendStats가 tr.Close 뒤 값으로 행을 덮어(qamp.go:2869~2885) 해당 없음.",
+   "fix": "devreport의 비용 집계는 server_delta.bytes_in과 conn-log만 읽고, 클라이언트 bytes_parity·parity_sent는 진단으로만 남긴다. g2auto 행에는 client_parity_count_unreliable 표시를 넣는다. 첫 비행 바이트(행 필드)와 연결 전체 업링크(서버)를 나눠 쓰고, 손실 조건은 '서버 수신량'이라고 적는다.",
+   "acceptance": "pytest tests/test_v33_devbed.py::test_cost_uses_server_counters 통과(클라이언트 계수를 바꿔도 비용 표가 그대로). 생성된 결과 문서 표 머리에 '서버 계수' 문구가 있다.",
+   "depends": [
+    "MS-09"
+   ],
+   "est_minutes": 15,
+   "codex_can_do": true,
+   "source_ids": [
+    "A5-07",
+    "A6-M03"
+   ],
+   "verdict": "confirmed",
+   "verify_note": "저널로 다시 셌다. D_p11_2955_l0 parity_sent g2auto 4,532, 서버 parities 8,579(47.2% 누락), g3auto 7,991=7,991. D_p11_9000_l0 4,994 대 9,462, 7,993=7,993. D_p15_4032_l0 9,198=9,198. bytes_in/연결 11,000.9, 10,545.6, 11,728.8, 10,547.6, 10,225.8, 9,252.0 모두 일치. qamp.go:2869 recordFinalSendStats 확인. T7 카드 요구 3도 이미 서버 계수를 말하므로 새 카드에 그대로 옮기면 된다."
+  },
+  {
+   "id": "MS-11",
+   "kind": "code",
+   "priority": "should",
+   "title": "C1 판본 3 회신을 옛 클라이언트가 서버 바이트로 세는 문제를 러너가 막는다",
+   "where": [
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:3891",
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:58",
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:60",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_testbed.md:176"
+   ],
+   "problem": "후보 판정: 기본값(판본 3)에서는 여전히 참이고 -feedback-version 2와 sealed31이 해결책으로 있다. 문서 규칙만 있고 이를 집행하는 코드가 없어서, 팔 구성이 바뀌면 동결 클라이언트의 server_bytes가 회신 크기만큼 부푼다.",
+   "evidence": "qamp.go:3891 기본 defaults.FeedbackVersion(3). V33FIX_testbed.md 부록 A의 loopback: 판본 3 서버의 g3c 클라이언트 fb_recv 0, fb_magic_seen 4, server_bytes 4863~4877. 판본 2 서버는 fb_recv 4, server_bytes 4817~4825. 감사 문서 값이고 다시 재지 않았다(동결 클라이언트 실제 핸드셰이크 금지 범위).",
+   "fix": "MS-08 설계에서 동결 팔은 -feedback 없는 서버에 붙으므로 회신이 없다. 러너는 단위 끝에서 서버 stats를 읽어 동결 팔 서버의 fb_sent가 0인지, v33c1 서버의 feedback_version이 2인지 확인하고 아니면 그 블록을 버리고 사건으로 기록한다.",
+   "acceptance": "pytest tests/test_v33_devbed.py::test_frozen_arm_block_rejected_on_feedback 통과. --smoke meta에 frozen_arm_fb_sent 0.",
+   "depends": [
+    "MS-03",
+    "MS-08"
+   ],
+   "est_minutes": 15,
+   "codex_can_do": true,
+   "source_ids": [
+    "F1"
+   ],
+   "verdict": "confirmed",
+   "verify_note": "qamp.go:3891 기본값과 V33FIX_testbed.md 부록 A 출력(판본 3 서버 fb_recv 0, server_bytes 4863~4877, 판본 2 fb_recv 4, 4817~4825)을 문서에서 읽었다. 실제 핸드셰이크는 금지 범위라 다시 재지 않았다(미확인). MS-08 설계에서 동결 팔 서버는 -feedback이 없어 fb_sent가 0이어야 하므로 fix가 먹힌다. should가 맞다."
+  },
+  {
+   "id": "MS-12",
+   "kind": "doc",
+   "priority": "must",
+   "title": "'실측 문맥 W 1406'과 '실측 조건에서 PAD-FEC가 꺼진다'는 저널과 다르다",
+   "where": [
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:194",
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:232",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_policy.md:110",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_policy.md:197",
+    "C:/dev/pq_afec_gen33/docs/J6_preflight_budget.md",
+    "C:/dev/codex_handoff/v33/state/DECISIONS_NEEDED.md:143"
+   ],
+   "problem": "REPORT_CLAIMS_v33.md가 W 1406·k=2를 실측 문맥처럼 적고 후보를 'B0과 패딩'이라고 적는다. 볼트 요약은 여기서 '실측 조건에서 PAD-FEC가 사실상 꺼진다'까지 나아갔다. 봉인 측정의 base W는 1280이고 W_eff 1406은 gen-2 auto가 δ=126을 고른 드문 행이며, W=1406·k=2의 후보는 B0 하나뿐이다. 보고서를 쓸 때 이 문장을 옮기면 있지 않은 한계를 적게 된다. parity 후보 소멸 자체(W ≥ 1402, k=2)는 계산 사실이므로 그대로 둔다.",
+   "evidence": "MS-02 수치와 같다. g3auto 53,600행에서 ips_used 1406은 0행, g2auto 53,600행에서 6행(S_rtt200 4, D_p17_unlimited 1 포함). candidates3(2,1280,S,41.983)의 m>0 후보 14개. 볼트 줄은 우리 학술 (연구공모전).md:179. candidates3 직접 실행: W 1406 k 2 → [(0,0,0)], W 1402 k 2 → [(0,0,0)], W 1400 k 3 → [(0,0,0),(23,0,0)].",
+   "fix": "REPORT_CLAIMS_v33.md 194행의 '실측 문맥(W 1406, k=2)'을 'W 1406, k=2'로 바꾸고 'B0이나 패딩만 고른다'를 'k=2·W=1406은 B0만, k=3·W=1400은 B0과 δ=23 padding만 남는다'로 고친다. 232행의 '(후보는 B0과 패딩뿐이다)'도 같이 고치고 끝에 '봉인 3단계의 base W는 1280이고 그 조건에서는 m>0 후보가 14개 남는다. W_eff 1406은 g2auto 53,600행 중 6행이다'를 더한다. V33FIX_policy.md 197행 미결 줄에 'D50 기본값 W 1280으로 정리됨'을 덧붙인다. J6_preflight_budget.md 11행은 틀리지 않았으므로 맨 위 정정 줄에 빈도만 적는다. 볼트의 같은 문장은 Claude가 고친다.",
+   "acceptance": "grep -n '실측 문맥(W 1406' C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md 결과 0줄. grep -n '53,600' docs/REPORT_CLAIMS_v33.md 1줄 이상. grep -n 'B0이나 패딩만\\|B0과 패딩뿐' docs/REPORT_CLAIMS_v33.md 0줄.",
+   "depends": [],
+   "est_minutes": 15,
+   "codex_can_do": true,
+   "source_ids": [
+    "D-E4",
+    "D50"
+   ],
+   "verdict": "partly",
+   "verify_note": "수치는 맞다. g3auto 53,600행 중 1406 0행, g2auto 53,600행 중 6행(S_rtt200 run1 4, run2 1, D_p17_unlimited 1). 볼트 우리 학술 노트 179행의 '실측 조건에서 PAD-FEC가 사실상 꺼진다'는 틀렸다. 범위는 좁혀야 한다. content.py에는 1406이 없다. J6_preflight_budget.md:11 '실측 W1280·1281·1406에서 k2'는 저널 값 그대로라 틀린 말이 아니고 빈도만 빠졌다. V33FIX_policy.md:110은 'W1 밖 문맥'이라고 적어 실측이라 하지 않았고 197행은 D50이 답한 미결이다. 그래서 정정 줄은 REPORT_CLAIMS 둘과 197행만이면 된다. 감사가 놓친 것: REPORT_CLAIMS 194·232행의 '후보는 B0과 패딩뿐'은 k=2·W=1406에서 틀렸다. decide3.candidates3를 S 2000~40000(250 간격)로 돌리니 W=1406·k=2는 (0,0,0) 하나뿐이고 W=1400·k=3만 (0,0,0)과 (23,0,0)이다."
+  },
+  {
+   "id": "MS-13",
+   "kind": "code",
+   "priority": "must",
+   "title": "측정 뒤 요약 JSON, sha 기록, 결과 문서 자동 생성 경로가 없다",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:402",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:407",
+    "C:/dev/codex_handoff/v33/prompt/LOOP_PROMPT.md:76",
+    "C:/dev/pq_afec_gen33/.gitignore:21"
+   ],
+   "problem": "experiments/results와 experiments/state는 gitignore라 원자료가 커밋되지 않는다. g3/v33/results 폴더도, 요약 생성기도, artifacts.sha256을 쓰는 도구도 없다. 손으로 옮기면 지난번처럼 문서 숫자와 원자료가 어긋나고 재현 경로가 끊긴다.",
+   "evidence": "ls g3/v33/results: No such file. git check-ignore -v 결과: experiments/results/v33_dev_x.json과 experiments/state/v33_dev_x.jsonl만 무시되고 g3/v33/results/x.json, docs/X1_result.md는 무시되지 않는다. runs/<X>_artifacts.sha256 형식의 파일을 쓰는 코드는 없다(grep에 걸리는 것은 세계 벤치 보고서의 artifacts_sha256 키뿐, 예 experiments/v33/bench_learning_j1_report.py:301). 재사용 가능한 것: experiments/v33/bench.py의 write_new와 file_hash, experiments/_journal.py의 Journal, atomic_write_json, save_result, code_fingerprint와 experiments/blockstat.py, p21_gencompare.py의 stratified, paired_blocks, interval, holm.",
+   "fix": "experiments/v33/devreport.py를 만든다. 입력은 러너 저널이고 출력은 (1) g3/v33/results/v33_dev_<X>_<runid>.json(label development, confirmatory false, 계획 sha, 바이너리 sha 전부, 팔·셀별 HCT 평균·구간, 1-RTT 비율, server_delta 바이트, 유효 RTT 비율, A/A 표류, 판정 상태), (2) C:/dev/codex_handoff/v33/runs/<X>_artifacts.sha256(결과·저널·로그 sha256), (3) docs/<X>_result.md(표와 쓸 수 있는 문장을 JSON 값에서 생성, 손으로 숫자를 쓰지 않는다). 생성 문서 머리에 MS-32의 단서 문장을 고정으로 넣는다. --report-only로 같은 입력에서 같은 바이트가 나와야 한다. 러너가 측정 종료 직후 자동으로 부르고 실패하면 lock을 지우지 않는다. 결과 JSON에 checks 블록을 넣는다(w_bound, server_uniform, 그 외 smoke 판정). --check-doc <문서>는 문서의 숫자가 결과 JSON 값과 같은지 본다. tests/test_v33_devreport.py를 같이 만든다.",
+   "acceptance": "pytest tests/test_v33_devreport.py 통과(고정 fixture 저널에서 생성한 JSON·문서가 기대 sha와 같음, 값 하나를 바꾸면 sha 파일 검증이 실패). python -I -B experiments/v33/devreport.py --report-only <smoke run> 두 번 실행 결과 cmp 동일. sha256sum -c runs/M0_artifacts.sha256 통과.",
+   "depends": [
+    "MS-03"
+   ],
+   "est_minutes": 75,
+   "codex_can_do": true,
+   "source_ids": [
+    "Q-06",
+    "Q-07",
+    "T7"
+   ],
+   "verdict": "partly",
+   "verify_note": "git check-ignore로 experiments/results/v33_dev_x.json과 experiments/state/v33_dev_x.jsonl만 무시되고 g3/v33/results/x.json, docs/X1_result.md, g3/v33/plans/final_bundle_v1.json은 무시되지 않음을 확인했다(.gitignore:21~22). 재사용 대상 bench.py:32·36, _journal.py:32·146·168, blockstat.py, p21 694·717·728·746행이 있고 blockstat는 표준 라이브러리만 쓰므로 패키지 없는 WSL python3에서 돈다(numpy·scipy·pytest 없음을 확인). 더할 것: MS-02·MS-08·MS-22가 부르는 --check-w, --check-server, --check-doc이 CLI에 없다."
+  },
+  {
+   "id": "MS-14",
+   "kind": "repo",
+   "priority": "must",
+   "title": "'계획 파일 선커밋' 규칙의 위치가 git 밖이다",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:415",
+    "C:/dev/codex_handoff/v33/prompt/LOOP_PROMPT.md:71"
+   ],
+   "problem": "카드는 runs/<X>_plan.md에 써서 커밋하라고 하는데 C:/dev/codex_handoff에는 .git이 없다. 커밋이 불가능해서 사전 등록 증명이 없어진다.",
+   "evidence": "ls -a /c/dev/codex_handoff 출력에 .git 없음, ls -a /c/dev/codex_handoff/v33도 없음. g3/v33/plans는 gen33 안에 있고 J5_world_v1.json, O2_world_v1.json, M4_guard_v1이 이미 있다.",
+   "fix": "계획을 gen33 g3/v33/plans/final_bundle_v1.json(러너 입력)과 g3/v33/plans/final_bundle_v1.md로 쓰고 측정 전에 커밋한다. 내용: 답할 질문, 주 결과, 팔, 셀, 블록·연결 수, 예상 시간, 판정 허용 오차, 바이너리 sha. 러너는 시작 때 git -C <repo> log -1 --format=%H -- <plan>이 비어 있거나 git status --porcelain -- <plan>이 비어 있지 않으면 거부하고, 계획 커밋 해시와 sha를 모든 결과에 넣는다. 결과를 본 뒤 계획을 고치면 새 파일 v2로 만들고 탐색으로 표시한다.",
+   "acceptance": "커밋 안 된 계획으로 devbed.py --run을 치면 rc 2. 결과 JSON에 plan_commit, plan_sha256이 있고 git -C C:/dev/pq_afec_gen33 cat-file -e <plan_commit> 성공, plan_commit 시각이 첫 단위 started_at보다 앞선다.",
+   "depends": [],
+   "est_minutes": 20,
+   "codex_can_do": true,
+   "source_ids": [
+    "X1",
+    "X6",
+    "X9"
+   ],
+   "verdict": "confirmed",
+   "verify_note": "ls -a /c/dev/codex_handoff와 v33 모두 .git 없음. TASKS.md:415 문구 확인. gen33 core.filemode false, core.autocrlf false라 WSL git에서 줄바꿈 오탐이 안 난다. WSL에서 git --no-optional-locks log와 status --porcelain -- <plan>이 각 약 1초이고 러너가 도는 unshare -Ur 안에서도 rc 0이다. g3/v33/plans는 gitignore에 안 걸린다."
+  },
+  {
+   "id": "MS-15",
+   "kind": "measure",
+   "priority": "must",
+   "title": "WSL 수명: /tmp가 호출 사이에 사라지고 setsid 분리 실행은 검증되지 않았다",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/LOOP_PROMPT.md:72",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:399",
+    "C:/dev/pq_afec_gen33/experiments/fixloop.py:753"
+   ],
+   "problem": "카드는 바이너리를 /tmp에 복사하고 setsid nohup으로 분리하라고 한다. 측정이 몇 시간 도는 동안 배포판이 내려가면 /tmp와 프로세스가 함께 사라지고 자료 없음으로 끝난다. 이 분리 방식은 루프에서 한 번도 실측으로 돈 적이 없다.",
+   "evidence": "직접 관찰. 내가 08:47에 /tmp/finalaudit_measure/out에 만든 파일이 08:53 무렵 호출에서 No such file이었고, /tmp의 systemd-private 폴더 시각이 08:53, uptime은 08:44부터 이어져(커널 VM 유지) 배포판만 재시작된 것으로 보인다. wsl.conf: systemd=true, Linger=no. tmpfs /tmp 3.9 GB. setsid nohup 시험 두 번(수동 heartbeat, 5초 간격, 5분): 첫 번째 '& disown; echo' 직후 종료한 호출은 로그가 한 줄도 안 생겼고 프로세스도 없었다. 두 번째는 300초 끝까지 살았다. 두 번째는 다른 감사의 WSL 세션이 살아 있는 동안이었으므로, 아무도 없는 상태의 생존은 미확인이다. fixloop.py:753~770에는 세션·콘솔이 측정을 죽인 이력이 적혀 있다. 볼트 측정 중 노트북 다루기: 전원 메뉴로 세 번 손실.",
+   "fix": "lib에 launcher를 둔다. Windows 쪽 부모가 wsl -d Ubuntu --exec bash <run.sh>를 측정이 끝날 때까지 붙잡는다. 부모는 experiments/fixloop.py detach 방식으로 띄운다: CREATE_NEW_CONSOLE|CREATE_NEW_PROCESS_GROUP|CREATE_BREAKAWAY_FROM_JOB, SW_HIDE, 실패하면 조용히 넘어가지 말고 PowerShell Win32_Process.Create(WMI)로 띄워 Job 밖에 둔다. fixloop의 CLI는 차단돼 있으므로 함수를 옮긴다. 절전 막기는 C:/dev/codex_handoff/v33/tools/wakehold_v33.py <끝 시각> <부모 pid>를 함께 띄운다. 바이너리는 /tmp 대신 ~/v33_runs/<id>/bin에 복사하고 단위마다 sha를 다시 확인한다. 단위마다 heartbeat 파일과 status.json을 쓰고, 재개 명령을 status에 넣는다. 카드의 /tmp 복사와 setsid 문장은 이 내용으로 바꾼다. smoke를 launcher로 돌려 호출 창이 닫힌 뒤에도 끝까지 가는지 먼저 본다. 계획 문서에 '측정 중 덮개는 닫아도 되지만 시작 메뉴 전원은 쓰지 않는다'를 적는다(볼트 측정 중 노트북 다루기).",
+   "acceptance": "launcher로 --smoke를 띄우고 부모 셸을 끝낸 뒤 status.json의 heartbeat가 smoke 종료까지 15초 넘게 끊기지 않고 DONE이 생긴다. 측정 중 wsl -d Ubuntu --exec uptime의 up 시간이 줄지 않는다. wsl -d Ubuntu --exec bash -c 'ls ~/v33_runs/<id>/bin/ && sha256sum ~/v33_runs/<id>/bin/*'가 계획의 sha와 같다.",
+   "depends": [
+    "MS-03"
+   ],
+   "est_minutes": 40,
+   "codex_can_do": true,
+   "source_ids": [
+    "T7"
+   ],
+   "verdict": "partly",
+   "verify_note": "위험은 맞고 근거가 더 강하다. 내 호출에서 uptime이 09:12:10 'up 0 min', 09:24:34 'up 7 min', 09:25:25 'up 8 min'이었다. VM 자체가 호출 사이에 다시 뜬 것이고, 감사의 '커널 VM 유지, 배포판만 재시작' 추정은 이 시간대에는 틀렸다. C:/Users/scien/.wslconfig는 없어 유휴 종료가 기본값이다. wsl.conf systemd=true, Linger=no 확인. setsid 시험은 다시 하지 않았다. fix의 'pwsh 숨김 프로세스'는 부족하다. experiments/fixloop.py:753~830에 측정이 Windows 쪽에서 세 번 죽은 기록이 있다: 부모 세션의 Job과 함께 죽음, DETACHED_PROCESS의 콘솔 이벤트 0xC000013A, BREAKAWAY가 거부되어 Job에 남음. 처방은 CREATE_NEW_CONSOLE 숨김과 BREAKAWAY, 안 되면 WMI Win32_Process.Create다. wakehold_v33.py는 저장소가 아니라 C:/dev/codex_handoff/v33/tools에 있고 첫 인자가 끝 시각이다."
+  },
+  {
+   "id": "MS-16",
+   "kind": "repo",
+   "priority": "must",
+   "title": "guard 기준선이 R-E 옛 HEAD를 들고 있어 run_loop가 첫 점검에서 멈춘다",
+   "where": [
+    "C:/dev/codex_handoff/v33/state/guard_baseline.json",
+    "C:/dev/codex_handoff/v33/tools/guard_check.py:18",
+    "C:/dev/codex_handoff/v33/tools/guard_check.py:28",
+    "C:/dev/codex_handoff/v33/README.md:45"
+   ],
+   "problem": "기준선의 R-E HEAD는 6bbd11f인데 지금은 70e7e08이다. check()는 이를 위반으로 보고 STOP을 만든다. 또 동결 바이너리 ~/frozen은 점검 목록에 없어 측정 기준 바이너리가 바뀌어도 잡지 못한다.",
+   "evidence": "guard_check.collect()를 쓰기 없이 불러 기준선과 비교했다: strict 5개 폴더 차이 0, repo base 6bbd11f8e7eb 대 now 70e7e0872065, status_same True, wsl same True, 볼트 warn 27건. STOP, GUARD_FAIL.txt, MEASURE_LOCK.json은 현재 없음.",
+   "fix": "새 루프를 시작하기 전에 tools/guard_check.py의 WSL_FILES에 /home/scien/frozen/g2_d98b05d7/qamp, /home/scien/frozen/g3c_6baf2b52/qamp, /home/scien/frozen/gen32_85f54cf5/qamp를 더하고 python -I -B C:/dev/codex_handoff/v33/tools/guard_check.py --init으로 기준선을 새로 찍는다. 기준선 교체 사실과 이유를 JOURNAL에 적는다. 루프 프롬프트에 'R-E는 루프에서 건드리지 않는다. R-E 반영은 루프가 끝난 뒤 Claude가 하고 그때 --init을 다시 찍는다'를 넣는다.",
+   "acceptance": "python -I -B C:/dev/codex_handoff/v33/tools/guard_check.py --check 가 GUARD_OK를 찍고 rc 0. python -I -B -c \"import json;print(json.load(open(r'C:/dev/codex_handoff/v33/state/guard_baseline.json',encoding='utf-8'))['repo']['head'][:7])\" 출력 70e7e08 또는 그 뒤 HEAD.",
+   "depends": [],
+   "est_minutes": 10,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "partly",
+   "verify_note": "기준선 repo.head 6bbd11f8e7eb, git -C C:/dev/R-E rev-parse 70e7e08, guard_check.py check()의 HEAD 비교를 읽었다. STOP, GUARD_FAIL.txt, MEASURE_LOCK.json은 없다. --check는 위반 시 GUARD_FAIL.txt를 쓰므로 돌리지 않았고 strict 차이 0은 미확인(감사 값). 합격 조건이 그대로는 안 돈다: main()이 --init과 --check 중 하나를 요구해서 인자 없이 치면 argparse rc 2다. WSL_FILES에 ~/quicbed_gen33이 없어 MS-05 설치는 위반이 아니다. 놓친 점: R-E HEAD가 바뀌면 위반이므로 새 루프가 R-E에 커밋하면 다음 점검에서 멈춘다."
+  },
+  {
+   "id": "MS-17",
+   "kind": "measure",
+   "priority": "must",
+   "title": "측정 M0: smoke와 기대 범위 고정",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:409"
+   ],
+   "problem": "T7 카드는 '스모크 결과가 기대 범위'라고만 하고 범위가 없다. 범위가 없으면 netem이 안 걸린 실행이나 깨진 팔도 통과한다.",
+   "evidence": "봉인 값을 저널에서 직접 읽었다: S_bigcert 평균 ms g2auto 128.5, g3auto 100.5, g3fixL3 96.7, S_rtt200 239.1, 226.7, 227.4, D_p11_2955_l0 51.7, 51.7. 0단계: 큰cert 2% 신용전용 l3 대 m4L3 차이 평균 6.89 ms. 재계산: bigcert_2 m4L3 400행 평균 82.3, bigcert_15 m4L3 800행 평균 108.4 SD 52.5, rtt200_15 m4L2 800행 평균 229.7 SD 36.4. 봉인 by_loss S_bigcert g3fixL3 83.1(2%), 110.3(15%), S_rtt200 g3fixL2 224.2(2%), 230.7(15%).",
+   "fix": "조건: bigcert(cert 16000, RTT 50, uplink 2 Mbps, k 2, W 1280, 손실 2%·15%), rtt200(cert 9000, RTT 200, uplink 2, k 2, 손실 15%), p11(cert 2955, RTT 50, uplink 없음, 손실 0%). 팔 v33none, v33c1, v31auto, g2auto와 고정 팔(bigcert·p11은 m4L3·pad4L3, rtt200은 m4L2·pad4L2). 팔·셀당 20연결, 약 2분. 판정(계획에 고정): 성공률 0.95 이상. tc 출력에 delay·rate·loss가 설정대로. 실현 c2s 손실은 tc -s qdisc show dev v0의 dropped와 Sent 증분을 셀 단위로 합쳐 명목값 이항 99.9% 구간 안(팔별로 보지 않는다). 고정 팔 first_flight_bytes 2560으로 일정, first_flight_parity_bytes 폭 48 B 이하. 모든 gen33 행 parity 데이터그램 1452 B 이하. pad 팔 서버 recovered 0. 동결 팔 서버 parities > 0, recover_crc_fail 0, 손실 셀에서 recovered > 0. v33c1 arrivals.src c1 비율 셀 단위 0.85 이상(0.95는 본측정 기준). v33none은 arrivals.src none, policy_path none. v33c1은 첫 회신 뒤 policy_path c1. certificate.der_bytes == certsize. 프로세스 반환 코드 0. HCT는 범위만 본다(20연결 평균): bigcert 2% m4L3 60~130 ms, bigcert 15% m4L3 60~170 ms, rtt200 m4L2 200~300 ms, p11 m4L3 45~60 ms. 범위 밖이면 멈추고 원인을 적는다. 결과는 성능 근거로 쓰지 않는다.",
+   "acceptance": "wsl 호출로 unshare -Urnm python3 -I -B experiments/v33/devbed.py --plan g3/v33/plans/final_bundle_v1.json --smoke 가 rc 0. g3/v33/results/v33_dev_M0_<runid>.json의 checks 값이 모두 pass.",
+   "depends": [
+    "MS-03",
+    "MS-04",
+    "MS-05",
+    "MS-06",
+    "MS-07",
+    "MS-08",
+    "MS-09",
+    "MS-13",
+    "MS-14",
+    "MS-15"
+   ],
+   "est_minutes": 15,
+   "codex_can_do": true,
+   "source_ids": [
+    "T7"
+   ],
+   "verdict": "partly",
+   "verify_note": "봉인 값 128.5, 100.5, 96.7, 239.1, 226.7, 227.4, 51.7, 51.7과 0단계 6.89를 저널에서 다시 냈다. 판정 기준은 그대로면 통과할 수 없거나 빗나간다. (1) 'm4L3 첫 비행 바이트 일정'은 항상 실패한다. 봉인 g3fixL3 4,500행의 first_flight_parity_bytes가 5304~5352(13개 값)이고 first_flight_bytes만 2560으로 일정하다. DCID 길이 차이다. (2) 범위에 rtt200 m4L2가 있는데 팔 목록에 m4L2가 없다. 봉인도 rtt200의 고정 팔은 g3fixL2다. (3) bigcert 15% m4L3의 20연결 평균을 0단계 800행으로 복원 추출하니 평균 107.1, 99.5% 분위 148.0이고 60~130 밖이 5.2%다. 범위가 멀쩡한 실행을 멈춘다. (4) v33c1 c1 비율 0.95를 20연결에 적용하면 참값 0.97에서도 12%가 떨어진다(이항 계산). (5) 실현 손실을 팔별로 99% 구간에 넣으면 24개 동시 판정이라 약 21%가 우연히 걸린다. 어떻게 재는지도 없었다. (6) 'policy_path가 v3.2 경로'는 행 값으로 none이다(policy3.go:1740). p11의 m4L3 값은 봉인에 없어(auto 팔만) 45~60 범위는 미확인이다. 동결 v3 lead와 gen-2 클라이언트가 gen33 서버에서 복구되는지 보는 검사가 없어 더했다."
+  },
+  {
+   "id": "MS-18",
+   "kind": "measure",
+   "priority": "must",
+   "title": "측정 M1: 서버 등가와 A/A(gen33 sealed31 대 동결 v3.1)",
+   "where": [
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:74",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_testbed.md:392",
+    "C:/dev/pq_afec_gen33/docs/S4_port_result.md:17"
+   ],
+   "problem": "sealed31 gen33과 동결 v3.1이 같은 고정 팔에서 같은 HCT를 내는지 잰 적이 없다. 이 자가 없으면 X6의 차이를 정책 몫으로 읽을 수 없고, 봉인 측정과 연결도 안 된다.",
+   "evidence": "T7_conditions_v31.md:74 '아직 재지 않은 것'. 봉인 때 하네스 값은 AA 0.083 [-2.937, 3.102], SEQ 0.729 [-0.835, 2.293](RESULT_stage3 인용, 감사 재계산 일치). 0단계 블록 차이 SD는 g3_stage0_units.jsonl에서 직접 다시 냈다: bigcert_2 40연결 블록 SD 6.10 ms.",
+   "fix": "셀: bigcert 손실 2%. 팔: (a) 동결 g3c 클라이언트 m4L3 → 동결 g3c 서버, (b) 동결 g3c 클라이언트 m4L3 → gen33 sealed31 서버, (c) gen33 sealed31 m4L3 → gen33 sealed31 서버 포트 C, (d) 같은 설정 포트 D, (e) 동결 g2 클라이언트 m3 → 동결 g2 서버, (f) 동결 g2 클라이언트 m3 → gen33 sealed31 서버. 동결 클라이언트 플래그는 봉인 p21 ARMS와 같게 한다. 40연결 × 30블록 = 팔당 1,200연결, 합 7,200 × 0.162 s ≈ 20분. 예상 95% 반폭 약 2.3 ms. 주 결과: a-b(g3c 서버 차이), e-f(g2 서버 차이), c-d(A/A), b-c(클라이언트 세대 차이). a·e 서버는 -conn-log가 없고 인증서가 프로세스마다 N+5~N+8임을 결과에 적는다. 시간이 남으면 (g) (c)와 같은 설정에서 -conn-log만 뺀 팔을 더해 c-g로 비용을 잰다(3.2분). 쓸 수 있는 말: '이 테스트베드의 bigcert 2%에서 서버를 gen33으로 바꾼 차이는 g3c 클라이언트 X ms [..], g2 클라이언트 Z ms [..]이고 같은 설정 A/A는 Y ms [..]였다(development)'. 문서: docs/M1_result.md, X6 결과의 해석 단서. a-b나 e-f 구간이 ±5 ms를 넘으면 X6은 '봉인 측정과 직접 비교 불가'로 표시하고 팔 간 비교만 보고한다.",
+   "acceptance": "g3/v33/results/v33_dev_M1_<runid>.json에 contrasts.a_b, e_f, c_d, b_c의 mean과 ci95가 있고 n_blocks 30. c_d 구간이 판정 허용 오차를 넘으면 status가 판정불능으로 나온다.",
+   "depends": [
+    "MS-17"
+   ],
+   "est_minutes": 25,
+   "codex_can_do": true,
+   "source_ids": [
+    "A6-M03",
+    "Q-03",
+    "Q-04",
+    "A5-11"
+   ],
+   "verdict": "partly",
+   "verify_note": "T7_conditions_v31.md:74, S4_port_result.md:17, T1_certificate_result.md:17 확인. 0단계 bigcert_2 creditl3-m4L3 10블록 SD 6.10, 2.045×6.10/√30=2.28 맞다. 빠진 것: X6의 머리 비교는 v33none과 g2auto인데 이 측정은 g3c 클라이언트만 서버를 바꿔 본다. 봉인 g2auto는 g2 서버에 붙었고 gen-2 클라이언트와 gen33 서버는 -m 1, n=4 loopback만 있다(V33FIX_testbed.md 부록 A). g2 쌍을 더했다. 팔이 6개이므로 일반 Williams가 필요하다(MS-03). a는 -conn-log 없고 인증서가 16005~16008로 흔들리고 b는 -conn-log가 있어 a-b에 이 둘이 섞인다는 점을 적어야 한다. T7 문서 72행 '-conn-log의 서버 CPU 비용'은 아직 재지 않았으므로 선택 팔로 넣었다. 봉인 '하네스 값 AA 0.083, SEQ 0.729'는 감사 인용이고 다시 재지 않았다."
+  },
+  {
+   "id": "MS-19",
+   "kind": "measure",
+   "priority": "must",
+   "title": "측정 X1 최소판: 같은 바이트 padding 대 parity(신규성 방어)",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:422",
+    "C:/dev/pq_afec_gen33/docs/T3_compare_result.md",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_testbed.md:120"
+   ],
+   "problem": "좁혀진 신규성은 'credit을 사는 바이트를 padding 대신 parity로'인데 같은 바이트·같은 자리에서 직접 잰 값이 없다. 0단계 M4(신용전용 l3 대 m4L3)는 m4L3가 데이터그램을 하나 더 보내서 FEC 몫이 섞여 있다. 안 재면 보고서는 parity 고유 몫을 주장할 수 없다.",
+   "evidence": "g3_stage0_units.jsonl을 직접 다시 계산: bigcert_2 creditl3-m4L3 10블록(블록당 40연결) 평균 6.89, SD 6.10. bigcert_15 20블록(40연결) 평균 41.04, SD 12.74. rtt200_15 creditl2-m4L2 20블록(20연결) 평균 87.90, SD 72.31. 필요 블록: 2% 반폭 2 ms에 39블록(2.02×6.10/√39=1.97), 15% 반폭 5 ms에 28블록(2.05×12.74/√28=4.94), RTT200은 효과 87.9 ms 검출에 8블록, 안전하게 16블록. 기능은 T3에서 확인됐다: pad 24연결의 실제 바이트와 대조 바이트 일치, recovered 0, Go 시험 PASS. 성능은 미측정. 실패 정의: pad는 credit_parities가 0이므로(D29) 신용은 server_delta.bytes_to_stack과 1-RTT 비율로 본다.",
+   "fix": "셀과 팔(모두 W 1280, k 2, -profile sealed31 양쪽, 같은 서버·같은 인증서, -gap 50ms -timeout 10s -expect-k 2 -uplink-mbps 2): bigcert(cert 16000, RTT 50)에서 m4L3(-fec on -layout v3 -m 4 -lead 3), m4L3 trailing junk(같은 플래그 + -corrupt-parity 3), pad4L3(같은 플래그 + -pad-junk). 손실 2%는 39블록 × 40연결 = 팔당 1,560, 15%는 28블록 × 40 = 팔당 1,120. rtt200(cert 9000, RTT 200)에서 m4L2와 pad4L2, 손실 15%, 16블록 × 20 = 팔당 320. 시간: (1,560+1,120)×3×0.162 s = 21.7분, 640×0.285 s = 3.0분, 서버 재시작 포함 약 30분. 보류 복호 팔, dup, k-inflate는 넣지 않는다(F3: hold 팔은 같은 바이트·같은 credit 전제가 깨진다). 주 결과는 pad4L3 - m4L3의 짝 블록 차이와 95% 구간, 1-RTT 비율 차이, server_delta.bytes_in 차이다. 계획에 '1 B 단위 동일'을 요구하지 않고 실제 차이를 보고한다(CID 길이로 달라질 수 있음, T3 카드). 쓸 수 있는 말: 'quic-go v0.61.0 테스트베드, cert 16000, RTT 50 ms, uplink 2 Mbps, c2s 손실만, initial congestion window 32에서, 같은 자리·같은 크기의 padding 데이터그램 대비 parity의 HCT 차이는 손실 2%에서 X ms [L, U], 15%에서 Y ms [L, U]였다(development 측정, 확증 아님).' 구간이 0을 포함하면 '차이를 확인하지 못했다'로 쓴다. 문서: docs/X1_result.md(자동), REPORT_CLAIMS_v33.md, 보고서 content.py 결과 절. 서버는 MS-08 명령으로 -certsize를 준다. 첫 비행 바이트 비교는 parity 팔은 first_flight_parity_bytes, pad 팔은 extra_sent.first_bytes를 쓴다. pad 팔의 first_flight_parity_bytes는 0이다.",
+   "acceptance": "g3/v33/results/v33_dev_X1_<runid>.json에서 pad 팔 server recovered == 0, m4L3 팔 recovered > 0, 팔별 첫 비행 바이트 차이가 보고됨, contrasts에 pad4L3_minus_m4L3의 2%, 15%, rtt200 값과 ci95, label development. runs/X1_artifacts.sha256 검증 통과.",
+   "depends": [
+    "MS-18"
+   ],
+   "est_minutes": 35,
+   "codex_can_do": true,
+   "source_ids": [
+    "X1",
+    "A5-02",
+    "A7-07",
+    "A1-M01",
+    "F3",
+    "D29"
+   ],
+   "verdict": "partly",
+   "verify_note": "0단계 값을 다시 계산했다: bigcert_2 creditl3-m4L3 10블록 6.89, SD 6.10, bigcert_15 20블록 41.04, SD 12.74, rtt200_15 creditl2-m4L2 20블록 87.90, SD 72.31. 0단계 argv로 creditl3은 -m 3 -lead 3, m4L3은 -m 4 -lead 3이라 데이터그램 하나 차이가 맞다. 블록 수 계산도 맞다. 플래그는 -n 0으로 확인: -profile sealed31 -fec on -layout v3 -m 4 -lead 3 -pad-junk -expect-k 2, 같은 줄 -corrupt-parity 3 모두 rc 0. -fec on과 봉인의 -fec fec는 gen31 qamp.go:3379, gen-2 3143, gen33 3924행에서 같은 경로다. -corrupt-parity 3이 뒤 parity 하나인 것은 qamp.go의 emit 순서와 TestComparisonCorruptTailRemainsSingleSlot으로 확인했다. 시간은 bigcert_15 0.184, rtt200_15 0.307로 다시 내면 약 26분이라 '약 30분'이 맞다. 고칠 점: server_delta.stack_bytes라는 필드는 없다. 서버 stats는 bytes_to_stack이고 stack_bytes는 연결별 값이다(qamp.go:1767, 1890). 서버 명령에 -certsize가 필요하다(MS-08). pad 행 parity 계수가 0이어도 FirstFlightParity는 extras.Kind parity에서만 올라가므로 바이트 보고는 행의 extra_sent를 써야 한다(qamp.go:1585~1605)."
+  },
+  {
+   "id": "MS-20",
+   "kind": "measure",
+   "priority": "must",
+   "title": "측정 X9 최소판: PTO 비율 재측정(방향 전환 근거)",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:443",
+    "C:/dev/R-E/mlkem-quic-amplification/README.md:79",
+    "C:/dev/R-E/mlkem-quic-amplification/docs/2026-09-14_연구문서_정정안.md:90",
+    "C:/dev/pq_afec_gen33/docs/T4_observation_result.md:25"
+   ],
+   "problem": "방향 전환의 근거 '12.0% 대 10.4%, z=0.79'는 워밍업이 분모에 섞였고 분모가 확인되지 않았다. 다시 재지 않으면 보고서는 이 값을 인용할 수 없고 전제 ②를 어떻게 다루었는지 근거가 빈다.",
+   "evidence": "종합기술문서.docx 506~515단락과 변경보고: 손실 0.5·1·2·5% × 균일·버스트, 조건당 n=2,000, 12.0%, 10.4%, z=0.79. RTT는 해당 표에 없어 미확인이다. padbed.py:215 주석의 5절 형태는 delay 25ms다. 내 표본 계산(검정력 0.8, 양측 0.05): 12.0 대 10.4에 그룹당 6,095, 12.0 대 10.5(1.5%p)에 6,962, 12.0 대 9.0(3%p)에 1,635. 사본 qamp certgen 하한은 512 B(-certsize 500과 300은 'certificate DER target must be 512..1048576 bytes'로 거부). T4: pto_count는 하한(qlog_loss_timer_expired_lower_bound)이다. 조각 하나 손실은 ACK로 복구될 수 있어 PTO 비율 하나만으로는 '손실 비용'을 말할 수 없다(볼트 v0.2.2 절).",
+   "fix": "조건: cert 512(원 측정 인증서 크기는 미확인이라 하한으로 두고 적는다), RTT 50, uplink 제한 없음, W 1280, Bernoulli 손실 5%, 방향 둘(c2s만, 양방향 각 5%). 팔: -fec off, -group x25519 대 X25519MLKEM768, 같은 gen33 서버(-fec on -udp-path basic), 클라이언트 tracer 켬(두 팔 같음), -gap 8ms -timeout 10s. 블록 안 교대, 100연결 × 61블록 = 그룹당 6,100, 워밍업은 블록마다 앞 5연결을 분모에서 제외하고 별도 기록. 시간: 방향당 12,200 × 약 0.09 s ≈ 18분, 합 약 40분(무손실 0.065 s에 PTO 지연 추정을 더한 값, 실측 아님). PTO 사건 정의를 계획에 고정: observation.pto_count ≥ 1을 주 정의, initial_datagrams > first_flight_datagrams + 1을 보조 정의, 둘의 불일치 수 보고. 보조 결과로 HCT 평균·p99, 실패율. 쓸 수 있는 말: 'quic-go v0.61.0 테스트베드, RTT 50 ms, 손실 5%(c2s만 / 양방향)에서 x25519와 X25519MLKEM768의 PTO 사건 비율 차이는 d %p [L, U]였다(연결 6,100개씩, development). 유의차가 없어도 가설 기각으로 쓰지 않는다. 옛 12.0%, 10.4%, z=0.79는 분모가 확인되지 않아 인용하지 않는다.' 문서: docs/X9_result.md(자동), REPORT_CLAIMS_v33.md. 변경보고·덱은 D12대로 고치지 않고 정정 문장 틀만 준비한다. 정정: 블록은 105연결로 한다. 105×61 = 그룹당 6,405, 워밍업 5연결 제외 측정 100×61 = 6,100, 방향당 12,810 × 약 0.09 s ≈ 19분, 합 약 40분. 서버에 -certsize 512 -cert-file을 함께 준다. 문장에 '옛 표는 손실 0.5~5% 균일·버스트를 합친 값이라 이 5% 조건과 같은 양이 아니다'를 넣는다. 인증서 줄은 '원 측정은 qhct.go genCert의 자체 서명 P-256으로 보이며 DER 길이는 재지 않았고 qamp 하한 512 B를 썼다'로 적는다.",
+   "acceptance": "g3/v33/results/v33_dev_X9_<runid>.json에 방향별 pto_rate_x25519, pto_rate_mlkem, diff_ci95, n_measured(워밍업 제외), warmup_excluded, pto_definition_mismatch. n_measured가 그룹당 6,095 이상. netem s2c 설정이 양방향 조건에서 tc 출력에 보인다.",
+   "depends": [
+    "MS-18"
+   ],
+   "est_minutes": 45,
+   "codex_can_do": true,
+   "source_ids": [
+    "X9",
+    "Q-17",
+    "A5-12",
+    "D12"
+   ],
+   "verdict": "partly",
+   "verify_note": "종합기술문서.docx 507~515단락과 연구방향_변경보고.docx 24~32단락을 직접 읽어 12.0%, 10.4%, z=0.79, 조건당 2,000을 확인했다. 표본 수 공식을 손으로 다시 내면 12.0 대 10.4에 약 6,098이라 6,095와 맞다. certgen 500 거부와 512 허용도 실행했다. -fec off -group x25519 -gap 8ms -timeout 10s -n 0 rc 0, observation.pto_count 필드(observation.go:53) 확인. 틀린 곳: 100연결 × 61블록에서 블록마다 앞 5연결을 빼면 측정 연결은 95×61=5,795다. 필요 표본 6,095에 못 미치고 합격 조건 5,800도 스스로 못 넘는다. 인증서 '미확인'은 좁힐 수 있다: src/qhct.go:46의 genCert가 자체 서명 P-256이고 변경보고 표의 서버 비행은 2개/1,970 B다(그 표를 만든 qhct 판은 미확인이고 DER 길이는 재지 않았다). 실험환경 명세서 88~89단락은 양쪽 netem delay 25ms loss 5%다. 표의 12.0%는 손실 0.5~5% 균일·버스트를 합친 값이라 5% 한 조건의 값과 같은 양이 아니다. 효과 크기 가정이 빗나갈 수 있음을 적어야 한다."
+  },
+  {
+   "id": "MS-21",
+   "kind": "measure",
+   "priority": "must",
+   "title": "측정 X6 최소판: v3.3.1-dev(none, c1) 대 v3.1 대 gen-2",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:417",
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:16",
+    "C:/dev/pq_afec_gen33/g3/v33/bench_protocol.json"
+   ],
+   "problem": "활성 정책이 실측된 적이 없다. none 경로가 v3.2와 같으므로 v3.2-dev 판단도 실측이 없다. 안 재면 '최종 코드'와 '측정된 코드'(v3.1)가 다른 채 끝난다.",
+   "evidence": "LOOP_STATE X6 todo. bench_protocol.json: B1 = cert 16000 RTT 50 u2 p 2→15→2, B11 = cert 9000 RTT 200 u2 p 2→15→2, B3_u0 = cert 2955 RTT 50 u0 p 0. 봉인 s/연결은 MS-01 값. 봉인 S_bigcert 차이 SE 1.477 ms, 2회차 28.920(SE 1.403), S_rtt200 12.382(0.565), 10.331(1.147)은 REPORT_CLAIMS_v33.md와 감사 재계산 값이며 저널 평균은 직접 확인했다(128.5 대 100.5, 239.1 대 226.7). W1의 c1 대 none 차이는 1~4 ms 수준이라(content.py:202) 이 표본으로 HCT 차이는 판정불능일 수 있다. 큰 차이가 기대되는 곳은 무손실 낭비 바이트다(B3_u0, W1 값이고 실측 아님).",
+   "fix": "팔 4개: v33none(-profile sealed31, -fec auto3 -cache3, -expect-k k), v33c1(MS-06 플래그), v31auto(~/frozen/g3c_6baf2b52/qamp -fec auto3 -cache3 -expect-k k), g2auto(~/frozen/g2_d98b05d7/qamp -fec auto -cache -probe-every 20 -expect-k k). 서버는 MS-08 설계. 독립 궤적 4개(궤적마다 캐시 새로), 블록 안 Williams 회전. 셀: S_bigcert(B1) 300/300/300 손실 2→15→2, S_rtt200(B11) 같음, D_p11_2955_l0(B3_u0) 400연결 손실 0. -uplink-mbps는 netem 대역과 같게(오라클 입력임을 적는다), -gap은 rate>0 50ms, 아니면 8ms, -timeout 10s, 첫 300연결은 번인으로 따로. 연결 수와 시간: S 셀 4×4×900 = 14,400씩, bigcert 38.9분, rtt200 68.4분 + c1 대기 약 12분, D 셀 6,400 × 0.065 s = 6.9분. 합 약 2.1시간. 주 결과: v33none - g2auto와 v33none - v31auto의 궤적 단위 차이와 구간, v33c1 - v33none의 서버 계수 바이트, 1-RTT 비율, 팔별 행동 분포, p_mean 궤적. 예상 반폭은 bigcert 약 3~4 ms, 그보다 작은 차이는 판정불능으로 쓴다. 쓸 수 있는 말: '같은 gen33 서버와 같은 인증서에서 v3.3.1-dev의 C1 없는 경로는 S_bigcert에서 동결 gen-2 클라이언트 대비 X ms [L, U], S_rtt200에서 Y ms [L, U] 차이였다(독립 궤적 4개, development, 확증 아님). C1 경로의 무손실 서버 수신 바이트는 C1 없는 경로 대비 Z B/연결 달랐다.' 쓰면 안 되는 말: 'v3.3이 v3.1보다 낫다', '실측으로 개선 확인', 봉인 값과 섞은 표. 문서: docs/X6_result.md(자동), REPORT_CLAIMS_v33.md, README.md 89~91행, 보고서 content.py 202행. 정정: 예상 반폭은 bigcert 약 4~5 ms, rtt200 약 2~5 ms(봉인 주기 차이 SD에 t(3)=3.18)로 쓰고 그보다 작은 차이는 판정불능으로 쓴다. phase는 300/300/300이고 W1 B1(450×3)과 다르므로 W1 예측과 직접 대조하지 않는다. 결과에는 2%·15% 층별 값과 1:1 가중 재계산 값을 함께 낸다.",
+   "acceptance": "g3/v33/results/v33_dev_X6_<runid>.json에 셀·팔마다 궤적 4개, burnin 분리, server_bytes_in_per_conn, feedback_received_rate, valid_rtt_rate, action_hist, by_loss, reweighted_1_1이 있다. v33none 행 전부 arrivals.src none과 policy_path none이고 궤적 끝 cache3의 c1_seen false. v33c1은 첫 회신 뒤 행 policy_path c1이고 cache3 c1_seen true. confirmatory false.",
+   "depends": [
+    "MS-18",
+    "MS-02",
+    "MS-06",
+    "MS-07"
+   ],
+   "est_minutes": 135,
+   "codex_can_do": true,
+   "source_ids": [
+    "X6",
+    "A5-16",
+    "A5-10",
+    "A5-06",
+    "D41",
+    "D43"
+   ],
+   "verdict": "partly",
+   "verify_note": "시간 계산과 플래그는 맞다. p21 ARMS, cache_flags, profile이 fix와 같고 -profile sealed31 -fec auto3 -cache3 -expect-k 2 -n 0 rc 0이다. 연결 수 14,400·14,400·6,400과 합 약 2.1시간도 맞다. 고칠 곳 넷. (1) 예상 반폭 '약 3~4 ms'는 낙관적이다. 봉인 S_bigcert g2-g3 주기 차이 SD는 run1 2.913, run2 2.567이고 궤적 4개면 t(3)=3.182로 반폭 4.6, 4.1 ms다. S_rtt200은 SD 1.405, 3.012로 2.2, 4.8 ms다. 봉인 주기는 캐시를 이어 썼으므로 새 캐시 궤적은 더 넓을 수 있다. (2) 합격 조건의 c1_seen은 행에 없다. 행에는 policy_path와 obs_policy_path가 있고(policy3.go:2058~2060) c1_seen은 cache3 상태 파일에 있다(policy3.go:464). (3) B1은 bench_protocol에서 450/450/450이다. 300/300/300은 이 항목의 선택이고 2%:15%가 2:1이라 봉인 1:1과 가중이 다르다. 봉인 run1 층별 g2-g3는 2% +37.4, 15% +18.7이라 2:1이면 +31.2가 되어 +28.0과 맞지 않는 것이 정상이다. T7 카드의 'W1 세계 예측과의 차이'도 phase 길이가 달라 그대로 못 한다. (4) 서버 명령에 -certsize(MS-08)."
+  },
+  {
+   "id": "MS-22",
+   "kind": "doc",
+   "priority": "must",
+   "title": "측정을 돌린 경우 바꿔야 할 문서 문장",
+   "where": [
+    "C:/dev/pq_afec_gen33/README.md:91",
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:32",
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:188",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_evaluation.md:143",
+    "C:/hwp_work/rne_final/tools/content.py:36",
+    "C:/hwp_work/rne_final/tools/content.py:52",
+    "C:/hwp_work/rne_final/tools/content.py:202",
+    "C:/hwp_work/rne_final/tools/content.py:216"
+   ],
+   "problem": "지금 문서들은 '네트워크 측정 0건'을 사실로 적고 있다. 측정 뒤 그대로 두면 문서와 결과가 어긋나고, 반대로 결과를 손으로 옮기면 쓰면 안 되는 말이 섞일 수 있다.",
+   "evidence": "README.md:91 '네트워크 측정은 0건이다', content.py:52 '측정 러너가 아직 없으며 향후 연구에서 수행한다', content.py:202 'v3.2-dev와 v3.3.1-dev는 네트워크 측정이 없다', content.py:216 후속 연구 목록.",
+   "fix": "측정이 끝나면 docs/X*_result.md의 생성 문장만 인용해 위 위치를 고친다. README 91행은 '개발 측정 N건(실행 ID), 확증 측정 0건'으로. content.py는 도현님 보고서이므로 Codex가 직접 고치지 않고(폴더 규칙) 바꿀 문장을 docs/REPORT_UPDATE_after_measure.md에 위치와 함께 적는다. 볼트는 Claude가 고친다.",
+   "acceptance": "grep -n '네트워크 측정은 0건' C:/dev/pq_afec_gen33/README.md C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md 0줄. python -I -B experiments/v33/devreport.py --check-doc docs/REPORT_UPDATE_after_measure.md rc 0.",
+   "depends": [
+    "MS-19",
+    "MS-20",
+    "MS-21"
+   ],
+   "est_minutes": 30,
+   "codex_can_do": true,
+   "source_ids": [
+    "A1",
+    "Q-17"
+   ],
+   "verdict": "partly",
+   "verify_note": "README.md:91, content.py:36·52·202·216 문구를 읽었다. 위치가 빠진 곳이 있다. '네트워크 측정은 0건이다'는 REPORT_CLAIMS_v33.md:188에도 있고, REPORT_CLAIMS 32행은 '쓰면 안 되는 주장' 머리다. V33FIX_evaluation.md:143은 '측정이 없다'이므로 같이 고친다. --check-doc은 MS-13에 더했다. content.py를 Codex가 직접 고치지 않는 것은 맞다."
+  },
+  {
+   "id": "MS-23",
+   "kind": "doc",
+   "priority": "must",
+   "title": "측정 없이 끝내는 경우 문서에 적을 정확한 문장",
+   "where": [
+    "C:/dev/pq_afec_gen33/README.md:91",
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:32",
+    "C:/hwp_work/rne_final/tools/content.py:52",
+    "C:/hwp_work/rne_final/tools/content.py:202"
+   ],
+   "problem": "MS-01에서 안 돌리기로 하면 지금 문서로는 무엇을 재지 않았는지, 어느 숫자가 어느 판의 것인지가 한자리에 없다.",
+   "evidence": "content.py:52, 202가 일부를 적고 있다. X1·X9·X6 미실행은 LOOP_STATE로 확인. 봉인 수치 +28.0/+28.9, +12.4/+10.3 ms는 REPORT_CLAIMS_v33.md:19~21 표와 저널 평균으로 확인. FEC 몫 6.89, 41.04 ms는 g3_stage0_units.jsonl 재계산으로 확인.",
+   "fix": "MS-01이 '안 넣는다'일 때만 README 91행 다음과 REPORT_CLAIMS_v33.md 32행 다음에 아래 문단을 그대로 넣는다. '이 연구는 v3.3.1-dev를 실제 QUIC 테스트베드에서 측정하지 않았다. 이 판의 근거는 Python·Go 비트 일치 관문, 기능 시험, 결과 일부를 본 뒤의 개발용 세계 시뮬레이션뿐이며 성능 근거로 쓰지 않는다. 실측 수치(S_bigcert +28.0/+28.9 ms, S_rtt200 +12.4/+10.3 ms)는 봉인 v3.1의 값이고 v3.3.1-dev로 옮겨 쓰지 않는다. 조건은 quic-go v0.61.0 테스트베드 한 곳, 합성 인증서, 클라이언트에서 서버 방향 손실만, initial congestion window 32 packet, 정책에 참 uplink를 알려 준 설정이다. 같은 바이트 padding 대 parity 비교(X1)는 하지 않았으므로 parity의 고유 몫은 직접 측정되지 않았고, 0단계 FEC 몫(2% 6.89 ms, 15% 41.04 ms)에는 데이터그램 하나를 더 보낸 효과가 섞여 있다. PTO 비율 재측정(X9)은 하지 않았으므로 12.0%, 10.4%, z=0.79는 분모가 확인되지 않은 옛 값으로만 언급하고 가설 기각의 근거로 쓰지 않는다.' 보고서용 문장은 같은 내용으로 docs/REPORT_UPDATE_no_measure.md에 적고 content.py는 직접 고치지 않는다.",
+   "acceptance": "MS-01이 안 넣는다일 때: grep -c '이 연구는 v3.3.1-dev를 실제 QUIC 테스트베드에서 측정하지 않았다' C:/dev/pq_afec_gen33/README.md C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md 가 각 1. LOOP_STATE의 T7, X1, X6, X9가 skipped이고 사유에 MS-01이 적혀 있다.",
+   "depends": [
+    "MS-01"
+   ],
+   "est_minutes": 15,
+   "codex_can_do": true,
+   "source_ids": [
+    "A1",
+    "Q-17",
+    "A5-02"
+   ],
+   "verdict": "confirmed",
+   "verify_note": "문단의 숫자를 대조했다. REPORT_CLAIMS_v33.md:19~22의 28.009256, 12.382440, 28.919530, 10.330776, 0단계 6.89·41.04, argv의 -m 3 대 -m 4, profile의 uplink 일치, cubic_sender.go:20의 32, 팀 문서의 12.0·10.4·z=0.79가 모두 맞다. 줄표·이모지 없음. 없는 사실 없음."
+  },
+  {
+   "id": "MS-24",
+   "kind": "doc",
+   "priority": "should",
+   "title": "측정 카드에 남은 낡은 내용을 새 과제 카드에서 뺀다",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:378",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:399",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:405",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:419",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:424",
+    "C:/dev/codex_handoff/v33/prompt/LOOP_PROMPT.md:72"
+   ],
+   "problem": "카드를 그대로 옮기면 Codex가 없는 조합을 시도한다. X6의 '보류 복호 켬과 끔'과 X1의 'm4L3+보류 복호'는 미채택 M1이고 F3 때문에 같은 credit 전제가 깨진다. T7의 팔에는 v33auto 하나뿐이라 none과 c1이 구분되지 않는다. X1의 'W 1,291~1,472'는 실제 상한 1452다. ~/frozen/g3c_6baf2b52는 파일이 아니라 폴더다.",
+   "evidence": "V33FIX_testbed.md:120 hold 팔 해석 주의, LOOP_STATE M1 blocked, DECISIONS D30 '1452 상한', ls ~/frozen/g3c_6baf2b52: qamp, qamp.buildinfo, qamp.srcsha. T7_conditions_v31.md:16 v33auto 조건.",
+   "fix": "새 루프 카드에서 X1 팔은 MS-19, X6 팔은 MS-21, T7 팔은 MS-03으로 쓰고 hold 팔을 뺀다. 동결 경로는 <폴더>/qamp로 적고 Initial 확대 팔은 넣지 않는다(선택 셀 MS-31). TTLB 팔(A7-22)은 빼고 사유를 적는다.",
+   "acceptance": "grep -n '보류 복호' <새 TASKS 파일>의 X1·X6 카드 0줄. grep -n '1,472' 0줄.",
+   "depends": [],
+   "est_minutes": 15,
+   "codex_can_do": true,
+   "source_ids": [
+    "T7",
+    "X1",
+    "X6",
+    "F3",
+    "A7-22"
+   ],
+   "verdict": "confirmed",
+   "verify_note": "TASKS.md 378·399·405·419·424행과 LOOP_PROMPT.md:72를 읽었다. ~/frozen/g3c_6baf2b52는 폴더이고 qamp, qamp.buildinfo, qamp.srcsha가 있다. V33FIX_testbed.md:120 hold 해석 주의 맞다. 작은 정정: '1,472'는 X1 카드가 아니라 T3 카드(378행)에 있다. 새 카드에 T3 문구를 옮길 때 빼면 된다."
+  },
+  {
+   "id": "MS-25",
+   "kind": "decision",
+   "priority": "should",
+   "title": "측정 사슬 밖 E·X 과제를 이번에 건너뛸지",
+   "where": [
+    "C:/dev/codex_handoff/v33/state/EXTRA_TASKS.md",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:427",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:431",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:436",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:453",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:460",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:465"
+   ],
+   "problem": "E15, E19, E24, E25, E27, E28, E29, E31과 X2, X3, X4, X5, X7, X8을 다 하면 지난 루프처럼 시간이 미채택 후보로 간다. 활성 정책 측정에 필요한 것은 없다. 다만 '전부 처리'를 바란다면 이것은 범위 축소이므로 도현님 몫이다.",
+   "evidence": "카드 판독: E15는 M1(blocked) 재전송 경로, E19는 연결 전체 parity 상한(T7 의존), E24는 시간 기반 버스트, E25·E29는 O3·J3(blocked) 관측, E27·E28은 O4(blocked) natural_k와 quic-go 사본 훅, E31은 M4(blocked) 어댑터. 지난 루프 활성 시간 41.8%가 기각 후보에 간 것은 CONTEXT.md 0절.",
+   "fix": "기본값: 모두 skipped로 두고 사유를 LOOP_STATE note에 적는다. 측정을 돌리면 결과 문서 한계 절에 고정 문장을 넣는다: '토큰·resumption 기준선(X4), 업링크 오입력(X2), s2c 손실(X5), 다른 QUIC 스택(X7), initial congestion window 10(X8), 시간 상관 손실(E24)은 재지 않았다.' 시간이 남으면 넣을 순서: MS-31 셀, X2(약 20분), X4(약 1.7시간).",
+   "acceptance": "python -I -B C:/dev/codex_handoff/v33/runs/coverage_snapshot.py --deps 의 잠김 목록이 비어 있고 해당 과제 status가 skipped. 결과 문서에 고정 문장 1회.",
+   "depends": [
+    "MS-01"
+   ],
+   "est_minutes": 5,
+   "codex_can_do": false,
+   "source_ids": [
+    "E15",
+    "E19",
+    "E24",
+    "E25",
+    "E27",
+    "E28",
+    "E29",
+    "E31",
+    "X2",
+    "X3",
+    "X4",
+    "X5",
+    "X7",
+    "X8"
+   ],
+   "verdict": "confirmed",
+   "verify_note": "LOOP_STATE에서 E15·E19·E24·E25·E27·E28·E29·E31·X2·X3·X4·X5·X7·X8 모두 todo, coverage_snapshot.py --deps의 locked_by_blocked_ancestor 비어 있음(status_counts done 28, blocked 13, todo 52, skipped 1). out/backlog_triage.md도 E15를 DROP으로 적어 결론이 같으니 합칠 때 하나로 묶는다. 범위 축소라 도현님 몫이라는 판단이 맞다."
+  },
+  {
+   "id": "MS-26",
+   "kind": "test",
+   "priority": "should",
+   "title": "G2 와이어 관문을 W 1280 크기 검사와 Python outcomes 대조로 줄여 끝낸다",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:359",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp_lead_test.go:341",
+    "C:/dev/pq_afec_gen33/padfec3/layout.py:131",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/policy.go:61"
+   ],
+   "problem": "T7 카드가 G2 완료를 요구하는데 G2는 todo다. Go 쪽 전수 시험은 있으나 Python layout.outcomes와의 대조는 없다. 비용 모형의 credit과 와이어가 어긋나도 지금은 잡히지 않는다. 다만 측정값 자체는 와이어에서 나오므로 G2가 늦어져도 숫자가 틀리지는 않는다.",
+   "evidence": "qamp_lead_test.go:341 leadExhaustive: lead 0~3, m≤4, k≤3의 도착 부분집합×순서를 ReadFrom으로 검사하고 HEAD 사본에서 PASS. grep 결과 experiments의 gate와 go test 어디에도 layout.outcomes 대조 없음(adaptation_benchmark.py:124만 사용). parityDatagramBytes는 w+39+6k, CONTEXT.md 5절의 실제 overhead는 CID 길이에 따라 34~46 B, E38 미완.",
+   "fix": "experiments/gate_g2_wire.py를 만든다. (1) Go 시험에 환경변수 하나로 leadExhaustive의 (lead, m, k, 도착 패턴, 스택에 올라간 바이트, 복구 여부) 표를 JSON으로 내보내는 경로를 추가한다(시험 파일만 고치면 바이너리 sha가 그대로다). (2) Python이 layout.outcomes로 같은 표를 만들어 대조한다. (3) W 1280, k 1~4에서 실제 parity 크기를 재서 1452 B 이하와 모델 차이를 보고한다. 60분 안에 안 끝나면 (3)만 남기고 나머지는 사유를 적고 T7을 막지 않는다. E38은 하지 않는다(정책 상수를 바꾸면 관문을 다시 돌려야 한다). MS-05 전에 끝낸다. 새 srcsha는 MS-05 (4)에 적는다. 60분을 넘겨 (3)만 남기면 LOOP_STATE T7의 depends에서 G2를 빼고 사유를 note에 적는다.",
+   "acceptance": "python -I -B experiments/gate_g2_wire.py --out <임시>가 rc 0, mismatches 0(또는 문서화된 차이), max_parity_bytes_w1280 ≤ 1452. build_gen33.sh 바이너리 sha 변화 없음.",
+   "depends": [],
+   "est_minutes": 60,
+   "codex_can_do": true,
+   "source_ids": [
+    "G2",
+    "A3-12",
+    "E38"
+   ],
+   "verdict": "partly",
+   "verify_note": "qamp_lead_test.go:341 leadExhaustive, layout.py:131 outcomes, policy.go:61 w+39+6k 확인. layout.outcomes를 쓰는 곳은 adaptation_benchmark와 v33 참조·시험뿐이고 Go 대조는 없다. 시험 파일만 고치면 바이너리 sha가 그대로라는 말은 맞지만 빠진 것이 있다. build_gen33.sh의 srcsha와 gate_v3_parity.quicbed_fingerprint는 모든 *.go(시험 포함)를 묶어서 srcsha는 바뀐다. 그래서 MS-05보다 먼저 해야 하고 MS-05의 'srcsha bb31e590'은 이 항목이 끝나면 맞지 않는다. LOOP_STATE의 T7 의존에 G2가 있어 'T7을 막지 않는다'를 쓰려면 그 의존을 고쳐야 한다."
+  },
+  {
+   "id": "MS-27",
+   "kind": "code",
+   "priority": "should",
+   "title": "러너 저널 지문이 환경변수와 experiments/*.py 전체에 묶이지 않게 한다",
+   "where": [
+    "C:/dev/pq_afec_gen33/experiments/_journal.py:184",
+    "C:/dev/pq_afec_gen33/experiments/_journal.py:197",
+    "C:/dev/pq_afec_gen33/experiments/_journal.py:218",
+    "C:/dev/codex_handoff/v33/prompt/LOOP_PROMPT.md:74"
+   ],
+   "problem": "code_fingerprint(paths, root)는 experiments 폴더의 모든 .py와 runtime_context(PADFEC_* 환경변수, 파이썬 경로)를 해시한다. 측정 잠금 중에는 '작은 코드 편집'이 허용되므로, 그때 어떤 파일이든 고치면 재개가 앞선 단위를 무효로 본다. 09-15에 같은 원인으로 25단계가 전부 무효로 표시된 적이 있다.",
+   "evidence": "_journal.py:213~219 closure 코드와 h.update(json.dumps(runtime_context())). 볼트 2026-09-15 절의 '--status 맨손' 사례.",
+   "fix": "devbed는 지문을 (계획 sha, gen33 바이너리 sha, 동결 바이너리 sha, lib/*.py와 devbed.py sha)로 직접 만들어 Journal에 넘기고 runtime_context는 meta에만 적는다. 새 루프 규칙에 '측정 잠금 중 experiments/v33와 padfec*, quicbed는 고치지 않는다'를 넣는다.",
+   "acceptance": "pytest tests/test_v33_devbed.py::test_fingerprint_ignores_env_and_other_files 통과(PADFEC_X 환경변수나 무관한 experiments 파일을 바꿔도 지문이 같고 devbed.py를 바꾸면 달라진다).",
+   "depends": [
+    "MS-03"
+   ],
+   "est_minutes": 15,
+   "codex_can_do": true,
+   "source_ids": [
+    "Q-07"
+   ],
+   "verdict": "confirmed",
+   "verify_note": "_journal.py:184 runtime_context, 197 code_fingerprint, 213~219 experiments/*.py·quicbed·afec·padfec 묶음과 runtime_context 해시를 읽었다. Journal(path, fingerprint)이 fp가 다른 줄을 버리므로(62행) fix가 먹힌다. LOOP_PROMPT.md:74 '작은 코드 편집' 허용 확인. 볼트 2026-09-15 로그 23~28행에 '25단계 전부 무효'와 padfec_env={} 원인이 있다."
+  },
+  {
+   "id": "MS-28",
+   "kind": "measure",
+   "priority": "should",
+   "title": "C1 대기로 달라지는 연결 간격을 계획에 적고 잰다",
+   "where": [
+    "C:/dev/pq_afec_gen33/docs/T4_observation_result.md:29",
+    "C:/dev/pq_afec_gen33/docs/T7_conditions_v31.md:16",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:3084"
+   ],
+   "problem": "v33c1 팔은 HCT 뒤 회신을 기다려 연결 사이 간격이 다른 팔보다 RTT만큼 길다. 2 Mbps에서는 뒤따르는 parity가 netem 큐를 비우는 시간과 겹칠 수 있어 다음 연결 HCT에 영향이 갈 수 있다. T4 문서는 팔별 간격을 맞추라고 했고 아직 안 했다.",
+   "evidence": "T4_observation_result.md:29 끝 문장 '팔별 연결 간격을 맞춰야 한다'. 행 필드 feedback_wait_ns, feedback_wait_limit_ms. 효과 크기 미확인.",
+   "fix": "간격 표를 계획 JSON에 넣는다: 비-C1 팔은 봉인 -gap(rate>0이면 50 ms, 없으면 8 ms). v33c1은 bigcert에서 max(1 ms, gap - RTT) = 1 ms로 줄여 총 유휴를 맞춘다. D_p11은 rate가 없어 맞추지 않고 실제 유휴를 보고한다. RTT 200 셀은 맞출 수 없으므로 실제 평균 유휴를 보고하고 v33none에 -gap 250ms를 준 대조를 궤적 1개 더한다(약 6분). 결과에 팔별 평균 연결 간격을 넣는다.",
+   "acceptance": "결과 JSON 팔마다 mean_idle_ms가 있고 bigcert에서 v33none과 v33c1 차이가 5 ms 이내. rtt200 대조의 차이와 구간이 보고된다.",
+   "depends": [
+    "MS-03"
+   ],
+   "est_minutes": 15,
+   "codex_can_do": true,
+   "source_ids": [
+    "D23"
+   ],
+   "verdict": "partly",
+   "verify_note": "T4_observation_result.md:29 끝 문장과 qamp.go:3084 대기, 3199 time.Sleep(gap) 순서를 읽었다. 대기 뒤에 gap을 자므로 fix가 먹힌다. 틀린 곳: 'RTT 50 ms 이하 셀의 총 유휴를 맞춘다'는 uplink 없는 셀에서 안 된다. D_p11은 gap 8 ms인데 C1 대기가 약 50 ms라 줄여서 맞출 수 없다. 그 셀은 rate가 없어 큐가 남지 않으니 맞출 이유도 약하다. 맞출 대상은 rate>0이고 RTT<gap+1인 bigcert뿐이다. H c6000(RTT 120, 선택 셀)은 rtt200처럼 맞출 수 없다. 효과 크기는 미확인."
+  },
+  {
+   "id": "MS-29",
+   "kind": "code",
+   "priority": "could",
+   "title": "클라이언트 행에 client_scid를 넣어 conn-log와 일대일로 잇는다",
+   "where": [
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:2807",
+    "C:/dev/pq_afec_gen33/experiments/quicbed/qamp.go:1867"
+   ],
+   "problem": "지금은 행과 서버 줄을 순서로만 맞출 수 있다. 세그먼트 집계에는 문제없지만 연결 단위 신용 분석(1-RTT 여부 대 stack_bytes)은 어렵다.",
+   "evidence": "trial 구조체에 CID 필드 없음. connAcct에 initial_dcid, client_scid 있음.",
+   "fix": "fecConn이 clientCIDGenerator로 만든 SCID를 행 필드 client_scid로 낸다. Go가 바뀌어 바이너리 sha가 달라지므로 MS-05 전에 넣거나 아예 넣지 않는다. 시간이 빠듯하면 안 넣는다.",
+   "acceptance": "qamp_flight_trace_test 계열 새 시험 PASS, 행 client_scid와 conn-log client_scid 일치 100%(smoke).",
+   "depends": [],
+   "est_minutes": 25,
+   "codex_can_do": true,
+   "source_ids": [
+    "F2"
+   ],
+   "verdict": "confirmed",
+   "verify_note": "trial 구조체(qamp.go:2807~)에 CID 없음, connAcct ClientSCID(qamp.go:1867), clientCIDGenerator(boundary.go:323) 확인. 팔별 서버에서는 first_rx_ns 정렬로 대부분 맞출 수 있어 could가 맞다. 넣으면 sha와 srcsha가 바뀌므로 MS-05 전이어야 한다."
+  },
+  {
+   "id": "MS-30",
+   "kind": "repo",
+   "priority": "could",
+   "title": "genconfig.json gen_id가 아직 v3.3-dev다",
+   "where": [
+    "C:/dev/pq_afec_gen33/genconfig.json:2",
+    "C:/dev/pq_afec_gen33/experiments/pipeline.py:375"
+   ],
+   "problem": "활성 정책은 v3.3.1-dev인데 설정 이름은 옛 값이다. 러너가 이 값을 표시용으로 쓰면 결과에 틀린 판이 찍힌다. pipeline.py가 이 문자열로 분기하므로 그냥 바꾸면 안 된다.",
+   "evidence": "genconfig.json: gen_id v3.3-dev. padfec3.learn3.POLICY_VERSION v3.3.1-dev, STATE_VERSION 11(사본에서 출력).",
+   "fix": "러너와 결과 문서는 learn3.POLICY_VERSION을 읽는다. gen_id는 세대 이름으로 두고 README에 그 뜻을 한 줄 적는다. 바꾸지 않는다.",
+   "acceptance": "grep -n 'gen_id' experiments/v33/devbed.py experiments/v33/devreport.py 0줄. 결과 JSON policy_version이 v3.3.1-dev.",
+   "depends": [
+    "MS-03"
+   ],
+   "est_minutes": 5,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "genconfig.json gen_id v3.3-dev, pipeline.py:375 분기, learn3.POLICY_VERSION v3.3.1-dev와 STATE_VERSION 11을 사본에서 출력했다. 지금 틀린 값을 내는 코드는 없고 러너를 쓸 때의 주의다."
+  },
+  {
+   "id": "MS-31",
+   "kind": "measure",
+   "priority": "could",
+   "title": "시간이 남을 때 더할 셀: H c6000, D_p15_4032, 서버 first flight 7.7~9.0 KB 띠",
+   "where": [
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:419",
+    "C:/dev/codex_handoff/v33/prompt/TASKS.md:425"
+   ],
+   "problem": "H c6000은 2단계에서 v3가 졌고 3단계에서 판정불능이던 셀이고, D_p15_4032는 k=1 byte 경계 셀이며, 7.7~9.0 KB 띠는 Initial 확대만으로 1-RTT가 되는지 보는 곳이다. 없어도 최소 묶음의 결론은 나지만 한계 서술이 넓어진다.",
+   "evidence": "봉인 H_h_c6000_r120_u10 0.190 s/연결, 평균 g2auto 145.8, g3auto 126.1. D_p15_4032_l0 0.065 s/연결. B12_c6000, B4가 W1 셀과 대응.",
+   "fix": "순서: D_p15_4032_l0(cert 4032, x25519, k 1, RTT 50, uplink 없음, 손실 0, 4팔 4궤적 400연결, 7분), H c6000(cert 6000, RTT 120, uplink 10, k 2, 1→8→1, 300씩, 46분 + c1 대기 7분), 띠 셀(cert 8000, RTT 50, uplink 2, 손실 2%, m4L3와 Initial 확대 -fec off -ips 1400·1452, 20블록 × 40, 약 7분). 계획에 처음부터 넣되 tier optional로 표시하고, 필수 묶음이 끝난 뒤에만 돈다.",
+   "acceptance": "계획 JSON tier optional. 필수 묶음 결과 파일이 먼저 생성되었음을 시각으로 확인. 결과에 개발 셀이 된다는 표시(hold_out_excluded true).",
+   "depends": [
+    "MS-21"
+   ],
+   "est_minutes": 70,
+   "codex_can_do": true,
+   "source_ids": [
+    "X6",
+    "A7-05",
+    "A5-16"
+   ],
+   "verdict": "partly",
+   "verify_note": "H_h_c6000_r120_u10 0.190, 평균 145.8·126.1, D_p15_4032_l0 0.065를 다시 냈다. 시간 하나가 틀렸다. 띠 셀 3팔 × 800연결이면 2,400 × 0.16 s ≈ 6.4분이지 13분이 아니다(비슷한 조건 D_p17_mbps2가 0.126). 'Initial 확대 -ips 1452'에 parity를 붙이면 k=2에서 상한을 넘으므로 확대 팔은 -fec off여야 한다."
+  },
+  {
+   "id": "MS-32",
+   "kind": "doc",
+   "priority": "should",
+   "title": "결과 문서에 고정할 단서: c2s 손실만, IW 32, 1 byte 절벽, uplink 오라클",
+   "where": [
+    "C:/dev/pq_afec_gen33/experiments/g3bed.py:244",
+    "C:/dev/pq_afec_gen33/experiments/padbed.py:246",
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:12",
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:49",
+    "C:/hwp_work/rne_final/tools/content.py:210"
+   ],
+   "problem": "후보 판정: 손실 c2s만과 IW 32는 여전히 참이다. 측정 코드를 바꿀 대상은 아니고 환경 조건이다. 기존 주장 문서에는 단서가 있으나 새 결과 문서에는 자동으로 들어가지 않는다. 새 숫자가 단서 없이 인용되면 과장이 된다.",
+   "evidence": "quic-go v0.61.0 internal/congestion/cubic_sender.go:20 initialCongestionWindow = 32. internal/ackhandler/sent_packet_handler.go:1034~1039 isAmplificationLimited는 bytesSent >= 3*bytesReceived 불리언. g3bed.py:244~248 s2c는 loss 0. p21 profile uplink_policy_mbps == netem_rate_mbit(274~278행). 이 PC 모듈 캐시 읽기로 확인.",
+   "fix": "devreport의 문서 머리에 값에서 생성하는 문단을 넣는다: 'quic-go v0.61.0 테스트베드 한 곳, 합성 인증서, W 1280, 손실은 <방향>, initial congestion window 32 packet, 정책 입력 uplink는 netem 대역과 같음, development 측정이며 확증이 아니다.' X8, X5는 돌리지 않는다.",
+   "acceptance": "생성된 docs/X*_result.md 각각 첫 문단에 'initial congestion window 32'와 'development'가 있다. grep -c 'initial congestion window 32' docs/X1_result.md docs/X6_result.md docs/X9_result.md 각 1 이상.",
+   "depends": [
+    "MS-13"
+   ],
+   "est_minutes": 10,
+   "codex_can_do": true,
+   "source_ids": [
+    "A5-09",
+    "A7-04",
+    "A5-08",
+    "A5-13"
+   ],
+   "verdict": "confirmed",
+   "verify_note": "모듈 캐시에서 cubic_sender.go:20 initialCongestionWindow = 32, sent_packet_handler.go:1034~1039 isAmplificationLimited를 다시 읽었다. g3bed.py:244~248 s2c 손실 0, p21 profile uplink_policy_mbps = rate 확인. content.py:210에 단서가 이미 있다. should가 맞다."
+  },
+  {
+   "id": "MS-33",
+   "kind": "measure",
+   "priority": "should",
+   "title": "봉인 측정과 지금의 WSL 커널이 다르다. 결과에 환경을 남기고 동결 팔로 표류를 본다",
+   "where": [
+    "C:/dev/pq_afec_gen31/experiments/state/p31_run1_meta.json",
+    "C:/dev/pq_afec_gen33/experiments/g3bed.py:419"
+   ],
+   "problem": "봉인 3단계 meta의 uname_r은 6.18.35.2-microsoft-standard-WSL2이고 지금은 6.18.54.1이다. netem과 veth는 커널 안에 있으므로 같은 바이너리라도 봉인 값과 같은 환경이라고 말할 근거가 없다. 안 적으면 새 숫자가 봉인 값과 같은 환경처럼 읽힌다.",
+   "evidence": "p31_run1_meta.json starts[0]: uname_r 6.18.35.2-microsoft-standard-WSL2, Python 3.14.4, iproute2-6.19.0, cpu_list 0,1,2,3, cpu_count 28. 지금 wsl -d Ubuntu: uname -r 6.18.54.1-microsoft-standard-WSL2, Python 3.14.4, iproute2-6.19.0, nproc 28. 커널 차이가 HCT에 주는 효과 크기는 미확인이다. 감사 문서와 MS-04는 이 차이를 적지 않았다.",
+   "fix": "g3bed.environment()와 같은 키(uname_r, python3_V, tc_V, ip_V, cpu_list, cpu_count)를 모으는 함수를 lib에 옮겨 모든 결과 meta에 넣는다. M1 결과에 탐색 항목 a_vs_sealed를 더한다: 동결 g3c m4L3 → 동결 g3c 서버의 bigcert 2% 평균을 봉인 g3fixL3 2% 83.1 ms(p31_run1_S_bigcert, 층별 재계산)와 나란히 적는다. 차이가 5 ms를 넘으면 결과 문서 첫 문단에 '봉인 환경과 표류가 있다'를 넣는다. 5 ms 안이어도 '같은 환경'이라고 쓰지 않는다. 83.1은 계획 JSON에 출처와 함께 적고 소스에는 옛 저장소 경로를 넣지 않는다(tests/test_no_foreign_paths.py).",
+   "acceptance": "결과 JSON meta.env.uname_r이 있고 M1 결과에 a_vs_sealed.delta_ms와 sealed_kernel 6.18.35.2, kernel 값이 있다. python -I -B -m pytest tests/test_no_foreign_paths.py -q -p no:cacheprovider 통과.",
+   "depends": [
+    "MS-18"
+   ],
+   "est_minutes": 10,
+   "codex_can_do": true,
+   "source_ids": [
+    "A6-M03"
+   ],
+   "verdict": "added",
+   "verify_note": "감사자가 놓친 항목이다. 값은 위 두 명령으로 직접 읽었다."
+  }
+ ],
+ "rejected": []
+}

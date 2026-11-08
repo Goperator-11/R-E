@@ -1,0 +1,6 @@
+padfec3 from C:\Users\scien\AppData\Local\Temp\claude\C--Users-scien\98dad099-940c-4208-8359-61078035dc93\scratchpad\v33fix2\P-policy-claims\oldroot\padfec3\__init__.py STATE_VERSION 4 UDP_MAX 1472
+l3_candidate failed: AssertionError 
+policy_worker {'failures': ['AssertionError: 4 != 11'], 'errors': [], 'ran': 1}
+adaptation {'failures': ['AssertionError: True != False'], 'errors': [], 'ran': 1}
+p21 {'failures': ['AssertionError: 0 not greater than 0'], 'errors': [], 'ran': 1}
+padfec3 still old: True

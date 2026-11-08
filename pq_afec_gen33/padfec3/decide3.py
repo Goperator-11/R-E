@@ -167,7 +167,7 @@ def take(res, choice):
 
 def decide_core(post, k, W, S, u_mbps, rtt_ms, c_pkt, *, actions=None,
                 later=learn3.LATER_DEFAULT, max_ips=MAX_IPS, m_max=M_MAX,
-                max_steps=MAX_STEPS, keep_cands=False, pen=None, reeval=False):
+                max_steps=MAX_STEPS, keep_cands=False, pen=None):
     learn3.check_transport(W, u_mbps, rtt_ms, c_pkt)
     learn3.check_later(later)
     check_candidate_options(max_ips, m_max, max_steps)
@@ -211,9 +211,6 @@ def decide_core(post, k, W, S, u_mbps, rtt_ms, c_pkt, *, actions=None,
            "reeval_cond": bool(best["n2"] and alt is not None),
            "alt": None if alt is None else choice_of(alt)}
     take(res, best)
-    if reeval and res["reeval_cond"]:
-        take(res, res["alt"])
-        res["why"] = "reeval"
     res["reeval"] = res["why"] == "reeval"
     if keep_cands:
         res["cands"] = cands
@@ -232,9 +229,58 @@ def b0_result(why, post):
             "p_ge_010": s["p_ge_010"]}
 
 
+def check_explore(explore):
+    if explore is None:
+        return
+    if not isinstance(explore, dict) or set(explore) != {"rate_ms", "cap_ms"}:
+        raise ValueError("explore requires exactly rate_ms and cap_ms")
+    learn3._finite("explore rate", explore["rate_ms"], positive=True)
+    learn3._finite("explore cap", explore["cap_ms"], positive=True)
+
+
+def explore_pick(st, res, u_mbps, rtt_ms, later):
+    cands = res["cands"]
+    best = next(c for c in cands if c["action"] == res["action"])
+    if best["m"] == 0 or best["lead"] != 0:
+        return None
+    if not any(c["m"] == 0 and not c["n2"] for c in cands):
+        return None
+
+    def j0(c):
+        return learn3.model_point(res["k"], c["W_eff"], float(u_mbps), float(rtt_ms),
+                                  res["n_need"], c["lead"], c["m"], 0, later)[0]
+
+    limit = j0(best) + J_TIE
+    options = [c for c in cands
+               if c["lead"] == 0 and c["added"] < best["added"] and j0(c) <= limit
+               and max(0.0, c["ej"] - best["ej"]) <= st.x_ledger
+               and learn3.arm_key(c["action"]) not in st.g_alarm]
+    if not options:
+        return None
+    return min(options, key=lambda c: (c["added"], c["ej"]))
+
+
+def explore_step(st, res, explore, u_mbps, rtt_ms, later, keep_cands, c1):
+    if explore is None or "cands" not in res:
+        return
+    if not c1:
+        ledger = 0.0 if st.x_ledger is None else st.x_ledger
+        st.x_ledger = min(explore["cap_ms"], ledger + explore["rate_ms"])
+        st.x_pending = False
+        if not res["reeval"]:
+            choice = explore_pick(st, res, u_mbps, rtt_ms, later)
+            if choice is not None:
+                take(res, choice_of(choice))
+                res["why"] = "explore"
+                st.x_pending = True
+    if not keep_cands:
+        del res["cands"]
+
+
 def decide3(st, W, u_mbps, rtt_ms, c_pkt, *, actions=None,
             later=learn3.LATER_DEFAULT, max_ips=MAX_IPS, m_max=M_MAX,
-            max_steps=MAX_STEPS, keep_cands=False):
+            max_steps=MAX_STEPS, keep_cands=False, explore=None):
+    check_explore(explore)
     learn3.check_transport(W, u_mbps, rtt_ms, c_pkt, missing_rtt=True)
     learn3.check_later(later)
     check_candidate_options(max_ips, m_max, max_steps)
@@ -277,7 +323,7 @@ def decide3(st, W, u_mbps, rtt_ms, c_pkt, *, actions=None,
         res = decide_core(post, k, W, learn3.s_hat(st), u_mbps, rtt_ms, c_pkt,
                           actions=actions, later=later, max_ips=max_ips,
                           m_max=m_max, max_steps=max_steps,
-                          keep_cands=keep_cands, pen=pen)
+                          keep_cands=keep_cands or explore is not None, pen=pen)
         if res["reeval_cond"] and reeval_open:
             if (st.n_reeval + 1) % learn3.REEVAL_EVERY == 0:
                 take(res, res["alt"])
@@ -293,6 +339,7 @@ def decide3(st, W, u_mbps, rtt_ms, c_pkt, *, actions=None,
         st.n_reeval += 1
     if res["reeval"]:
         st.stats["reeval"] += 1
+    explore_step(st, res, explore, u_mbps, rtt_ms, later, keep_cands, c1)
     res["guard_alarm"] = learn3.arm_key(res["action"]) in st.g_alarm
     res["guard_common_ms"] = b
     res["guard_alarmed_actions"] = len(st.g_alarm)

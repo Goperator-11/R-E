@@ -1,0 +1,641 @@
+{
+ "M0": {
+  "run": "final_m0_iter022_20261106",
+  "checks": {
+   "c1_arrivals": "pass",
+   "c1_feedback_received": "pass",
+   "c1_feedback_version": "pass",
+   "c1_path": "pass",
+   "client_rows": "pass",
+   "connection_collection": "pass",
+   "explicit_flight": "pass",
+   "fec_parse_fail": "pass",
+   "feedback_received_field": "pass",
+   "feedback_wait_limit": "pass",
+   "fixed_extra_byte_range": "pass",
+   "fixed_first_flight_bytes": "pass",
+   "frozen_feedback": "pass",
+   "frozen_parities": "pass",
+   "hct_mean_range": "pass",
+   "ips": "pass",
+   "netem_config": "pass",
+   "no_feedback": "pass",
+   "none_path": "pass",
+   "pad_recovered": "pass",
+   "policy_uplink": "pass",
+   "process_rc": "pass",
+   "realized_loss": "pass",
+   "recover_crc_fail": "pass",
+   "recovered_positive": "pass",
+   "server_process": "pass",
+   "server_stats": "pass",
+   "server_uniform": "pass",
+   "success_rate": "pass",
+   "w_bound": "pass"
+  },
+  "added": [
+   "policy_uplink"
+  ],
+  "old_details_changed": [],
+  "old_details_lost": [],
+  "statuses_new": {
+   "policy_uplink": "pass"
+  },
+  "all_pass": true,
+  "realized_loss": [
+   {
+    "cell": "bigcert_l15",
+    "status": "pass",
+    "sent": 1040,
+    "dropped": 167,
+    "attempts": 1207,
+    "nominal_loss_pct": 15.0,
+    "prediction_interval": [
+     141,
+     223
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "bigcert_l2",
+    "status": "pass",
+    "sent": 1139,
+    "dropped": 21,
+    "attempts": 1160,
+    "nominal_loss_pct": 2.0,
+    "prediction_interval": [
+     9,
+     40
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "p11_l0",
+    "status": "pass",
+    "sent": 1079,
+    "dropped": 0,
+    "attempts": 1079,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "rtt200_l15",
+    "status": "pass",
+    "sent": 1577,
+    "dropped": 280,
+    "attempts": 1857,
+    "nominal_loss_pct": 15.0,
+    "prediction_interval": [
+     229,
+     330
+    ],
+    "confidence": 0.999
+   }
+  ],
+  "success_rate_min": 1.0,
+  "success_groups": 24,
+  "policy_uplink": {
+   "n": 8,
+   "values": [
+    0,
+    2
+   ],
+   "statuses": [
+    "pass"
+   ]
+  },
+  "netem_units": 24
+ },
+ "M1": {
+  "run": "final_m1_iter024_20261107",
+  "checks": {
+   "client_rows": "pass",
+   "connection_collection": "pass",
+   "explicit_flight": "pass",
+   "frozen_feedback": "pass",
+   "ips": "pass",
+   "netem_config": "pass",
+   "no_feedback": "pass",
+   "process_rc": "pass",
+   "realized_loss": "pass",
+   "server_process": "pass",
+   "server_stats": "pass",
+   "server_uniform": "pass",
+   "success_rate": "pass",
+   "w_bound": "pass"
+  },
+  "added": [
+   "netem_config",
+   "realized_loss",
+   "success_rate"
+  ],
+  "old_details_changed": [],
+  "old_details_lost": [],
+  "statuses_new": {
+   "netem_config": "pass",
+   "realized_loss": "pass",
+   "success_rate": "pass"
+  },
+  "all_pass": true,
+  "realized_loss": [
+   {
+    "cell": "bigcert_l2",
+    "direction": "c2s",
+    "loss_pct": 2,
+    "status": "pass",
+    "sent": 69806,
+    "dropped": 1381,
+    "attempts": 71187,
+    "nominal_loss_pct": 2.0,
+    "prediction_interval": [
+     1302,
+     1548
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "bigcert_l2",
+    "direction": "s2c",
+    "loss_pct": 0,
+    "status": "pass",
+    "sent": 123450,
+    "dropped": 0,
+    "attempts": 123450,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   }
+  ],
+  "success_rate_min": 1.0,
+  "success_groups": 6,
+  "policy_uplink": {
+   "n": 0,
+   "values": [],
+   "statuses": []
+  },
+  "netem_units": 180
+ },
+ "X1": {
+  "run": "final_x1_iter027_20261107",
+  "checks": {
+   "client_rows": "pass",
+   "connection_collection": "pass",
+   "explicit_flight": "pass",
+   "ips": "pass",
+   "m4L3_recovered": "pass",
+   "netem_config": "pass",
+   "no_feedback": "pass",
+   "pad_recovered": "pass",
+   "process_rc": "pass",
+   "realized_loss": "pass",
+   "server_process": "pass",
+   "server_stats": "pass",
+   "server_uniform": "pass",
+   "success_rate": "pass",
+   "w_bound": "pass"
+  },
+  "added": [
+   "netem_config",
+   "realized_loss",
+   "success_rate"
+  ],
+  "old_details_changed": [],
+  "old_details_lost": [],
+  "statuses_new": {
+   "netem_config": "pass",
+   "realized_loss": "pass",
+   "success_rate": "pass"
+  },
+  "all_pass": true,
+  "realized_loss": [
+   {
+    "cell": "bigcert_l15",
+    "direction": "c2s",
+    "loss_pct": 15,
+    "status": "pass",
+    "sent": 30768,
+    "dropped": 5355,
+    "attempts": 36123,
+    "nominal_loss_pct": 15.0,
+    "prediction_interval": [
+     5196,
+     5643
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "bigcert_l15",
+    "direction": "s2c",
+    "loss_pct": 0,
+    "status": "pass",
+    "sent": 61314,
+    "dropped": 0,
+    "attempts": 61314,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "bigcert_l2",
+    "direction": "c2s",
+    "loss_pct": 2,
+    "status": "pass",
+    "sent": 42959,
+    "dropped": 892,
+    "attempts": 43851,
+    "nominal_loss_pct": 2.0,
+    "prediction_interval": [
+     782,
+     975
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "bigcert_l2",
+    "direction": "s2c",
+    "loss_pct": 0,
+    "status": "pass",
+    "sent": 80218,
+    "dropped": 0,
+    "attempts": 80218,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "rtt200_l15",
+    "direction": "c2s",
+    "loss_pct": 15,
+    "status": "pass",
+    "sent": 8448,
+    "dropped": 1597,
+    "attempts": 10045,
+    "nominal_loss_pct": 15.0,
+    "prediction_interval": [
+     1390,
+     1626
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "rtt200_l15",
+    "direction": "s2c",
+    "loss_pct": 0,
+    "status": "pass",
+    "sent": 9567,
+    "dropped": 0,
+    "attempts": 9567,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   }
+  ],
+  "success_rate_min": 1.0,
+  "success_groups": 8,
+  "policy_uplink": {
+   "n": 0,
+   "values": [],
+   "statuses": []
+  },
+  "netem_units": 233
+ },
+ "X9": {
+  "run": "final_x9_iter031_20261107",
+  "checks": {
+   "client_rows": "pass",
+   "connection_collection": "pass",
+   "explicit_flight": "pass",
+   "ips": "pass",
+   "netem_config": "pass",
+   "no_feedback": "pass",
+   "process_rc": "pass",
+   "realized_loss": "pass",
+   "server_process": "pass",
+   "server_stats": "pass",
+   "server_uniform": "pass",
+   "success_rate": "pass",
+   "w_bound": "pass"
+  },
+  "added": [
+   "netem_config",
+   "realized_loss",
+   "success_rate"
+  ],
+  "old_details_changed": [],
+  "old_details_lost": [],
+  "statuses_new": {
+   "netem_config": "pass",
+   "realized_loss": "pass",
+   "success_rate": "pass"
+  },
+  "all_pass": true,
+  "realized_loss": [
+   {
+    "cell": "both",
+    "direction": "c2s",
+    "loss_pct": 5,
+    "status": "pass",
+    "sent": 47681,
+    "dropped": 2579,
+    "attempts": 50260,
+    "nominal_loss_pct": 5.0,
+    "prediction_interval": [
+     2354,
+     2675
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "both",
+    "direction": "s2c",
+    "loss_pct": 5,
+    "status": "pass",
+    "sent": 40233,
+    "dropped": 2160,
+    "attempts": 42393,
+    "nominal_loss_pct": 5.0,
+    "prediction_interval": [
+     1973,
+     2269
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "c2s",
+    "direction": "c2s",
+    "loss_pct": 5,
+    "status": "pass",
+    "sent": 45192,
+    "dropped": 2361,
+    "attempts": 47553,
+    "nominal_loss_pct": 5.0,
+    "prediction_interval": [
+     2223,
+     2535
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "c2s",
+    "direction": "s2c",
+    "loss_pct": 0,
+    "status": "pass",
+    "sent": 37566,
+    "dropped": 0,
+    "attempts": 37566,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   }
+  ],
+  "success_rate_min": 1.0,
+  "success_groups": 4,
+  "policy_uplink": {
+   "n": 0,
+   "values": [],
+   "statuses": []
+  },
+  "netem_units": 244
+ },
+ "X6": {
+  "run": "final_x6_iter035_20261107",
+  "checks": {
+   "c1_feedback_version": "pass",
+   "c1_path": "pass",
+   "client_rows": "pass",
+   "connection_collection": "pass",
+   "explicit_flight": "pass",
+   "fec_parse_fail": "pass",
+   "feedback_received_field": "pass",
+   "feedback_wait_limit": "pass",
+   "frozen_feedback": "pass",
+   "ips": "pass",
+   "netem_config": "pass",
+   "no_feedback": "pass",
+   "none_path": "pass",
+   "policy_uplink": "pass",
+   "process_rc": "pass",
+   "realized_loss": "pass",
+   "server_process": "pass",
+   "server_stats": "pass",
+   "server_uniform": "pass",
+   "success_rate": "pass",
+   "trajectory_end_c1_seen": "pass",
+   "w_bound": "pass"
+  },
+  "added": [
+   "netem_config",
+   "policy_uplink",
+   "realized_loss",
+   "success_rate"
+  ],
+  "old_details_changed": [],
+  "old_details_lost": [],
+  "statuses_new": {
+   "netem_config": "pass",
+   "policy_uplink": "pass",
+   "realized_loss": "pass",
+   "success_rate": "pass"
+  },
+  "all_pass": true,
+  "realized_loss": [
+   {
+    "cell": "D_p11_2955_l0",
+    "direction": "c2s",
+    "loss_pct": 0,
+    "status": "pass",
+    "sent": 56937,
+    "dropped": 0,
+    "attempts": 56937,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "D_p11_2955_l0",
+    "direction": "s2c",
+    "loss_pct": 0,
+    "status": "pass",
+    "sent": 32149,
+    "dropped": 0,
+    "attempts": 32149,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "S_bigcert",
+    "direction": "c2s",
+    "loss_pct": 2,
+    "status": "pass",
+    "sent": 87155,
+    "dropped": 1764,
+    "attempts": 88919,
+    "nominal_loss_pct": 2.0,
+    "prediction_interval": [
+     1643,
+     1917
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "S_bigcert",
+    "direction": "c2s",
+    "loss_pct": 15,
+    "status": "pass",
+    "sent": 40080,
+    "dropped": 7200,
+    "attempts": 47280,
+    "nominal_loss_pct": 15.0,
+    "prediction_interval": [
+     6838,
+     7349
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "S_bigcert",
+    "direction": "s2c",
+    "loss_pct": 0,
+    "status": "pass",
+    "sent": 253989,
+    "dropped": 0,
+    "attempts": 253989,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "S_rtt200",
+    "direction": "c2s",
+    "loss_pct": 2,
+    "status": "pass",
+    "sent": 149278,
+    "dropped": 3046,
+    "attempts": 152324,
+    "nominal_loss_pct": 2.0,
+    "prediction_interval": [
+     2868,
+     3228
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "S_rtt200",
+    "direction": "c2s",
+    "loss_pct": 15,
+    "status": "pass",
+    "sent": 65416,
+    "dropped": 11528,
+    "attempts": 76944,
+    "nominal_loss_pct": 15.0,
+    "prediction_interval": [
+     11217,
+     11869
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "S_rtt200",
+    "direction": "s2c",
+    "loss_pct": 0,
+    "status": "pass",
+    "sent": 217191,
+    "dropped": 0,
+    "attempts": 217191,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "S_rtt200_idle_control",
+    "direction": "c2s",
+    "loss_pct": 2,
+    "status": "pass",
+    "sent": 9118,
+    "dropped": 194,
+    "attempts": 9312,
+    "nominal_loss_pct": 2.0,
+    "prediction_interval": [
+     143,
+     232
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "S_rtt200_idle_control",
+    "direction": "c2s",
+    "loss_pct": 15,
+    "status": "pass",
+    "sent": 3958,
+    "dropped": 715,
+    "attempts": 4673,
+    "nominal_loss_pct": 15.0,
+    "prediction_interval": [
+     622,
+     782
+    ],
+    "confidence": 0.999
+   },
+   {
+    "cell": "S_rtt200_idle_control",
+    "direction": "s2c",
+    "loss_pct": 0,
+    "status": "pass",
+    "sent": 13414,
+    "dropped": 0,
+    "attempts": 13414,
+    "nominal_loss_pct": 0.0,
+    "prediction_interval": [
+     0,
+     0
+    ],
+    "confidence": 0.999
+   }
+  ],
+  "success_rate_min": 1.0,
+  "success_groups": 13,
+  "policy_uplink": {
+   "n": 670,
+   "values": [
+    0,
+    2
+   ],
+   "statuses": [
+    "pass"
+   ]
+  },
+  "netem_units": 1310
+ }
+}

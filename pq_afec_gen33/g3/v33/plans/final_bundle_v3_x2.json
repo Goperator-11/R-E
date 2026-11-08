@@ -1,0 +1,1110 @@
+{
+  "schema": "padfec3.final_bundle.v1",
+  "plan_id": "final_bundle_v3_x2",
+  "created_kst": "2026-11-07",
+  "label": "development",
+  "confirmatory": false,
+  "exploratory": true,
+  "policy_version": "v3.3.1-dev",
+  "state_version": 11,
+  "cache_schema": "padfec3.cache3/11",
+  "after_results": {
+    "reason": "F31 X2 보충 계획이다. v1의 optional X2는 번인과 분석 구간이 미정이고 오입력 팔이 plan.arms에 없어 그대로 돌 수 없었다. X6, M0S 결과를 본 뒤 만들었고 X6S 결과를 본 뒤 커밋하므로 탐색이다.",
+    "base_plans": [
+      {
+        "path": "g3/v33/plans/final_bundle_v1.json",
+        "sha256": "74f58fbb6b0db5c30ef9abf0698ae13dd6bede861bef3215646e5ca3232154b6",
+        "commit": "a8e9fdf63d173bcfcf8166f18da4ba57eb21f5c1"
+      },
+      {
+        "path": "g3/v33/plans/final_bundle_v2.json",
+        "sha256": "c34edb890fbdc1fd5685f189cf8b9629ae9e7339c27fa1365a42e9221bc8829b",
+        "commit": "f0f84b38629d8a84df3f358b249d7b5ec2332283"
+      }
+    ],
+    "seen_results": [
+      {
+        "id": "X6",
+        "path": "g3/v33/results/v33_dev_X6_final_x6_iter035_20261107.json",
+        "sha256": "dfbfd5e1ae624622e451d997b43af809f31645086d17a2b1592a4150dc5527e5"
+      },
+      {
+        "id": "M0S",
+        "path": "g3/v33/results/v33_dev_M0_final_m0s_20261107.json",
+        "sha256": "cb0d65d726dcc48e9ca9541d9c2159a0b5c57ea1082b8c457959eb36b933ec81"
+      },
+      {
+        "id": "X6S",
+        "path": "g3/v33/results/v33_dev_X6_final_x6s_20261107.json",
+        "sha256": "2667b514f0d5c0e08cb21d2f814f924ad7d35f8c4851ae0300719939865bbfa3"
+      }
+    ],
+    "relation": "v1, v2 계획과 X6, X6S 결과를 덮거나 대체하지 않는다. X2 값을 X6, X6S 표에 섞지 않는다.",
+    "fill_rule": "X6S 항목은 측정 전 자리표시로 두었다. X6S 결과를 커밋한 뒤 채움 스크립트로 경로와 SHA를 넣고 이 계획을 다시 커밋한다. 자리표시가 남은 계획으로 측정하지 않는다."
+  },
+  "sources": [
+    "F31",
+    "BL-19",
+    "MS-31",
+    "D56",
+    "MP-8"
+  ],
+  "precommit": {
+    "plan_paths": [
+      "g3/v33/plans/final_bundle_v3_x2.json",
+      "g3/v33/plans/final_bundle_v3_x2.md"
+    ],
+    "commit_lookup": "git log -1 --format=%H -- <plan>",
+    "require_clean_tracked_plan": true,
+    "dirty_or_uncommitted_rc": 2,
+    "require_nonnull_binary_sha_and_srcsha_for": [
+      "--run",
+      "--smoke"
+    ],
+    "result_fields": [
+      "plan_commit",
+      "plan_sha256",
+      "plan_doc_commit",
+      "plan_doc_sha256",
+      "first_unit_started_at"
+    ],
+    "sha_definition": "SHA256 of exact UTF-8 file bytes, not canonical JSON",
+    "commit_time_before_first_unit": true,
+    "after_results_change": "X6S 자리표시 채움은 측정 전에 한 번만 한다. M0X2나 X2 결과를 본 뒤에는 이 파일을 고치지 않는다. 바꿔야 하면 v4를 새로 선커밋하고 탐색으로 표시한다."
+  },
+  "binaries": {
+    "gen33": {
+      "path": "~/frozen/gen33_b44f3681/qamp",
+      "sha256": "b44f36811da480571c30c3312fdf12294b2e37942fac26c89649882cd1dac9da",
+      "srcsha": "2f08eb7e9b531597f45a93227fd0405dec7599e61f6a1f43f2cbcd3d1e040325",
+      "source_commit": "ed71b1780acc8036569d5cbd86f3e74a03ae34e4",
+      "source": "final_bundle_v2와 같은 동결본이다. X6S를 잰 바이너리와 같다."
+    }
+  },
+  "common": {
+    "w_base_bytes": 1280,
+    "ips_flag": null,
+    "ips_rule": "필수 팔은 -ips 없이, 실행값 1280. ips 키가 있는 optional Initial 확대 팔만 명시한다.",
+    "parity_max_bytes": 1452,
+    "timeout_s": 10,
+    "initial_congestion_window_packets": 32,
+    "quic_go_version": "v0.61.0",
+    "loss_model": "Bernoulli",
+    "loss_direction": "c2s_only_except_X9_both",
+    "netem_seed": null,
+    "seed_rule": "카드에 seed 지정 없음. seed를 새로 선별하지 않고 실제 tc 설정을 기록한다.",
+    "netem_delay_each_direction": "RTT/2",
+    "policy_uplink": "참값 팔 x2_true는 프로파일의 netem 대역 참값을, 오입력 팔은 팔에 고정한 policy_uplink_mbps를 -uplink-mbps로 준다. netem 대역은 프로파일 값 그대로다.",
+    "token_store": false,
+    "session_resumption": false,
+    "token_exceptions": [],
+    "client_common_flags": [
+      "-mode",
+      "client",
+      "-group",
+      "{group}",
+      "-expect-k",
+      "{expect_k}",
+      "-uplink-mbps",
+      "{policy_uplink_mbps}",
+      "-gap",
+      "{gap_ms}ms",
+      "-timeout",
+      "10s",
+      "-n",
+      "{unit_connections}"
+    ],
+    "arm_value_overrides_profile": true,
+    "server_flags": [
+      "-mode",
+      "server",
+      "-profile",
+      "sealed31",
+      "-fec",
+      "on",
+      "-certsize",
+      "{certsize}",
+      "-cert-file",
+      "{cert_file}",
+      "-stats",
+      "{stats}",
+      "-conn-log",
+      "{conn_log}"
+    ],
+    "frozen_server_flags": [
+      "-mode",
+      "server",
+      "-fec",
+      "fec",
+      "-certsize",
+      "{certsize}",
+      "-stats",
+      "{stats}"
+    ],
+    "server_exceptions": [
+      "M0와 X2의 모든 팔이 gen33 서버 하나에 붙는다"
+    ],
+    "certificate": "셀마다 gen33 certgen으로 cert_N.pem을 한 번 생성하고 공통 서버 팔에 공유한다. certsize와 cert-file을 함께 준다.",
+    "secret_storage": "~/v33_runs/<id>/certs/ 밖으로 PEM을 꺼내지 않는다. 결과에는 DER 크기·SHA만 남긴다.",
+    "no_feedback_arms": "모든 X2 팔은 -feedback=false이고 서버도 feedback을 끈다. 단위마다 fb_sent=0을 확인한다.",
+    "server_per_unit": "팔·블록별 새 프로세스와 새 conn-log, 고정 팔별 포트. 종료 전 settle_s=0.3+2*RTT/1000 후 SIGTERM.",
+    "cost": "server_delta.bytes_in과 conn-log만 사용. 클라이언트 parity 계수는 진단이며 중복 합산하지 않는다."
+  },
+  "ordering": {
+    "method": "general_Williams",
+    "row_rule": "짝수 n은 n행, 홀수 n은 정방향 n행과 역방향 n행",
+    "first_row_rule": "0,1,n-1,2,n-2,...; 후속 행은 각 값에 행 번호를 더한 mod n",
+    "row_index": "(zero_based_block_across_phases + zero_based_trajectory) mod row_count",
+    "execution": "task 순서, 셀 순서, trajectory 순서, phase 순서, block 순서, Williams 팔 순서",
+    "required_task_order": [
+      "M0",
+      "X2"
+    ],
+    "x2_block_choice": "팔마다 300연결을 10블록×30으로 나눈다. 5팔이라 Williams 행은 10개이고 블록 10개가 모든 행을 한 번씩 쓴다. X6과 같은 30연결 단위라 X6 단위 시간으로 시간을 추정한다.",
+    "cache_rule": "셀·궤적·auto 팔마다 새 캐시. 궤적 내부 phase와 블록을 넘어 유지하고 재개는 검증된 연속 완료 블록의 cache_after만 복원한다."
+  },
+  "profiles": {
+    "bigcert": {
+      "certsize": 16000,
+      "rtt_ms": 50,
+      "netem_uplink_mbps": 2,
+      "policy_uplink_mbps": 2,
+      "expect_k": 2,
+      "group": "X25519MLKEM768",
+      "gap_ms": 50,
+      "feedback_wait_ms": 200
+    },
+    "hc6000": {
+      "certsize": 6000,
+      "rtt_ms": 120,
+      "netem_uplink_mbps": 10,
+      "policy_uplink_mbps": 10,
+      "expect_k": 2,
+      "group": "X25519MLKEM768",
+      "gap_ms": 50,
+      "feedback_wait_ms": 300.0
+    },
+    "rtt200": {
+      "certsize": 9000,
+      "rtt_ms": 200,
+      "netem_uplink_mbps": 2,
+      "policy_uplink_mbps": 2,
+      "expect_k": 2,
+      "group": "X25519MLKEM768",
+      "gap_ms": 50,
+      "feedback_wait_ms": 500.0
+    }
+  },
+  "arms": {
+    "x2_true": {
+      "binary": "gen33",
+      "server": "gen33",
+      "kind": "auto3",
+      "client_flags": [
+        "-profile",
+        "sealed31",
+        "-fec",
+        "auto3",
+        "-m",
+        "1",
+        "-cache3",
+        "{cache}",
+        "-feedback=false"
+      ],
+      "none_path_check": true,
+      "x2_role": "참값, 프로파일의 policy_uplink_mbps를 그대로 쓴다"
+    },
+    "x2_u0": {
+      "binary": "gen33",
+      "server": "gen33",
+      "kind": "auto3",
+      "client_flags": [
+        "-profile",
+        "sealed31",
+        "-fec",
+        "auto3",
+        "-m",
+        "1",
+        "-cache3",
+        "{cache}",
+        "-feedback=false"
+      ],
+      "none_path_check": true,
+      "x2_role": "고정 입력",
+      "policy_uplink_mbps": 0
+    },
+    "x2_u1": {
+      "binary": "gen33",
+      "server": "gen33",
+      "kind": "auto3",
+      "client_flags": [
+        "-profile",
+        "sealed31",
+        "-fec",
+        "auto3",
+        "-m",
+        "1",
+        "-cache3",
+        "{cache}",
+        "-feedback=false"
+      ],
+      "none_path_check": true,
+      "x2_role": "고정 입력",
+      "policy_uplink_mbps": 1
+    },
+    "x2_u4": {
+      "binary": "gen33",
+      "server": "gen33",
+      "kind": "auto3",
+      "client_flags": [
+        "-profile",
+        "sealed31",
+        "-fec",
+        "auto3",
+        "-m",
+        "1",
+        "-cache3",
+        "{cache}",
+        "-feedback=false"
+      ],
+      "none_path_check": true,
+      "x2_role": "고정 입력",
+      "policy_uplink_mbps": 4
+    },
+    "x2_u5": {
+      "binary": "gen33",
+      "server": "gen33",
+      "kind": "auto3",
+      "client_flags": [
+        "-profile",
+        "sealed31",
+        "-fec",
+        "auto3",
+        "-m",
+        "1",
+        "-cache3",
+        "{cache}",
+        "-feedback=false"
+      ],
+      "none_path_check": true,
+      "x2_role": "고정 입력",
+      "policy_uplink_mbps": 5
+    },
+    "x2_u10": {
+      "binary": "gen33",
+      "server": "gen33",
+      "kind": "auto3",
+      "client_flags": [
+        "-profile",
+        "sealed31",
+        "-fec",
+        "auto3",
+        "-m",
+        "1",
+        "-cache3",
+        "{cache}",
+        "-feedback=false"
+      ],
+      "none_path_check": true,
+      "x2_role": "고정 입력",
+      "policy_uplink_mbps": 10
+    },
+    "x2_u20": {
+      "binary": "gen33",
+      "server": "gen33",
+      "kind": "auto3",
+      "client_flags": [
+        "-profile",
+        "sealed31",
+        "-fec",
+        "auto3",
+        "-m",
+        "1",
+        "-cache3",
+        "{cache}",
+        "-feedback=false"
+      ],
+      "none_path_check": true,
+      "x2_role": "고정 입력",
+      "policy_uplink_mbps": 20
+    }
+  },
+  "tasks": {
+    "M0": {
+      "card": "F31",
+      "tier": "required",
+      "question": "X2 팔이 hc6000 셀에서 정책 입력, netem, 수집 검사를 통과하는가",
+      "primary": "checks",
+      "cells": [
+        {
+          "id": "hc6000_l8",
+          "profile": "hc6000",
+          "arms": [
+            "x2_true",
+            "x2_u0",
+            "x2_u5",
+            "x2_u20",
+            "x2_u10"
+          ],
+          "trajectories": 1,
+          "burnin_per_arm_trajectory": 0,
+          "phases": [
+            {
+              "loss_c2s_pct": 8,
+              "loss_s2c_pct": 0,
+              "connections_per_arm": 20,
+              "blocks": 1,
+              "connections_per_arm_block": 20
+            }
+          ]
+        }
+      ],
+      "cell_choice": "hc6000(cert 6000, RTT 120, uplink 10 Mbps)은 gen33 러너로 잰 적이 없고 단위 시간 5.75초도 계획 추정이라 smoke로 먼저 확인한다. 참값과 같은 입력 10 팔이 함께 돈다.",
+      "gate": "M0 결과 checks가 모두 pass가 아니면 X2를 시작하지 않고 범위를 고치지 않는다.",
+      "expected_minutes": 1,
+      "estimate_minutes": 0.34,
+      "performance_evidence": false,
+      "connections_total": 100,
+      "connection_count_kind": "계획, 측정값 아님"
+    },
+    "X2": {
+      "card": "F31",
+      "tier": "required",
+      "sources": [
+        "BL-19",
+        "MS-31"
+      ],
+      "question": "정책 uplink 입력을 netem 참값과 다르게 줄 때 v33none 경로의 HCT가 참값 입력보다 얼마나 달라지는가",
+      "primary": [
+        "input_minus_true_hct"
+      ],
+      "secondary": [
+        "one_rtt_rate_difference",
+        "server_bytes_in_per_conn_difference",
+        "action_hist",
+        "p_mean"
+      ],
+      "base_arm": "v1 v33none과 같은 클라이언트 플래그. -uplink-mbps 값만 팔마다 다르다.",
+      "cells": [
+        {
+          "id": "bigcert_l2",
+          "profile": "bigcert",
+          "arms": [
+            "x2_true",
+            "x2_u0",
+            "x2_u1",
+            "x2_u4",
+            "x2_u10"
+          ],
+          "trajectories": 1,
+          "burnin_per_arm_trajectory": 100,
+          "phases": [
+            {
+              "loss_c2s_pct": 2,
+              "loss_s2c_pct": 0,
+              "connections_per_arm": 300,
+              "blocks": 10,
+              "connections_per_arm_block": 30
+            }
+          ]
+        },
+        {
+          "id": "bigcert_l15",
+          "profile": "bigcert",
+          "arms": [
+            "x2_true",
+            "x2_u0",
+            "x2_u1",
+            "x2_u4",
+            "x2_u10"
+          ],
+          "trajectories": 1,
+          "burnin_per_arm_trajectory": 100,
+          "phases": [
+            {
+              "loss_c2s_pct": 15,
+              "loss_s2c_pct": 0,
+              "connections_per_arm": 300,
+              "blocks": 10,
+              "connections_per_arm_block": 30
+            }
+          ]
+        },
+        {
+          "id": "hc6000_l1",
+          "profile": "hc6000",
+          "arms": [
+            "x2_true",
+            "x2_u0",
+            "x2_u5",
+            "x2_u20",
+            "x2_u10"
+          ],
+          "trajectories": 1,
+          "burnin_per_arm_trajectory": 100,
+          "phases": [
+            {
+              "loss_c2s_pct": 1,
+              "loss_s2c_pct": 0,
+              "connections_per_arm": 300,
+              "blocks": 10,
+              "connections_per_arm_block": 30
+            }
+          ]
+        },
+        {
+          "id": "hc6000_l8",
+          "profile": "hc6000",
+          "arms": [
+            "x2_true",
+            "x2_u0",
+            "x2_u5",
+            "x2_u20",
+            "x2_u10"
+          ],
+          "trajectories": 1,
+          "burnin_per_arm_trajectory": 100,
+          "phases": [
+            {
+              "loss_c2s_pct": 8,
+              "loss_s2c_pct": 0,
+              "connections_per_arm": 300,
+              "blocks": 10,
+              "connections_per_arm_block": 30
+            }
+          ]
+        },
+        {
+          "id": "rtt200_l2",
+          "profile": "rtt200",
+          "arms": [
+            "x2_true",
+            "x2_u0",
+            "x2_u1",
+            "x2_u4",
+            "x2_u10"
+          ],
+          "trajectories": 1,
+          "burnin_per_arm_trajectory": 100,
+          "phases": [
+            {
+              "loss_c2s_pct": 2,
+              "loss_s2c_pct": 0,
+              "connections_per_arm": 300,
+              "blocks": 10,
+              "connections_per_arm_block": 30
+            }
+          ]
+        },
+        {
+          "id": "rtt200_l15",
+          "profile": "rtt200",
+          "arms": [
+            "x2_true",
+            "x2_u0",
+            "x2_u1",
+            "x2_u4",
+            "x2_u10"
+          ],
+          "trajectories": 1,
+          "burnin_per_arm_trajectory": 100,
+          "phases": [
+            {
+              "loss_c2s_pct": 15,
+              "loss_s2c_pct": 0,
+              "connections_per_arm": 300,
+              "blocks": 10,
+              "connections_per_arm_block": 30
+            }
+          ]
+        }
+      ],
+      "policy_inputs": {
+        "card_inputs": [
+          "참값",
+          "0",
+          "u/2",
+          "2u",
+          "10"
+        ],
+        "bigcert": {
+          "true_mbps": 2,
+          "inputs_mbps": [
+            0,
+            1,
+            4,
+            10
+          ]
+        },
+        "hc6000": {
+          "true_mbps": 10,
+          "inputs_mbps": [
+            0,
+            5,
+            20,
+            10
+          ],
+          "same_as_true_mbps": 10
+        },
+        "rtt200": {
+          "true_mbps": 2,
+          "inputs_mbps": [
+            0,
+            1,
+            4,
+            10
+          ]
+        }
+      },
+      "netem_rate_unchanged": true,
+      "excluded_unknown_arm": "O2 미채택이라 모름 팔을 넣지 않는다.",
+      "cell_rule": "카드 셀 bigcert 2%·15%, H c6000 1%·8%에 RTT200 2%·15%를 더했다. 가장 큰 모형 후회가 RTT200 조건인데 카드 셀에 없어서다. 실행 순서는 표의 순서다.",
+      "contrasts": [
+        {
+          "id": "x2_u0_minus_x2_true",
+          "cell": "bigcert_l2",
+          "x": "x2_u0",
+          "y": "x2_true",
+          "card_input": "0",
+          "input_mbps": 0,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u1_minus_x2_true",
+          "cell": "bigcert_l2",
+          "x": "x2_u1",
+          "y": "x2_true",
+          "card_input": "u/2",
+          "input_mbps": 1,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u4_minus_x2_true",
+          "cell": "bigcert_l2",
+          "x": "x2_u4",
+          "y": "x2_true",
+          "card_input": "2u",
+          "input_mbps": 4,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u10_minus_x2_true",
+          "cell": "bigcert_l2",
+          "x": "x2_u10",
+          "y": "x2_true",
+          "card_input": "10",
+          "input_mbps": 10,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u0_minus_x2_true",
+          "cell": "bigcert_l15",
+          "x": "x2_u0",
+          "y": "x2_true",
+          "card_input": "0",
+          "input_mbps": 0,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u1_minus_x2_true",
+          "cell": "bigcert_l15",
+          "x": "x2_u1",
+          "y": "x2_true",
+          "card_input": "u/2",
+          "input_mbps": 1,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u4_minus_x2_true",
+          "cell": "bigcert_l15",
+          "x": "x2_u4",
+          "y": "x2_true",
+          "card_input": "2u",
+          "input_mbps": 4,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u10_minus_x2_true",
+          "cell": "bigcert_l15",
+          "x": "x2_u10",
+          "y": "x2_true",
+          "card_input": "10",
+          "input_mbps": 10,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u0_minus_x2_true",
+          "cell": "hc6000_l1",
+          "x": "x2_u0",
+          "y": "x2_true",
+          "card_input": "0",
+          "input_mbps": 0,
+          "true_mbps": 10,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u5_minus_x2_true",
+          "cell": "hc6000_l1",
+          "x": "x2_u5",
+          "y": "x2_true",
+          "card_input": "u/2",
+          "input_mbps": 5,
+          "true_mbps": 10,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u20_minus_x2_true",
+          "cell": "hc6000_l1",
+          "x": "x2_u20",
+          "y": "x2_true",
+          "card_input": "2u",
+          "input_mbps": 20,
+          "true_mbps": 10,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u10_minus_x2_true",
+          "cell": "hc6000_l1",
+          "x": "x2_u10",
+          "y": "x2_true",
+          "card_input": "10",
+          "input_mbps": 10,
+          "true_mbps": 10,
+          "kind": "A/A"
+        },
+        {
+          "id": "x2_u0_minus_x2_true",
+          "cell": "hc6000_l8",
+          "x": "x2_u0",
+          "y": "x2_true",
+          "card_input": "0",
+          "input_mbps": 0,
+          "true_mbps": 10,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u5_minus_x2_true",
+          "cell": "hc6000_l8",
+          "x": "x2_u5",
+          "y": "x2_true",
+          "card_input": "u/2",
+          "input_mbps": 5,
+          "true_mbps": 10,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u20_minus_x2_true",
+          "cell": "hc6000_l8",
+          "x": "x2_u20",
+          "y": "x2_true",
+          "card_input": "2u",
+          "input_mbps": 20,
+          "true_mbps": 10,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u10_minus_x2_true",
+          "cell": "hc6000_l8",
+          "x": "x2_u10",
+          "y": "x2_true",
+          "card_input": "10",
+          "input_mbps": 10,
+          "true_mbps": 10,
+          "kind": "A/A"
+        },
+        {
+          "id": "x2_u0_minus_x2_true",
+          "cell": "rtt200_l2",
+          "x": "x2_u0",
+          "y": "x2_true",
+          "card_input": "0",
+          "input_mbps": 0,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u1_minus_x2_true",
+          "cell": "rtt200_l2",
+          "x": "x2_u1",
+          "y": "x2_true",
+          "card_input": "u/2",
+          "input_mbps": 1,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u4_minus_x2_true",
+          "cell": "rtt200_l2",
+          "x": "x2_u4",
+          "y": "x2_true",
+          "card_input": "2u",
+          "input_mbps": 4,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u10_minus_x2_true",
+          "cell": "rtt200_l2",
+          "x": "x2_u10",
+          "y": "x2_true",
+          "card_input": "10",
+          "input_mbps": 10,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u0_minus_x2_true",
+          "cell": "rtt200_l15",
+          "x": "x2_u0",
+          "y": "x2_true",
+          "card_input": "0",
+          "input_mbps": 0,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u1_minus_x2_true",
+          "cell": "rtt200_l15",
+          "x": "x2_u1",
+          "y": "x2_true",
+          "card_input": "u/2",
+          "input_mbps": 1,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u4_minus_x2_true",
+          "cell": "rtt200_l15",
+          "x": "x2_u4",
+          "y": "x2_true",
+          "card_input": "2u",
+          "input_mbps": 4,
+          "true_mbps": 2,
+          "kind": "오입력"
+        },
+        {
+          "id": "x2_u10_minus_x2_true",
+          "cell": "rtt200_l15",
+          "x": "x2_u10",
+          "y": "x2_true",
+          "card_input": "10",
+          "input_mbps": 10,
+          "true_mbps": 2,
+          "kind": "오입력"
+        }
+      ],
+      "inference_unit": "paired_block_within_one_trajectory",
+      "independent_trajectory_claim": false,
+      "analysis_scope": "팔마다 300연결 중 앞 100연결을 번인으로 빼고 뒤 200연결을 분석한다. 번인은 블록 0~2 전체와 블록 3의 앞 10연결이다. 분석 블록은 7개이고 블록 3은 20연결, 나머지는 30연결이다.",
+      "statistic": "입력별 팔 - 참값 팔의 블록 평균 차이 7개에 Student t 95% 구간, 자유도 6. 궤적은 하나다.",
+      "aa_pair": {
+        "cells": [
+          "hc6000_l1",
+          "hc6000_l8"
+        ],
+        "contrast": "x2_u10_minus_x2_true",
+        "note": "hc6000에서 입력 10은 참값과 같다. 플래그가 같은 두 팔의 차이이므로 A/A로 읽는다."
+      },
+      "expected_minutes": 37,
+      "wall_clock_estimate": {
+        "basis": "X6 진단 timing.arms의 팔별 합계 시간을 단위 수로 나눈 30연결 단위 시간과 단위 사이 중앙값. 측정값이 아니라 계획 추정이다.",
+        "source": "g3/v33/results/v33_dev_X6_final_x6_iter035_20261107.diagnostics.json timing",
+        "between_units_seconds_median": 0.283592,
+        "units_per_cell": 50,
+        "unit_seconds": {
+          "bigcert": {
+            "low": 4.9932,
+            "low_arm": "X6 S_bigcert v33none",
+            "high": 6.0107,
+            "high_arm": "X6 S_bigcert g2auto"
+          },
+          "hc6000": {
+            "plan": 5.75,
+            "source": "MS-31의 H c6000 46분(14,400연결)을 30연결 단위 480개로 나눈 계획 추정, 실측 아님"
+          },
+          "rtt200": {
+            "low": 9.2897,
+            "low_arm": "X6 S_rtt200 v33none",
+            "high": 9.4875,
+            "high_arm": "X6 S_rtt200 g2auto"
+          }
+        },
+        "two_cell_minutes": {
+          "bigcert": [
+            8.79,
+            10.49
+          ],
+          "hc6000": [
+            10.06,
+            10.06
+          ],
+          "rtt200": [
+            15.96,
+            16.29
+          ]
+        },
+        "measure_minutes": [
+          34.81,
+          36.83
+        ],
+        "report_and_inspect_minutes": 1.03,
+        "report_basis": "X6 실측 보고 169초와 검사 102초를 1310단위로 나눈 단위당 시간을 300단위에 곱했다.",
+        "total_minutes": [
+          35.84,
+          37.87
+        ],
+        "card_only_minutes": [
+          18.85,
+          20.55
+        ]
+      },
+      "reading_rules": {
+        "difference": "입력별 팔 - 참값 팔의 95% 구간이 0을 포함하면 그 셀, 그 입력에서 참값과의 차이를 확인하지 못했다고 쓴다. 같다고 쓰지 않는다.",
+        "direction": "구간이 0보다 위이면 그 셀, 그 입력에서 HCT가 참값 입력보다 길었다고 쓰고, 0보다 아래이면 짧았다고 쓴다. 다른 셀, 다른 입력, 다른 네트워크로 넓히지 않는다.",
+        "aa": "hc6000의 x2_u10 - x2_true는 같은 설정 두 팔의 차이다. 0에서 벗어나도 오입력 효과로 쓰지 않고 이 셀의 측정 잡음 크기로 값만 적는다. 다른 셀에 자로 옮기지 않는다.",
+        "single_trajectory": "궤적 하나 안의 블록 짝 구간이다. 독립 궤적 반복이 없으므로 다른 시점의 재현성을 주장하지 않는다.",
+        "model": "FINAL_policy_limits의 uplink 행에 있는 모형 반사실(RTT200에서 참 u 2~20 Mbps를 u=0으로 줄 때 후회 112~198 ms)은 모형 값이다. 이 측정의 rtt200 셀은 cert 9000, u 2 Mbps 한 조건이라 모형 범위와 맞대어 판정하지 않고 값만 나란히 적는다.",
+        "limits_link": "끝나면 FINAL_policy_limits의 uplink 오라클 행과 REPORT_ERRATA RT-29를 결과에 연결한다. 결과 JSON measured_items에 X2가 들어가 문서 한계 문장에서 빠진다.",
+        "must_not_write": [
+          "uplink를 몰라도 된다",
+          "오입력에 강건하다",
+          "모형 후회를 실측으로 확인했다",
+          "모름 입력의 결과",
+          "X6이나 X6S와 섞은 표",
+          "확증"
+        ]
+      },
+      "output_fields": [
+        "primary",
+        "all",
+        "burnin",
+        "server_bytes_in_per_conn",
+        "one_rtt_rate",
+        "action_hist",
+        "p_mean",
+        "fec_parse_fail"
+      ],
+      "none_checks": [
+        "arrivals.src == none",
+        "policy_path == none",
+        "trajectory_end_cache3.c1_seen == false",
+        "row.policy_uplink_mbps == 팔 입력"
+      ],
+      "connections_total": 9000,
+      "connection_count_kind": "계획, 측정값 아님"
+    }
+  },
+  "gap_table": [
+    {
+      "profile": "bigcert",
+      "other_arms_ms": 50,
+      "judge": "X2 팔은 모두 회신 없는 none 경로다. 유휴 판정 없음."
+    },
+    {
+      "profile": "hc6000",
+      "other_arms_ms": 50,
+      "judge": "X2 팔은 모두 회신 없는 none 경로다. 유휴 판정 없음."
+    },
+    {
+      "profile": "rtt200",
+      "other_arms_ms": 50,
+      "judge": "X2 팔은 모두 회신 없는 none 경로다. 유휴 판정 없음."
+    }
+  ],
+  "idle": {
+    "definition": "연속 클라이언트 연결에서 다음 연결 시작 - 현재 연결 HCT 완료 시각. 실제 feedback_wait_ns를 포함하며 블록 경계 서버 재시작 간격은 별도 보고한다.",
+    "outputs": [
+      "whole_trajectory_including_burnin",
+      "by_loss",
+      "by_one_rtt",
+      "post_burnin_reweighted_1_1"
+    ],
+    "non_judged": [
+      "M0",
+      "X2"
+    ],
+    "planning_expectation_ms": {
+      "source": "이 계획에는 기대값을 두지 않는다"
+    }
+  },
+  "statistics": {
+    "ci_level": 0.95,
+    "method": "paired Student t on block means within one trajectory; X2 df=6 (분석 블록 7개)",
+    "effect_sign": "각 contrast의 x-y. x는 입력별 팔, y는 참값 팔 x2_true다.",
+    "failure_hct_ms": 10000,
+    "failure_rule": "p21과 같이 계획된 실패 연결은 timeout 10000 ms로 집계하고 성공만의 HCT와 실패율도 분리한다. 누락·깨진 단위는 보간하지 않고 자료 없음으로 둔다.",
+    "bootstrap": false,
+    "multiple_testing": "개발 기술통계 구간이며 확증 다중검정 통과로 해석하지 않는다. 셀 6개와 입력 4개의 구간 24개를 한꺼번에 보정하지 않는다.",
+    "one_rtt": "ok and ms < 1.5*RTT + 8*pre_decision_bytes/(1000*uplink_mbps); rate=0이면 직렬화 항0",
+    "pre_decision_bytes": "first_flight_bytes + lead*slot_bytes; parity는 first_flight_parity_bytes/first_flight_parity_dgrams와 first_flight_lead_dgrams, pad는 extra_sent.first_bytes/extra_sent.first_sent와 extra_sent.first_lead를 사용한다. 분모0이면 추가 바이트0.",
+    "legacy_row_lead": "first_flight_lead_dgrams가 정수가 아니면 p21.row_lead와 같이 min(1 if m_used>=2 else 0, first_flight_parity_dgrams). m_used나 datagram 수가 정수가 아니면 0.",
+    "m1_aa": {
+      "contrast": "c_d",
+      "tolerance_ms": [
+        -5,
+        5
+      ],
+      "inconclusive_if": "ci95.low < -5 or ci95.high > 5",
+      "status": "판정불능",
+      "continue_measurements": true
+    },
+    "aa_ruler": {
+      "tasks": [],
+      "profile": "bigcert",
+      "loss_pct": 2,
+      "formula": "abs(M1.contrasts.c_d.mean) + (ci95.high-ci95.low)/2",
+      "require_m1_result_json": false,
+      "inconclusive_if": "abs(contrast.mean) < ruler_ms",
+      "drift_note_if_m1_inconclusive": "자 표류 큼",
+      "freeze_rule_before_m1": true,
+      "note": "이 실행에는 M1 자를 쓰지 않는다. 모든 대조를 A/A 자 없음으로 표시한다. hc6000의 입력 10 대조는 그 셀 안에서 같은 설정 두 팔의 차이로만 따로 읽는다."
+    },
+    "other_cells": {
+      "aa": "A/A 없음",
+      "criterion": "95% 구간이 0을 포함하면 차이를 확인하지 못했다. 다른 셀의 A/A 자를 전용하지 않는다."
+    },
+    "m1_server_equivalence": {
+      "contrasts": [
+        "a_b",
+        "e_f"
+      ],
+      "tolerance_ms": [
+        -5,
+        5
+      ],
+      "outside_note": "봉인 측정과 직접 비교 불가",
+      "apply_to": [],
+      "use_only_arm_comparisons": true,
+      "note": "X2는 모든 팔이 같은 gen33 클라이언트와 서버다. 서버 교체 질문이 없어 M1을 쓰지 않는다."
+    },
+    "sealed_drift": {
+      "value_ms": 83.1,
+      "arm": "a",
+      "layer": "bigcert 2% g3fixL3",
+      "source": "MS-33: p31_run1_S_bigcert, g3fixL3 2% 층별 재계산",
+      "sealed_kernel": "6.18.35.2-microsoft-standard-WSL2",
+      "threshold_abs_delta_ms": 5,
+      "output": "a_vs_sealed.delta_ms = current_a_mean - 83.1",
+      "note": "봉인 환경과 표류가 있다",
+      "apply_to": [],
+      "exploratory": true
+    }
+  },
+  "smoke_checks": {
+    "success_rate_min": 0.95,
+    "success_rate_scope": "cell_arm",
+    "process_rc": 0,
+    "netem_config": "tc 출력의 delay·rate·loss를 계획과 대조한다.",
+    "realized_loss": {
+      "scope": "cell_all_arms",
+      "counters": "tc -s qdisc show dev v0의 dropped와 Sent 증분",
+      "attempts": "delta_sent_packets + delta_dropped",
+      "confidence": 0.999,
+      "method": "명목 손실률 Binomial(n,p)의 equal-tail 중앙 99.9% 예측구간에 dropped가 드는지 확인한다."
+    },
+    "fixed_first_flight_bytes": 2560,
+    "fixed_parity_bytes_range_max": 48,
+    "fixed_byte_range_scope": "cell_arm: pad와 parity 팔을 합치지 않는다.",
+    "gen33_parity_max_bytes": 1452,
+    "pad_server_recovered": 0,
+    "frozen_server_parities_positive": true,
+    "recover_crc_fail": 0,
+    "recovered_positive": {
+      "arms": [],
+      "loss_pct": 15,
+      "other_loss": "X2 팔은 입력에 따라 행동이 달라 복구 양수를 요구하지 않는다. 값만 보고한다."
+    },
+    "none": "X2 팔의 모든 행 arrivals.src=none, policy_path=none",
+    "hct_mean_ranges_ms": {},
+    "w_bound": "gen33 ips_eff>=1280; m_used>0이면 ips_eff<=1401; parity datagram<=1452. optional ips 명시는 ips_eff 일치 별도 확인.",
+    "server_uniform": "셀마다 DER SHA 하나, DER bytes==certsize, 서버 binary SHA 하나(gen33)",
+    "explicit_flight": "모든 gen33 행 flight_expectation.source=explicit, k=셀 또는 group별 명시 k",
+    "idle_and_valid_rtt_are_not_checks": true,
+    "no_threshold_change_after_results": true,
+    "policy_uplink": "행의 policy_uplink_mbps가 팔 입력과 같아야 한다. 참값 팔은 프로파일 값과 같아야 한다."
+  },
+  "collection": {
+    "env_keys": [
+      "uname_r",
+      "python3_V",
+      "tc_V",
+      "ip_V",
+      "cpu_list",
+      "cpu_count"
+    ],
+    "conn_log_checks": [
+      "errors=0",
+      "pending=0",
+      "conn_acct_evicted_lru=0",
+      "actual_lines=stats.conn_log.lines",
+      "lines>=tls_accepted",
+      "실패 행이 없으면 lines=client_rows"
+    ],
+    "not_accepted": "lines-tls_accepted는 값만 보고하며 실패 사유로 쓰지 않는다.",
+    "client_scid": "gen33 행과 conn-log를 키로 연결하고 빈 값·중복·미대응 기록. 순서로 채우지 않는다.",
+    "c1_by_class": {
+      "min_rows": 20,
+      "received_rate_min": 0.95,
+      "failure_action": "해당 셀을 C1 경로 측정에서 제외했다고 표시한다."
+    },
+    "valid_rtt_warning_below": 0.9,
+    "rtt200_warning": "봉인에서 0.000~0.013도 관측됐다. 이 경고만으로 자료 없음이나 M0 실패로 바꾸지 않는다.",
+    "fec_parse_fail": "gen33 auto 팔의 합이 양수이면 checks 실패."
+  },
+  "optional": [],
+  "optional_execution": {
+    "note": "이 계획에는 optional이 없다. F31의 다른 항목은 exclusions에 처리 이유를 적었다.",
+    "measure_start_cutoff_kst": "2026-11-12 16:00",
+    "report_cutoff_kst": "2026-11-12 23:59",
+    "before_start": "시작 전에 예상 종료가 report_cutoff보다 6시간 앞서는지 확인한다. 아니면 시작하지 않고 처리 안 함(시간)으로 적는다."
+  },
+  "exclusions": {
+    "unknown_arm": "O2 미채택이라 모름 팔을 넣지 않는다.",
+    "netem_change": "netem 대역은 바꾸지 않는다. 대역을 바꾸면 오입력이 아니라 다른 네트워크 조건이 된다.",
+    "c1_arms": "X2 팔은 v33none 플래그만 쓴다. C1 경로의 오입력은 이 계획 밖이다.",
+    "card_items_not_run": {
+      "X10": "처리 안 함(시간). 카드 순서상 앞이지만 F31에서 X2만 돌린다.",
+      "D_p15_4032_l0": "처리 안 함(시간). 카드 순서상 앞이지만 F31에서 X2만 돌린다.",
+      "H_c6000": "처리 안 함(시간). X2의 hc6000 셀은 v33none 플래그 팔만 돌리고 v33c1, v31auto, g2auto 비교 팔이 없다.",
+      "band8000": "처리 안 함(시간).",
+      "X3": "처리 안 함. certsize, group, k, PTO 팔과 credit 필요 표본이 미정이고 credit 항은 표본 부족 가능성이 높다.",
+      "X4": "처리 안 함. 보충 계획이 미정이고 예상 102분이다.",
+      "global_fixed_0_3_1": "처리 안 함(시간)."
+    }
+  },
+  "result_contract": {
+    "summary_directory": "g3/v33/results",
+    "filename": "v33_dev_<task>_<runid>.json",
+    "raw_directory": "~/v33_runs/<id>/",
+    "label": "development",
+    "confirmatory": false,
+    "policy_version_source": "padfec3.learn3.POLICY_VERSION",
+    "execution_and_inference_status_separate": true,
+    "required_meta": [
+      "env",
+      "plan_commit",
+      "plan_sha256",
+      "binary_sha256",
+      "srcsha"
+    ],
+    "report_only_deterministic": true,
+    "lock_release": "devreport와 결과·저널·로그 SHA 기록 성공 뒤만",
+    "result_document": "JSON에서 생성한다. 첫 문단에 탐색 계획의 측정이고 정책 uplink 입력이 팔마다 다름을 쓴다. 문서 이름은 document_names를 따른다.",
+    "measured_items": "X2 결과 JSON의 measured_items에 X2를 넣어 문서 한계 문장에서 뺀다.",
+    "document_names": {
+      "M0": "M0X2_result.md",
+      "X2": "X2_result.md"
+    }
+  },
+  "required_connections_total": 9100,
+  "required_additional_connections_total": 0,
+  "expected_required_minutes": 38
+}

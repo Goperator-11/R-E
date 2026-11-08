@@ -1,0 +1,3264 @@
+{
+ "schema": "p31_gencompare.decisions.v1",
+ "label": "confirmatory",
+ "generated_at": "2026-10-02T16:03:29.672173+00:00",
+ "harness": {
+  "rule": "harness_bias_detected = (A/A unadjusted 95% interval excludes 0) or (server-equivalence unadjusted 95% interval excludes 0); if detected, or if a control is missing, every stage-3 verdict is suspended; otherwise B = max over the two controls of max(|lo95|, |hi95|) and H1 uses max(0, B)",
+  "controls": {
+   "AA": {
+    "cond": "AA_bigcert",
+    "est": 0.08259740740740067,
+    "se": 0.7019282884327971,
+    "df": 2.000697029838845,
+    "lo95": -2.9365481668502915,
+    "hi95": 3.1017429816650925,
+    "evaluable": true,
+    "ci_excludes_0": false,
+    "bound_ms": 3.1017429816650925
+   },
+   "SEQ": {
+    "cond": "SEQ_mbps2_l15",
+    "est": 0.7289325000000005,
+    "se": 0.6913544948204986,
+    "df": 9.0,
+    "lo95": -0.8350200224906782,
+    "hi95": 2.292885022490679,
+    "evaluable": true,
+    "ci_excludes_0": false,
+    "bound_ms": 2.292885022490679
+   }
+  },
+  "evaluable": true,
+  "harness_bias_detected": false,
+  "B_ms": 3.1017429816650925,
+  "h1_threshold_ms": 3.1017429816650925,
+  "ok": true
+ },
+ "verdicts_suspended": false,
+ "H1": {
+  "run1": {
+   "rule": "both S conditions: Holm (m=2) 95% lower bound of g2-g3 > max(0, B) with B the harness bias bound, and the mean of the two Holm lower bounds >= 1.0 ms",
+   "harness_bound_ms": 3.1017429816650925,
+   "threshold_ms": 3.1017429816650925,
+   "evaluable": true,
+   "tests": [
+    {
+     "cond": "S_bigcert",
+     "contrast": "g2-g3",
+     "c": 3.1017429816650925,
+     "est": 28.009256,
+     "se": 1.4773444655259818,
+     "df": 5.59862849044291,
+     "lo95": 24.33056450085965,
+     "hi95": 31.68794749914035,
+     "q": 5.169571278479211e-06,
+     "holm_rank": 2,
+     "holm_m": 2,
+     "holm_level": 0.05,
+     "p_holm": 5.169571278479211e-06,
+     "reject": true,
+     "lb_holm": 24.33056450085965
+    },
+    {
+     "cond": "S_rtt200",
+     "contrast": "g2-g3",
+     "c": 3.1017429816650925,
+     "est": 12.382439999999997,
+     "se": 0.5649132412135695,
+     "df": 6.753255038315312,
+     "lo95": 11.036674487473816,
+     "hi95": 13.728205512526179,
+     "q": 1.073400898796972e-06,
+     "holm_rank": 1,
+     "holm_m": 2,
+     "holm_level": 0.025,
+     "p_holm": 2.146801797593944e-06,
+     "reject": true,
+     "lb_holm": 10.762043368921354
+    }
+   ],
+   "mean_lb_holm": 17.546303934890503,
+   "pass": true
+  },
+  "run2": {
+   "rule": "both S conditions: Holm (m=2) 95% lower bound of g2-g3 > max(0, B) with B the harness bias bound, and the mean of the two Holm lower bounds >= 1.0 ms",
+   "harness_bound_ms": 3.1017429816650925,
+   "threshold_ms": 3.1017429816650925,
+   "evaluable": true,
+   "tests": [
+    {
+     "cond": "S_bigcert",
+     "contrast": "g2-g3",
+     "c": 3.1017429816650925,
+     "est": 28.919530222222228,
+     "se": 1.402783814008855,
+     "df": 6.772446389184286,
+     "lo95": 25.579745807908118,
+     "hi95": 32.25931463653634,
+     "q": 4.911610960816799e-07,
+     "holm_rank": 1,
+     "holm_m": 2,
+     "holm_level": 0.025,
+     "p_holm": 9.823221921633598e-07,
+     "reject": true,
+     "lb_holm": 24.89887104419367
+    },
+    {
+     "cond": "S_rtt200",
+     "contrast": "g2-g3",
+     "c": 3.1017429816650925,
+     "est": 10.33077577777778,
+     "se": 1.1474885873532044,
+     "df": 4.717776348691885,
+     "lo95": 7.3271900831773635,
+     "hi95": 13.334361472378195,
+     "q": 0.001829353024781823,
+     "holm_rank": 2,
+     "holm_m": 2,
+     "holm_level": 0.05,
+     "p_holm": 0.001829353024781823,
+     "reject": true,
+     "lb_holm": 7.3271900831773635
+    }
+   ],
+   "mean_lb_holm": 16.113030563685516,
+   "pass": true
+  },
+  "claim": "improvement claimed (run 1 H1 passed, run 2 same direction in both S conditions)",
+  "same_direction_rule": "run 2 point estimates of g2-g3 > 0 in both S conditions"
+ },
+ "H2": {
+  "run1": {
+   "rule": "every S, D and H condition: Holm 95% lower bound of g2-g3 > -1.0 ms (Holm step-down rejection); categories per condition: '비열등 확인' if that holds, otherwise '열등 확인' if a separate Holm step-down over the same family for H0: g2-g3 >= 0 rejects (its Holm upper bound < 0), else '판정불능(검정력 부족)'",
+   "family_size": 18,
+   "tests": [
+    {
+     "cond": "S_bigcert",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 28.009256,
+     "se": 1.4773444655259818,
+     "df": 5.59862849044291,
+     "lo95": 24.33056450085965,
+     "hi95": 31.68794749914035,
+     "q": 2.229285369712567e-06,
+     "holm_rank": 9,
+     "holm_m": 18,
+     "holm_level": 0.005,
+     "p_holm": 2.229285369712567e-05,
+     "reject": true,
+     "lb_holm": 21.401362346517015,
+     "ub_holm": 35.32626266631927,
+     "inferior_holm_rank": 3,
+     "inferior_holm_level": 0.003125,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "S_rtt200",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 12.382439999999997,
+     "se": 0.5649132412135695,
+     "df": 6.753255038315312,
+     "lo95": 11.036674487473816,
+     "hi95": 13.728205512526179,
+     "q": 9.416078779498341e-08,
+     "holm_rank": 6,
+     "holm_m": 18,
+     "holm_level": 0.0038461538461538464,
+     "p_holm": 1.2240902413347844e-06,
+     "reject": true,
+     "lb_holm": 9.949664344271596,
+     "ub_holm": 14.883385434325632,
+     "inferior_holm_rank": 4,
+     "inferior_holm_level": 0.0033333333333333335,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p17_mbps2",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 1.9774982222222222,
+     "se": 0.28025812287868046,
+     "df": 7.110662899081023,
+     "lo95": 1.3168781093804287,
+     "hi95": 2.6381183350640156,
+     "q": 1.2821359513515276e-05,
+     "holm_rank": 10,
+     "holm_m": 18,
+     "holm_level": 0.005555555555555556,
+     "p_holm": 0.00011539223562163749,
+     "reject": true,
+     "lb_holm": 0.8781925907487851,
+     "ub_holm": 3.17410719596878,
+     "inferior_holm_rank": 5,
+     "inferior_holm_level": 0.0035714285714285718,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p17_unlimited",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 1.7044284444444437,
+     "se": 0.22178528281695709,
+     "df": 4.435590052392181,
+     "lo95": 1.111784701944353,
+     "hi95": 2.2970721869445345,
+     "q": 0.0001404036842665144,
+     "holm_rank": 14,
+     "holm_m": 18,
+     "holm_level": 0.01,
+     "p_holm": 0.000702018421332572,
+     "reject": true,
+     "lb_holm": 0.7486417659066975,
+     "ub_holm": 2.9302418847791043,
+     "inferior_holm_rank": 6,
+     "inferior_holm_level": 0.0038461538461538464,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p11_2955_l0",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": -0.060045624999999346,
+     "se": 0.008750746002424994,
+     "df": 9.0,
+     "lo95": -0.07984118774920969,
+     "hi95": -0.040250062250789004,
+     "q": 2.6664302845456396e-15,
+     "holm_rank": 1,
+     "holm_m": 18,
+     "holm_level": 0.002777777777777778,
+     "p_holm": 4.799574512182151e-14,
+     "reject": true,
+     "lb_holm": -0.09570695079017487,
+     "ub_holm": -0.024384299209823823,
+     "inferior_holm_rank": 1,
+     "inferior_holm_level": 0.002777777777777778,
+     "inferior_reject": true,
+     "holm_ub_below_0": true,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p11_2955_l2",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 0.052336874999999596,
+     "se": 0.04380565733982257,
+     "df": 9.0,
+     "lo95": -0.046758406522348174,
+     "hi95": 0.15143215652234737,
+     "q": 1.7937127300692077e-09,
+     "holm_rank": 4,
+     "holm_m": 18,
+     "holm_level": 0.0033333333333333335,
+     "p_holm": 2.6905690951038114e-08,
+     "reject": true,
+     "lb_holm": -0.12088028290962471,
+     "ub_holm": 0.21914349334137012,
+     "inferior_holm_rank": 7,
+     "inferior_holm_level": 0.004166666666666667,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p11_2955_l5",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 0.1654818750000004,
+     "se": 0.22734865397049547,
+     "df": 9.0,
+     "lo95": -0.3488165110318054,
+     "hi95": 0.6797802610318062,
+     "q": 0.0006225810951216087,
+     "holm_rank": 17,
+     "holm_m": 18,
+     "holm_level": 0.025,
+     "p_holm": 0.001410170318700441,
+     "reject": true,
+     "lb_holm": -0.44495172691982304,
+     "ub_holm": 1.0183382146611866,
+     "inferior_holm_rank": 8,
+     "inferior_holm_level": 0.004545454545454546,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p11_9000_l0",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 0.38713187500000146,
+     "se": 0.04417620827996483,
+     "df": 9.0,
+     "lo95": 0.2871983490142294,
+     "hi95": 0.4870654009857735,
+     "q": 1.6533389240253924e-10,
+     "holm_rank": 2,
+     "holm_m": 18,
+     "holm_level": 0.0029411764705882353,
+     "p_holm": 2.810676170843167e-09,
+     "reject": true,
+     "lb_holm": 0.20878592101170332,
+     "ub_holm": 0.5501271693251738,
+     "inferior_holm_rank": 9,
+     "inferior_holm_level": 0.005,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p11_9000_l2",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 0.37057875000000207,
+     "se": 0.04689298067363958,
+     "df": 9.0,
+     "lo95": 0.2644994578841872,
+     "hi95": 0.4766580421158169,
+     "q": 3.1338932575447933e-10,
+     "holm_rank": 3,
+     "holm_m": 18,
+     "holm_level": 0.003125,
+     "p_holm": 5.014229212071669e-09,
+     "reject": true,
+     "lb_holm": 0.18315208118074935,
+     "ub_holm": 0.5404189468080334,
+     "inferior_holm_rank": 10,
+     "inferior_holm_level": 0.005555555555555556,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p11_9000_l5",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 0.3032881249999996,
+     "se": 0.09695044035006334,
+     "df": 9.0,
+     "lo95": 0.08397099192569826,
+     "hi95": 0.5226052580743009,
+     "q": 2.9112144297768526e-07,
+     "holm_rank": 8,
+     "holm_m": 18,
+     "holm_level": 0.004545454545454546,
+     "p_holm": 3.2023358727545377e-06,
+     "reject": true,
+     "lb_holm": -0.0604034836436379,
+     "ub_holm": 0.6471236855938894,
+     "inferior_holm_rank": 11,
+     "inferior_holm_level": 0.00625,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p15_4032_l0",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": -0.01279812499999906,
+     "se": 0.06483413082635373,
+     "df": 9.0,
+     "lo95": -0.1594631184426079,
+     "hi95": 0.1338668684426098,
+     "q": 9.903074166152786e-08,
+     "holm_rank": 7,
+     "holm_m": 18,
+     "holm_level": 0.004166666666666667,
+     "p_holm": 1.2240902413347844e-06,
+     "reject": true,
+     "lb_holm": -0.25967861425622707,
+     "ub_holm": 0.24894694917994797,
+     "inferior_holm_rank": 2,
+     "inferior_holm_level": 0.0029411764705882353,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p15_4032_l2",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 0.34331937499999937,
+     "se": 0.19124675343887887,
+     "df": 9.0,
+     "lo95": -0.08931083815359447,
+     "hi95": 0.7759495881535932,
+     "q": 6.159497863817803e-05,
+     "holm_rank": 13,
+     "holm_m": 18,
+     "holm_level": 0.008333333333333333,
+     "p_holm": 0.0003695698718290682,
+     "reject": true,
+     "lb_holm": -0.30007360936195965,
+     "ub_holm": 1.0053374352081914,
+     "inferior_holm_rank": 12,
+     "inferior_holm_level": 0.0071428571428571435,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p15_4032_l5",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 0.5128106250000009,
+     "se": 0.1989610888990021,
+     "df": 9.0,
+     "lo95": 0.0627293726290638,
+     "hi95": 0.9628918773709378,
+     "q": 3.314424400064402e-05,
+     "holm_rank": 12,
+     "holm_m": 18,
+     "holm_level": 0.0071428571428571435,
+     "p_holm": 0.0002320097080045081,
+     "reject": true,
+     "lb_holm": -0.17591131020358153,
+     "ub_holm": 1.1821562031958952,
+     "inferior_holm_rank": 13,
+     "inferior_holm_level": 0.008333333333333333,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "D_p18_burst3",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 16.782504374999995,
+     "se": 3.3316557763293653,
+     "df": 9.0,
+     "lo95": 9.245775396599695,
+     "hi95": 24.319233353400293,
+     "q": 0.000470056772900147,
+     "holm_rank": 16,
+     "holm_m": 18,
+     "holm_level": 0.016666666666666666,
+     "p_holm": 0.001410170318700441,
+     "reject": true,
+     "lb_holm": 7.009678232121622,
+     "ub_holm": 27.609837729268122,
+     "inferior_holm_rank": 14,
+     "inferior_holm_level": 0.01,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "H_h_c6000_r120_u10",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 19.74155999999999,
+     "se": 7.7476039290855825,
+     "df": 2.937027096111578,
+     "lo95": -5.216560990502678,
+     "hi95": 44.69968099050266,
+     "q": 0.07695997854949826,
+     "holm_rank": 18,
+     "holm_m": 18,
+     "holm_level": 0.05,
+     "p_holm": 0.07695997854949826,
+     "reject": false,
+     "lb_holm": -5.216560990502678,
+     "ub_holm": 62.35897213946987,
+     "inferior_holm_rank": 15,
+     "inferior_holm_level": 0.0125,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "판정불능(검정력 부족)"
+    },
+    {
+     "cond": "H_h_c8000_r120_u10",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 5.5478383333333285,
+     "se": 0.2946023606218267,
+     "df": 3.0610292174366855,
+     "lo95": 4.620768688480645,
+     "hi95": 6.474907978186012,
+     "q": 0.0001744428035839859,
+     "holm_rank": 15,
+     "holm_m": 18,
+     "holm_level": 0.0125,
+     "p_holm": 0.000702018421332572,
+     "reject": true,
+     "lb_holm": 3.9884034641008435,
+     "ub_holm": 6.954680341680296,
+     "inferior_holm_rank": 16,
+     "inferior_holm_level": 0.016666666666666666,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "H_h_c12000_r120_u5",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 118.90557555555554,
+     "se": 0.7185473318157779,
+     "df": 3.889108234202193,
+     "lo95": 116.88793272814061,
+     "hi95": 120.92321838297048,
+     "q": 1.2111281247112602e-08,
+     "holm_rank": 5,
+     "holm_m": 18,
+     "holm_level": 0.0035714285714285718,
+     "p_holm": 1.695579374595764e-07,
+     "reject": true,
+     "lb_holm": 114.38120211846056,
+     "ub_holm": 121.4542948587388,
+     "inferior_holm_rank": 17,
+     "inferior_holm_level": 0.025,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "H_h_c14000_r120_u5",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 117.01471055555555,
+     "se": 0.7849149747609615,
+     "df": 2.1718383137674375,
+     "lo95": 113.88106715973231,
+     "hi95": 120.1483539513788,
+     "q": 2.100855366201736e-05,
+     "holm_rank": 11,
+     "holm_m": 18,
+     "holm_level": 0.00625,
+     "p_holm": 0.00016806842929613887,
+     "reject": true,
+     "lb_holm": 108.50255910803062,
+     "ub_holm": 120.1483539513788,
+     "inferior_holm_rank": 18,
+     "inferior_holm_level": 0.05,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    }
+   ],
+   "category_counts": {
+    "비열등 확인": 17,
+    "열등 확인": 0,
+    "판정불능(검정력 부족)": 1
+   },
+   "by_category": {
+    "비열등 확인": [
+     "S_bigcert",
+     "S_rtt200",
+     "D_p17_mbps2",
+     "D_p17_unlimited",
+     "D_p11_2955_l0",
+     "D_p11_2955_l2",
+     "D_p11_2955_l5",
+     "D_p11_9000_l0",
+     "D_p11_9000_l2",
+     "D_p11_9000_l5",
+     "D_p15_4032_l0",
+     "D_p15_4032_l2",
+     "D_p15_4032_l5",
+     "D_p18_burst3",
+     "H_h_c8000_r120_u10",
+     "H_h_c12000_r120_u5",
+     "H_h_c14000_r120_u5"
+    ],
+    "열등 확인": [],
+    "판정불능(검정력 부족)": [
+     "H_h_c6000_r120_u10"
+    ]
+   },
+   "failed": [
+    "H_h_c6000_r120_u10"
+   ],
+   "reading": "'판정불능(검정력 부족)' means the interval was too wide to decide; it is not evidence that g3 is slower",
+   "pass": false
+  },
+  "run2": {
+   "rule": "every S, D and H condition: Holm 95% lower bound of g2-g3 > -1.0 ms (Holm step-down rejection); categories per condition: '비열등 확인' if that holds, otherwise '열등 확인' if a separate Holm step-down over the same family for H0: g2-g3 >= 0 rejects (its Holm upper bound < 0), else '판정불능(검정력 부족)'",
+   "family_size": 2,
+   "tests": [
+    {
+     "cond": "S_bigcert",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 28.919530222222228,
+     "se": 1.402783814008855,
+     "df": 6.772446389184286,
+     "lo95": 25.579745807908118,
+     "hi95": 32.25931463653634,
+     "q": 1.8369055620423302e-07,
+     "holm_rank": 1,
+     "holm_m": 2,
+     "holm_level": 0.025,
+     "p_holm": 3.6738111240846603e-07,
+     "reject": true,
+     "lb_holm": 24.89887104419367,
+     "ub_holm": 32.94018940025079,
+     "inferior_holm_rank": 1,
+     "inferior_holm_level": 0.025,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    },
+    {
+     "cond": "S_rtt200",
+     "contrast": "g2-g3",
+     "c": -1.0,
+     "est": 10.33077577777778,
+     "se": 1.1474885873532044,
+     "df": 4.717776348691885,
+     "lo95": 7.3271900831773635,
+     "hi95": 13.334361472378195,
+     "q": 0.000250251541233083,
+     "holm_rank": 2,
+     "holm_m": 2,
+     "holm_level": 0.05,
+     "p_holm": 0.000250251541233083,
+     "reject": true,
+     "lb_holm": 7.3271900831773635,
+     "ub_holm": 13.334361472378195,
+     "inferior_holm_rank": 2,
+     "inferior_holm_level": 0.05,
+     "inferior_reject": false,
+     "holm_ub_below_0": false,
+     "category": "비열등 확인"
+    }
+   ],
+   "category_counts": {
+    "비열등 확인": 2,
+    "열등 확인": 0,
+    "판정불능(검정력 부족)": 0
+   },
+   "by_category": {
+    "비열등 확인": [
+     "S_bigcert",
+     "S_rtt200"
+    ],
+    "열등 확인": [],
+    "판정불능(검정력 부족)": []
+   },
+   "failed": [],
+   "reading": "'판정불능(검정력 부족)' means the interval was too wide to decide; it is not evidence that g3 is slower",
+   "pass": true
+  }
+ },
+ "H3": {
+  "rule": "H cells with sealed delta_hat >= 2 ms: Holm (within those cells) 95% lower bound of g2-g3 > 0 and observed/predicted in [0.5, 2.0]; other H cells: H2 only",
+  "evaluable": true,
+  "missing_predictions": [],
+  "target_count": 4,
+  "status": "evaluated",
+  "strong": [
+   {
+    "cond": "H_h_c6000_r120_u10",
+    "contrast": "g2-g3",
+    "c": 0.0,
+    "est": 19.74155999999999,
+    "se": 7.7476039290855825,
+    "df": 2.937027096111578,
+    "lo95": -5.216560990502678,
+    "hi95": 44.69968099050266,
+    "delta_hat_ms": 4.069709092835225,
+    "q": 0.08587078041338833,
+    "holm_rank": 4,
+    "holm_m": 4,
+    "holm_level": 0.05,
+    "p_holm": 0.08587078041338833,
+    "reject": false,
+    "lb_holm": -5.216560990502678,
+    "ratio": 4.8508528618802895,
+    "ratio_ok": false,
+    "pass": false
+   },
+   {
+    "cond": "H_h_c8000_r120_u10",
+    "contrast": "g2-g3",
+    "c": 0.0,
+    "est": 5.5478383333333285,
+    "se": 0.2946023606218267,
+    "df": 3.0610292174366855,
+    "lo95": 4.620768688480645,
+    "hi95": 6.474907978186012,
+    "delta_hat_ms": 4.069709092835225,
+    "q": 0.00028885391089062735,
+    "holm_rank": 3,
+    "holm_m": 4,
+    "holm_level": 0.025,
+    "p_holm": 0.0005777078217812547,
+    "reject": true,
+    "lb_holm": 4.335396429427284,
+    "ratio": 1.3632026778278499,
+    "ratio_ok": true,
+    "pass": true
+   },
+   {
+    "cond": "H_h_c12000_r120_u5",
+    "contrast": "g2-g3",
+    "c": 0.0,
+    "est": 118.90557555555554,
+    "se": 0.7185473318157779,
+    "df": 3.889108234202193,
+    "lo95": 116.88793272814061,
+    "hi95": 120.92321838297048,
+    "delta_hat_ms": 114.74629988998952,
+    "q": 1.2512201774205046e-08,
+    "holm_rank": 1,
+    "holm_m": 4,
+    "holm_level": 0.0125,
+    "p_holm": 5.004880709682018e-08,
+    "reject": true,
+    "lb_holm": 115.74796950487638,
+    "ratio": 1.0362475798309283,
+    "ratio_ok": true,
+    "pass": true
+   },
+   {
+    "cond": "H_h_c14000_r120_u5",
+    "contrast": "g2-g3",
+    "c": 0.0,
+    "est": 117.01471055555555,
+    "se": 0.7849149747609615,
+    "df": 2.1718383137674375,
+    "lo95": 113.88106715973231,
+    "hi95": 120.1483539513788,
+    "delta_hat_ms": 114.74629988998952,
+    "q": 2.140040482037238e-05,
+    "holm_rank": 2,
+    "holm_m": 4,
+    "holm_level": 0.016666666666666666,
+    "p_holm": 6.420121446111714e-05,
+    "reject": true,
+    "lb_holm": 111.65169332468717,
+    "ratio": 1.0197689221154915,
+    "ratio_ok": true,
+    "pass": true
+   }
+  ],
+  "weak": [],
+  "pass": false
+ },
+ "H4": {
+  "rule": "exploratory: write 'adaptation contributed' for an S condition only if the Holm (m=2) 95% lower bound of (g3-fixed minimax) - g3 > 0",
+  "tests": [
+   {
+    "cond": "S_bigcert",
+    "contrast": "fix-g3",
+    "c": 0.0,
+    "est": -3.800909333333337,
+    "se": 1.913266151362246,
+    "df": 4.806311549305771,
+    "lo95": -8.779332024491739,
+    "hi95": 1.177513357825065,
+    "q": 1.0,
+    "holm_rank": 2,
+    "holm_m": 2,
+    "holm_level": 0.05,
+    "p_holm": 1.0,
+    "reject": false,
+    "lb_holm": -8.779332024491739,
+    "adaptation_contributed": false
+   },
+   {
+    "cond": "S_rtt200",
+    "contrast": "fix-g3",
+    "c": 0.0,
+    "est": 0.7273017777777738,
+    "se": 0.7371503183342085,
+    "df": 4.066667558924375,
+    "lo95": -1.3061909608581508,
+    "hi95": 2.7607945164136987,
+    "q": 0.37882239596341016,
+    "holm_rank": 1,
+    "holm_m": 2,
+    "holm_level": 0.025,
+    "p_holm": 0.7576447919268203,
+    "reject": false,
+    "lb_holm": -1.827828447983297,
+    "adaptation_contributed": false
+   }
+  ]
+ },
+ "H5": {
+  "rule": "report only: cold first-visit mean HCT and bytes (cache cleared every 8 connections)",
+  "conds": [
+   {
+    "cond": "C_bigcert_l2",
+    "arms": {
+     "g2auto": {
+      "first_visit_mean_imputed_ms": 126.84707,
+      "first_visit_ff_uplink_bytes_mean": 2560.0,
+      "mean_planned_imputed_ms": 128.26701125,
+      "ff_uplink_bytes_mean": 5517.22
+     },
+     "g3auto": {
+      "first_visit_mean_imputed_ms": 121.18267,
+      "first_visit_ff_uplink_bytes_mean": 2560.0,
+      "mean_planned_imputed_ms": 86.90693499999999,
+      "ff_uplink_bytes_mean": 7222.245
+     }
+    },
+    "g2_minus_g3_all_visits": {
+     "est": 41.36007625,
+     "lo95": 40.10446299099104,
+     "hi95": 42.61568950900896
+    }
+   },
+   {
+    "cond": "C_2955_l0",
+    "arms": {
+     "g2auto": {
+      "first_visit_mean_imputed_ms": 52.1146,
+      "first_visit_ff_uplink_bytes_mean": 2560.0,
+      "mean_planned_imputed_ms": 51.806305,
+      "ff_uplink_bytes_mean": 5556.91375
+     },
+     "g3auto": {
+      "first_visit_mean_imputed_ms": 52.093729999999994,
+      "first_visit_ff_uplink_bytes_mean": 2560.0,
+      "mean_planned_imputed_ms": 51.84935875,
+      "ff_uplink_bytes_mean": 7222.05
+     }
+    },
+    "g2_minus_g3_all_visits": {
+     "est": -0.04305375000000012,
+     "lo95": -0.07094622679983148,
+     "hi95": -0.015161273200168753
+    }
+   }
+  ]
+ },
+ "regression": {
+  "rule": "report only; excluded from H2 and H3 families; g2_minus_g3 is the unadjusted 95% interval, not a test; stage2_reference is the same cell in stage 2 (development data, shown side by side only)",
+  "conds": [
+   {
+    "cond": "R_c6000_r80_u10",
+    "regression_cell": "h_c6000_r80_u10",
+    "g2_minus_g3": {
+     "est": 10.559836111111114,
+     "se": 5.985189754756792,
+     "df": 2.3540260065332874,
+     "lo95": -11.814879469169394,
+     "hi95": 32.93455169139162
+    },
+    "arms": {
+     "g2auto": {
+      "mean_planned_imputed_ms": 96.92672777777777,
+      "mean_ok_ms": 96.92672777777777,
+      "one_rtt_rate": 0.8561111111111112,
+      "action_hist": {},
+      "by_loss": {
+       "1.0": {
+        "planned": 900,
+        "returned": 900,
+        "mean_planned_imputed_ms": 97.44101777777777,
+        "one_rtt_rate": 0.8444444444444444,
+        "m_ips_hist": {
+         "m0/ips1280": 2,
+         "m0/ips1281": 13,
+         "m1/ips1281": 118,
+         "m3/ips1281": 767
+        },
+        "action_hist": {},
+        "post_mean_p_median": null,
+        "j3_mean_ms": null
+       },
+       "8.0": {
+        "planned": 900,
+        "returned": 900,
+        "mean_planned_imputed_ms": 96.41243777777778,
+        "one_rtt_rate": 0.8677777777777778,
+        "m_ips_hist": {
+         "m0/ips1281": 9,
+         "m1/ips1281": 34,
+         "m3/ips1281": 857
+        },
+        "action_hist": {},
+        "post_mean_p_median": null,
+        "j3_mean_ms": null
+       }
+      },
+      "n_requested": 1800,
+      "n_returned": 1800,
+      "failed": 0,
+      "missing": 0
+     },
+     "g3auto": {
+      "mean_planned_imputed_ms": 86.36689166666666,
+      "mean_ok_ms": 86.36689166666666,
+      "one_rtt_rate": 0.9944444444444445,
+      "action_hist": {
+       "0,0,0": 1,
+       "0,1,3": 7,
+       "0,2,2": 1792
+      },
+      "by_loss": {
+       "1.0": {
+        "planned": 900,
+        "returned": 900,
+        "mean_planned_imputed_ms": 85.89451555555556,
+        "one_rtt_rate": 0.9988888888888889,
+        "m_ips_hist": {
+         "m0/ips1280": 1,
+         "m4/ips1280": 899
+        },
+        "action_hist": {
+         "0,0,0": 1,
+         "0,2,2": 899
+        },
+        "post_mean_p_median": 0.019389717292952212,
+        "j3_mean_ms": 86.43824488045179,
+        "monitoring": {
+         "by_action": {
+          "0,0,0": {
+           "n_rows": 1,
+           "alarm_observed_n": 1,
+           "alarm_count": 0,
+           "reeval_observed_n": 1,
+           "reeval_count": 0,
+           "guard_resid_ms": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "min": null,
+            "max": null
+           },
+           "hct_resid_pre_ms": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "min": null,
+            "max": null
+           }
+          },
+          "0,2,2": {
+           "n_rows": 899,
+           "alarm_observed_n": 899,
+           "alarm_count": 0,
+           "reeval_observed_n": 899,
+           "reeval_count": 0,
+           "guard_resid_ms": {
+            "n": 899,
+            "mean": -0.6324006090391124,
+            "median": -0.4562970263696542,
+            "min": -6.981245115577522,
+            "max": 2.0544292972878253
+           },
+           "hct_resid_pre_ms": {
+            "n": 899,
+            "mean": -0.6324006090391124,
+            "median": -0.4562970263696542,
+            "min": -6.981245115577522,
+            "max": 2.0544292972878253
+           }
+          }
+         },
+         "hct_resid_pre_ms_all": {
+          "n": 899,
+          "mean": -0.6324006090391124,
+          "median": -0.4562970263696542,
+          "min": -6.981245115577522,
+          "max": 2.0544292972878253
+         },
+         "hct_residual_rule": "successful finite HCT minus j3_pred_pre_ms; no imputation",
+         "pi1_residual_rule": "pi1_pred_pre minus observed one_rtt; returned failures are 0",
+         "note": "descriptive selected-action summaries; not causal action effects"
+        },
+        "guard": {
+         "rows": 900,
+         "policy_version": {
+          "v3.1": 900
+         },
+         "rows_with_all_guard_fields": 900,
+         "alarm_observed_n": 900,
+         "alarm_count": 0,
+         "alarm_share": 0.0,
+         "first_alarm_row": null,
+         "alarmed_chosen_actions": {},
+         "reeval_observed_n": 900,
+         "reeval_count": 0,
+         "reeval_share": 0.0,
+         "reeval_actions": {},
+         "reeval_why3_mismatch_rows": 0,
+         "guard_resid_ms": {
+          "n": 899,
+          "mean": -0.6324006090391124,
+          "median": -0.4562970263696542,
+          "min": -6.981245115577522,
+          "max": 2.0544292972878253
+         },
+         "guard_resid_ms_ok": {
+          "n": 899,
+          "mean": -0.6324006090391124,
+          "median": -0.4562970263696542,
+          "min": -6.981245115577522,
+          "max": 2.0544292972878253
+         },
+         "guard_resid_ms_failed": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "min": null,
+          "max": null
+         },
+         "guard_resid_null_rows": 1,
+         "guard_resid_mismatch_ok_rows": 0,
+         "guard_resid_missing_ok_rows": 0,
+         "guard_common_ms": {
+          "n": 900,
+          "mean": -0.814443562725987,
+          "median": -0.419702893932115,
+          "min": -6.822745115577526,
+          "max": 0,
+          "last": -0.42671183329287743
+         },
+         "guard_alarmed_actions": {
+          "n": 900,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0,
+          "max": 0,
+          "last": 0,
+          "rows_any": 0
+         },
+         "rules": {
+          "j3_pred_pre_ms": "posterior-expected J3 of the chosen action at decision time, without the guard penalty (v3.1 spec 4)",
+          "guard_alarm": "the chosen action was alarmed at decision time (v3.1 spec 4)",
+          "reeval": "the decision was a 16th-condition re-evaluation that chose the nominally 1-RTT candidate with the lowest expected J (v3.1 spec 3, why3 = reeval)",
+          "guard_resid_ms": "HCT minus j3_pred_pre_ms as the policy recorded it; null for failed connections (v3.1 learning has no HCT imputation) and for decisions without j3_pred_pre_ms; null rows are not counted",
+          "guard_common_ms": "median of the destination's common-delay window at decision time (after the 64-decision refresh, before this connection's observation)",
+          "guard_alarmed_actions": "number of alarmed actions for the destination at decision time (after the refresh, before this connection's observation)",
+          "guard_resid_missing_ok_rows": "successful rows with a finite j3_pred_pre_ms but no finite guard_resid_ms; should be 0",
+          "note": "descriptive v3.1 guard report; not part of any H family"
+         }
+        }
+       },
+       "8.0": {
+        "planned": 900,
+        "returned": 900,
+        "mean_planned_imputed_ms": 86.83926777777778,
+        "one_rtt_rate": 0.99,
+        "m_ips_hist": {
+         "m4/ips1280": 900
+        },
+        "action_hist": {
+         "0,1,3": 7,
+         "0,2,2": 893
+        },
+        "post_mean_p_median": 0.018813738936643065,
+        "j3_mean_ms": 86.17956052605132,
+        "monitoring": {
+         "by_action": {
+          "0,1,3": {
+           "n_rows": 7,
+           "alarm_observed_n": 7,
+           "alarm_count": 0,
+           "reeval_observed_n": 7,
+           "reeval_count": 0,
+           "guard_resid_ms": {
+            "n": 7,
+            "mean": 10.23977052660305,
+            "median": -1.2037071783062885,
+            "min": -1.5810366002860405,
+            "max": 79.6002242783935
+           },
+           "hct_resid_pre_ms": {
+            "n": 7,
+            "mean": 10.23977052660305,
+            "median": -1.2037071783062885,
+            "min": -1.5810366002860405,
+            "max": 79.6002242783935
+           }
+          },
+          "0,2,2": {
+           "n_rows": 893,
+           "alarm_observed_n": 893,
+           "alarm_count": 0,
+           "reeval_observed_n": 893,
+           "reeval_count": 0,
+           "guard_resid_ms": {
+            "n": 893,
+            "mean": 0.5846115709603384,
+            "median": -0.3828353568698333,
+            "min": -2.128119043091786,
+            "max": 252.43776960612132
+           },
+           "hct_resid_pre_ms": {
+            "n": 893,
+            "mean": 0.5846115709603384,
+            "median": -0.3828353568698333,
+            "min": -2.128119043091786,
+            "max": 252.43776960612132
+           }
+          }
+         },
+         "hct_resid_pre_ms_all": {
+          "n": 900,
+          "mean": 0.6597072517264484,
+          "median": -0.3882638803532572,
+          "min": -2.128119043091786,
+          "max": 252.43776960612132
+         },
+         "hct_residual_rule": "successful finite HCT minus j3_pred_pre_ms; no imputation",
+         "pi1_residual_rule": "pi1_pred_pre minus observed one_rtt; returned failures are 0",
+         "note": "descriptive selected-action summaries; not causal action effects"
+        },
+        "guard": {
+         "rows": 900,
+         "policy_version": {
+          "v3.1": 900
+         },
+         "rows_with_all_guard_fields": 900,
+         "alarm_observed_n": 900,
+         "alarm_count": 0,
+         "alarm_share": 0.0,
+         "first_alarm_row": null,
+         "alarmed_chosen_actions": {},
+         "reeval_observed_n": 900,
+         "reeval_count": 0,
+         "reeval_share": 0.0,
+         "reeval_actions": {},
+         "reeval_why3_mismatch_rows": 0,
+         "guard_resid_ms": {
+          "n": 900,
+          "mean": 0.6597072517264484,
+          "median": -0.3882638803532572,
+          "min": -2.128119043091786,
+          "max": 252.43776960612132
+         },
+         "guard_resid_ms_ok": {
+          "n": 900,
+          "mean": 0.6597072517264484,
+          "median": -0.3882638803532572,
+          "min": -2.128119043091786,
+          "max": 252.43776960612132
+         },
+         "guard_resid_ms_failed": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "min": null,
+          "max": null
+         },
+         "guard_resid_null_rows": 0,
+         "guard_resid_mismatch_ok_rows": 0,
+         "guard_resid_missing_ok_rows": 0,
+         "guard_common_ms": {
+          "n": 900,
+          "mean": -0.4000516159739133,
+          "median": -0.41776988724497244,
+          "min": -0.6832109869139416,
+          "max": 0.026482492522497125,
+          "last": -0.330559320370277
+         },
+         "guard_alarmed_actions": {
+          "n": 900,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0,
+          "max": 0,
+          "last": 0,
+          "rows_any": 0
+         },
+         "rules": {
+          "j3_pred_pre_ms": "posterior-expected J3 of the chosen action at decision time, without the guard penalty (v3.1 spec 4)",
+          "guard_alarm": "the chosen action was alarmed at decision time (v3.1 spec 4)",
+          "reeval": "the decision was a 16th-condition re-evaluation that chose the nominally 1-RTT candidate with the lowest expected J (v3.1 spec 3, why3 = reeval)",
+          "guard_resid_ms": "HCT minus j3_pred_pre_ms as the policy recorded it; null for failed connections (v3.1 learning has no HCT imputation) and for decisions without j3_pred_pre_ms; null rows are not counted",
+          "guard_common_ms": "median of the destination's common-delay window at decision time (after the 64-decision refresh, before this connection's observation)",
+          "guard_alarmed_actions": "number of alarmed actions for the destination at decision time (after the refresh, before this connection's observation)",
+          "guard_resid_missing_ok_rows": "successful rows with a finite j3_pred_pre_ms but no finite guard_resid_ms; should be 0",
+          "note": "descriptive v3.1 guard report; not part of any H family"
+         }
+        }
+       }
+      },
+      "monitoring": {
+       "by_action": {
+        "0,0,0": {
+         "n_rows": 1,
+         "alarm_observed_n": 1,
+         "alarm_count": 0,
+         "reeval_observed_n": 1,
+         "reeval_count": 0,
+         "guard_resid_ms": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "min": null,
+          "max": null
+         },
+         "hct_resid_pre_ms": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "min": null,
+          "max": null
+         }
+        },
+        "0,1,3": {
+         "n_rows": 7,
+         "alarm_observed_n": 7,
+         "alarm_count": 0,
+         "reeval_observed_n": 7,
+         "reeval_count": 0,
+         "guard_resid_ms": {
+          "n": 7,
+          "mean": 10.23977052660305,
+          "median": -1.2037071783062885,
+          "min": -1.5810366002860405,
+          "max": 79.6002242783935
+         },
+         "hct_resid_pre_ms": {
+          "n": 7,
+          "mean": 10.23977052660305,
+          "median": -1.2037071783062885,
+          "min": -1.5810366002860405,
+          "max": 79.6002242783935
+         }
+        },
+        "0,2,2": {
+         "n_rows": 1792,
+         "alarm_observed_n": 1792,
+         "alarm_count": 0,
+         "reeval_observed_n": 1792,
+         "reeval_count": 0,
+         "guard_resid_ms": {
+          "n": 1792,
+          "mean": -0.025931927822868246,
+          "median": -0.4198822150998396,
+          "min": -6.981245115577522,
+          "max": 252.43776960612132
+         },
+         "hct_resid_pre_ms": {
+          "n": 1792,
+          "mean": -0.025931927822868246,
+          "median": -0.4198822150998396,
+          "min": -6.981245115577522,
+          "max": 252.43776960612132
+         }
+        }
+       },
+       "hct_resid_pre_ms_all": {
+        "n": 1799,
+        "mean": 0.014012439704080846,
+        "median": -0.42054959965419414,
+        "min": -6.981245115577522,
+        "max": 252.43776960612132
+       },
+       "hct_residual_rule": "successful finite HCT minus j3_pred_pre_ms; no imputation",
+       "pi1_residual_rule": "pi1_pred_pre minus observed one_rtt; returned failures are 0",
+       "note": "descriptive selected-action summaries; not causal action effects"
+      },
+      "guard": {
+       "rows": 1800,
+       "policy_version": {
+        "v3.1": 1800
+       },
+       "rows_with_all_guard_fields": 1800,
+       "alarm_observed_n": 1800,
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "first_alarm_row": null,
+       "alarmed_chosen_actions": {},
+       "reeval_observed_n": 1800,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "reeval_actions": {},
+       "reeval_why3_mismatch_rows": 0,
+       "guard_resid_ms": {
+        "n": 1799,
+        "mean": 0.014012439704080846,
+        "median": -0.42054959965419414,
+        "min": -6.981245115577522,
+        "max": 252.43776960612132
+       },
+       "guard_resid_ms_ok": {
+        "n": 1799,
+        "mean": 0.014012439704080846,
+        "median": -0.42054959965419414,
+        "min": -6.981245115577522,
+        "max": 252.43776960612132
+       },
+       "guard_resid_ms_failed": {
+        "n": 0,
+        "mean": null,
+        "median": null,
+        "min": null,
+        "max": null
+       },
+       "guard_resid_null_rows": 1,
+       "guard_resid_mismatch_ok_rows": 0,
+       "guard_resid_missing_ok_rows": 0,
+       "guard_common_ms": {
+        "n": 1800,
+        "mean": -0.6072475893499502,
+        "median": -0.41776988724497244,
+        "min": -6.822745115577526,
+        "max": 0.026482492522497125,
+        "last": -0.330559320370277
+       },
+       "guard_alarmed_actions": {
+        "n": 1800,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0,
+        "max": 0,
+        "last": 0,
+        "rows_any": 0
+       },
+       "rules": {
+        "j3_pred_pre_ms": "posterior-expected J3 of the chosen action at decision time, without the guard penalty (v3.1 spec 4)",
+        "guard_alarm": "the chosen action was alarmed at decision time (v3.1 spec 4)",
+        "reeval": "the decision was a 16th-condition re-evaluation that chose the nominally 1-RTT candidate with the lowest expected J (v3.1 spec 3, why3 = reeval)",
+        "guard_resid_ms": "HCT minus j3_pred_pre_ms as the policy recorded it; null for failed connections (v3.1 learning has no HCT imputation) and for decisions without j3_pred_pre_ms; null rows are not counted",
+        "guard_common_ms": "median of the destination's common-delay window at decision time (after the 64-decision refresh, before this connection's observation)",
+        "guard_alarmed_actions": "number of alarmed actions for the destination at decision time (after the refresh, before this connection's observation)",
+        "guard_resid_missing_ok_rows": "successful rows with a finite j3_pred_pre_ms but no finite guard_resid_ms; should be 0",
+        "note": "descriptive v3.1 guard report; not part of any H family"
+       }
+      },
+      "n_requested": 1800,
+      "n_returned": 1800,
+      "failed": 0,
+      "missing": 0
+     }
+    },
+    "stage2_reference": {
+     "source": "C:/dev/pq_afec_gen3/experiments/results/p21_gencompare_run1.json, H_h_c6000_r80_u10 (stage-2 sealed run 1, development data for v3.1)",
+     "mean_planned_imputed_ms": {
+      "g2auto": 94.28,
+      "g3auto": 140.14
+     },
+     "one_rtt_rate": {
+      "g2auto": 0.915,
+      "g3auto": 0.342
+     },
+     "g2_minus_g3": {
+      "est": -45.86,
+      "lo95": -58.08,
+      "hi95": -33.64
+     },
+     "g3auto_action_hist": {
+      "0,0,0": 1,
+      "1,0,4": 1799
+     }
+    }
+   }
+  ]
+ },
+ "guard_v31": {
+  "run1": {
+   "rule": "per condition and auto3 arm: v3.1 guard alarms, re-evaluation share, residual summary and alarmed actions, read from the client rows; descriptive, outside every H family",
+   "present": true,
+   "arms": [
+    {
+     "cond": "S_bigcert",
+     "family": "S",
+     "arm": "g3auto",
+     "rows": 4500,
+     "policy_version": {
+      "v3.1": 4500
+     },
+     "rows_with_all_guard_fields": 4500,
+     "alarm_count": 311,
+     "alarm_share": 0.06911111111111111,
+     "first_alarm_row": 587,
+     "alarmed_chosen_actions": {
+      "0,3,1": 311
+     },
+     "guard_alarmed_actions": {
+      "n": 4500,
+      "mean": 0.28444444444444444,
+      "median": 0.0,
+      "min": 0,
+      "max": 2,
+      "last": 0,
+      "rows_any": 1029
+     },
+     "reeval_count": 67,
+     "reeval_share": 0.014888888888888889,
+     "reeval_actions": {
+      "0,3,1": 49,
+      "0,4,0": 18
+     },
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 4499,
+      "mean": 4.12315335583672,
+      "median": -0.10865852447473401,
+      "min": -55.048739645420056,
+      "max": 640.8478164826082
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 4500,
+      "mean": -1.8443134269404877,
+      "median": 0.3120190160778158,
+      "min": -31.999852718587135,
+      "max": 18.154647281412878,
+      "last": 2.5348655604445085
+     },
+     "by_loss": {
+      "15.0": {
+       "alarm_count": 262,
+       "alarm_share": 0.11644444444444445,
+       "reeval_count": 62,
+       "reeval_share": 0.027555555555555555,
+       "guard_resid_ms": {
+        "n": 2250,
+        "mean": 8.099528292827493,
+        "median": 2.208385917200296,
+        "min": -55.048739645420056,
+        "max": 640.8478164826082
+       }
+      },
+      "2.0": {
+       "alarm_count": 49,
+       "alarm_share": 0.021777777777777778,
+       "reeval_count": 5,
+       "reeval_share": 0.0022222222222222222,
+       "guard_resid_ms": {
+        "n": 2249,
+        "mean": 0.14501035529015055,
+        "median": -1.3908115566221966,
+        "min": -46.6309975128772,
+        "max": 194.06014166275378
+       }
+      }
+     }
+    },
+    {
+     "cond": "S_rtt200",
+     "family": "S",
+     "arm": "g3auto",
+     "rows": 4500,
+     "policy_version": {
+      "v3.1": 4500
+     },
+     "rows_with_all_guard_fields": 4500,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 4500,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 4499,
+      "mean": -8.118994137891445,
+      "median": -10.198249029330327,
+      "min": -227.5563038729983,
+      "max": 196.94970895821302
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 4500,
+      "mean": -11.277768603046203,
+      "median": -9.749402629509149,
+      "min": -227.5563038729983,
+      "max": 0,
+      "last": -9.227101869010596
+     },
+     "by_loss": {
+      "15.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 2250,
+        "mean": -6.591453931933886,
+        "median": -11.838900037927317,
+        "min": -37.47145781785983,
+        "max": 196.94970895821302
+       }
+      },
+      "2.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 2249,
+        "mean": -9.647213552477709,
+        "median": -9.260661801182408,
+        "min": -227.5563038729983,
+        "max": 188.78719616169104
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p17_mbps2",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 4500,
+     "policy_version": {
+      "v3.1": 4500
+     },
+     "rows_with_all_guard_fields": 4500,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 4500,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 4499,
+      "mean": -1.0801417083844058,
+      "median": -4.459859363430965,
+      "min": -13.220273642831344,
+      "max": 201.36858152919658
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 4500,
+      "mean": -3.2747413220488313,
+      "median": -4.289758106965728,
+      "min": -12.834188850154689,
+      "max": 0.6983741968535,
+      "last": -0.2695099773286245
+     },
+     "by_loss": {
+      "15.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 2250,
+        "mean": 0.18839292442036826,
+        "median": -4.5681768889800125,
+        "min": -13.220273642831344,
+        "max": 201.36858152919658
+       }
+      },
+      "2.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 2249,
+        "mean": -2.3492403850454737,
+        "median": -4.425016742425001,
+        "min": -12.871188850154681,
+        "max": 51.34485055685688
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p17_unlimited",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 4500,
+     "policy_version": {
+      "v3.1": 4500
+     },
+     "rows_with_all_guard_fields": 4500,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 4500,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 4499,
+      "mean": 1.184762122561024,
+      "median": 0.9807172671389495,
+      "min": -0.42237013305339133,
+      "max": 53.039152281342965
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 4500,
+      "mean": 0.9632026008244258,
+      "median": 0.992096772399659,
+      "min": -0.04538648654925126,
+      "max": 1.1437436434809811,
+      "last": 0.9469362490981901
+     },
+     "by_loss": {
+      "15.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 2250,
+        "mean": 1.349883336758763,
+        "median": 0.9841138615922667,
+        "min": 0.4360065158194004,
+        "max": 53.039152281342965
+       }
+      },
+      "2.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 2249,
+        "mean": 1.019567488525936,
+        "median": 0.9783186818409817,
+        "min": -0.42237013305339133,
+        "max": 3.7549221769346275
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p11_2955_l0",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 1600,
+     "policy_version": {
+      "v3.1": 1600
+     },
+     "rows_with_all_guard_fields": 1600,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1600,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1599,
+      "mean": 0.8599773954773173,
+      "median": 0.8173455700116605,
+      "min": 0.1248555726840479,
+      "max": 2.3359406917541747
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1600,
+      "mean": 0.8016068237355615,
+      "median": 0.8221644514297424,
+      "min": 0,
+      "max": 0.9736232472524655,
+      "last": 0.8023241813915121
+     },
+     "by_loss": {
+      "0.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 1599,
+        "mean": 0.8599773954773173,
+        "median": 0.8173455700116605,
+        "min": 0.1248555726840479,
+        "max": 2.3359406917541747
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p11_2955_l2",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 1600,
+     "policy_version": {
+      "v3.1": 1600
+     },
+     "rows_with_all_guard_fields": 1600,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1600,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1599,
+      "mean": 0.8734902603666033,
+      "median": 0.8390784101134727,
+      "min": 0.23538541332494134,
+      "max": 3.581424948235785
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1600,
+      "mean": 0.8243414049799928,
+      "median": 0.837701758728489,
+      "min": 0,
+      "max": 0.9758576119192632,
+      "last": 0.9139227878785476
+     },
+     "by_loss": {
+      "2.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 1599,
+        "mean": 0.8734902603666033,
+        "median": 0.8390784101134727,
+        "min": 0.23538541332494134,
+        "max": 3.581424948235785
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p11_2955_l5",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 1600,
+     "policy_version": {
+      "v3.1": 1600
+     },
+     "rows_with_all_guard_fields": 1600,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1600,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1599,
+      "mean": 0.8823549966439893,
+      "median": 0.8496657840862838,
+      "min": 0.35989703836270337,
+      "max": 2.151296575345434
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1600,
+      "mean": 0.8339665897287984,
+      "median": 0.855309182467483,
+      "min": 0,
+      "max": 0.964421558073763,
+      "last": 0.8996049906108254
+     },
+     "by_loss": {
+      "5.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 1599,
+        "mean": 0.8823549966439893,
+        "median": 0.8496657840862838,
+        "min": 0.35989703836270337,
+        "max": 2.151296575345434
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p11_9000_l0",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 1600,
+     "policy_version": {
+      "v3.1": 1600
+     },
+     "rows_with_all_guard_fields": 1600,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1600,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1599,
+      "mean": 0.9720232868006383,
+      "median": 0.9468921595917266,
+      "min": -0.3648381359711763,
+      "max": 2.7205841591752176
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1600,
+      "mean": 0.8992829863270251,
+      "median": 0.9477910939033904,
+      "min": -0.3648381359711763,
+      "max": 1.1266581444580481,
+      "last": 1.12109843832733
+     },
+     "by_loss": {
+      "0.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 1599,
+        "mean": 0.9720232868006383,
+        "median": 0.9468921595917266,
+        "min": -0.3648381359711763,
+        "max": 2.7205841591752176
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p11_9000_l2",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 1600,
+     "policy_version": {
+      "v3.1": 1600
+     },
+     "rows_with_all_guard_fields": 1600,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1600,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1599,
+      "mean": 1.0952416785448926,
+      "median": 1.0818038320948489,
+      "min": -0.3162763319624986,
+      "max": 2.899964715192702
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1600,
+      "mean": 1.0159270915799605,
+      "median": 1.1133102947411615,
+      "min": -0.19950444701526848,
+      "max": 1.3650311573238945,
+      "last": 1.254775319624141
+     },
+     "by_loss": {
+      "2.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 1599,
+        "mean": 1.0952416785448926,
+        "median": 1.0818038320948489,
+        "min": -0.3162763319624986,
+        "max": 2.899964715192702
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p11_9000_l5",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 1600,
+     "policy_version": {
+      "v3.1": 1600
+     },
+     "rows_with_all_guard_fields": 1600,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1600,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1599,
+      "mean": 1.0836642374539813,
+      "median": 1.0047548106820585,
+      "min": -0.4720584809255044,
+      "max": 3.9435615976517866
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1600,
+      "mean": 0.9961060295299555,
+      "median": 0.9811456721689709,
+      "min": -0.3050584809255028,
+      "max": 1.8599582937462635,
+      "last": 1.4239101623841783
+     },
+     "by_loss": {
+      "5.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 1599,
+        "mean": 1.0836642374539813,
+        "median": 1.0047548106820585,
+        "min": -0.4720584809255044,
+        "max": 3.9435615976517866
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p15_4032_l0",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 1600,
+     "policy_version": {
+      "v3.1": 1600
+     },
+     "rows_with_all_guard_fields": 1600,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1600,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1599,
+      "mean": 1.219493138901438,
+      "median": 1.163179240564169,
+      "min": 0.30782124947051415,
+      "max": 4.170880229086755
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1600,
+      "mean": 1.1567105093187309,
+      "median": 1.1962486876984926,
+      "min": 0,
+      "max": 1.5483831054791217,
+      "last": 1.2804720817490178
+     },
+     "by_loss": {
+      "0.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 1599,
+        "mean": 1.219493138901438,
+        "median": 1.163179240564169,
+        "min": 0.30782124947051415,
+        "max": 4.170880229086755
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p15_4032_l2",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 1600,
+     "policy_version": {
+      "v3.1": 1600
+     },
+     "rows_with_all_guard_fields": 1600,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1600,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1599,
+      "mean": 0.8905384374779352,
+      "median": 0.8343267592677606,
+      "min": 0.3093655077226316,
+      "max": 3.2582091107413333
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1600,
+      "mean": 0.8403803645823461,
+      "median": 0.8370536026560984,
+      "min": 0,
+      "max": 1.0108722272455033,
+      "last": 0.9279114169172971
+     },
+     "by_loss": {
+      "2.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 1599,
+        "mean": 0.8905384374779352,
+        "median": 0.8343267592677606,
+        "min": 0.3093655077226316,
+        "max": 3.2582091107413333
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p15_4032_l5",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 1600,
+     "policy_version": {
+      "v3.1": 1600
+     },
+     "rows_with_all_guard_fields": 1600,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1600,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1599,
+      "mean": 0.8234992074295365,
+      "median": 0.7859409629140686,
+      "min": 0.32194104991936,
+      "max": 2.8081644010728013
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1600,
+      "mean": 0.775823587121088,
+      "median": 0.7735344579825529,
+      "min": 0,
+      "max": 0.9379930939345691,
+      "last": 0.8552016752386038
+     },
+     "by_loss": {
+      "5.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 1599,
+        "mean": 0.8234992074295365,
+        "median": 0.7859409629140686,
+        "min": 0.32194104991936,
+        "max": 2.8081644010728013
+       }
+      }
+     }
+    },
+    {
+     "cond": "D_p18_burst3",
+     "family": "D",
+     "arm": "g3auto",
+     "rows": 1600,
+     "policy_version": {
+      "v3.1": 1600
+     },
+     "rows_with_all_guard_fields": 1600,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1600,
+      "mean": 0.144375,
+      "median": 0.0,
+      "min": 0,
+      "max": 1,
+      "last": 1,
+      "rows_any": 231
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1599,
+      "mean": 8.596460288748597,
+      "median": -0.40444172637982234,
+      "min": -4.300546913551706,
+      "max": 1401.9899245868494
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1600,
+      "mean": -0.6042667472617705,
+      "median": -0.4264982719770245,
+      "min": -3.93705449592796,
+      "max": 0.722477898922449,
+      "last": -3.5161883055523333
+     },
+     "by_loss": {
+      "15.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 1599,
+        "mean": 8.596460288748597,
+        "median": -0.40444172637982234,
+        "min": -4.300546913551706,
+        "max": 1401.9899245868494
+       }
+      }
+     }
+    },
+    {
+     "cond": "H_h_c6000_r120_u10",
+     "family": "H",
+     "arm": "g3auto",
+     "rows": 1800,
+     "policy_version": {
+      "v3.1": 1800
+     },
+     "rows_with_all_guard_fields": 1800,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1800,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1799,
+      "mean": -0.1917859918746059,
+      "median": -0.3604977854262046,
+      "min": -8.734633547491413,
+      "max": 139.96841075160063
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1800,
+      "mean": -0.599189271473549,
+      "median": -0.36742282527623615,
+      "min": -8.598633547491417,
+      "max": 0,
+      "last": -0.2538126136479306
+     },
+     "by_loss": {
+      "1.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 899,
+        "mean": -0.6311154725140938,
+        "median": -0.37043614900156285,
+        "min": -8.734633547491413,
+        "max": 2.3271133008303337
+       }
+      },
+      "8.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 900,
+        "mean": 0.2470553448975048,
+        "median": -0.34638991361685356,
+        "min": -2.132431724976783,
+        "max": 139.96841075160063
+       }
+      }
+     }
+    },
+    {
+     "cond": "H_h_c8000_r120_u10",
+     "family": "H",
+     "arm": "g3auto",
+     "rows": 1800,
+     "policy_version": {
+      "v3.1": 1800
+     },
+     "rows_with_all_guard_fields": 1800,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1800,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1799,
+      "mean": -0.008693838145125607,
+      "median": -0.2715803492997395,
+      "min": -8.267997286555754,
+      "max": 119.60113143812032
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1800,
+      "mean": -0.42482705493281003,
+      "median": -0.3053970607316856,
+      "min": -8.116997286555758,
+      "max": 0.38580818227825375,
+      "last": -0.2547955117689824
+     },
+     "by_loss": {
+      "1.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 899,
+        "mean": -0.4289832934849684,
+        "median": -0.31830260238795915,
+        "min": -8.267997286555754,
+        "max": 29.814884176298435
+       }
+      },
+      "8.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 900,
+        "mean": 0.41112862891100627,
+        "median": -0.21573489716556793,
+        "min": -1.9929172954757632,
+        "max": 119.60113143812032
+       }
+      }
+     }
+    },
+    {
+     "cond": "H_h_c12000_r120_u5",
+     "family": "H",
+     "arm": "g3auto",
+     "rows": 1800,
+     "policy_version": {
+      "v3.1": 1800
+     },
+     "rows_with_all_guard_fields": 1800,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1800,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1799,
+      "mean": -0.2519480358303158,
+      "median": -2.1661808896859895,
+      "min": -30.041792473625975,
+      "max": 385.60907390511227
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1800,
+      "mean": -3.3924662996890493,
+      "median": -2.212205234756084,
+      "min": -30.010792473625997,
+      "max": 0,
+      "last": -5.581370342544872
+     },
+     "by_loss": {
+      "1.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 899,
+        "mean": -1.9619646635010866,
+        "median": -1.6415475321935276,
+        "min": -30.041792473625975,
+        "max": 170.12620752637403
+       }
+      },
+      "8.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 900,
+        "mean": 1.4561685733652652,
+        "median": -3.7892219599444417,
+        "min": -26.514007467794755,
+        "max": 385.60907390511227
+       }
+      }
+     }
+    },
+    {
+     "cond": "H_h_c14000_r120_u5",
+     "family": "H",
+     "arm": "g3auto",
+     "rows": 1800,
+     "policy_version": {
+      "v3.1": 1800
+     },
+     "rows_with_all_guard_fields": 1800,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1800,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1799,
+      "mean": -0.031881837364020754,
+      "median": -1.9165487708069122,
+      "min": -58.67473720806939,
+      "max": 386.66842289688657
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1800,
+      "mean": -3.8634627640069295,
+      "median": -2.1776753696790294,
+      "min": -58.654237208069375,
+      "max": 0.5158109272322093,
+      "last": -5.205484583042292
+     },
+     "by_loss": {
+      "1.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 899,
+        "mean": -1.4120457683365772,
+        "median": -0.197608729904033,
+        "min": -58.67473720806939,
+        "max": 1.6690334861133067
+       }
+      },
+      "8.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 900,
+        "mean": 1.3467485781296775,
+        "median": -5.897977176480751,
+        "min": -44.55696735515784,
+        "max": 386.66842289688657
+       }
+      }
+     }
+    },
+    {
+     "cond": "R_c6000_r80_u10",
+     "family": "R",
+     "arm": "g3auto",
+     "rows": 1800,
+     "policy_version": {
+      "v3.1": 1800
+     },
+     "rows_with_all_guard_fields": 1800,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 1800,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 1799,
+      "mean": 0.014012439704080846,
+      "median": -0.42054959965419414,
+      "min": -6.981245115577522,
+      "max": 252.43776960612132
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 1800,
+      "mean": -0.6072475893499502,
+      "median": -0.41776988724497244,
+      "min": -6.822745115577526,
+      "max": 0.026482492522497125,
+      "last": -0.330559320370277
+     },
+     "by_loss": {
+      "1.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 899,
+        "mean": -0.6324006090391124,
+        "median": -0.4562970263696542,
+        "min": -6.981245115577522,
+        "max": 2.0544292972878253
+       }
+      },
+      "8.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 900,
+        "mean": 0.6597072517264484,
+        "median": -0.3882638803532572,
+        "min": -2.128119043091786,
+        "max": 252.43776960612132
+       }
+      }
+     }
+    },
+    {
+     "cond": "C_bigcert_l2",
+     "family": "C",
+     "arm": "g3auto",
+     "rows": 800,
+     "policy_version": {
+      "v3.1": 800
+     },
+     "rows_with_all_guard_fields": 800,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 800,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 700,
+      "mean": -30.527396712841416,
+      "median": -33.72592855558049,
+      "min": -34.91713285919222,
+      "max": 161.90856414912008
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 100,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 800,
+      "mean": -24.47768798105963,
+      "median": -33.62673015176867,
+      "min": -34.80513285919223,
+      "max": 43.89084590199897,
+      "last": -33.313204371350906
+     },
+     "by_loss": {
+      "2.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 700,
+        "mean": -30.527396712841416,
+        "median": -33.72592855558049,
+        "min": -34.91713285919222,
+        "max": 161.90856414912008
+       }
+      }
+     }
+    },
+    {
+     "cond": "C_2955_l0",
+     "family": "C",
+     "arm": "g3auto",
+     "rows": 800,
+     "policy_version": {
+      "v3.1": 800
+     },
+     "rows_with_all_guard_fields": 800,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 800,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 700,
+      "mean": 0.5706344180179612,
+      "median": 0.5361534212574846,
+      "min": -0.4351321109189925,
+      "max": 3.5873797899195026
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 100,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 800,
+      "mean": 0.37312014113304387,
+      "median": 0.43544131341991665,
+      "min": -0.4351321109189925,
+      "max": 3.5873797899195026,
+      "last": 0.5373853714718742
+     },
+     "by_loss": {
+      "0.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 700,
+        "mean": 0.5706344180179612,
+        "median": 0.5361534212574846,
+        "min": -0.4351321109189925,
+        "max": 3.5873797899195026
+       }
+      }
+     }
+    }
+   ],
+   "note": "alarm_share and reeval_share are shares of decisions that carried the field"
+  },
+  "run2": {
+   "rule": "per condition and auto3 arm: v3.1 guard alarms, re-evaluation share, residual summary and alarmed actions, read from the client rows; descriptive, outside every H family",
+   "present": true,
+   "arms": [
+    {
+     "cond": "S_bigcert",
+     "family": "S",
+     "arm": "g3auto",
+     "rows": 4500,
+     "policy_version": {
+      "v3.1": 4500
+     },
+     "rows_with_all_guard_fields": 4500,
+     "alarm_count": 276,
+     "alarm_share": 0.06133333333333333,
+     "first_alarm_row": 541,
+     "alarmed_chosen_actions": {
+      "0,3,1": 276
+     },
+     "guard_alarmed_actions": {
+      "n": 4500,
+      "mean": 0.2702222222222222,
+      "median": 0.0,
+      "min": 0,
+      "max": 4,
+      "last": 0,
+      "rows_any": 821
+     },
+     "reeval_count": 73,
+     "reeval_share": 0.01622222222222222,
+     "reeval_actions": {
+      "0,3,0": 2,
+      "0,3,1": 64,
+      "0,4,0": 7
+     },
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 4499,
+      "mean": 3.137616098787654,
+      "median": 0.006180075608625657,
+      "min": -52.95026978043539,
+      "max": 1387.810671140583
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 4500,
+      "mean": -2.0434335095922833,
+      "median": 0.13338047482659476,
+      "min": -33.78438117416657,
+      "max": 16.871618825833423,
+      "last": 1.7240238522184796
+     },
+     "by_loss": {
+      "15.0": {
+       "alarm_count": 243,
+       "alarm_share": 0.108,
+       "reeval_count": 71,
+       "reeval_share": 0.03155555555555556,
+       "guard_resid_ms": {
+        "n": 2250,
+        "mean": 6.630223639670751,
+        "median": 1.1056032246589353,
+        "min": -52.95026978043539,
+        "max": 1387.810671140583
+       }
+      },
+      "2.0": {
+       "alarm_count": 33,
+       "alarm_share": 0.014666666666666666,
+       "reeval_count": 2,
+       "reeval_share": 0.0008888888888888889,
+       "guard_resid_ms": {
+        "n": 2249,
+        "mean": -0.3565444023181564,
+        "median": -1.0168305721004316,
+        "min": -42.23654021061412,
+        "max": 212.6602005312498
+       }
+      }
+     }
+    },
+    {
+     "cond": "S_rtt200",
+     "family": "S",
+     "arm": "g3auto",
+     "rows": 4500,
+     "policy_version": {
+      "v3.1": 4500
+     },
+     "rows_with_all_guard_fields": 4500,
+     "alarm_count": 0,
+     "alarm_share": 0.0,
+     "first_alarm_row": null,
+     "alarmed_chosen_actions": {},
+     "guard_alarmed_actions": {
+      "n": 4500,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0,
+      "max": 0,
+      "last": 0,
+      "rows_any": 0
+     },
+     "reeval_count": 0,
+     "reeval_share": 0.0,
+     "reeval_actions": {},
+     "reeval_why3_mismatch_rows": 0,
+     "guard_resid_ms": {
+      "n": 4499,
+      "mean": -10.264372211024924,
+      "median": -12.604559549300944,
+      "min": -226.49152969160156,
+      "max": 192.43522278708284
+     },
+     "guard_resid_ms_failed": {
+      "n": 0,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "max": null
+     },
+     "guard_resid_null_rows": 1,
+     "guard_resid_mismatch_ok_rows": 0,
+     "guard_resid_missing_ok_rows": 0,
+     "guard_common_ms": {
+      "n": 4500,
+      "mean": -13.702137954503506,
+      "median": -12.41319469059927,
+      "min": -226.49152969160156,
+      "max": 0,
+      "last": -12.998902387888947
+     },
+     "by_loss": {
+      "15.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 2250,
+        "mean": -8.932481205834522,
+        "median": -15.00832663827454,
+        "min": -37.84135609136152,
+        "max": 192.43522278708284
+       }
+      },
+      "2.0": {
+       "alarm_count": 0,
+       "alarm_share": 0.0,
+       "reeval_count": 0,
+       "reeval_share": 0.0,
+       "guard_resid_ms": {
+        "n": 2249,
+        "mean": -11.596855430979751,
+        "median": -10.560694672654023,
+        "min": -226.49152969160156,
+        "max": 184.4166273502942
+       }
+      }
+     }
+    }
+   ],
+   "note": "alarm_share and reeval_share are shares of decisions that carried the field"
+  }
+ },
+ "expected_failure_p15_bytes": {
+  "rule": "p15 L540 analogue at cert 4032 0%: mean added first-flight bytes of the arm's final block < 0.7 x nominal m2 added bytes 2650 = 1855.0 B",
+  "expected": "g3-auto fails (verdict 4.4); g2-auto reported for reference",
+  "arms": {
+   "g2auto": {
+    "final_block_added_bytes_mean": 3779.69375,
+    "pass": false
+   },
+   "g3auto": {
+    "final_block_added_bytes_mean": 5308.8,
+    "pass": false
+   }
+  },
+  "g3_failed_as_expected": true,
+  "evaluable": true
+ },
+ "final_validation": {
+  "checked_at": "2026-10-02T16:03:29.671489+00:00",
+  "seal_check": {
+   "path": "g3/SEAL_stage3.json",
+   "sha256": "6b452790e6567187f3bdc06e7b374ee66107065297be0f3a827a16c3d2b4e81a",
+   "changed": [],
+   "missing": [],
+   "unsealed_new": [],
+   "ok": true,
+   "sealed_utc": "2026-10-02T10:35:43Z",
+   "binaries": {
+    "g2": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+    "g3c": "6baf2b5235d9906062d524af708ee28f06b2c20fa11c64fbc8bb51bc7f274d9b",
+    "g3c_srcsha": "6284fdcf2d324bae4aee6aef56d7f339aa01c3b267e3aa3225277e7c87b3ade4"
+   },
+   "h_cells": [
+    "h_c6000_r120_u10",
+    "h_c8000_r120_u10",
+    "h_c12000_r120_u5",
+    "h_c14000_r120_u5"
+   ]
+  },
+  "binaries": {
+   "g2": {
+    "path": "/tmp/qamp_g3/g2/qamp",
+    "exists": true,
+    "sha256": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+    "executable": true,
+    "srcsha": null,
+    "sha256_file": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213"
+   },
+   "g3c": {
+    "path": "/tmp/qamp_g3/g3c/qamp",
+    "exists": true,
+    "sha256": "6baf2b5235d9906062d524af708ee28f06b2c20fa11c64fbc8bb51bc7f274d9b",
+    "executable": true,
+    "srcsha": "6284fdcf2d324bae4aee6aef56d7f339aa01c3b267e3aa3225277e7c87b3ade4",
+    "sha256_file": "6baf2b5235d9906062d524af708ee28f06b2c20fa11c64fbc8bb51bc7f274d9b",
+    "source_fingerprint_now": "6284fdcf2d324bae4aee6aef56d7f339aa01c3b267e3aa3225277e7c87b3ade4"
+   },
+   "stage0_g3": {
+    "path": "/tmp/qamp_g3/g3/qamp",
+    "sha256": null,
+    "note": "recorded only; p21 never runs or writes it"
+   },
+   "frozen_g2_sha256": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+   "quicbed_sources": {
+    "build.sh": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+    "build_g3.sh": "ead59e44b9594510031a0e195613ad860a5dc9e343cce982c429ebaa0af61150",
+    "build_g3b.sh": "e7260311ea73ddfdebd1f82ccbaa8b4d66ac2ec319fdde543e3304a80097c82b",
+    "build_g3c.sh": "e5b5961ecc39a13d2647c04a5c21abf935925b0038d9737c7e7621d29c8eb396",
+    "build_server.sh": "b45c178423b4aaa9183fa52959e120a37c3fb106a46e705486f64191aecb90c2",
+    "client.go": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+    "dataapp.go": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+    "diag.sh": "e52009f1631c9e918f7e5915b14498a23620c84d4ffe3855f64f997d0b01851b",
+    "go.mod": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+    "go.sum": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+    "live_demo.sh": "6adc66f809867d81d9ed856b4f072e47516350f302fd918a9664919180b49ac5",
+    "mlkem_interop.sh": "1bf6ad02fc216428582527423474104ed851315d5ff8bae57fc868a62e29df0f",
+    "mlkemcheck.go": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+    "netbed_spec.sh": "54cac826d4740f6be44aef6537b64e2ad4e22e4be0d1b8a257da91885b55179f",
+    "pfail_table.go": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+    "policy.go": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+    "policy3.go": "34988427f42de61ee195f3542d18d44d6f93de655d0fac55fc9abe812b943dca",
+    "policy3_test.go": "a31cb8e42ab0f3a35c46dad0af374904ad2ec725a87db4777e5ae246e4d6516b",
+    "policy_adaptation_test.go": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+    "policy_rtt_test.go": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+    "qamp.go": "0d099a46498ae87ea887ce979c1fd1215928d52c0c7d764e7f74e0d62e724ce7",
+    "qamp_accounting_test.go": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+    "qamp_audit_test.go": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+    "qamp_finalstats_test.go": "e118b5c0ea060aeb2c2869f25d72d1b58a52618b5778914ae675b9dff9f8ed8d",
+    "qamp_lead_test.go": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+    "server.go": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+    "setup.sh": "4eec31865d6ca32aaed66deb3544e4ea4df6181a2f4a21f64270b8731109d913",
+    "smoke.sh": "09ec12d25157e35124c32a7d09e75e35980f1a459b12b555f489e749e476bf65"
+   }
+  },
+  "binary_problems": [],
+  "seal_matches_starts": true,
+  "binaries_match_start_and_finish": true,
+  "binaries_match_seal": true,
+  "ok": true
+ },
+ "run2_final_validation": {
+  "checked_at": "2026-10-02T16:03:29.436635+00:00",
+  "seal_check": {
+   "path": "g3/SEAL_stage3.json",
+   "sha256": "6b452790e6567187f3bdc06e7b374ee66107065297be0f3a827a16c3d2b4e81a",
+   "changed": [],
+   "missing": [],
+   "unsealed_new": [],
+   "ok": true,
+   "sealed_utc": "2026-10-02T10:35:43Z",
+   "binaries": {
+    "g2": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+    "g3c": "6baf2b5235d9906062d524af708ee28f06b2c20fa11c64fbc8bb51bc7f274d9b",
+    "g3c_srcsha": "6284fdcf2d324bae4aee6aef56d7f339aa01c3b267e3aa3225277e7c87b3ade4"
+   },
+   "h_cells": [
+    "h_c6000_r120_u10",
+    "h_c8000_r120_u10",
+    "h_c12000_r120_u5",
+    "h_c14000_r120_u5"
+   ]
+  },
+  "binaries": {
+   "g2": {
+    "path": "/tmp/qamp_g3/g2/qamp",
+    "exists": true,
+    "sha256": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+    "executable": true,
+    "srcsha": null,
+    "sha256_file": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213"
+   },
+   "g3c": {
+    "path": "/tmp/qamp_g3/g3c/qamp",
+    "exists": true,
+    "sha256": "6baf2b5235d9906062d524af708ee28f06b2c20fa11c64fbc8bb51bc7f274d9b",
+    "executable": true,
+    "srcsha": "6284fdcf2d324bae4aee6aef56d7f339aa01c3b267e3aa3225277e7c87b3ade4",
+    "sha256_file": "6baf2b5235d9906062d524af708ee28f06b2c20fa11c64fbc8bb51bc7f274d9b",
+    "source_fingerprint_now": "6284fdcf2d324bae4aee6aef56d7f339aa01c3b267e3aa3225277e7c87b3ade4"
+   },
+   "stage0_g3": {
+    "path": "/tmp/qamp_g3/g3/qamp",
+    "sha256": null,
+    "note": "recorded only; p21 never runs or writes it"
+   },
+   "frozen_g2_sha256": "d98b05d73f44774ad622ab1c4993526cac58957b22310fc61122d7bd44964213",
+   "quicbed_sources": {
+    "build.sh": "74dc53a835d32a223ad0b13e029e36c24cdcf6d9ad32c4b6d9bd238f26f1e44f",
+    "build_g3.sh": "ead59e44b9594510031a0e195613ad860a5dc9e343cce982c429ebaa0af61150",
+    "build_g3b.sh": "e7260311ea73ddfdebd1f82ccbaa8b4d66ac2ec319fdde543e3304a80097c82b",
+    "build_g3c.sh": "e5b5961ecc39a13d2647c04a5c21abf935925b0038d9737c7e7621d29c8eb396",
+    "build_server.sh": "b45c178423b4aaa9183fa52959e120a37c3fb106a46e705486f64191aecb90c2",
+    "client.go": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+    "dataapp.go": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+    "diag.sh": "e52009f1631c9e918f7e5915b14498a23620c84d4ffe3855f64f997d0b01851b",
+    "go.mod": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+    "go.sum": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+    "live_demo.sh": "6adc66f809867d81d9ed856b4f072e47516350f302fd918a9664919180b49ac5",
+    "mlkem_interop.sh": "1bf6ad02fc216428582527423474104ed851315d5ff8bae57fc868a62e29df0f",
+    "mlkemcheck.go": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+    "netbed_spec.sh": "54cac826d4740f6be44aef6537b64e2ad4e22e4be0d1b8a257da91885b55179f",
+    "pfail_table.go": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+    "policy.go": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+    "policy3.go": "34988427f42de61ee195f3542d18d44d6f93de655d0fac55fc9abe812b943dca",
+    "policy3_test.go": "a31cb8e42ab0f3a35c46dad0af374904ad2ec725a87db4777e5ae246e4d6516b",
+    "policy_adaptation_test.go": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+    "policy_rtt_test.go": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+    "qamp.go": "0d099a46498ae87ea887ce979c1fd1215928d52c0c7d764e7f74e0d62e724ce7",
+    "qamp_accounting_test.go": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+    "qamp_audit_test.go": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+    "qamp_finalstats_test.go": "e118b5c0ea060aeb2c2869f25d72d1b58a52618b5778914ae675b9dff9f8ed8d",
+    "qamp_lead_test.go": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+    "server.go": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+    "setup.sh": "4eec31865d6ca32aaed66deb3544e4ea4df6181a2f4a21f64270b8731109d913",
+    "smoke.sh": "09ec12d25157e35124c32a7d09e75e35980f1a459b12b555f489e749e476bf65"
+   }
+  },
+  "binary_problems": [],
+  "seal_matches_starts": true,
+  "binaries_match_start_and_finish": true,
+  "binaries_match_seal": true,
+  "ok": true
+ },
+ "h_predictions_check": {
+  "seal_sha256": "6b452790e6567187f3bdc06e7b374ee66107065297be0f3a827a16c3d2b4e81a",
+  "path": "g3/stage3_h_predictions.json",
+  "ok": true,
+  "sha256": "0e0cecdf4e8c2ad3724fa1697bbaae2d146bd90bea7631dcdcf01d1ef807f81b",
+  "sealed_sha256": "0e0cecdf4e8c2ad3724fa1697bbaae2d146bd90bea7631dcdcf01d1ef807f81b"
+ },
+ "runs_used": {
+  "run1": "/mnt/c/dev/pq_afec_gen31/experiments/results/p31_gencompare_run1.json",
+  "run2": "/mnt/c/dev/pq_afec_gen31/experiments/results/p31_gencompare_run2.json"
+ },
+ "run2_excluded_reason": null
+}

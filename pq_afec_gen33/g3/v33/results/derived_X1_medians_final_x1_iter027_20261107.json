@@ -1,0 +1,49 @@
+{
+ "schema": "derived_x1_medians/1",
+ "label": "development",
+ "analysis": "사후 기술 통계. 결과 JSON에 없는 팔 전체 HCT 중앙값이며 구간 추정은 없다.",
+ "run_id": "final_x1_iter027_20261107",
+ "task": "X1",
+ "journal": "units_final_x1_iter027_20261107.jsonl",
+ "journal_sha256": "46e1c4d03f0dbd8cfcbc927527d1f2473d52d0f49e1b2a2cc293c91fcdf6d5ad",
+ "plan_sha256": "74f58fbb6b0db5c30ef9abf0698ae13dd6bede861bef3215646e5ca3232154b6",
+ "result": "g3/v33/results/v33_dev_X1_final_x1_iter027_20261107.json",
+ "result_sha256": "78776253d6c17d36fcb84e3b7cf04979ee149de3f9b8595de7d5661ae2574dbf",
+ "rows": "저널 block 기록의 모든 클라이언트 행(워밍업 포함). 실패 행은 failure_hct_ms를 쓴다.",
+ "failure_hct_ms": 10000,
+ "cells": [
+  {
+   "cell": "bigcert_l2",
+   "contrast_id": "pad4L3_minus_m4L3",
+   "x": "pad4L3",
+   "y": "m4L3",
+   "median_x_ms": 78.831,
+   "median_y_ms": 78.812,
+   "median_diff_ms": 0.019,
+   "n_x": 1560,
+   "n_y": 1560
+  },
+  {
+   "cell": "bigcert_l15",
+   "contrast_id": "pad4L3_minus_m4L3",
+   "x": "pad4L3",
+   "y": "m4L3",
+   "median_x_ms": 128.5245,
+   "median_y_ms": 81.15100000000001,
+   "median_diff_ms": 47.3735,
+   "n_x": 1120,
+   "n_y": 1120
+  },
+  {
+   "cell": "rtt200_l15",
+   "contrast_id": "pad4L3_minus_m4L3",
+   "x": "pad4L2",
+   "y": "m4L2",
+   "median_x_ms": 224.837,
+   "median_y_ms": 223.6375,
+   "median_diff_ms": 1.1995,
+   "n_x": 320,
+   "n_y": 320
+  }
+ ]
+}

@@ -1,0 +1,6 @@
+combos with any diff 142
+hct/send diff combos 0
+field keys Counter({'server_stack_credit_bytes': 142})
+max credit diff 66 [('B10', 0.25, 31, 0, 1), ('B10', 0.25, 31, 12, 1)]
+max by context {'bigcert': 52, 'B7': 52, 'B10': 66, 'c6000': 52, 'c12000': 52}
+count by context Counter({'B10': 46, 'bigcert': 24, 'B7': 24, 'c6000': 24, 'c12000': 24})

@@ -1,0 +1,692 @@
+{
+  "schema": "gen33.candidate_archive/1",
+  "policy_version": "v3.3.1-dev",
+  "summary": "미채택이거나 보류한 후보의 코드 흔적 색인이다. 파일은 옮기거나 지우지 않았다. 존재 검사는 snapshot, scripts, tests, docs에만 하고 validation은 경로 문자열로만 둔다. 배포본에는 validation 묶음 대부분이 없다.",
+  "sources": [
+    "docs/loop_record/final_audit_2026-11-06/backlog_triage.md 8절(후보 14개)",
+    "docs/FINAL_rejected_candidates.md",
+    "CX1, AK1: 2026-11-07 최종 수정 설계의 LIM-CX1-PY, LIM-CX1-GO, LIM-AK1과 g3/v33/CX1_eval_v1.json"
+  ],
+  "status_values": {
+    "미채택": "평가를 마쳤고 활성 정책에 넣지 않았다.",
+    "보류": "코드는 있으나 기본 off이고 채택 판정이 없다."
+  },
+  "triage_state_note": "triage_state는 루프 당시의 과제 상태(done, blocked)를 옮긴 것이다. 활성 채택 여부를 뜻하지 않는다.",
+  "testbed_default_off": [
+    {
+      "name": "lead-hold",
+      "default": "false",
+      "owner": "M1"
+    },
+    {
+      "name": "revisit-guard",
+      "default": "false",
+      "owner": "M4"
+    },
+    {
+      "name": "p3-explore-rate-ms",
+      "default": "0",
+      "owner": "CX1"
+    },
+    {
+      "name": "k-inflate",
+      "default": "0",
+      "owner": "T3 ClientHello 부풀림 비교"
+    },
+    {
+      "name": "pad-junk",
+      "default": "false",
+      "owner": "T3 같은 바이트 padding 비교"
+    },
+    {
+      "name": "dup",
+      "default": "false",
+      "owner": "T3 원본 중복 비교"
+    },
+    {
+      "name": "corrupt-parity",
+      "default": "-1",
+      "owner": "검증용 parity 손상"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "L2",
+      "status": "미채택",
+      "triage_state": "done(EPS 버림)",
+      "attempt": "목적지별 EPS Beta(1,999)",
+      "snapshot": [
+        "g3/v33/policy_snapshots/L2_v1",
+        "g3/v33/policy_snapshots/L2_fixed_epsilon_v1",
+        "g3/v33/ablation_sources/L2_fixed_epsilon_v1"
+      ],
+      "scripts": [
+        "experiments/v33/bench_learning_l2.py",
+        "experiments/v33/bench_learning_l2_report.py",
+        "experiments/v33/candidate_tests/l2_test_padfec3_epsilon.py",
+        "experiments/v33/candidate_tests/l2_test_v33_learning_l2.py"
+      ],
+      "tests": [
+        "tests/test_v33_l2_candidate.py",
+        "tests/test_v33_l2_joint_driver.py",
+        "tests/test_v33_learning_l2_report.py"
+      ],
+      "docs": [
+        "docs/L2_artifact_validation.md",
+        "docs/L2_benchmark_plan.md",
+        "docs/L2_disposition.md",
+        "docs/L2_joint_report.md",
+        "docs/L2_learning.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/L2_artifact_preparation",
+        "g3/v33/validation/L2_beta_marginal_precheck",
+        "g3/v33/validation/L2_collection_preparation",
+        "g3/v33/validation/L2_final_analysis_v1",
+        "g3/v33/validation/L2_historical_grade_precheck",
+        "g3/v33/validation/L2_interpretation_preparation",
+        "g3/v33/validation/L2_joint_plan",
+        "g3/v33/validation/L2_report_preparation",
+        "g3/v33/validation/L2_unit"
+      ],
+      "go_flags": [],
+      "inactive_reason": "none B8_j10 -1.568806 ms, 조정 상한 1.721694 ms로 비열등 미확정. 평균 감소는 seed 46 하나(-31.376 ms)에서 왔다. 근거 g3/v33/L2_benchmark_v1.json comparisons[113].",
+      "active_remnant": "EPS 적응은 활성에 없다. 3등급 라벨은 L1 관측에 남아 c1 경로에서 쓰인다."
+    },
+    {
+      "id": "L3",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "CUSUM 감시와 β 반응",
+      "snapshot": [
+        "g3/v33/policy_snapshots/L3_v1",
+        "g3/v33/policy_snapshots/L3_beta_only_v1",
+        "g3/v33/policy_snapshots/L3_guard_only_v1",
+        "g3/v33/policy_snapshots/L3_record_only_v1",
+        "g3/v33/ablation_sources/L3_beta_only_v1",
+        "g3/v33/ablation_sources/L3_guard_only_v1",
+        "g3/v33/ablation_sources/L3_record_only_v1"
+      ],
+      "scripts": [
+        "experiments/v33/bench_learning_l3.py",
+        "experiments/v33/bench_learning_l3_report.py",
+        "experiments/v33/candidate_tests/l3_test_padfec3_monitor.py",
+        "experiments/v33/candidate_tests/l3_test_v33_l3_monitor_audit.py",
+        "experiments/v33/candidate_tests/l3_test_v33_learning_l3.py"
+      ],
+      "tests": [
+        "tests/test_v33_l3_candidate.py",
+        "tests/test_v33_l3_findings.py",
+        "tests/test_v33_l3_joint_driver.py",
+        "tests/test_v33_learning_l3_report.py"
+      ],
+      "docs": [
+        "docs/L3_disposition.md",
+        "docs/L3_monitor_design.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/L3_analysis_preparation_v1",
+        "g3/v33/validation/L3_collection_preparation_v1",
+        "g3/v33/validation/L3_custody_preparation_v1",
+        "g3/v33/validation/L3_execution_ready_v1",
+        "g3/v33/validation/L3_final_analysis_v1",
+        "g3/v33/validation/L3_iteration18_handoff",
+        "g3/v33/validation/L3_iteration19_preparation_v1",
+        "g3/v33/validation/L3_joint_plan_v1",
+        "g3/v33/validation/L3_unit_v1"
+      ],
+      "go_flags": [],
+      "inactive_reason": "c1 B8_j20 +0.867859 ms [0.569639, 1.166079]로 비열등 실패. B1 절대 후회 0.093952 ms, 상한 0.127028 ms로 0.1 ms 목표 미확정. 근거 g3/v33/L3_benchmark_v1.json, g3/v33/V33FIX_benchmark_v1.json.",
+      "active_remnant": "CUSUM 경보와 β 반응은 활성에 없다. record_only 팔의 결정만 c1 경로에 남았고 tests/test_v33fix_policy.py가 policy_snapshots/L3_record_only_v1과 대조한다."
+    },
+    {
+      "id": "L5",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "서버 응답 S 추정과 혼합",
+      "snapshot": [
+        "g3/v33/policy_snapshots/L5_v1",
+        "g3/v33/policy_snapshots/L5_single_v1",
+        "g3/v33/ablation_sources/L5_single_v1"
+      ],
+      "scripts": [
+        "experiments/v33/bench_learning_l5.py",
+        "experiments/v33/bench_learning_l5_report.py",
+        "experiments/v33/policy_bridge_l5.py",
+        "experiments/v33/policy_worker_l5.py",
+        "experiments/v33/server_response_observer.py",
+        "experiments/v33/candidate_tests/l5_test_padfec3_server_size.py",
+        "experiments/v33/candidate_tests/l5_test_v33_server_response_observer.py"
+      ],
+      "tests": [
+        "tests/test_v33_l5_candidate.py",
+        "tests/test_v33_l5_findings.py",
+        "tests/test_v33_l5_joint_driver.py",
+        "tests/test_v33_learning_l5.py",
+        "tests/test_v33_learning_l5_report.py"
+      ],
+      "docs": [
+        "docs/L5_disposition.md",
+        "docs/L5_server_response.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/L5_analysis_preparation_v1",
+        "g3/v33/validation/L5_checker_reset_preparation_v1",
+        "g3/v33/validation/L5_collection_preparation_v1",
+        "g3/v33/validation/L5_disposition_rule_v1",
+        "g3/v33/validation/L5_final_analysis_v1",
+        "g3/v33/validation/L5_finalization_preparation_v1",
+        "g3/v33/validation/L5_finish_preparation_v1",
+        "g3/v33/validation/L5_joint_plan_v1"
+      ],
+      "go_flags": [],
+      "inactive_reason": "c12000 none +24.911063 ms [23.775437, 26.046689], c1 +24.893233 ms. 1461 B parity가 1452 B 수신 한도에서 잘렸고 역사 입력이 없었다. 근거 g3/v33/L5_benchmark_v1.json comparisons[119], comparisons[134].",
+      "active_remnant": "활성 정책에 남은 것이 없다."
+    },
+    {
+      "id": "J1",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "2-RTT 둘째 왕복 꼬리",
+      "snapshot": [
+        "g3/v33/policy_snapshots/J1_v1",
+        "g3/v33/policy_snapshots/J1_cost_only_v1",
+        "g3/v33/ablation_sources/J1_cost_only_v1"
+      ],
+      "scripts": [
+        "experiments/v33/bench_learning_j1.py",
+        "experiments/v33/bench_learning_j1_report.py",
+        "experiments/v33/candidate_tests/j1_adaptation_benchmark.py",
+        "experiments/v33/candidate_tests/j1_test_padfec3_second_flight.py"
+      ],
+      "tests": [
+        "tests/test_v33_j1_candidate.py",
+        "tests/test_v33_j1_findings.py",
+        "tests/test_v33_j1_joint_driver.py",
+        "tests/test_v33_learning_j1.py",
+        "tests/test_v33_learning_j1_report.py"
+      ],
+      "docs": [
+        "docs/J1_disposition.md",
+        "docs/J1_tail_design.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/J1_analysis_preparation_v1",
+        "g3/v33/validation/J1_collection_preparation_v1",
+        "g3/v33/validation/J1_execution_preparation_v1",
+        "g3/v33/validation/J1_final_analysis_v1",
+        "g3/v33/validation/J1_joint_plan_v1"
+      ],
+      "go_flags": [],
+      "inactive_reason": "none 3셀(B7, B8_j10, B8_j20) 미확정, c1 감소 조건 없음. seed 46이 -36.421 ms로 뒤집혔다. 근거 g3/v33/J1_benchmark_v1.json comparisons[113].",
+      "active_remnant": "활성 정책에 남은 것이 없다."
+    },
+    {
+      "id": "J6",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "δ 후보에 A_pre와 margin 30 B",
+      "snapshot": [
+        "g3/v33/policy_snapshots/J6_v1",
+        "g3/v33/policy_snapshots/J6_margin_zero_v1",
+        "g3/v33/ablation_sources/J6_margin_zero_v1"
+      ],
+      "scripts": [
+        "experiments/v33/bench_learning_j6.py",
+        "experiments/v33/bench_learning_j6_report.py",
+        "experiments/v33/policy_bridge_j6.py",
+        "experiments/v33/policy_worker_j6.py",
+        "experiments/v33/v33fix_j6_rejudge.py",
+        "experiments/v33/candidate_tests/j6_test_padfec3_preflight.py",
+        "experiments/v33/candidate_tests/j6_test_v33_preflight_observer.py",
+        "experiments/v33/preflight_observer.py"
+      ],
+      "tests": [
+        "tests/test_v33_j6_candidate.py",
+        "tests/test_v33_j6_findings.py",
+        "tests/test_v33_j6_joint_driver.py",
+        "tests/test_v33_learning_j6.py",
+        "tests/test_v33_learning_j6_report.py"
+      ],
+      "docs": [
+        "docs/J6_disposition.md",
+        "docs/J6_preflight_budget.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/J6_analysis_preparation_v1",
+        "g3/v33/validation/J6_collection_preparation_v1",
+        "g3/v33/validation/J6_final_analysis_v1",
+        "g3/v33/validation/J6_followup_preparation_v1",
+        "g3/v33/validation/J6_joint_plan_v1"
+      ],
+      "go_flags": [],
+      "inactive_reason": "c6000 -2.47348, -2.50647 ms. Z1 뒤 원래 규칙은 만족 [-2.549763, -2.397198]. D47 규칙 2.1에서 none B6 [5.121544, 7.606734] 실패. exact 계수면 약 +120 ms. 근거 g3/v33/J6_benchmark_v1.json comparisons[13], comparisons[133], g3/v33/V33FIX_J6_rejudge_v1.json.",
+      "active_remnant": "활성 정책에 남은 것이 없다."
+    },
+    {
+      "id": "J7",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "parity 크기 W+46+6k 고정",
+      "snapshot": [
+        "g3/v33/candidates/J7_wire_v1",
+        "g3/v33/candidates/J7_wire_on_L1_v2",
+        "g3/v33/policy_snapshots/J7_v1"
+      ],
+      "scripts": [
+        "experiments/v33/bench_j7.py",
+        "experiments/v33/bench_j7_family.py",
+        "experiments/v33/bench_j7_report.py",
+        "experiments/v33/validate_j7.py",
+        "experiments/v33/validate_j7_v2.py"
+      ],
+      "tests": [
+        "tests/test_v33_j7_report.py",
+        "tests/test_v33_j7_validator.py"
+      ],
+      "docs": [
+        "docs/J7_evaluation_plan.md",
+        "docs/J7_family_and_report.md",
+        "docs/J7_wire_contract.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/J7_checkpoint_v1",
+        "g3/v33/validation/J7_v2"
+      ],
+      "go_flags": [],
+      "inactive_reason": "60셀 중 58 통과. 39 B none/B6 [-0.546, 0.505854], 46 B none/B8_j20 +2.354217 [-2.585862, 7.294295], seed 46 +47.084. 근거 J7_factorial_report_v1.json comparisons[6], comparisons[54](로컬 보존).",
+      "active_remnant": "크기 고정은 활성에 없다. parity datagram 1452 B 상한만 수신 한도 계약으로 남았다(padfec3/decide3.py candidates3, experiments/quicbed/policy3.go p3Candidates)."
+    },
+    {
+      "id": "M1",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "선행 parity 보류 복호(hold)",
+      "snapshot": [
+        "g3/v33/candidate_sources/M1_v1",
+        "g3/v33/policy_snapshots/M1_v1"
+      ],
+      "scripts": [
+        "experiments/v33/bench_m1.py",
+        "experiments/v33/bench_m1_family.py",
+        "experiments/v33/bench_m1_report.py",
+        "experiments/v33/bench_action_pool_m1.py",
+        "experiments/v33/bench_oracles_m1.py",
+        "experiments/v33/oracle_m1.py",
+        "experiments/v33/worldsim_m1.py",
+        "experiments/v33/worldparams_m1.json",
+        "experiments/v33/world_receiver_m1.py",
+        "experiments/v33/hold_decoder.py",
+        "experiments/v33/hold_layout.py",
+        "experiments/v33/hold_reference.py",
+        "experiments/v33/hold_wire_reference.py",
+        "experiments/v33/validate_m1.py",
+        "experiments/v33/validate_m1_fixed.py",
+        "experiments/v33/validate_m1_v2.py",
+        "experiments/v33/m1_fixed_checks.py",
+        "experiments/v33/m1_fixed_world_report.py",
+        "experiments/v33/m1_pool_validation.py",
+        "experiments/v33/render_m1_fixed.py",
+        "experiments/v33/candidate_tests/m1_candidate.py",
+        "experiments/quicbed/hold.go"
+      ],
+      "tests": [
+        "tests/test_v33_m1_fixed_independent.py",
+        "tests/test_v33_m1_fixed_report.py",
+        "tests/test_v33_m1_independent.py",
+        "tests/test_v33_m1_mc.py",
+        "tests/test_v33_m1_world.py",
+        "tests/test_v33_hold_decoder.py",
+        "tests/test_v33_hold_layout.py",
+        "experiments/quicbed/qamp_hold_path_test.go",
+        "experiments/quicbed/qamp_hold_quic_test.go",
+        "experiments/quicbed/qamp_hold_test.go"
+      ],
+      "docs": [
+        "docs/M1_evaluation_plan.md",
+        "docs/M1_fixed_independent_check.md",
+        "docs/M1_hold_contract.md",
+        "docs/M1_mc_contract.md",
+        "docs/M1_quic_queue_check.md",
+        "docs/M1_quic_reference_path_plan.md",
+        "docs/M1_result.md",
+        "docs/M1_world_validity.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/M1_complete_inputs",
+        "g3/v33/validation/M1_complete_results",
+        "g3/v33/validation/M1_fixed_independent_plan",
+        "g3/v33/validation/M1_fixed_world_plan",
+        "g3/v33/validation/M1_independent_v2",
+        "g3/v33/validation/M1_iter029_checkpoint",
+        "g3/v33/validation/M1_quic_reference_path",
+        "g3/v33/validation/M1_stage1",
+        "g3/v33/validation/M1_stage2_family",
+        "g3/v33/validation/M1_stage2_plan",
+        "g3/v33/validation/M1_stage2_validation"
+      ],
+      "go_flags": [
+        {
+          "name": "lead-hold",
+          "default": "false",
+          "switch": true
+        },
+        {
+          "name": "lead-hold-uplink-kbps",
+          "default": "2000",
+          "switch": false
+        },
+        {
+          "name": "lead-hold-margin",
+          "default": "time.Millisecond",
+          "switch": false
+        }
+      ],
+      "inactive_reason": "주 120셀 82 통과, 15 실패, 23 미확정. hold 세계만 parity 수신 뒤 송신을 재개한 결함과 (0,4,0) 비용 과소평가(E-M1-1)가 겹쳤다. 근거 M1_disposition_v2.json performance_decision(로컬 보존), g3/v33/M1_benchmark_v1.json.",
+      "active_remnant": "experiments/quicbed/hold.go는 qamp에 빌드되지만 -lead-hold 기본 false라 서버 hold 경로가 꺼져 있다."
+    },
+    {
+      "id": "O2",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "미확인 uplink minimax",
+      "snapshot": [],
+      "scripts": [
+        "experiments/v33/uplink_reference.py",
+        "experiments/v33/uplink_reference_report.py",
+        "experiments/v33/uplink_world_diagnostic.py",
+        "g3/v33/plans/O2_world_v1.json"
+      ],
+      "tests": [
+        "tests/test_v33_uplink_reference.py",
+        "tests/test_v33_uplink_world_diagnostic.py"
+      ],
+      "docs": [
+        "docs/O2_reference_result.md",
+        "docs/O2_uplink_contract.md",
+        "docs/O2_world_diagnostic_plan.md",
+        "docs/O2_world_result.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/O2_reference_v1",
+        "g3/v33/validation/O2_world_v1"
+      ],
+      "go_flags": [],
+      "inactive_reason": "모형 최대 후회 6.503042445 ms. 세계 240대조 중 16개가 6.5 ms 하한 초과. 근거 docs/O2_reference_result.md, docs/O2_world_result.md.",
+      "active_remnant": "활성 정책에 남은 것이 없다."
+    },
+    {
+      "id": "J5",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "GE burst 비용",
+      "snapshot": [],
+      "scripts": [
+        "experiments/v33/ge_reference.py",
+        "experiments/v33/ge_reference_report.py",
+        "experiments/v33/ge_world_diagnostic.py",
+        "g3/v33/plans/J5_world_v1.json"
+      ],
+      "tests": [
+        "tests/test_v33_ge_reference.py",
+        "tests/test_v33_ge_world_diagnostic.py"
+      ],
+      "docs": [
+        "docs/J5_ge_contract.md",
+        "docs/J5_reference_result.md",
+        "docs/J5_world_diagnostic_plan.md",
+        "docs/J5_world_result.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/J5_reference_v1",
+        "g3/v33/validation/J5_world_v1"
+      ],
+      "go_flags": [],
+      "inactive_reason": "B10에서 iid, known_burst, forced_burst3가 같은 행동이라 HCT 변화 0. 세계 64.562675 ms 대 모형 58.464599 ms, 잔차 6.098075 ms. 근거 J5_world_disposition_v1.json(validation 묶음, 로컬 보존).",
+      "active_remnant": "활성 정책에 남은 것이 없다."
+    },
+    {
+      "id": "O3",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "부풂 뺀 RTT 신호",
+      "snapshot": [],
+      "scripts": [
+        "experiments/v33/rtt_reference.py",
+        "experiments/v33/rtt_reference_report.py",
+        "experiments/v33/rtt_trace_audit.py"
+      ],
+      "tests": [
+        "tests/test_v33_rtt_reference.py",
+        "tests/test_v33_rtt_trace_audit.py"
+      ],
+      "docs": [
+        "docs/O3_reference_result.md",
+        "docs/O3_rtt_contract.md",
+        "docs/O3_trace_audit_plan.md",
+        "docs/O3_trace_result.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/O3_reference_v1",
+        "g3/v33/validation/O3_trace_v1"
+      ],
+      "go_flags": [],
+      "inactive_reason": "198연결 453 갱신 중 보정 입력을 채운 표본 0. 변동 4배 여유가 합성 2-RTT의 69.83~84.11%를 1-RTT로 분류. 근거 docs/O3_trace_result.md.",
+      "active_remnant": "활성 정책에 남은 것이 없다."
+    },
+    {
+      "id": "O4",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "현재 ClientHello로 k 계산",
+      "snapshot": [],
+      "scripts": [
+        "experiments/v33/natural_k_reference.py",
+        "experiments/v33/natural_k_report.py",
+        "experiments/v33/natural_k_revisit.py",
+        "experiments/v33/current_k_candidate.py",
+        "experiments/v33/current_k_replay.py"
+      ],
+      "tests": [
+        "tests/test_v33_natural_k_reference.py",
+        "tests/test_v33_natural_k_revisit.py",
+        "tests/test_v33_current_k_candidate.py"
+      ],
+      "docs": [
+        "docs/O4_current_k_contract.md",
+        "docs/O4_current_replay_plan.md",
+        "docs/O4_current_result.md",
+        "docs/O4_packetization_contract.md",
+        "docs/O4_reference_result.md",
+        "docs/O4_revisit_plan.md",
+        "docs/O4_token_result.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/O4_current_v1",
+        "g3/v33/validation/O4_reference_v1",
+        "g3/v33/validation/O4_token_v1"
+      ],
+      "go_flags": [],
+      "inactive_reason": "W1 900실행, 1,233,000연결 재생에서 결정이 같아 차이가 구조적으로 0. 후보별 k 변화와 송신 전 훅이 없다. 근거 docs/O4_current_result.md.",
+      "active_remnant": "활성 정책에 남은 것이 없다."
+    },
+    {
+      "id": "J3",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "실패 가지 두 단계 비용",
+      "snapshot": [],
+      "scripts": [
+        "experiments/v33/recovery_reference.py",
+        "experiments/v33/recovery_trace.py",
+        "experiments/v33/recovery_world.py"
+      ],
+      "tests": [
+        "tests/test_v33_recovery_reference.py",
+        "tests/test_v33_recovery_trace.py",
+        "tests/test_v33_recovery_world.py"
+      ],
+      "docs": [
+        "docs/J3_diagnostic_plan.md",
+        "docs/J3_recovery_contract.md",
+        "docs/J3_recovery_trace_contract.md",
+        "docs/J3_reference_result.md",
+        "docs/J3_trace_result.md",
+        "docs/J3_transport_result.md",
+        "docs/J3_transport_world_contract.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/J3_reference_v1",
+        "g3/v33/validation/J3_trace_v1",
+        "g3/v33/validation/J3_transport_v1"
+      ],
+      "go_flags": [],
+      "inactive_reason": "참조 2% -49.257467 ms(표본 5건)로 ±10 ms 미통과, 15% +1.545667 ms. 72문맥 선택 변화 0. 세계와 -29.084599 ms. 근거 docs/J3_reference_result.md.",
+      "active_remnant": "활성 정책에 남은 것이 없다."
+    },
+    {
+      "id": "M4",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "token, Retry 인식",
+      "snapshot": [],
+      "scripts": [
+        "experiments/v33/revisit_cache.py",
+        "experiments/v33/revisit_capture.py",
+        "experiments/v33/revisit_guard_smoke.py",
+        "experiments/v33/revisit_negative_smoke.py",
+        "experiments/v33/revisit_reference.py",
+        "experiments/v33/revisit_smoke.py",
+        "experiments/quicbed/revisit.go",
+        "experiments/quicbed/revisit_guard.go",
+        "g3/v33/plans/M4_guard_v1/M4_guard_basic_v1.plan.json",
+        "g3/v33/plans/M4_guard_v1/M4_guard_oob_v1.plan.json"
+      ],
+      "tests": [
+        "tests/test_v33_revisit_cache.py",
+        "tests/test_v33_revisit_capture.py",
+        "tests/test_v33_revisit_reference.py",
+        "experiments/quicbed/qamp_revisit_guard_test.go",
+        "experiments/quicbed/qamp_revisit_test.go"
+      ],
+      "docs": [
+        "docs/M4_cache_result.md",
+        "docs/M4_guard_result.md",
+        "docs/M4_observation_cache_contract.md",
+        "docs/M4_reference_result.md",
+        "docs/M4_revisit_guard_contract.md",
+        "docs/M4_revisit_policy_contract.md",
+        "docs/server_support_signal.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/M4_cache_v1",
+        "g3/v33/validation/M4_guard_v1",
+        "g3/v33/validation/M4_reference_v1"
+      ],
+      "go_flags": [
+        {
+          "name": "revisit-guard",
+          "default": "false",
+          "switch": true
+        },
+        {
+          "name": "decoder-support",
+          "default": "\"unknown\"",
+          "switch": false
+        }
+      ],
+      "inactive_reason": "168연결 중 156개만 재생(12개 첫 원본 소거). 고정 팔 전송 검증까지이고 실제 입력 훅, W1 평가, Go 정책 채택이 없다. 근거 docs/M4_cache_result.md, docs/M4_guard_result.md.",
+      "active_remnant": "experiments/quicbed/revisit.go, revisit_guard.go는 qamp에 빌드되지만 -revisit-guard 기본 false다."
+    },
+    {
+      "id": "J8",
+      "status": "미채택",
+      "triage_state": "blocked",
+      "attempt": "서버 프로파일과 하향 손실",
+      "snapshot": [],
+      "scripts": [
+        "experiments/v33/server_profile.py",
+        "experiments/v33/server_cost_reference.py",
+        "experiments/v33/server_world_trace.py",
+        "experiments/v33/j8_pto_impact.py"
+      ],
+      "tests": [
+        "tests/test_v33_server_cost_reference.py",
+        "tests/test_v33_server_profile.py",
+        "tests/test_v33_server_world_trace.py"
+      ],
+      "docs": [
+        "docs/J8_downlink_result.md",
+        "docs/J8_profiles.md",
+        "docs/J8_server_cost_contract.md",
+        "docs/J8_server_profile_contract.md",
+        "docs/FINAL_rejected_candidates.md"
+      ],
+      "validation": [
+        "g3/v33/validation/J8_cost_v1",
+        "g3/v33/validation/J8_downlink_v1",
+        "g3/v33/validation/J8_profile_v1"
+      ],
+      "go_flags": [],
+      "inactive_reason": "120조건 중 24조건에서 PTO 만료 이동 44건, 최대 192.184 ms. p_d>0은 J=None. W1 B7 판정은 안 바뀐다. 근거 docs/J8_downlink_result.md, docs/V33FIX_world.md 4절.",
+      "active_remnant": "활성 정책에 남은 것이 없다."
+    },
+    {
+      "id": "AK1",
+      "status": "미채택",
+      "triage_state": "루프 뒤 개발 평가",
+      "attempt": "preflight ACK 틈을 손실 우도로 쓰는 none 경로 학습",
+      "snapshot": [],
+      "scripts": [],
+      "tests": [],
+      "docs": [],
+      "validation": [],
+      "go_flags": [],
+      "inactive_reason": "개발 세계 진단만 했다. 신호가 u>0, k>=2에만 있고, 정확한 우도로 B1 조정 상한 1.12474 ms, B2 2.01314 ms라 D47 미확정이다. qamp에 ACK 범위를 정책 입력으로 넘기는 경로가 없다. 저장소에는 코드, 시험, 문서 흔적이 없고 설계 기록 LIM-AK1만 있다.",
+      "active_remnant": "활성 정책에 남은 것이 없다."
+    },
+    {
+      "id": "CX1",
+      "status": "보류",
+      "triage_state": "루프 뒤 개발 평가, opt-in 기본 off",
+      "attempt": "none 경로 opt-in 탐색 원장(trailing parity를 줄이는 탐색)",
+      "snapshot": [],
+      "scripts": [
+        "experiments/v33/cx1_eval.py",
+        "tools/gen_cx1_go_vectors.py"
+      ],
+      "tests": [
+        "tests/test_padfec3_explore.py",
+        "tests/test_cx1_eval_paths.py",
+        "tests/test_cx1_go_vectors.py",
+        "experiments/quicbed/policy3_explore_test.go",
+        "experiments/quicbed/policy3_explore_vectors_test.go",
+        "experiments/quicbed/cli_tests/qamp_cli_wiring_test.go"
+      ],
+      "docs": [],
+      "validation": [],
+      "go_flags": [
+        {
+          "name": "p3-explore-rate-ms",
+          "default": "0",
+          "switch": true
+        }
+      ],
+      "inactive_reason": "W0 세계 시뮬레이션에서만 평가했고 실측은 없다. rate 0.05 ms/연결은 결과를 본 뒤 골랐고 상한은 100 ms다. 기본 off라 none 결정과 상태 JSON이 바뀌지 않는다. 평가 g3/v33/CX1_eval_v1.json.",
+      "active_remnant": "코드는 활성 파일 안에 있다. padfec3/learn3.py의 x_ledger, x_pending, padfec3/decide3.py의 check_explore, explore_pick, explore_step, experiments/quicbed/policy3.go의 p3ExplorePick, p3ExploreStep이다. decide3의 explore=None과 qamp -p3-explore-rate-ms 0이 기본이다."
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+383034eb7b8cfb2468ae4223682e9dd9ad412d11e3f76b9bae0f56820e7a035d */c/dev/pq_afec_gen33/experiments/v33/worldsim_m1.py
+{"N": 1000, "summary": {"rows": 800000, "combos": 825, "both_invalid_combo": 25}, "elapsed_s": 405.9}
+exit=0
+383034eb7b8cfb2468ae4223682e9dd9ad412d11e3f76b9bae0f56820e7a035d */c/dev/pq_afec_gen33/experiments/v33/worldsim_m1.py

@@ -302,7 +302,7 @@ func (s *decodeConn) Close() error {
 	return s.PacketConn.Close()
 }
 
-func (s *decodeConn) holdReceiveLocked(data []byte, fb *fecBlock, addr net.Addr, ca *connAcct, now time.Time, metas ...packetMeta) {
+func (s *decodeConn) holdReceiveLocked(data []byte, wireLen int, fb *fecBlock, addr net.Addr, ca *connAcct, now time.Time, metas ...packetMeta) {
 	meta := firstPacketMeta(metas)
 	h := s.hold
 	if h.closed {
@@ -378,7 +378,7 @@ func (s *decodeConn) holdReceiveLocked(data []byte, fb *fecBlock, addr net.Addr,
 	}
 	validLengths := true
 	for _, n := range fb.lens {
-		if n == 0 || n > 1472 {
+		if n == 0 || n > udpMaxPayload {
 			validLengths = false
 		}
 	}
@@ -394,7 +394,7 @@ func (s *decodeConn) holdReceiveLocked(data []byte, fb *fecBlock, addr net.Addr,
 			s.holdQueueLocked(data, addr, ca, meta, creditVer)
 			return
 		}
-		remaining := int64((fb.m - fb.index - 1) * len(data))
+		remaining := int64((fb.m - fb.index - 1) * wireLen)
 		if fb.index < fb.lead {
 			for _, n := range fb.lens {
 				remaining += int64(n)

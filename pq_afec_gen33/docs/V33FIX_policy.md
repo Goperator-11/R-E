@@ -84,7 +84,7 @@ python -I -B -c "import sys; sys.dont_write_bytecode=True; sys.path[:0]=['.', 't
 | none (W1_raw_v32 재생) | 411,000 | 411,000 | 0 | 411,000 | 0 | 300/300 |
 | c1 (L3 record_c1 재생) | 411,000 | 410,997 | 3 | 408,304 | 0 | 298/300 |
 
-1452 B 상한 때문에 생긴 불일치는 0이다. 15셀이 모두 W=1280이라(`g3/v33/bench_protocol.json`) 패리티가 1452 B를 넘는 후보가 애초에 후보 목록에 없었고, 후보 수가 바뀐 결정도 0이다.
+1452 B 상한 때문에 생긴 불일치는 0이고 후보 수가 바뀐 결정도 0이다. 이유는 W=1280 자체가 아니라 재생한 S_hat_pre가 초과 후보 띠 밖이라는 데 있다. 상한이 1472 B인 원래 v3.2-dev는 W=1280(`g3/v33/bench_protocol.json`)에서도 k=1 S 21,175~22,410 B, k=2 S 12,635~13,870 B·21,300~22,535 B, k=4 S 25,265~26,500 B·33,935~35,165 B에서 모형 parity가 1452 B를 넘는 후보를 낸다(S 1,500~60,000 B, 5 B 격자, k=3은 없음). W1 15셀에서 S_hat_pre가 있는 383,720행은 모두 이 띠 밖이고 B9에는 S_hat_pre가 없다. 가장 가까운 값은 B12_c12000의 13,975 B로 k=2 띠 끝 13,870 B보다 105 B 위다. 따라서 none 경로가 원래 v3.2-dev와 같다는 말은 이 15셀 재생의 결과이며 W=1280 전체로 넓힐 수 없다. S 40 B 격자 16,344문맥(p 4값, u 3값, RTT 3값)에서 띠 안 5,580문맥은 모두 후보 수가 달랐고 그중 2,418문맥은 행동도 달랐다. 띠 밖 10,764문맥은 같았고, `UDP_MAX`를 1452로 맞춘 v3.2-dev는 16,344문맥 모두 같았다.
 
 c1 불일치 3건은 모두 B11(RTT 200 ms)이다. seed 42와 50은 첫 c1 회신이 각각 236번째, 205번째 연결에야 왔다(나머지 298 seed는 0번째, B7 32·37·48과 B10 42·50은 1번째). 설계상 그 전까지는 v3.2 규칙(이진 우도와 shield/nominal2 건너뛰기)으로 학습하고 L3 record는 범주 우도로 학습했으므로, 두 seed의 사후분포는 3번째 연결(인덱스 2)부터 갈라진다. 그 결과 인덱스 187에서 두 seed 모두 (0,1,3) 대신 (0,2,2)를 골랐고(기록 ej 226.4798, 재생 ej 226.5099), seed 42는 c1 전환 뒤인 인덱스 1242에서도 같은 쌍으로 한 번 갈렸다. 이 1건도 전환 전에 갈라진 사후분포가 이어진 결과다(그 단계의 p_mean이 비트 단위로 다르다). 최종 상태 차이도 이 두 seed의 `post`, `w`와 갱신 종류 통계뿐이다. 이것은 설계 규칙 2의 의도된 결과라 고치지 않았다. 전환 뒤의 c1 규칙 자체는 위 전환 검사(전환 순간 상태에서 L3 record와 12,000단계 일치)로 확인했다.
 
@@ -106,8 +106,24 @@ pytest(`PYTHONDONTWRITEBYTECODE=1 python -I -B -m pytest -p no:cacheprovider`, g
 - c1 경로의 이득은 비표준이고 인증되지 않은 C1 회신에 기댄다. W1 원자료의 c1 관측 모형은 회신 비용을 HCT, 증폭 예산, 다음 연결 간격에 넣지 않는 수동 관측이다(감사 B 놓친 점 3, D14). 실측(T7)은 없다.
 - B10 버스트 손실에서 c1의 p 과소추정(B-E4, 꼬리 p 편향 −0.0204, v32 대비 +0.170 [0.136, 0.204] ms, 감사 B 값)은 그대로다. 데이터그램 우도가 iid라서다.
 - B1 절대 목표 0.1 ms는 record_c1 0.093952 [0.060876, 0.127028]로 미확정이라 달성했다고 말할 수 없다. B6는 L1_c1 대비 미확정(조정 상한 0.541609)이다.
-- none 경로는 v3.2와 같으므로 v3.2의 결함(무손실 B3_u0·B4에서 보호 행동 고착, 감사 B 놓친 점 1)도 그대로다. W1 15셀 재생에서 none 경로 결정은 v3.2와 모두 같았으므로, C1이 없는 서버에서 v3.3.1-dev는 이 세계에서 v3.2-dev와 같은 결과를 낸다. W1 밖 문맥(W 1406처럼 패리티가 1452 B를 넘는 경우)에서는 1452 B 상한 때문에 v3.2와 후보가 다르다. 그 차이의 크기는 바로 아래 항목에 적었다.
-- 1452 B 상한 때문에 W와 k가 크면 패리티 후보가 하나도 남지 않는다. 패리티 데이터그램은 W+39+6k B(`padfec/policy.py`의 `PARITY_OVERHEAD_BASE` 39, `PARITY_OVERHEAD_PER_K` 6)이고 `candidates3`는 m>0 후보 중 이것이 1452 B를 넘는 것을 버리므로, 패리티 후보는 W ≤ 1413 − 6k에서만 있다. `decide3.candidates3`로 W 1200~1452(1 B 간격), k 1~4, S 2000·9000·16000·30000 B, `c_pkt` 기본값을 모두 돌려 직접 확인한 상한은 k=1 W ≤ 1407, k=2 W ≤ 1401, k=3 W ≤ 1395, k=4 W ≤ 1389이다. 상한 아래에서 패리티 후보가 빠진 W는 없었고, 네 S 값에서 결과가 같았다. 상한 위에서는 m=0 후보만 남는다. W 1406이면 k=2와 k=4에서 후보가 B0 (0,0,0) 하나, k=3에서 B0과 패딩 17 B인 (17,0,0) 둘이다. W 1400이면 k=2는 패리티 후보 14개가 있지만 k=3은 (0,0,0)·(23,0,0), k=4는 (0,0,0)뿐이다. 그래서 W 1406·k≥2와 W 1400·k≥3에서 v3.3.1-dev는 패리티를 쓰지 않는다. 같은 계산을 HEAD(v3.3-dev, 상한 1472 B) 정책으로 돌리면 상한은 1427·1421·1415·1409였다. `docs/J6_preflight_budget.md`는 실측 문맥을 "W1280·1281·1406에서 k2"로 적고 있으므로, W 1406·k=2 실측에서는 이 정책이 PAD-FEC의 패리티를 내지 않는다. W1 15셀은 모두 W 1280이라 이 소멸이 벤치에 나타나지 않는다. 계산 스크립트와 출력은 `C:\dev\codex_handoff\v33\runs\v33fix\P\scripts\parity_w_limit.py`, `parity_w_limit_v2.json`(HEAD 정책판은 `parity_w_limit_old.py`, `parity_w_limit_old.json`)이다.
+- none 경로는 v3.2와 같으므로 v3.2의 결함(무손실 B3_u0·B4에서 보호 행동 고착, 감사 B 놓친 점 1)도 그대로다. W1 15셀 재생에서 none 경로 결정은 v3.2와 모두 같았으므로, C1이 없는 서버에서 v3.3.1-dev는 이 세계에서 v3.2-dev와 같은 결과를 낸다. W1 밖 문맥(W 1406처럼 기본 W가 큰 문맥이나 W=1280의 위 S 띠)에서는 1452 B 상한 때문에 v3.2와 후보가 다르다. 그 차이의 크기는 바로 아래 항목에 적었다.
+- 1452 B 상한 때문에 W와 k가 크면 parity 후보가 하나도 남지 않는다. 모형의 parity datagram 크기는 W_eff+39+6k B(`padfec/policy.py`의 `PARITY_OVERHEAD_BASE` 39, `PARITY_OVERHEAD_PER_K` 6)이고 W_eff=W+δ다. `candidates3`는 m>0 후보 중 이 모형 크기가 1452 B를 넘는 것을 버리므로, parity 후보는 W ≤ 1413 − 6k에서만 있다. 실제 wire 크기는 아래 표와 설명으로 구분한다. `decide3.candidates3`로 W 1200~1452(1 B 간격), k 1~4, S 2000·9000·16000·30000 B, `c_pkt` 기본값을 모두 돌려 직접 확인한 상한은 k=1 W ≤ 1407, k=2 W ≤ 1401, k=3 W ≤ 1395, k=4 W ≤ 1389이다. 상한 아래에서 parity 후보가 빠진 W는 없었고, 네 S 값에서 결과가 같았다. 상한 위에서는 m=0 후보만 남는다. W 1406이면 k=2와 k=4에서 후보가 B0 (0,0,0) 하나, k=3에서 B0과 padding 17 B인 (17,0,0) 둘이다. W 1400이면 k=2는 parity 후보 14개가 있지만 k=3은 (0,0,0)·(23,0,0), k=4는 (0,0,0)뿐이다. 그래서 W 1406·k≥2와 W 1400·k≥3에서 v3.3.1-dev는 parity를 쓰지 않는다. 같은 계산을 HEAD(v3.3-dev, 상한 1472 B) 정책으로 돌리면 상한은 1427·1421·1415·1409였다. `docs/J6_preflight_budget.md`는 실측 문맥을 "W1280·1281·1406에서 k2"로 적고 있으므로, W 1406·k=2 실측에서는 이 정책이 PAD-FEC의 parity를 내지 않는다. W1 15셀은 모두 W 1280이라 이 소멸이 벤치에 나타나지 않는다. 계산 스크립트와 출력은 `C:\dev\codex_handoff\v33\runs\v33fix\P\scripts\parity_w_limit.py`, `parity_w_limit_v2.json`(HEAD 정책판은 `parity_w_limit_old.py`, `parity_w_limit_old.json`)이다.
+
+parity의 직렬화 길이는 `W_eff+22+D+S_c+6k` B다. 여기서 `W_eff=W+δ`는 symbol 길이, D와 S_c는 DCID와 SCID 길이다. 실제 first Initial의 D=8~20, S_c=4 조건에서는 `W_eff+(34~46)+6k` B이고, 모형은 고정 오버헤드 39 B를 쓴다. 아래 wire 안전 상한은 이 CID 조건에서 1452 B를 넘지 않는 W_eff의 상한이다. δ=0이면 W의 상한과 같고, combo 행동은 δ도 포함해 비교한다.
+
+| k | 모형 상한 W_eff (B) | wire 안전 상한 W_eff (B) |
+|---|---:|---:|
+| 1 | 1407 | 1400 |
+| 2 | 1401 | 1394 |
+| 3 | 1395 | 1388 |
+| 4 | 1389 | 1382 |
+
+두 상한 사이의 후보는 DCID 길이에 따라 1452 B를 넘을 수 있다. `W=1280`, `c_pkt=41.983`, `S=1500~60000` B를 5 B 간격으로 계산했을 때 k=1·2에는 wire 최악 크기가 1452 B를 넘는 후보가 없었다. k=3은 S=25140~26375 B(δ=114, W_eff=1394), k=4는 S=16600~17835 B(δ=107, W_eff=1387) 격자에서 초과 후보가 있었다. 이 범위는 5 B 격자 결과이며 정확한 정수 경계나 실제 선택 결과를 뜻하지 않는다. 서버가 1452 B로 읽는 경로(`-profile sealed31`, 동결 서버)에서는 잘린 parity를 복구에 쓸 수 없다. 기본 프로필 서버는 1472 B까지 읽어 parity 전체를 복구에 쓰고 quic-go에는 앞 1452 B만 넘기므로 credit은 같다. 계산 스크립트와 출력은 `C:/dev/codex_handoff/final/runs/F12_numbers.py`, `F12_numbers.json`이다.
+
+`fec_parse_fail`은 PFEC magic을 식별했지만 `parseFecBlock`이 실패한 수신 수다. 정상 parity와 off 모드는 증가시키지 않는다. 이 계수에는 잘림 외의 malformed PFEC도 포함되며, magic까지 잘리면 식별하지 못한다. 네트워크 잘림 원인을 이 계수만으로 판정할 수 없다.
+
+auto3 client는 명시한 `-ips`가 1407을 넘으면 `auto3: no parity candidate above W 1407`을 stderr에 한 번 출력하고 계속 실행한다. W가 1390~1407이면 `auto3: no parity candidate for k>=K above W C`를 stderr에 낸다. K는 parity가 사라지는 가장 작은 k이고 C는 그 k의 모형 상한이다. `-expect-k`가 K보다 작으면 내지 않는다. 각 결정 행의 `policy_parity_possible`은 k를 알 때 기본 W가 해당 모형 상한 이하인지 나타내고, cold 행에서는 null이다. 선택한 행동의 parity 사용 여부와 wire 안전 여부는 이 표지와 별도로 확인한다. D50의 측정 기본값은 모든 팔 W=1280이며 `-ips`를 주지 않는다(F31의 Initial 확대 팔 예외는 유지한다).
+
 - 명시 행동 경로(`decide3`의 `actions=` 인자, `explicit_candidates`)는 1452 B 상한도 `max_ips`도 적용하지 않는다. v3.2부터 같은 동작이고 이번에 코드를 바꾸지 않았다. 지금 이 경로로 상한 밖 행동이 들어갈 수 있는 곳은 `experiments/replay_g3.py`의 오프라인 분석(240행 v3.1 기록 팔 `LEGACY` 네 행동의 재생, 483행 기록 행동의 예측 비용)이다. `experiments/adaptation_benchmark.py`(239·253행)는 `candidates3`가 만든 후보만 넘기므로 상한이 이미 걸려 있고, `experiments/v33/uplink_reference.py`는 `explicit_candidates`를 쓰지만 바로 뒤(113~115행)에서 `MAX_IPS`와 `UDP_MAX`를 따로 검사해 넘는 후보를 거부한다. `experiments/v33/current_k_candidate.py`는 호출자가 준 actions를 그대로 넘긴다(지금 호출하는 `current_k_replay.py`는 actions를 주지 않는다). 오프라인 분석에서 1452 B를 넘는 행동을 표시하거나 거를지는 정하지 않았다.
 - 첫 C1 회신이 늦게 오는 목적지(B11 seed 42·50)는 그 전까지 v3.2 규칙으로 배운 사후분포를 안고 c1 규칙으로 넘어간다.
 - 이번 재생은 결정 일치를 센 것이고 성능을 다시 잰 것이 아니다. W1 15셀에서 새 정책의 none 성능은 v3.2와, c1 성능은 L3 record_c1과 같다는 결론은 재생 일치(none 411,000/411,000, c1 410,997/411,000)에서 나온다. B11 두 seed의 차이 3결정이 비용에 주는 영향은 계산하지 않았다.
@@ -204,3 +220,9 @@ pytest는 모두 `PYTHONDONTWRITEBYTECODE=1 python -I -B -m pytest -p no:cachepr
 
 - `experiments/v33/v33fix_rejudge.py`의 rule 문자열(위 "못 한 것" 넷째 항목, 묶음 P not_done 1): 통합 담당이 `after_repetition`의 rule에서 'pre-registered'를 빼고, `g3/v33/V33FIX_benchmark_v1.json`의 `adoption_after_repetition.rule`과 같은 문장을 반복 계획의 seeds(51..250)로 만들게 고쳤다. 묶음 D가 다시 읽었을 때 그 파일에 'pre-registered'는 0곳이고 rule은 지금 775행 f-string이다. 그래서 evaluate를 다시 돌려도 옛 문구가 돌아오지 않는다.
 - 1절 11행 "회신이 빠지거나 잘린 연결은 HCT 3등급 우도"의 쓸 수 없는 회신에는 `sent=0`인 빈 회신도 든다. 사유는 `source_none`, `truncated`, `empty` 셋이고(3절 `_observe_c1` 항목, `padfec3/learn3.py` `_observe_c1`의 `reason`), 문맥이 있으면 범주 우도, 없으면 예측만이다. 같은 뜻으로 `docs/L1_observation_contract.md`와 `docs/L2_learning.md` 맨 위 정정 줄을 고쳤다(묶음 D, 검증자 지적 "정정 줄 두 곳이 범주 우도를 '회신이 빠지거나 잘린 연결에만' 쓴다고 적어 빈 회신(sent=0)을 빠뜨렸다").
+
+### 정정 (2026-11-07, F44)
+
+"못 한 것과 사람이 정할 것"의 측정 W 미결은 D50 기본값 W 1280으로 정리됨. 봉인 3단계의 base W도 1280이며 k=2인 그 조건에서 m>0 후보는 14개다. 본문의 W 1406·k=2는 후보가 B0 하나인 모형 입력이고, 봉인 g2auto가 선택한 W_eff 1406은 53,600행 중 6행이었다. 이 드문 선택값을 봉인 측정의 기본 W로 일반화하지 않는다. k=3·W=1400에서는 B0과 δ=23 padding만 남는다. 조건과 출처는 [활성 정책의 알려진 한계](FINAL_policy_limits.md)의 MS-12에 있다.
+
+명시 행동의 상한 밖 여부는 별도로 표시하지 않는다. 현재 `replay_g3.py` 호출처는 W 1280에서 LEGACY 네 행동(δ=0)과 v3.1 기록 행동(δ=0·1)만 넣으므로 1452 B 상한 밖으로 나가지 않는다. Go auto3에는 이 명시 행동 경로가 없다. Python `actions=` 자체가 상한을 거르는 것은 아니므로 임의 행동을 넣는 분석 호출의 안전성을 보장한다는 뜻은 아니다. CP-10의 현재 호출 범위로 미결을 닫으며 코드와 재생 결과는 바꾸지 않았다.

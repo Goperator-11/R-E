@@ -1,0 +1,59 @@
+{
+ "schema": "errata_numbers/1",
+ "rows": {
+  "RT-03-3": {
+   "1280": "literal:D50 측정 W"
+  },
+  "RT-05": {
+   "0": "sealed.recompute.current",
+   "18005": "sealed.recompute.current",
+   "6": "sealed.rehash.current"
+  },
+  "RT-08": {
+   "50": "v4.rtt.row5"
+  },
+  "RT-13": {
+   "3.97": "p14.pad.loss5"
+  },
+  "RT-14": {
+   "246000": "generation_comparison.connections"
+  },
+  "RT-15": {
+   "27": "legacy.p17.date",
+   "9": "legacy.p17.date",
+   "3": "p17.큰cert.loss2.0.adaptation",
+   "5": "p17.큰cert.loss2.0.adaptation",
+   "76": "p17.큰cert.loss2.0.adaptation",
+   "313": "p17.큰cert.loss2.0.adaptation"
+  },
+  "RT-17-1": {
+   "450": "p8.projection_segment_length"
+  },
+  "RT-17-2": {
+   "29": "p8.recorded_dates",
+   "9": "p8.recorded_dates"
+  },
+  "RT-18": {
+   "0.76": "p16.block_drift"
+  },
+  "RT-19": {},
+  "RT-20": {
+   "1280": "protocol.$.scenarios[0].context.w",
+   "1331": "protocol.$.scenarios[0].context.w"
+  },
+  "RT-26": {
+   "22": "v30_run1.condition_count"
+  },
+  "RT-28": {},
+  "RT-30": {
+   "32": "claims.initial_cwnd"
+  },
+  "BL-09": {
+   "14": "candidates.final.count",
+   "1452": "policy.parity_limit"
+  },
+  "RT-04-14": {
+   "200": "literal:S_rtt200 조건 RTT 200 ms"
+  }
+ }
+}

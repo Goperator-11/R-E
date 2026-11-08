@@ -157,7 +157,7 @@ func TestP3DecisionsMatchPythonSample(t *testing.T) {
 		for i, g := range c.g {
 			post[g] = c.q[i]
 		}
-		d, err := p3DecideCore(post, c.k, c.w, c.s, c.u, c.rtt, cPktDefault, false, nil, false)
+		d, err := p3DecideCore(post, c.k, c.w, c.s, c.u, c.rtt, cPktDefault, false, nil)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -204,7 +204,7 @@ func TestP3PointPosteriorPicksTheTieRuleArgmin(t *testing.T) {
 		post := make([]float64, p3NG)
 		post[g] = 1
 		s := 16000 + 1472.0 + float64(binIndex(2*1280))*cPktDefault
-		d, err := p3DecideCore(post, 2, 1280, s, 2, 50, cPktDefault, true, nil, false)
+		d, err := p3DecideCore(post, 2, 1280, s, 2, 50, cPktDefault, true, nil)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -564,7 +564,7 @@ func TestAuto3RowAddsFieldsAndLeavesTrialAlone(t *testing.T) {
 	raw, _ := json.Marshal(&trial{})
 	var plain map[string]any
 	json.Unmarshal(raw, &plain)
-	wantPlain := []string{"cipher_id", "first_flight_bytes", "first_flight_datagrams",
+	wantPlain := []string{"cipher_id", "client_scid", "first_flight_bytes", "first_flight_datagrams",
 		"first_flight_lead_dgrams", "first_flight_parity_bytes", "first_flight_parity_dgrams",
 		"group", "i", "initial_datagrams", "ips_eff", "ips_used", "kem_id", "later_parity_sent",
 		"layout", "lead", "loss_event", "m_used", "ms", "ok", "parity_sent", "path_rtt_ms",
@@ -804,7 +804,7 @@ func TestP3ReevalEverySixteenthQualifyingDecision(t *testing.T) {
 	s := p3SynthS(cert, k, w)
 	hi, lo := p3GIndex(0.3), p3GIndex(0.02)
 	st := p3PointState(k, w, cert, hi)
-	ref, err := p3DecideCore(p3Combined(st), k, w, s, u, rtt, cPktDefault, true, nil, false)
+	ref, err := p3DecideCore(p3Combined(st), k, w, s, u, rtt, cPktDefault, true, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

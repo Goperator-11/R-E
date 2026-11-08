@@ -1,0 +1,80 @@
+\documentclass[border={1.5mm 0.6mm}]{standalone}
+\input{figstyle.tex}
+\begin{document}
+\figsize
+\begin{tikzpicture}
+\path (-13mm,-13.2mm) rectangle (137mm,34.8mm);
+\begin{axis}[name=A,at={(0,0)},anchor=south west,scale only axis,width=66mm,height=34mm,
+  xmin=1000,xmax=5500,ymin=2000,ymax=16000,xtick={1000,2000,...,5000},ytick={2000,6000,...,14000},
+  xticklabel shift=1pt,
+  xlabel={Bytes received by the server, $B$},ylabel={2-RTT boundary (B)}]
+\addplot[ink,line width=0.4pt,solid,forget plot] coordinates {(1219.00,3331.60)(1280.00,3331.60)};
+\addplot[ink,line width=0.4pt,solid,forget plot] coordinates {(1280.00,3331.60)(1280.00,4569.62)};
+\addplot[ink,line width=0.4pt,solid,forget plot] coordinates {(1280.00,4569.62)(1706.67,4569.62)};
+\addplot[ink,line width=0.4pt,densely dotted,forget plot] coordinates {(1706.67,4569.62)(1706.67,5807.64)};
+\addplot[ink,line width=0.4pt,densely dotted,forget plot] coordinates {(1706.67,5807.64)(2133.33,5807.64)};
+\addplot[ink,line width=0.4pt,densely dotted,forget plot] coordinates {(2133.33,5807.64)(2133.33,7045.65)};
+\addplot[ink,line width=0.4pt,densely dotted,forget plot] coordinates {(2133.33,7045.65)(2560.00,7045.65)};
+\addplot[ink,line width=0.4pt,densely dotted,forget plot] coordinates {(2560.00,7045.65)(2560.00,8283.67)};
+\addplot[ink,line width=0.4pt,solid,forget plot] coordinates {(2560.00,8283.67)(2986.67,8283.67)};
+\addplot[ink,line width=0.4pt,densely dotted,forget plot] coordinates {(2986.67,8283.67)(2986.67,9521.69)};
+\addplot[ink,line width=0.4pt,densely dotted,forget plot] coordinates {(2986.67,9521.69)(3413.33,9521.69)};
+\addplot[ink,line width=0.4pt,densely dotted,forget plot] coordinates {(3413.33,9521.69)(3413.33,10759.70)};
+\addplot[ink,line width=0.4pt,densely dotted,forget plot] coordinates {(3413.33,10759.70)(3840.00,10759.70)};
+\addplot[ink,line width=0.4pt,densely dotted,forget plot] coordinates {(3840.00,10759.70)(3840.00,11997.72)};
+\addplot[ink,line width=0.4pt,solid,forget plot] coordinates {(3840.00,11997.72)(3990.00,11997.72)};
+\addplot[accent,line width=0.4pt,solid,forget plot] coordinates {(2500.00,5956.10)(2560.00,5956.10)};
+\addplot[accent,line width=0.4pt,solid,forget plot] coordinates {(2560.00,5956.10)(2560.00,7194.12)};
+\addplot[accent,line width=0.4pt,solid,forget plot] coordinates {(2560.00,7194.12)(2986.67,7194.12)};
+\addplot[accent,line width=0.4pt,densely dotted,forget plot] coordinates {(2986.67,7194.12)(2986.67,8432.14)};
+\addplot[accent,line width=0.4pt,densely dotted,forget plot] coordinates {(2986.67,8432.14)(3413.33,8432.14)};
+\addplot[accent,line width=0.4pt,densely dotted,forget plot] coordinates {(3413.33,8432.14)(3413.33,9670.15)};
+\addplot[accent,line width=0.4pt,densely dotted,forget plot] coordinates {(3413.33,9670.15)(3840.00,9670.15)};
+\addplot[accent,line width=0.4pt,densely dotted,forget plot] coordinates {(3840.00,9670.15)(3840.00,10908.17)};
+\addplot[accent,line width=0.4pt,solid,forget plot] coordinates {(3840.00,10908.17)(4266.67,10908.17)};
+\addplot[accent,line width=0.4pt,densely dotted,forget plot] coordinates {(4266.67,10908.17)(4266.67,12146.19)};
+\addplot[accent,line width=0.4pt,densely dotted,forget plot] coordinates {(4266.67,12146.19)(4693.33,12146.19)};
+\addplot[accent,line width=0.4pt,densely dotted,forget plot] coordinates {(4693.33,12146.19)(4693.33,13384.20)};
+\addplot[accent,line width=0.4pt,densely dotted,forget plot] coordinates {(4693.33,13384.20)(5120.00,13384.20)};
+\addplot[accent,line width=0.4pt,densely dotted,forget plot] coordinates {(5120.00,13384.20)(5120.00,14622.22)};
+\addplot[accent,line width=0.4pt,solid,forget plot] coordinates {(5120.00,14622.22)(5280.00,14622.22)};
+\addplot[x25519,only marks,forget plot] coordinates {(1279.00,3340.00) (1280.00,3340.00) (1281.00,4585.50) (1282.00,4585.50) (1300.00,4585.50) (1350.00,4585.50) (1450.00,4585.50)};
+\addplot[hybrid,only marks,forget plot] coordinates {(2560.00,5945.50) (2562.00,7191.00) (2700.00,7191.00)};
+\addplot[x25519open,forget plot] coordinates {(2605.00,8267.50) (3930.00,12005.50)};
+\addplot[hybridopen,forget plot] coordinates {(3891.00,10929.50) (5220.00,14611.50)};
+\node[font=\smallsize,anchor=south east,inner sep=1pt] at (axis cs:2560,8457.5) {$m=1$};
+\node[font=\smallsize,anchor=south east,inner sep=1pt] at (axis cs:3885,12195.5) {$m=2$};
+\node[font=\smallsize,anchor=north west,inner sep=1pt] at (axis cs:3936,10739.5) {$m=1$};
+\node[font=\smallsize,anchor=south east,inner sep=1pt] at (axis cs:5175,14801.5) {$m=2$};
+\node[font=\smallsize,anchor=south east,inner sep=1pt] at (axis cs:2090,6000) {X25519};
+\node[font=\smallsize,anchor=north west,inner sep=1pt] at (axis cs:3080,8100) {X25519MLKEM768};
+\addplot[x25519,only marks,forget plot] coordinates {(3760,5700)};
+\addplot[hybrid,only marks,forget plot] coordinates {(3890,5700)};
+\node[font=\smallsize,anchor=west,inner sep=1pt] at (axis cs:3990,5700) {padding arm};
+\addplot[x25519open,forget plot] coordinates {(3760,4300)};
+\addplot[hybridopen,forget plot] coordinates {(3890,4300)};
+\node[font=\smallsize,anchor=west,inner sep=1pt] at (axis cs:3990,4300) {parity arm};
+\addplot[ink,line width=0.4pt,forget plot] coordinates {(3690,2900)(3960,2900)};
+\node[font=\smallsize,anchor=west,inner sep=1pt] at (axis cs:3990,2900) {model, Eq. (1)};
+\end{axis}
+\node[anchor=north] at ($(A.south)+(0,-8.2mm)$) {\panel{a}};
+\begin{axis}[name=B,at={(80mm,0)},anchor=south west,scale only axis,width=56mm,height=34mm,
+  xmin=-0.5,xmax=6.5,ymin=40,ymax=120,xtick={0,1,2,3,4,5,6},xticklabels={{1\mbox{,}279},{1\mbox{,}280},{1\mbox{,}281},{1\mbox{,}282},{1\mbox{,}300},{1\mbox{,}350},{1\mbox{,}450}},xtick pos=bottom,ytick={40,60,...,120},
+  xticklabel shift=1pt,
+  xlabel={Client Initial size $W$ (B), not to scale},ylabel={Median HCT (ms)}]
+\addplot[ink,line width=0.45pt,densely dotted,forget plot] coordinates {(0.91,104.83) (1.50,104.83) (1.50,53.70) (1.91,53.70)};
+\addplot[x25519,only marks,forget plot] coordinates {(-0.09,104.95) (0.91,104.83) (1.91,53.70) (2.91,53.69) (3.91,53.71) (4.91,53.97) (5.91,54.35)};
+\addplot[hybrid,only marks,forget plot] coordinates {(1.09,105.72) (2.09,54.77) (5.09,54.44)};
+\node[font=\smallsize,anchor=west,inner sep=1pt] at (axis cs:1.58,80) {+1 B: $-51$ ms};
+\node[font=\smallsize,inner sep=1pt] at (axis cs:0.5,97) {2 RTT};
+\node[font=\smallsize,inner sep=1pt] at (axis cs:4,61) {1 RTT};
+\addplot[x25519,only marks,forget plot] coordinates {(3.3,113.5)};
+\node[font=\smallsize,anchor=west,inner sep=1pt] at (axis cs:3.48,113.5) {X25519};
+\addplot[hybrid,only marks,forget plot] coordinates {(3.3,105.5)};
+\node[font=\smallsize,anchor=west,inner sep=1pt] at (axis cs:3.48,105.5) {X25519MLKEM768};
+\end{axis}
+\node[anchor=north] at ($(B.south)+(0,-8.2mm)$) {\panel{b}};
+\pgfresetboundingbox
+\path (-13mm,-13.2mm) rectangle (137mm,34.8mm);
+\end{tikzpicture}
+\end{document}

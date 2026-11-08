@@ -1,0 +1,47 @@
+# X6 자동 정책 개발 측정 실행 기록
+
+F30은 [고정 계획](../g3/v33/plans/final_bundle_v1.json)의 X6를 실행한다. quic-go v0.61.0 테스트베드, initial congestion window 32 packet의 development 측정이며 confirmatory가 아니다. 완료 결과는 [X6 결과](X6_result.md), 사후 진단은 [X6 진단](X6_diagnostics.md)에 있다.
+
+## 셀과 비교 팔
+
+공통 gen33 서버와 셀별 동일 인증서에서 v33none, v33c1, 동결 v31auto, 동결 g2auto를 비교한다. S_bigcert는 certsize 16000 B, RTT 50 ms, uplink 2 Mbps이고 S_rtt200은 certsize 9000 B, RTT 200 ms, uplink 2 Mbps다. 두 셀은 c2s 손실 2→15→2%의 각 phase에서 300연결을 실행한다. D_p11_2955_l0는 certsize 2955 B, RTT 50 ms, uplink 제한 없음, 무손실 400연결이다. 각 셀·팔마다 독립 궤적 네 개를 실행하며 첫 300연결을 번인으로 분리한다.
+
+각 궤적은 새 캐시로 시작하고 같은 궤적의 phase와 블록 사이에는 캐시를 유지한다. 블록 안 팔 순서는 계획의 Williams 순서다. 기본 W는 1280 B이며 명시적 -ips를 주지 않는다. expect-k는 2, timeout은 10 s다. 정책 uplink는 netem의 참값을 입력하는 oracle 조건이다. token과 session resumption은 끈다.
+
+v33none은 sealed31, auto3, cache3, feedback 끔이다. v33c1 클라이언트는 profile 없이 auto3, cache3, feedback, repeat_first, client-tracer=false를 개별 지정한다. C1은 표준 QUIC에 없는 서버 회신이다. C1 대기 한도는 bigcert·p11 200 ms, RTT200 500 ms다. 서버는 sealed31, FEC on, basic 경로이며 C1 팔만 feedback을 켠다. [구체적인 플래그와 수집 범위](T7_conditions_v31.md)를 따른다.
+
+bigcert의 gap은 비-C1 팔 50 ms, C1 팔 1 ms다. RTT200은 네 팔 모두 50 ms, p11은 모두 8 ms다. 추가 셀 S_rtt200_idle_control은 v33none gap250의 새 캐시 궤적 하나, 900연결이다. 같은 phase·블록의 기존 RTT200 궤적 0의 none gap50 및 c1과 비교한다. 이 추가 셀은 궤적 하나 안의 진단이며 주 결과의 독립 궤적 네 개에 합치지 않는다.
+
+주 셀은 총 35,200연결이고 추가 셀은 900연결이다. 합계는 1,310단위, 36,100연결, 계획 예상 시간은 132분이다. 이는 완료 수나 실측 소요 시간이 아니다. 생성·대조 근거는 로컬 보존 폴더 `C:/dev/codex_handoff/final/runs/`의 F30_prepare.py와 F30_prelaunch.json이다.
+
+## 통계와 M1 조건
+
+주 HCT 차이는 번인 뒤 v33none-g2auto와 v33none-v31auto다. 연결이나 블록을 독립 표본으로 세지 않고 궤적별 차이 네 개의 Student t 95% 구간을 낸다. 자유도는 3이다. C1-none 서버 수신 바이트, 1-RTT 비율, 행동 분포와 p_mean 시계열도 보고한다. 번인·전체·손실 2% 및 15% 층별 값과 번인 뒤 1:1 재가중 값을 구분한다. 300/300/300 일정은 W1 B1의 450×3과 달라 직접 대조하지 않는다.
+
+계획 예상 반폭은 bigcert 4~5 ms, RTT200 2~5 ms다. 실제 차이의 절댓값이 실제 구간 반폭보다 작으면 판정불능으로 쓴다. 계획 예상 반폭을 관측 뒤 새 기준으로 쓰지 않는다. M1의 A/A 자는 bigcert 2% 층에만 적용하고 15% 층, 전체, 1:1 재가중, RTT200과 p11에는 적용하지 않는다.
+
+입력 M1은 [완료 결과](../g3/v33/results/v33_dev_M1_final_m1_iter024_20261107.json)다. M1 a_b는 0.336423 ms, 95% 구간 [-0.617591, 1.290437] ms이고 e_f는 -0.019504 ms, 구간 [-0.128106, 0.089098] ms다. 두 구간 모두 [-5,5] ms 안이므로 계획의 "봉인 측정과 직접 비교 불가" 경고 조건에는 해당하지 않는다. 이 판단은 M1의 해당 비교 범위다. X6는 같은 gen33 서버에서의 팔 간 비교로 쓰고 봉인 값과 섞은 표를 만들지 않는다. 공통 서버·정확한 DER·C1 수집 대기 때문에 봉인 측정과 완전히 같은 조건이 아니다.
+
+M1 c_d에서 계산한 A/A 자는 1.188556 ms다. M1의 실행·통계 판정과 환경 표류 진단은 F30_prelaunch.json에 같은 결과 파일의 SHA와 함께 보존한다. M1의 수치는 X6의 실제 효과가 아니다.
+
+## 관측 한계와 완료 뒤 검사
+
+D79대로 실제 mean_idle_ms는 null·미확인이다. 동결 바이너리에 연속 연결의 절대 시작 시각이 없어 S_bigcert 전체 궤적의 실제 idle 차이 5 ms 기준을 판정할 수 없다. feedback_wait_ns와 설정 gap의 합은 별도 진단이며 실제 idle로 대체하지 않는다. Go·바이너리·계획은 이 값을 얻으려고 바꾸지 않는다. 공식 값은 null을 유지한다. 서버 conn-log의 first_rx_ns로 낸 근사는 진단 문서에만 있고 공식 판정을 대신하지 않는다. 근사에서 X6.S_bigcert.t0.p1.b7.v33c1의 i=15 한 행을 뺐다. first_rx 간격이 7,094.363 ms이고 HCT가 79.301 ms라 근사가 7,015.062 ms다. Windows System 로그 Kernel-General Id 1이 2026-11-06T18:11:55.293824Z에서 18:12:02.252306Z로 6,958 ms 시각 변경을 기록했고 Time-Service 이벤트 37, 35가 같은 때 있다. HCT는 time.Since 단조 시계라 이 보정의 영향을 받지 않는다.
+
+연결별 시계열은 v33_dev_X6_final_x6_iter035_20261107.p_mean_series.json에 있고 결과 SHA와 연결돼 있다. 없는 p_mean은 p_mean_present false와 null로 남겼고 독립 helper로 대조했다.
+
+완료 뒤 모든 none 행의 arrivals.src·policy_path와 궤적 끝 cache3의 c1_seen=false를 확인한다. c1은 궤적별 첫 회신 다음 연결부터 policy_path=c1인지, 끝 캐시가 c1_seen=true인지 확인한다. 셀 전체의 one_rtt 분류별 수신률을 다시 집계한다. 행 20개 이상인 부류에서 수신률 0.95 미만이면 해당 셀의 C1 측정 제외를 표시한다. valid_rtt_rate 0.90 미만은 경고이며 그 자체로 측정 실패로 바꾸지 않는다.
+
+비용은 server_delta.bytes_in과 conn-log의 서버 수신량으로 보고한다. g2auto 클라이언트 parity 계수에는 client_parity_count_unreliable을 붙이고 fec_parse_fail 및 ips_used>=1395 수를 확인한다. 계획 커밋·SHA·첫 시작 시각, 실제 tc, SCID 대응, 수집 완전성, wire 상한과 캐시 독립성도 원자료와 대조한다. fec_parse_fail 8건은 S_rtt200 g2auto의 한 단위 X6.S_rtt200.t3.p1.b3.g2auto에만 있고, gen33 계열 auto3 팔만 보는 checks.fec_parse_fail의 대상이 아니다.
+
+S_rtt200 v33c1-v33none의 primary HCT 차이 +10.71 ms, 95% 구간 [6.73, 14.69]는 C1 대기창에서 받은 비회신 datagram이 정책 S와 RTT 입력에 들어간 바이너리(계획 v1의 gen33, sha256 앞자리 63854e33)의 값이다. C1W-1, C1W-2(d6969d7c8, c23f5e2b2)가 이 두 입력을 대기 전 값으로 바꿨다. 수정한 바이너리의 값은 재측정 X6S가 따로 낸다. [X6 결과](X6_result.md)는 측정 당시 생성물이라 고치지 않으며, 재측정 전에는 재생 수치를 결과 문서에 옮기지 않는다. 조건과 재생 값은 [정책 한계](FINAL_policy_limits.md)의 C1 대기창 행에 있다.
+
+## 실행 식별과 인계
+
+실행 ID는 `final_x6_iter035_20261107`이다. [Windows launcher](FINAL_launcher.md)에 X6와 위 M1 결과를 전달한다. 원자료와 PEM은 로컬 보존 WSL 경로 `~/v33_runs/final_x6_iter035_20261107/`에 둔다. 실행·전원·상태 기록은 로컬 보존 폴더의 F30_launch.py, F30_receipt.json, F30_start_samples.json에 남긴다. launcher의 절전 방지 종료 시각은 2026-11-07 08:00 KST다.
+
+완료 수집은 DONE, devbed 종료, 잠금 해제와 launcher 종료 코드를 확인한 뒤 시작한다. 최초 결과·문서·SHA 목록을 보존하고 SHA 검증 및 같은 인자의 report-only 두 번으로 바이트 일치를 확인한다. 결과 JSON과 자동 문서 docs/X6_result.md의 숫자·단서, 추가 시계열, MS-21과 이관된 검사 항목을 각각 검산한다. README·주장 문서·보고서 정오표의 종합 반영은 F32가 맡는다. H c6000, D_p15_4032와 전역 고정 팔은 F31의 선택 항목으로 남긴다.
+
+## 해석 단서
+
+S_bigcert 측정(2026-11-07 03:05:33~03:49:41 KST)은 Codex iter036~038의 작동 시간(03:18~03:46)과 겹쳤다. 깨끗한 행 HCT의 p10, p50, p90은 궤적 t0~t3 사이에서 0.5 ms 안이었다. g2auto의 블록 HCT는 m_used가 3이면 약 132 ms, 1이면 약 121 ms이고 궤적마다 전환 시점이 다르다. 그래서 겹친 블록의 큰 v33none-g2auto 차이를 부하 영향으로 읽지 않는다. [X6 결과](X6_result.md)의 HCT 팔 간 비교 65행 중 33행이 차이 관측이지만 다중 비교 보정이 없다. 인용은 계획의 주 대조와 그 조건 표기로 한정한다.

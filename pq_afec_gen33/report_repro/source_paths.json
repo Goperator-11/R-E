@@ -1,0 +1,237 @@
+{
+  "v4_workbook": [
+    "mlkem-quic-amplification/data/quic_amplification_v4.xlsx",
+    "R-E/mlkem-quic-amplification/data/quic_amplification_v4.xlsx"
+  ],
+  "p12_quantum": [
+    "pq_afec/experiments/results/p12_quantum.json"
+  ],
+  "p2_threshold": [
+    "pq_afec/experiments/results/p2_threshold.json"
+  ],
+  "p12_units": [
+    "pq_afec/experiments/state/p12_units.jsonl"
+  ],
+  "p14_dominance": [
+    "pq_afec/experiments/results/p14_dominance.json"
+  ],
+  "v30_decisions": [
+    "pq_afec_gen3/experiments/results/p21_gencompare_decisions.json"
+  ],
+  "v31_decisions": [
+    "pq_afec_gen31/experiments/results/p31_gencompare_decisions.json"
+  ],
+  "report_baseline": [
+    "codex_handoff/final/state/report_baseline.json"
+  ],
+  "p1_flight": [
+    "pq_afec/experiments/results/p1_flight.json"
+  ],
+  "p8_stability": [
+    "pq_afec/experiments/results/p8_stability.json"
+  ],
+  "p8_units": [
+    "pq_afec/experiments/state/p8_units.jsonl"
+  ],
+  "p10_completeness": [
+    "pq_afec/experiments/results/p10_completeness.json"
+  ],
+  "p16_uplink": [
+    "pq_afec/experiments/results/p16_uplink.json"
+  ],
+  "p17_adaptive_value": [
+    "pq_afec/experiments/results/p17_adaptive_value.json"
+  ],
+  "legacy_fixloop": [
+    "pq_afec/experiments/state/fixloop_detached.txt"
+  ],
+  "v30_stage0": [
+    "pq_afec_gen3/experiments/results/g3_stage0.json"
+  ],
+  "v30_m1confirm": [
+    "pq_afec_gen3/experiments/results/g3_m1confirm.json"
+  ],
+  "v30_run1": [
+    "pq_afec_gen3/experiments/results/p21_gencompare_run1.json"
+  ],
+  "v30_run2": [
+    "pq_afec_gen3/experiments/results/p21_gencompare_run2.json"
+  ],
+  "v31_run1": [
+    "pq_afec_gen31/experiments/results/p31_gencompare_run1.json"
+  ],
+  "v31_run2": [
+    "pq_afec_gen31/experiments/results/p31_gencompare_run2.json"
+  ],
+  "seal_stage0": [
+    "pq_afec_gen3/g3/SEAL_stage0.json"
+  ],
+  "seal_m1confirm": [
+    "pq_afec_gen3/g3/SEAL_m1confirm.json"
+  ],
+  "seal_stage2": [
+    "pq_afec_gen3/g3/SEAL_stage2.json"
+  ],
+  "seal_stage3": [
+    "pq_afec_gen31/g3/SEAL_stage3.json"
+  ],
+  "v31_recompute": [
+    "codex_handoff/state/evo/v31/stage3_verify/recompute.json"
+  ],
+  "current_benchmark": [
+    "pq_afec_gen33/g3/v33/V33FIX_benchmark_v1.json"
+  ],
+  "current_policy": [
+    "pq_afec_gen33/padfec/policy.py"
+  ],
+  "current_claims": [
+    "pq_afec_gen33/docs/REPORT_CLAIMS_v33.md"
+  ],
+  "current_candidate_dispositions": [
+    "pq_afec_gen33/docs/FINAL_rejected_candidates.md"
+  ],
+  "current_protocol": [
+    "pq_afec_gen33/g3/v33/bench_protocol.json"
+  ],
+  "current_replay": [
+    "pq_afec_gen33/g3/v33/V33FIX_replay_v1.json"
+  ],
+  "legacy_loop_state": [
+    "pq_afec/experiments/state/loop2.json"
+  ],
+  "sealed_v30_module": [
+    "padfec_archive/v30_stage2/experiments/p21_gencompare.py"
+  ],
+  "sealed_v31_module": [
+    "padfec_archive/v31_stage3/experiments/p21_gencompare.py"
+  ],
+  "archive_index": [
+    "padfec_archive/INDEX.json"
+  ],
+  "archive_manifest": [
+    "padfec_archive/MANIFEST.sha256"
+  ],
+  "current_verdict_recompute": [
+    "pq_afec_gen33/report_repro/v3_verdict_recompute.json"
+  ],
+  "current_seal_rehash": [
+    "pq_afec_gen33/report_repro/seal_rehash.json"
+  ],
+  "p18_mmax": [
+    "pq_afec/experiments/results/p18_mmax.json"
+  ],
+  "e6_netem": [
+    "pq_afec/experiments/results/e6_netem.json"
+  ],
+  "p0_env": [
+    "pq_afec/experiments/results/p0_env.json"
+  ],
+  "p4_model": [
+    "pq_afec/experiments/results/p4_model.json"
+  ],
+  "p7_verify": [
+    "pq_afec/experiments/results/p7_verify.json"
+  ],
+  "p11_adaptive": [
+    "pq_afec/experiments/results/p11_adaptive.json"
+  ],
+  "p13_beff": [
+    "pq_afec/experiments/results/p13_beff.json"
+  ],
+  "p15_v2policy": [
+    "pq_afec/experiments/results/p15_v2policy.json"
+  ],
+  "p20_residual": [
+    "pq_afec/experiments/results/p20_residual.json"
+  ],
+  "p19_provenance": [
+    "pq_afec/experiments/results/p19_provenance.json"
+  ],
+  "gate_go_parity": [
+    "pq_afec/experiments/results/gate_go_parity.json"
+  ],
+  "probe_race": [
+    "pq_afec/experiments/results/probe_race.json"
+  ],
+  "p1_units": [
+    "pq_afec/experiments/state/p1_units.jsonl"
+  ],
+  "p2_units": [
+    "pq_afec/experiments/state/p2_units.jsonl"
+  ],
+  "p3_units": [
+    "pq_afec/experiments/state/p3_units.jsonl"
+  ],
+  "p9_units": [
+    "pq_afec/experiments/state/p9_units.jsonl"
+  ],
+  "stage1_workbook": [
+    "mlkem-quic-amplification/data/ML-KEM_1단계_측정수치_v2.xlsx",
+    "R-E/mlkem-quic-amplification/data/ML-KEM_1단계_측정수치_v2.xlsx"
+  ],
+  "tls_workbook": [
+    "mlkem-quic-amplification/data/sweep2_results.xlsx",
+    "R-E/mlkem-quic-amplification/data/sweep2_results.xlsx"
+  ],
+  "tls_raw": [
+    "mlkem-quic-amplification/data/raw/run2.csv",
+    "R-E/mlkem-quic-amplification/data/raw/run2.csv"
+  ],
+  "g31_probe": [
+    "pq_afec_gen31/experiments/results/g31_probe.json"
+  ],
+  "g31_probe_excerpt": [
+    "pq_afec_gen33/report_repro/g31_probe_excerpt.json"
+  ],
+  "report_content": [
+    "pq_afec_gen33/report_repro/content.py"
+  ],
+  "fig1_generator": [
+    "pq_afec_gen33/report_repro/tools/fig1.py"
+  ],
+  "fig2_generator": [
+    "pq_afec_gen33/report_repro/tools/fig2.py"
+  ],
+  "v30_protocol": [
+    "pq_afec_gen3/g3/PROTOCOL_stage2.md"
+  ],
+  "v31_protocol": [
+    "pq_afec_gen31/g3/PROTOCOL_stage3.md"
+  ],
+  "v30_journals": [
+    "pq_afec_gen3/experiments/state"
+  ],
+  "v31_journals": [
+    "pq_afec_gen31/experiments/state"
+  ],
+  "v331_evaluation_raw": [
+    "codex_handoff/v33/runs/v33fix/A-eval"
+  ],
+  "v331_evaluation_summary": [
+    "codex_handoff/v33/runs/v33fix/A-eval/eval_v1.json"
+  ],
+  "legacy_readme": [
+    "pq_afec/README.md"
+  ],
+  "legacy_measured_report": [
+    "pq_afec/docs/PADFEC 실측 보고서.md"
+  ],
+  "legacy_full_report": [
+    "pq_afec/docs/실측 보고서.md"
+  ],
+  "legacy_pending": [
+    "pq_afec/docs/수정 대기 목록.md"
+  ],
+  "p18_units": [
+    "pq_afec/experiments/state/p18_units.jsonl"
+  ],
+  "deployment_readme": [
+    "R-E-wt/final/README.md",
+    "R-E/README.md",
+    "README.md"
+  ],
+  "tls_design_script": [
+    "mlkem-quic-amplification/archive/run_full.sh",
+    "R-E/mlkem-quic-amplification/archive/run_full.sh"
+  ]
+}

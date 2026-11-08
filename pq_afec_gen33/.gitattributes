@@ -37,3 +37,6 @@ g3/v33/validation/L2_unit/runs/*.log -text
 .gitignore text eol=lf
 .gitattributes text eol=lf
 *.png binary
+*.tex text eol=lf
+docs/loop_record/** -text
+g3/v33/evidence/final/** -text

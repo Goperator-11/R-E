@@ -1,0 +1,516 @@
+{
+ "sources": {
+  "X1": "g3/v33/results/v33_dev_X1_final_x1_iter027_20261107.json",
+  "X9": "g3/v33/results/v33_dev_X9_final_x9_iter031_20261107.json",
+  "X6": "g3/v33/results/v33_dev_X6_final_x6_iter035_20261107.json",
+  "BENCH": "g3/v33/V33FIX_benchmark_v1.json",
+  "PLAN": "g3/v33/plans/final_bundle_v1.json",
+  "DERIVED_X1": "g3/v33/results/derived_X1_medians_final_x1_iter027_20261107.json"
+ },
+ "rows": {
+  "RT-03-1": [
+   {
+    "text": "−0.79",
+    "source": "X9",
+    "key": "x9_by_direction.c2s.diff_ci95[0]",
+    "decimals": 2,
+    "scale": 100,
+    "sign": 1
+   },
+   {
+    "text": "0.92",
+    "source": "X9",
+    "key": "x9_by_direction.c2s.diff_ci95[1]",
+    "decimals": 2,
+    "scale": 100,
+    "sign": 1
+   },
+   {
+    "text": "−1.12",
+    "source": "X9",
+    "key": "x9_by_direction.both.diff_ci95[0]",
+    "decimals": 2,
+    "scale": 100,
+    "sign": 1
+   },
+   {
+    "text": "0.96",
+    "source": "X9",
+    "key": "x9_by_direction.both.diff_ci95[1]",
+    "decimals": 2,
+    "scale": 100,
+    "sign": 1
+   },
+   {
+    "text": "6,100",
+    "source": "X9",
+    "key": "x9_by_direction.c2s.n_measured.mlkem_off",
+    "decimals": 0,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "6,100",
+    "source": "X9",
+    "key": "x9_by_direction.both.n_measured.x25519_off",
+    "decimals": 0,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "0.07",
+    "source": "X9",
+    "key": "statistics.cells[cell=c2s].pto_contrast.primary.mean",
+    "decimals": 2,
+    "scale": 100,
+    "sign": 1
+   },
+   {
+    "text": "−0.08",
+    "source": "X9",
+    "key": "statistics.cells[cell=both].pto_contrast.primary.mean",
+    "decimals": 2,
+    "scale": 100,
+    "sign": 1
+   },
+   {
+    "text": "4.56",
+    "source": "X9",
+    "key": "statistics.cells[cell=c2s].pto_contrast.auxiliary.mean",
+    "decimals": 2,
+    "scale": 100,
+    "sign": 1
+   },
+   {
+    "text": "6.36",
+    "source": "X9",
+    "key": "statistics.cells[cell=both].pto_contrast.auxiliary.mean",
+    "decimals": 2,
+    "scale": 100,
+    "sign": 1
+   },
+   {
+    "text": "61",
+    "source": "X9",
+    "key": "statistics.cells[cell=c2s].pto_contrast.primary.n_blocks",
+    "decimals": 0,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "512",
+    "source": "PLAN",
+    "key": "profiles.x9.certsize",
+    "decimals": 0,
+    "scale": 1,
+    "sign": 1
+   }
+  ],
+  "RT-03-2": [
+   {
+    "text": "4.80",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l2].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "2.91",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l2].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.ci95[0]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "6.69",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l2].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.ci95[1]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "39",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l2].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.n",
+    "decimals": 0,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "1.19",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l2].contrasts[id=pad4L3_minus_m4L3,scope=primary].aa.ruler_ms",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "35.12",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l15].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "28.63",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l15].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.ci95[0]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "41.61",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l15].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.ci95[1]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "28",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l15].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.n",
+    "decimals": 0,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "117.88",
+    "source": "X1",
+    "key": "statistics.cells[cell=rtt200_l15].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "77.99",
+    "source": "X1",
+    "key": "statistics.cells[cell=rtt200_l15].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.ci95[0]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "157.76",
+    "source": "X1",
+    "key": "statistics.cells[cell=rtt200_l15].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.ci95[1]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "16",
+    "source": "X1",
+    "key": "statistics.cells[cell=rtt200_l15].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.n",
+    "decimals": 0,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "0.02",
+    "source": "DERIVED_X1",
+    "key": "cells[cell=bigcert_l2].median_diff_ms",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "47.37",
+    "source": "DERIVED_X1",
+    "key": "cells[cell=bigcert_l15].median_diff_ms",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "1.20",
+    "source": "DERIVED_X1",
+    "key": "cells[cell=rtt200_l15].median_diff_ms",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   }
+  ],
+  "RT-03-3": [
+   {
+    "text": "29.61",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_bigcert].contrasts[id=v33none_minus_g2auto,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "21.40",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_bigcert].contrasts[id=v33none_minus_g2auto,scope=primary].hct.ci95[1]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "37.82",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_bigcert].contrasts[id=v33none_minus_g2auto,scope=primary].hct.ci95[0]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "10.98",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_rtt200].contrasts[id=v33none_minus_g2auto,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "8.58",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_rtt200].contrasts[id=v33none_minus_g2auto,scope=primary].hct.ci95[1]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "13.38",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_rtt200].contrasts[id=v33none_minus_g2auto,scope=primary].hct.ci95[0]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "−0.04",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_bigcert].contrasts[id=v33none_minus_v31auto,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "−8.07",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_bigcert].contrasts[id=v33none_minus_v31auto,scope=primary].hct.ci95[0]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "7.98",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_bigcert].contrasts[id=v33none_minus_v31auto,scope=primary].hct.ci95[1]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "0.77",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_rtt200].contrasts[id=v33none_minus_v31auto,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "−3.52",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_rtt200].contrasts[id=v33none_minus_v31auto,scope=primary].hct.ci95[0]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "5.07",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_rtt200].contrasts[id=v33none_minus_v31auto,scope=primary].hct.ci95[1]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "4.19",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_bigcert].contrasts[id=v33c1_minus_v33none,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "1.80",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_bigcert].contrasts[id=v33c1_minus_v33none,scope=primary].hct.ci95[1]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "6.58",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_bigcert].contrasts[id=v33c1_minus_v33none,scope=primary].hct.ci95[0]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "10.71",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_rtt200].contrasts[id=v33c1_minus_v33none,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "6.73",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_rtt200].contrasts[id=v33c1_minus_v33none,scope=primary].hct.ci95[0]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "14.69",
+    "source": "X6",
+    "key": "statistics.cells[cell=S_rtt200].contrasts[id=v33c1_minus_v33none,scope=primary].hct.ci95[1]",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "2,770",
+    "source": "X6",
+    "key": "statistics.cells[cell=D_p11_2955_l0].contrasts[id=v33c1_minus_v33none,scope=primary].server_bytes_in_per_conn_difference.mean",
+    "decimals": 0,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "−0.017",
+    "source": "BENCH",
+    "key": "side_by_side[candidate=v331_c1,baseline=v331_none,scenario=B11].n131072_l3_joint.mean_ms",
+    "decimals": 3,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "2,955",
+    "source": "PLAN",
+    "key": "profiles.p11.certsize",
+    "decimals": 0,
+    "scale": 1,
+    "sign": 1
+   }
+  ],
+  "RT-19": [
+   {
+    "text": "1.14",
+    "source": "BENCH",
+    "key": "side_by_side[candidate=v331_c1,baseline=v32,scenario=B5].n131072_l3_joint.mean_ms",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "3.64",
+    "source": "BENCH",
+    "key": "side_by_side[candidate=v331_c1,baseline=v32,scenario=B7].n131072_l3_joint.mean_ms",
+    "decimals": 2,
+    "scale": 1,
+    "sign": -1
+   },
+   {
+    "text": "0.16",
+    "source": "BENCH",
+    "key": "side_by_side[candidate=v331_c1,baseline=v32,scenario=B10].n131072_l3_joint.mean_ms",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "0.16",
+    "source": "BENCH",
+    "key": "b6_independent_repetition.results.n131072_l3_joint[candidate=v331_c1,baseline=v32,scenario=B6].mean_ms",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "0.49",
+    "source": "BENCH",
+    "key": "b6_independent_repetition.results.n131072_l3_joint[candidate=v331_c1,baseline=v32,scenario=B6].adjusted_upper_ms",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "0.5",
+    "source": "LITERAL",
+    "key": "V33FIX_benchmark_v1.json b6_independent_repetition.plan.statistics의 regression gate 0.5 ms inclusive",
+    "decimals": 1,
+    "scale": 1,
+    "sign": 1
+   }
+  ],
+  "RT-03-6": [
+   {
+    "text": "4.80",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l2].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "117.88",
+    "source": "X1",
+    "key": "statistics.cells[cell=rtt200_l15].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   }
+  ],
+  "RT-03-7": [
+   {
+    "text": "4.80",
+    "source": "X1",
+    "key": "statistics.cells[cell=bigcert_l2].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   },
+   {
+    "text": "117.88",
+    "source": "X1",
+    "key": "statistics.cells[cell=rtt200_l15].contrasts[id=pad4L3_minus_m4L3,scope=primary].hct.mean",
+    "decimals": 2,
+    "scale": 1,
+    "sign": 1
+   }
+  ],
+  "RT-21-1": [
+   {
+    "text": "7",
+    "source": "LITERAL",
+    "key": "F08_app_search_handoff.md 실행 날짜 2026-11-07",
+    "decimals": 0,
+    "scale": 1,
+    "sign": 1
+   }
+  ],
+  "RT-21-2": [
+   {
+    "text": "7",
+    "source": "LITERAL",
+    "key": "F08_app_search_handoff.md 실행 날짜 2026-11-07",
+    "decimals": 0,
+    "scale": 1,
+    "sign": 1
+   }
+  ]
+ }
+}

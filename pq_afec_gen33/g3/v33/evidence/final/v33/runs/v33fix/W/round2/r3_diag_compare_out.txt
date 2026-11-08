@@ -1,0 +1,4 @@
+diff keys ['seconds', 'started_kst']
+new started 2026-11-02T06:31:22.885380+09:00 seconds 26.166
+bytes equal to repo file after restoring time fields True
+regen sha 876b1f6236443f1b6f63528ddbfbafde78cafa3f79e70fc6286de965e5509b1f

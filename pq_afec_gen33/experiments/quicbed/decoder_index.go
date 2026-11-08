@@ -15,6 +15,7 @@ const decoderFlightCap = 1024
 const decoderFlightPayloadCap = 32768
 const decoderPayloadCap = 8 << 20
 const decoderInputReserve = 65535
+const udpMaxPayload = 1472
 
 type decoderGroup struct {
 	dcid string
@@ -101,7 +102,7 @@ func (x *originalIndex) find(group decoderGroup, crc uint32, size int) []byte {
 
 func decoderOriginal(data []byte) bool {
 	h := parseLongHdr(data)
-	return h.ok && h.typ == 0 && len(h.dcid) > 0 && len(data) <= 1472
+	return h.ok && h.typ == 0 && len(h.dcid) > 0 && len(data) <= udpMaxPayload
 }
 
 type legacyIndex struct {
@@ -199,7 +200,7 @@ func (s *decodeConn) legacyFlightLocked(key, dc string, ca *connAcct, addr net.A
 		s.stats.DecoderFlightCap++
 		return nil
 	}
-	if fb.symLen > 1472 {
+	if fb.symLen > udpMaxPayload {
 		s.stats.DecoderPayloadCap++
 		return nil
 	}

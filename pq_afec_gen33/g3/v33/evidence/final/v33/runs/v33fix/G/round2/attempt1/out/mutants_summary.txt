@@ -1,0 +1,10 @@
+G1_empty_original_first test rc=1 pass=264 skip=2 fail=1 failing: TestRetransEmptyModeFollowsCLIDefault 
+G3a_wiring_raw_retrans test rc=1 pass=264 skip=2 fail=1 failing: TestWireRunClientCarriesResolvedSettings 
+G3b_tracer_always_on test rc=1 pass=264 skip=2 fail=1 failing: TestClientWiringInstallsTracerOnlyWhenEnabled 
+G3c_wiring_raw_wait test rc=1 pass=264 skip=2 fail=1 failing: TestWireRunClientCarriesResolvedSettings 
+G3d_wiring_raw_tracer test rc=1 pass=263 skip=2 fail=2 failing: TestWireRunClientCarriesResolvedSettings TestClientWiringInstallsTracerOnlyWhenEnabled 
+G3e_wiring_raw_expectk test rc=1 pass=264 skip=2 fail=1 failing: TestWireRunClientCarriesResolvedSettings 
+G3f_main_bypasses_wiring test rc=0 pass=265 skip=2 fail=0 failing: 
+G3g_runclient_ignores_tracer test rc=0 pass=265 skip=2 fail=0 failing: 
+G4_no_logged_flag test rc=1 pass=264 skip=2 fail=1 failing: TestConnLogShutdownThenExpiryKeepsOneLine 
+control test rc=0 pass=265 skip=2 fail=0

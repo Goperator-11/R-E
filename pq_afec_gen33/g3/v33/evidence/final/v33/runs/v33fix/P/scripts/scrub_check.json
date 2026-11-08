@@ -1,0 +1,1040 @@
+{
+  "mode": "check_only",
+  "status": "FINDINGS",
+  "text_files_scanned": 102832,
+  "known_binary_files_not_decoded": 10914,
+  "affected_file_counts": {
+    "user_path": 19839,
+    "private_key": 3,
+    "email": 2
+  },
+  "examples": [
+    {
+      "path": "docs/O4_reference_result.md",
+      "line": 22,
+      "kind": "user_path"
+    },
+    {
+      "path": "docs/S5_test_hygiene.md",
+      "line": 19,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/gen33_parity_baseline.json",
+      "line": 18,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/archive/INDEX.json",
+      "line": 8,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/archive/S1_archive.md",
+      "line": 24,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/archive/tools/archive_wsl.py",
+      "line": 11,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/baseline/S0_baseline.md",
+      "line": 45,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/baseline/S0_binary.txt",
+      "line": 1,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/baseline/S0_gate.json",
+      "line": 18,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/bench_overlays/J1_v1_execution_plan.json",
+      "line": 24,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/bench_overlays/J6_v1_execution_plan.json",
+      "line": 24,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/bench_overlays/L1_v1_execution_plan.json",
+      "line": 31,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/bench_overlays/L1_v1_execution_plan_v2.json",
+      "line": 30,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/bench_overlays/L2_v1_execution_plan.json",
+      "line": 24,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/bench_overlays/L3_v1_execution_plan.json",
+      "line": 28,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/bench_overlays/L5_v1_execution_plan.json",
+      "line": 24,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/fixtures/S5_test_inputs_v1/j7/run.json",
+      "line": 321,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/plans/M4_guard_v1/M4_guard_basic_v1.plan.json",
+      "line": 79,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/plans/M4_guard_v1/M4_guard_oob_v1.plan.json",
+      "line": 79,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/A1_claims_v1/runs/A1_audit_read_v1.txt",
+      "line": 27,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/A1_claims_v1/runs/A1_certificate_v1/commands.json",
+      "line": 29,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/A1_claims_v1/runs/A1_certificate_v1/sizes.json",
+      "line": 65,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/build/go_race.txt",
+      "line": 1,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/build/go_test.txt",
+      "line": 1,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/build/qamp.buildinfo",
+      "line": 1,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/E12_findings_v1.json",
+      "line": 32,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/E12_gate_report_01.json",
+      "line": 18,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/E12_l1_gate_01.json",
+      "line": 14,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/E12_l1_gate_01.started.json",
+      "line": 14,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/E12_l1_gate_02.json",
+      "line": 14,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/E12_l1_gate_02.started.json",
+      "line": 14,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/E12_l1_gate_report_01.json",
+      "line": 17,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/E12_l1_gate_report_02.json",
+      "line": 17,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/E12_result.md",
+      "line": 9,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/J7_collection_v1.finished.json",
+      "line": 5,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/E12_v1/runs/e12_prepare_record_v1.py",
+      "line": 89,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_analysis_preparation_v1/runs/J1_collection_launch_v1.json",
+      "line": 11,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_analysis_preparation_v1/runs/launch_j1_joint_plan_v1.ps1",
+      "line": 6,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_collector_check_01.log",
+      "line": 26,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_full_v1_plan.json",
+      "line": 24,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1.finished.json",
+      "line": 13,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_cost_only_v1_c1.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_cost_only_v1_c1.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_cost_only_v1_c1/c1/B1/seed00031.json",
+      "line": 311,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_cost_only_v1_c1_dry.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_cost_only_v1_c1_dry.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_cost_only_v1_none.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_cost_only_v1_none.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_cost_only_v1_none/none/B1/seed00031.json",
+      "line": 312,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_cost_only_v1_none_dry.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_cost_only_v1_none_dry.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_c1.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_c1.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_c1/c1/B1/seed00031.json",
+      "line": 311,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_c1_dry.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_c1_dry.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_ideal.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_ideal.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_ideal/ideal/B1/seed00031.json",
+      "line": 311,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_ideal_dry.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_ideal_dry.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_none.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_none.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_none/none/B1/seed00031.json",
+      "line": 312,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_none_dry.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/J1_smoke_v1_J1_v1_none_dry.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/iter020_sources.txt",
+      "line": 51,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_collection_preparation_v1/runs/launch_j1_collection_v1.ps1",
+      "line": 6,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_execution_preparation_v1/runs/J1_full_v1.finished.json",
+      "line": 13,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_collection_launch_v1.json",
+      "line": 11,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_collector_check_01.log",
+      "line": 26,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_full_v1.finished.json",
+      "line": 13,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_full_v1_plan.json",
+      "line": 24,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_joint_plan_launch_v1.json",
+      "line": 11,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_joint_plan_v1.finished.json",
+      "line": 4,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_joint_plan_v1.started.json",
+      "line": 4,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_joint_report_launch_v1.json",
+      "line": 13,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_joint_report_v1.finished.json",
+      "line": 4,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_joint_report_v1.started.json",
+      "line": 4,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_joint_run_launch_v1.json",
+      "line": 14,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_joint_run_v1.finished.json",
+      "line": 4,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_joint_run_v1.started.json",
+      "line": 4,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00031.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00032.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00033.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00034.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00035.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00036.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00037.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00038.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00039.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00040.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00041.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00042.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00043.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00044.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00045.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00046.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00047.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00048.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00049.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_01/c1/B3_u0/seed00050.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00031.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00032.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00033.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00034.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00035.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00036.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00037.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00038.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00039.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00040.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00041.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00042.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00043.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00044.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00045.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00046.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00047.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00048.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00049.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_02/c1/B3_u2/seed00050.json",
+      "line": 262,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00031.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00032.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00033.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00034.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00035.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00036.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00037.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00038.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00039.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00040.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00041.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00042.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00043.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00044.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00045.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00046.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00047.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00048.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00049.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_03/c1/B4/seed00050.json",
+      "line": 271,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00031.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00032.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00033.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00034.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00035.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00036.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00037.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00038.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00039.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00040.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00041.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00042.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00043.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00044.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00045.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00046.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00047.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00048.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00049.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_04/none/B3_u0/seed00050.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00031.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00032.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00033.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00034.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00035.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00036.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00037.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00038.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00039.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00040.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00041.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00042.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00043.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00044.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00045.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00046.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00047.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00048.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00049.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_05/none/B3_u2/seed00050.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_06.finished.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_06.started.json",
+      "line": 3,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_06/none/B4/seed00031.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_06/none/B4/seed00032.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_06/none/B4/seed00033.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_06/none/B4/seed00034.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_06/none/B4/seed00035.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/J1_final_analysis_v1/runs/J1_raw_v1_06/none/B4/seed00036.json",
+      "line": 236,
+      "kind": "user_path"
+    },
+    {
+      "path": "g3/v33/validation/T5_index_v1/runs/T5_index_build_records_v1/T5_index_build_07/build_record/qamp",
+      "line": 90275,
+      "kind": "email"
+    },
+    {
+      "path": "tests/test_v33_repro_tools.py",
+      "line": 107,
+      "kind": "email"
+    },
+    {
+      "path": "g3/v33/validation/S5_hygiene_v1/runs/S5_audit_read_v1.txt",
+      "line": 132,
+      "kind": "private_key"
+    },
+    {
+      "path": "g3/v33/validation/S5_hygiene_v1/runs/s5_preserve_private_keys_v1.py",
+      "line": 22,
+      "kind": "private_key"
+    },
+    {
+      "path": "tests/test_v33_repro_tools.py",
+      "line": 94,
+      "kind": "private_key"
+    }
+  ],
+  "examples_truncated": true,
+  "unavailable": []
+}

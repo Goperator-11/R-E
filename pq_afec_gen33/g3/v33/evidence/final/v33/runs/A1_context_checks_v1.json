@@ -1,0 +1,1010 @@
+{
+  "status": "PASS",
+  "kind": "read_only_hash_check_and_explicit_size_hypotheses",
+  "recorded_kst": "2026-11-01T08:44:52.714662+09:00",
+  "seals": [
+    {
+      "generation": "pq_afec_gen3",
+      "stage": 0,
+      "seal": "C:\\dev\\pq_afec_gen3\\g3\\SEAL_stage0.json",
+      "seal_sha256": "6f1cb9d98d58c514e020de849b39e1f7862a91ed437a67368feb2e28478c3784",
+      "fields": [
+        {
+          "field": "sha256",
+          "total": 3,
+          "matched": 3,
+          "records": [
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\g3\\stage0_predictions.json",
+              "expected": "9df45d84f68b610fb9cc233c701d614ee513bdba1736a66e766fae39325b1db3",
+              "actual": "9df45d84f68b610fb9cc233c701d614ee513bdba1736a66e766fae39325b1db3",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\g3\\PROTOCOL_stage0.md",
+              "expected": "025b4a5e21588112ebb9ac83b9cc82c7130fa44966c0a01fbe708d5022f54339",
+              "actual": "025b4a5e21588112ebb9ac83b9cc82c7130fa44966c0a01fbe708d5022f54339",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec3\\layout.py",
+              "expected": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+              "actual": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+              "match": true
+            }
+          ]
+        },
+        {
+          "field": "also_recorded_sha256",
+          "total": 6,
+          "matched": 6,
+          "records": [
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\g3\\stage0_predict.py",
+              "expected": "d3556d8669f7c9d0df43af925d8226cc1b36578abb2a3cb555629adc6785797f",
+              "actual": "d3556d8669f7c9d0df43af925d8226cc1b36578abb2a3cb555629adc6785797f",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\tests\\test_padfec3_layout.py",
+              "expected": "eac9e75b6454c28e33028491119206ebbd7262e110270dfaf8725acba71f089a",
+              "actual": "eac9e75b6454c28e33028491119206ebbd7262e110270dfaf8725acba71f089a",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec3\\__init__.py",
+              "expected": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+              "actual": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec\\policy.py",
+              "expected": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+              "actual": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec\\quantum.py",
+              "expected": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+              "actual": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\afec\\channel.py",
+              "expected": "2b5de59b0ef68cbb0cdfa2f03efd8040e268ad26cd4a8c9f728fa4bd9eb9a1f3",
+              "actual": "2b5de59b0ef68cbb0cdfa2f03efd8040e268ad26cd4a8c9f728fa4bd9eb9a1f3",
+              "match": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "generation": "pq_afec_gen3",
+      "stage": 2,
+      "seal": "C:\\dev\\pq_afec_gen3\\g3\\SEAL_stage2.json",
+      "seal_sha256": "6573a1e53def7d886b0b43d8a8237671cc55f35bdd78e3a05acc6d9ebb103ed7",
+      "fields": [
+        {
+          "field": "sha256",
+          "total": 29,
+          "matched": 29,
+          "records": [
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\g3\\PROTOCOL_stage2.md",
+              "expected": "0714ac82531a01bde85ef3c0b68239441de425635e3c455d18a34698f9db0047",
+              "actual": "0714ac82531a01bde85ef3c0b68239441de425635e3c455d18a34698f9db0047",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\g3\\stage2_h_draw.json",
+              "expected": "61075c9b535c306f5066adf1b47cf5fce494e441177586d40cb7f69a4a0afb69",
+              "actual": "61075c9b535c306f5066adf1b47cf5fce494e441177586d40cb7f69a4a0afb69",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\g3\\stage2_h_predictions.json",
+              "expected": "86add79ade000d9e6931d9fd58db6c1c340e74c5ef66efe9af97a8ed6a4fac87",
+              "actual": "86add79ade000d9e6931d9fd58db6c1c340e74c5ef66efe9af97a8ed6a4fac87",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\p21_gencompare.py",
+              "expected": "0732439939793ba11ea6a8129de9ef5a8d3ae16fbd72addeec490245a8486683",
+              "actual": "0732439939793ba11ea6a8129de9ef5a8d3ae16fbd72addeec490245a8486683",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\g3bed.py",
+              "expected": "b3f68c1ca2e129a7def1e467072ccae713122677b378165f874b497e16df4ed1",
+              "actual": "b3f68c1ca2e129a7def1e467072ccae713122677b378165f874b497e16df4ed1",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\padbed.py",
+              "expected": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+              "actual": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\_journal.py",
+              "expected": "903c0117ffe0ecb7b855591a5697906c566b00342a94c84f1e826683f72d5281",
+              "actual": "903c0117ffe0ecb7b855591a5697906c566b00342a94c84f1e826683f72d5281",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\blockstat.py",
+              "expected": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+              "actual": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\build_g3b.sh",
+              "expected": "e7260311ea73ddfdebd1f82ccbaa8b4d66ac2ec319fdde543e3304a80097c82b",
+              "actual": "e7260311ea73ddfdebd1f82ccbaa8b4d66ac2ec319fdde543e3304a80097c82b",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec3\\__init__.py",
+              "expected": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+              "actual": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec3\\layout.py",
+              "expected": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+              "actual": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec3\\learn3.py",
+              "expected": "17d2714ec9970c23f0f3e5f2a62f3fa00588f5b037909ca7f1bf70f38bec98b6",
+              "actual": "17d2714ec9970c23f0f3e5f2a62f3fa00588f5b037909ca7f1bf70f38bec98b6",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec3\\decide3.py",
+              "expected": "db3d4db64fe2ef1e2ae270182a290f215095c6d3a9360480077788e98755340c",
+              "actual": "db3d4db64fe2ef1e2ae270182a290f215095c6d3a9360480077788e98755340c",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\client.go",
+              "expected": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+              "actual": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\dataapp.go",
+              "expected": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+              "actual": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\mlkemcheck.go",
+              "expected": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+              "actual": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\pfail_table.go",
+              "expected": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+              "actual": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\policy.go",
+              "expected": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+              "actual": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\policy3.go",
+              "expected": "a53a58221ad697d561d407a2a38d1c685cf00efc2a2ac315f7eb7dea940c4055",
+              "actual": "a53a58221ad697d561d407a2a38d1c685cf00efc2a2ac315f7eb7dea940c4055",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\policy3_test.go",
+              "expected": "456ae0ff3fcfa7f8e521c55a82e05796af24eaed4a28be12bf206e8e11b372da",
+              "actual": "456ae0ff3fcfa7f8e521c55a82e05796af24eaed4a28be12bf206e8e11b372da",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\policy_adaptation_test.go",
+              "expected": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+              "actual": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\policy_rtt_test.go",
+              "expected": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+              "actual": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\qamp.go",
+              "expected": "5d0bcabca268da898d1607602d840e9a7f4695b2b4d324bdf1932ff12fc95dc5",
+              "actual": "5d0bcabca268da898d1607602d840e9a7f4695b2b4d324bdf1932ff12fc95dc5",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\qamp_accounting_test.go",
+              "expected": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+              "actual": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\qamp_audit_test.go",
+              "expected": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+              "actual": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\qamp_lead_test.go",
+              "expected": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+              "actual": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\server.go",
+              "expected": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+              "actual": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\go.mod",
+              "expected": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+              "actual": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\quicbed\\go.sum",
+              "expected": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+              "actual": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+              "match": true
+            }
+          ]
+        },
+        {
+          "field": "also_recorded_sha256",
+          "total": 9,
+          "matched": 9,
+          "records": [
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\tests\\test_p21_gencompare.py",
+              "expected": "98df0b2bd688d8f687a57790da037ecbe555d37cef9dc38915e7161657646939",
+              "actual": "98df0b2bd688d8f687a57790da037ecbe555d37cef9dc38915e7161657646939",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec\\policy.py",
+              "expected": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+              "actual": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec\\quantum.py",
+              "expected": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+              "actual": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\padfec\\table.py",
+              "expected": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+              "actual": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\g3\\RESULT_stage0.md",
+              "expected": "7c4167b46f9ea7097c910917caddd68fc1bd6091142823ef88b025529dfe481e",
+              "actual": "7c4167b46f9ea7097c910917caddd68fc1bd6091142823ef88b025529dfe481e",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\g3\\SEAL_stage0.json",
+              "expected": "6f1cb9d98d58c514e020de849b39e1f7862a91ed437a67368feb2e28478c3784",
+              "actual": "6f1cb9d98d58c514e020de849b39e1f7862a91ed437a67368feb2e28478c3784",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\g3\\RESULT_m1confirm.md",
+              "expected": "70a67a8d3d2485eb609277a94d3cc7282a5421423e6f9c4c2d45d8d740c59f3b",
+              "actual": "70a67a8d3d2485eb609277a94d3cc7282a5421423e6f9c4c2d45d8d740c59f3b",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\g3\\SEAL_m1confirm.json",
+              "expected": "f1e149f5a900966ad33bac1309150edc810130a0cba376bacd8742453911afa7",
+              "actual": "f1e149f5a900966ad33bac1309150edc810130a0cba376bacd8742453911afa7",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen3\\experiments\\results\\gate_v3_parity.json",
+              "expected": "2c2cbda55351e36d19b68353f636128a58d91ce80cc1a3f028fd2de99f4601b5",
+              "actual": "2c2cbda55351e36d19b68353f636128a58d91ce80cc1a3f028fd2de99f4601b5",
+              "match": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "generation": "pq_afec_gen31",
+      "stage": 0,
+      "seal": "C:\\dev\\pq_afec_gen31\\g3\\SEAL_stage0.json",
+      "seal_sha256": "6f1cb9d98d58c514e020de849b39e1f7862a91ed437a67368feb2e28478c3784",
+      "fields": [
+        {
+          "field": "sha256",
+          "total": 3,
+          "matched": 2,
+          "records": [
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\stage0_predictions.json",
+              "expected": "9df45d84f68b610fb9cc233c701d614ee513bdba1736a66e766fae39325b1db3",
+              "actual": "9df45d84f68b610fb9cc233c701d614ee513bdba1736a66e766fae39325b1db3",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\PROTOCOL_stage0.md",
+              "expected": "025b4a5e21588112ebb9ac83b9cc82c7130fa44966c0a01fbe708d5022f54339",
+              "actual": "025b4a5e21588112ebb9ac83b9cc82c7130fa44966c0a01fbe708d5022f54339",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec3\\layout.py",
+              "expected": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+              "actual": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+              "match": false
+            }
+          ]
+        },
+        {
+          "field": "also_recorded_sha256",
+          "total": 6,
+          "matched": 5,
+          "records": [
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\stage0_predict.py",
+              "expected": "d3556d8669f7c9d0df43af925d8226cc1b36578abb2a3cb555629adc6785797f",
+              "actual": "d3556d8669f7c9d0df43af925d8226cc1b36578abb2a3cb555629adc6785797f",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\tests\\test_padfec3_layout.py",
+              "expected": "eac9e75b6454c28e33028491119206ebbd7262e110270dfaf8725acba71f089a",
+              "actual": "c32cd11619123daee0afa82f39745817e623a1bee02eb255196f1d731f058270",
+              "match": false
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec3\\__init__.py",
+              "expected": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+              "actual": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec\\policy.py",
+              "expected": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+              "actual": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec\\quantum.py",
+              "expected": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+              "actual": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\afec\\channel.py",
+              "expected": "2b5de59b0ef68cbb0cdfa2f03efd8040e268ad26cd4a8c9f728fa4bd9eb9a1f3",
+              "actual": "2b5de59b0ef68cbb0cdfa2f03efd8040e268ad26cd4a8c9f728fa4bd9eb9a1f3",
+              "match": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "generation": "pq_afec_gen31",
+      "stage": 2,
+      "seal": "C:\\dev\\pq_afec_gen31\\g3\\SEAL_stage2.json",
+      "seal_sha256": "6573a1e53def7d886b0b43d8a8237671cc55f35bdd78e3a05acc6d9ebb103ed7",
+      "fields": [
+        {
+          "field": "sha256",
+          "total": 29,
+          "matched": 22,
+          "records": [
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\PROTOCOL_stage2.md",
+              "expected": "0714ac82531a01bde85ef3c0b68239441de425635e3c455d18a34698f9db0047",
+              "actual": "0714ac82531a01bde85ef3c0b68239441de425635e3c455d18a34698f9db0047",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\stage2_h_draw.json",
+              "expected": "61075c9b535c306f5066adf1b47cf5fce494e441177586d40cb7f69a4a0afb69",
+              "actual": "61075c9b535c306f5066adf1b47cf5fce494e441177586d40cb7f69a4a0afb69",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\stage2_h_predictions.json",
+              "expected": "86add79ade000d9e6931d9fd58db6c1c340e74c5ef66efe9af97a8ed6a4fac87",
+              "actual": "86add79ade000d9e6931d9fd58db6c1c340e74c5ef66efe9af97a8ed6a4fac87",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\p21_gencompare.py",
+              "expected": "0732439939793ba11ea6a8129de9ef5a8d3ae16fbd72addeec490245a8486683",
+              "actual": "969d5cde0fe83212ee7a1a060e155ed64c84989a72135f78727a5f4529659e3c",
+              "match": false
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\g3bed.py",
+              "expected": "b3f68c1ca2e129a7def1e467072ccae713122677b378165f874b497e16df4ed1",
+              "actual": "b3f68c1ca2e129a7def1e467072ccae713122677b378165f874b497e16df4ed1",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\padbed.py",
+              "expected": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+              "actual": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\_journal.py",
+              "expected": "903c0117ffe0ecb7b855591a5697906c566b00342a94c84f1e826683f72d5281",
+              "actual": "903c0117ffe0ecb7b855591a5697906c566b00342a94c84f1e826683f72d5281",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\blockstat.py",
+              "expected": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+              "actual": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\build_g3b.sh",
+              "expected": "e7260311ea73ddfdebd1f82ccbaa8b4d66ac2ec319fdde543e3304a80097c82b",
+              "actual": "e7260311ea73ddfdebd1f82ccbaa8b4d66ac2ec319fdde543e3304a80097c82b",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec3\\__init__.py",
+              "expected": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+              "actual": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec3\\layout.py",
+              "expected": "ecbecced727bc96323568d63779c16831e910a489dfb6fff4e565429ba159346",
+              "actual": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+              "match": false
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec3\\learn3.py",
+              "expected": "17d2714ec9970c23f0f3e5f2a62f3fa00588f5b037909ca7f1bf70f38bec98b6",
+              "actual": "0828e8d27eded31fdd05fbf73fed877f931ca01c7033861e521a9b2e01464094",
+              "match": false
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec3\\decide3.py",
+              "expected": "db3d4db64fe2ef1e2ae270182a290f215095c6d3a9360480077788e98755340c",
+              "actual": "64db68dd44470816f02dcf391fd8affafa2462a8c56d7d354b1c0e1e683a60b1",
+              "match": false
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\client.go",
+              "expected": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+              "actual": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\dataapp.go",
+              "expected": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+              "actual": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\mlkemcheck.go",
+              "expected": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+              "actual": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\pfail_table.go",
+              "expected": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+              "actual": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\policy.go",
+              "expected": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+              "actual": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\policy3.go",
+              "expected": "a53a58221ad697d561d407a2a38d1c685cf00efc2a2ac315f7eb7dea940c4055",
+              "actual": "34988427f42de61ee195f3542d18d44d6f93de655d0fac55fc9abe812b943dca",
+              "match": false
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\policy3_test.go",
+              "expected": "456ae0ff3fcfa7f8e521c55a82e05796af24eaed4a28be12bf206e8e11b372da",
+              "actual": "a31cb8e42ab0f3a35c46dad0af374904ad2ec725a87db4777e5ae246e4d6516b",
+              "match": false
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\policy_adaptation_test.go",
+              "expected": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+              "actual": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\policy_rtt_test.go",
+              "expected": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+              "actual": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\qamp.go",
+              "expected": "5d0bcabca268da898d1607602d840e9a7f4695b2b4d324bdf1932ff12fc95dc5",
+              "actual": "0d099a46498ae87ea887ce979c1fd1215928d52c0c7d764e7f74e0d62e724ce7",
+              "match": false
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\qamp_accounting_test.go",
+              "expected": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+              "actual": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\qamp_audit_test.go",
+              "expected": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+              "actual": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\qamp_lead_test.go",
+              "expected": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+              "actual": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\server.go",
+              "expected": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+              "actual": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\go.mod",
+              "expected": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+              "actual": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\go.sum",
+              "expected": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+              "actual": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+              "match": true
+            }
+          ]
+        },
+        {
+          "field": "also_recorded_sha256",
+          "total": 9,
+          "matched": 7,
+          "records": [
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\tests\\test_p21_gencompare.py",
+              "expected": "98df0b2bd688d8f687a57790da037ecbe555d37cef9dc38915e7161657646939",
+              "actual": "c5a70d2dbb17faf33fb8d2c546a5558cc41682005b301b5e3914f5d504c26888",
+              "match": false
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec\\policy.py",
+              "expected": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+              "actual": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec\\quantum.py",
+              "expected": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+              "actual": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec\\table.py",
+              "expected": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+              "actual": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\RESULT_stage0.md",
+              "expected": "7c4167b46f9ea7097c910917caddd68fc1bd6091142823ef88b025529dfe481e",
+              "actual": "7c4167b46f9ea7097c910917caddd68fc1bd6091142823ef88b025529dfe481e",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\SEAL_stage0.json",
+              "expected": "6f1cb9d98d58c514e020de849b39e1f7862a91ed437a67368feb2e28478c3784",
+              "actual": "6f1cb9d98d58c514e020de849b39e1f7862a91ed437a67368feb2e28478c3784",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\RESULT_m1confirm.md",
+              "expected": "70a67a8d3d2485eb609277a94d3cc7282a5421423e6f9c4c2d45d8d740c59f3b",
+              "actual": "70a67a8d3d2485eb609277a94d3cc7282a5421423e6f9c4c2d45d8d740c59f3b",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\SEAL_m1confirm.json",
+              "expected": "f1e149f5a900966ad33bac1309150edc810130a0cba376bacd8742453911afa7",
+              "actual": "f1e149f5a900966ad33bac1309150edc810130a0cba376bacd8742453911afa7",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\results\\gate_v3_parity.json",
+              "expected": "2c2cbda55351e36d19b68353f636128a58d91ce80cc1a3f028fd2de99f4601b5",
+              "actual": "ae6c97af8a56f0780e41279d6b7b47810c6f201eeeb950d1c576506e6aa395d6",
+              "match": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "generation": "pq_afec_gen31",
+      "stage": 3,
+      "seal": "C:\\dev\\pq_afec_gen31\\g3\\SEAL_stage3.json",
+      "seal_sha256": "6b452790e6567187f3bdc06e7b374ee66107065297be0f3a827a16c3d2b4e81a",
+      "fields": [
+        {
+          "field": "sha256",
+          "total": 31,
+          "matched": 31,
+          "records": [
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\PROTOCOL_stage3.md",
+              "expected": "644e6f0df95a49edcfd23e6fae4798ac53697a1ee10486a03ed12999477cbc6a",
+              "actual": "644e6f0df95a49edcfd23e6fae4798ac53697a1ee10486a03ed12999477cbc6a",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\stage3_h_draw.json",
+              "expected": "132b5b409633f05e29dea362a0b6e2137d452593988c2cbd47536f2adb1451be",
+              "actual": "132b5b409633f05e29dea362a0b6e2137d452593988c2cbd47536f2adb1451be",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\stage3_h_predictions.json",
+              "expected": "0e0cecdf4e8c2ad3724fa1697bbaae2d146bd90bea7631dcdcf01d1ef807f81b",
+              "actual": "0e0cecdf4e8c2ad3724fa1697bbaae2d146bd90bea7631dcdcf01d1ef807f81b",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\dev_cells_stage3.json",
+              "expected": "ef630b0446eff705b81387ff74a6c1d47a9d3e9bcfefae198ccc6585775745b0",
+              "actual": "ef630b0446eff705b81387ff74a6c1d47a9d3e9bcfefae198ccc6585775745b0",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\p21_gencompare.py",
+              "expected": "969d5cde0fe83212ee7a1a060e155ed64c84989a72135f78727a5f4529659e3c",
+              "actual": "969d5cde0fe83212ee7a1a060e155ed64c84989a72135f78727a5f4529659e3c",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\g3bed.py",
+              "expected": "b3f68c1ca2e129a7def1e467072ccae713122677b378165f874b497e16df4ed1",
+              "actual": "b3f68c1ca2e129a7def1e467072ccae713122677b378165f874b497e16df4ed1",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\padbed.py",
+              "expected": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+              "actual": "bc758c1f1523cd94b0fde82e8c24b923d7a58bf6e8e06f0651b786527fad7d4d",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\_journal.py",
+              "expected": "903c0117ffe0ecb7b855591a5697906c566b00342a94c84f1e826683f72d5281",
+              "actual": "903c0117ffe0ecb7b855591a5697906c566b00342a94c84f1e826683f72d5281",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\blockstat.py",
+              "expected": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+              "actual": "f8e3d7c2fc2ccc587f14e55b1835d6f36a878d83a13e490fb84e5b80f00db46f",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\build_g3c.sh",
+              "expected": "e5b5961ecc39a13d2647c04a5c21abf935925b0038d9737c7e7621d29c8eb396",
+              "actual": "e5b5961ecc39a13d2647c04a5c21abf935925b0038d9737c7e7621d29c8eb396",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec3\\__init__.py",
+              "expected": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+              "actual": "c5501eeab8d48b3a4911cee273cfd586277b9ab374032913061830fed1b8bae3",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec3\\layout.py",
+              "expected": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+              "actual": "b18582cb245d1737dc77224f1b831bbd769387a7bb713e9e3d5e3442acbe5a4a",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec3\\learn3.py",
+              "expected": "0828e8d27eded31fdd05fbf73fed877f931ca01c7033861e521a9b2e01464094",
+              "actual": "0828e8d27eded31fdd05fbf73fed877f931ca01c7033861e521a9b2e01464094",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec3\\decide3.py",
+              "expected": "64db68dd44470816f02dcf391fd8affafa2462a8c56d7d354b1c0e1e683a60b1",
+              "actual": "64db68dd44470816f02dcf391fd8affafa2462a8c56d7d354b1c0e1e683a60b1",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\client.go",
+              "expected": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+              "actual": "d5bed9caed2aaedb546c0dd2bc45ebc13b800d9aee6743120368ebc1952cf2ba",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\dataapp.go",
+              "expected": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+              "actual": "762052f75b15ce9a57b866a01c40a6f5da0526a66be4749cfac61946be8f47fb",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\mlkemcheck.go",
+              "expected": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+              "actual": "ba7adf18002f370c8f44f1cc55394ce3644b499265f39f9bca543d4de8139a53",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\pfail_table.go",
+              "expected": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+              "actual": "30d2d3f062cecee502b5227343214e4e71eed0adfff1fc54e5659db230de6931",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\policy.go",
+              "expected": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+              "actual": "d3d294fb2d468a55f087a7c442450e35f5a670d8a3585d65a5a4ae4576302546",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\policy3.go",
+              "expected": "34988427f42de61ee195f3542d18d44d6f93de655d0fac55fc9abe812b943dca",
+              "actual": "34988427f42de61ee195f3542d18d44d6f93de655d0fac55fc9abe812b943dca",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\policy3_test.go",
+              "expected": "a31cb8e42ab0f3a35c46dad0af374904ad2ec725a87db4777e5ae246e4d6516b",
+              "actual": "a31cb8e42ab0f3a35c46dad0af374904ad2ec725a87db4777e5ae246e4d6516b",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\policy_adaptation_test.go",
+              "expected": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+              "actual": "b873956f09970f1ae0e305207542a9b6ce81a1dc1c834074431a69c1ad40b2d1",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\policy_rtt_test.go",
+              "expected": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+              "actual": "d107fad74154e95d0ad7fa70fb022d547d6ddd189bbec06b71cd44a9a2476106",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\qamp.go",
+              "expected": "0d099a46498ae87ea887ce979c1fd1215928d52c0c7d764e7f74e0d62e724ce7",
+              "actual": "0d099a46498ae87ea887ce979c1fd1215928d52c0c7d764e7f74e0d62e724ce7",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\qamp_accounting_test.go",
+              "expected": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+              "actual": "258ade6a794a8fce46f8c480a03c372cc558f281d3a34c5480944757356e02c6",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\qamp_audit_test.go",
+              "expected": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+              "actual": "bf3704bc014ed8891c9ff0953e2f87342e45f52205cfce6d70a6a103fe29d483",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\qamp_finalstats_test.go",
+              "expected": "e118b5c0ea060aeb2c2869f25d72d1b58a52618b5778914ae675b9dff9f8ed8d",
+              "actual": "e118b5c0ea060aeb2c2869f25d72d1b58a52618b5778914ae675b9dff9f8ed8d",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\qamp_lead_test.go",
+              "expected": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+              "actual": "1ec21926409a12b63d67c46d62389262738a7b51d11fec87ab11b6510e929d00",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\server.go",
+              "expected": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+              "actual": "17a85895b1b2a080a115a5311ad9ae41e2e1f8681fa9753dcdead206bf724323",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\go.mod",
+              "expected": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+              "actual": "4b67eaca0c444b9880a7c2d65ccb9e8a1dce295e3afec95abe116e8b812ed8d4",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\quicbed\\go.sum",
+              "expected": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+              "actual": "ae98d0b5699ee49aac22fae53a0eb50a7184dbc64c84b1ff46e3e015390cc6cb",
+              "match": true
+            }
+          ]
+        },
+        {
+          "field": "also_recorded_sha256",
+          "total": 14,
+          "matched": 14,
+          "records": [
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\tests\\test_p21_gencompare.py",
+              "expected": "c5a70d2dbb17faf33fb8d2c546a5558cc41682005b301b5e3914f5d504c26888",
+              "actual": "c5a70d2dbb17faf33fb8d2c546a5558cc41682005b301b5e3914f5d504c26888",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec\\policy.py",
+              "expected": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+              "actual": "4cb840be18ec19b5625b924660d56dd17b7025b19872c6397d5671108450cc6c",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec\\quantum.py",
+              "expected": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+              "actual": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\padfec\\table.py",
+              "expected": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+              "actual": "96acbb1717a82cedef228d49e22fae4517997bb6e01226485873059b6306adcb",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\RESULT_stage0.md",
+              "expected": "7c4167b46f9ea7097c910917caddd68fc1bd6091142823ef88b025529dfe481e",
+              "actual": "7c4167b46f9ea7097c910917caddd68fc1bd6091142823ef88b025529dfe481e",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\SEAL_stage0.json",
+              "expected": "6f1cb9d98d58c514e020de849b39e1f7862a91ed437a67368feb2e28478c3784",
+              "actual": "6f1cb9d98d58c514e020de849b39e1f7862a91ed437a67368feb2e28478c3784",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\RESULT_m1confirm.md",
+              "expected": "70a67a8d3d2485eb609277a94d3cc7282a5421423e6f9c4c2d45d8d740c59f3b",
+              "actual": "70a67a8d3d2485eb609277a94d3cc7282a5421423e6f9c4c2d45d8d740c59f3b",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\SEAL_m1confirm.json",
+              "expected": "f1e149f5a900966ad33bac1309150edc810130a0cba376bacd8742453911afa7",
+              "actual": "f1e149f5a900966ad33bac1309150edc810130a0cba376bacd8742453911afa7",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\PROTOCOL_stage2.md",
+              "expected": "0714ac82531a01bde85ef3c0b68239441de425635e3c455d18a34698f9db0047",
+              "actual": "0714ac82531a01bde85ef3c0b68239441de425635e3c455d18a34698f9db0047",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\SEAL_stage2.json",
+              "expected": "6573a1e53def7d886b0b43d8a8237671cc55f35bdd78e3a05acc6d9ebb103ed7",
+              "actual": "6573a1e53def7d886b0b43d8a8237671cc55f35bdd78e3a05acc6d9ebb103ed7",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\GEN31_CHANGES.md",
+              "expected": "88fa90052f70eaa2ff38d216c095ab92209383e774f0387627472a9b92daccf9",
+              "actual": "88fa90052f70eaa2ff38d216c095ab92209383e774f0387627472a9b92daccf9",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\g3\\policy3_reference.json",
+              "expected": "8c04033ec9036df50e81703f50cc4fcf50c4744e036213121701061bcce9df3f",
+              "actual": "8c04033ec9036df50e81703f50cc4fcf50c4744e036213121701061bcce9df3f",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\gate_v3_parity.py",
+              "expected": "822b42785ee7fa386bc5e10d29002f6b5d4395884a368bb9508e908b69851ac5",
+              "actual": "822b42785ee7fa386bc5e10d29002f6b5d4395884a368bb9508e908b69851ac5",
+              "match": true
+            },
+            {
+              "path": "C:\\dev\\pq_afec_gen31\\experiments\\results\\gate_v3_parity.json",
+              "expected": "ae6c97af8a56f0780e41279d6b7b47810c6f201eeeb950d1c576506e6aa395d6",
+              "actual": "ae6c97af8a56f0780e41279d6b7b47810c6f201eeeb950d1c576506e6aa395d6",
+              "match": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "mtc": [
+    {
+      "variant": "MTC landmark ML-DSA-44",
+      "proof_assumption_B": 512,
+      "tls_estimate_B": 5914,
+      "wire_estimate_B": 6154.40650406504,
+      "synthetic_certsize_if_s0_1724_B": 4430.40650406504
+    },
+    {
+      "variant": "MTC landmark ML-DSA-44",
+      "proof_assumption_B": 800,
+      "tls_estimate_B": 6202,
+      "wire_estimate_B": 6454.113821138211,
+      "synthetic_certsize_if_s0_1724_B": 4730.113821138211
+    },
+    {
+      "variant": "MTC landmark ML-DSA-65",
+      "proof_assumption_B": 512,
+      "tls_estimate_B": 7443,
+      "wire_estimate_B": 7745.5609756097565,
+      "synthetic_certsize_if_s0_1724_B": 6021.5609756097565
+    },
+    {
+      "variant": "MTC landmark ML-DSA-65",
+      "proof_assumption_B": 800,
+      "tls_estimate_B": 7731,
+      "wire_estimate_B": 8045.268292682927,
+      "synthetic_certsize_if_s0_1724_B": 6321.268292682927
+    },
+    {
+      "variant": "MTC standalone ML-DSA-44 one extra CA signature hypothesis",
+      "proof_assumption_B": 800,
+      "tls_estimate_B": 8622,
+      "wire_estimate_B": 8972.487804878048,
+      "synthetic_certsize_if_s0_1724_B": 7248.487804878048
+    }
+  ],
+  "classical_compressed_chain_scenario": {
+    "certificate_B": 3200,
+    "verify_B": 80,
+    "server_hello_B": 1220,
+    "extra_B": 150,
+    "tls_estimate_B": 4650,
+    "wire_estimate_B": 4839.024390243902
+  },
+  "estimate_assumptions": {
+    "server_hello_B": 1220,
+    "extra_B": 150,
+    "certificate_fields_B": 300,
+    "packet_B": 1280,
+    "crypto_payload_B": 1230,
+    "proof_B": [
+      512,
+      800
+    ],
+    "all_sizes": "assumed except FIPS key/signature sizes; no MTC transport measurement"
+  },
+  "source": "C:\\dev\\codex_handoff\\v33\\evidence\\audit-prior-art\\s_estimates.py",
+  "source_sha256": "47b110519978147960d04f814e8a4578d9908f73f83dfc17e52e1ac17dde9503"
+}

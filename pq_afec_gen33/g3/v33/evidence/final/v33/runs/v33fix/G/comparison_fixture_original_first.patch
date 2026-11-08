@@ -1,0 +1,10 @@
+--- a/experiments/quicbed/qamp_comparison_test.go	2026-11-02 04:06:22.043991100 +0900
++++ b/experiments/quicbed/qamp_comparison_test.go	2026-11-02 04:06:22.171954300 +0900
+@@ -16,6 +16,7 @@
+ 	c.m = m
+ 	c.layout = "v3"
+ 	c.lead = lead
++	c.retransMode = "original_first"
+ 	c.padJunk = kind == "pad_junk"
+ 	c.dup = kind == "dup"
+ 	return c, w, a

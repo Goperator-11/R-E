@@ -507,7 +507,7 @@ func TestLeadClientV3RepeatLayout(t *testing.T) {
 	big := leadTestInitial(leadTestSCID, leadTestDCID, 1300, 202)
 	for m := 1; m <= 4; m++ {
 		for lead := 0; lead <= m; lead++ {
-			for k := 1; k <= 3; k++ {
+			for k := 1; k <= 4; k++ {
 				name := fmt.Sprintf("m%d L%d k%d", m, lead, k)
 				wire := &auditConn{scriptConn: scriptConn{dgs: [][]byte{small, big}, addr: addr}}
 				fc := &fecConn{retransMode: "repeat_first", mode: "fec", m: m, layout: "v3", lead: lead, expectK: k,

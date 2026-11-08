@@ -223,6 +223,11 @@ def c_for_k(k, w):
 
 
 def main():
+    if "--dump" not in sys.argv:
+        from generation import load_config
+        if load_config(ROOT)["gen_id"].startswith("v3.3"):
+            print("gen-2 parity gate is disabled in gen33; baseline is the frozen binary d98b05d7")
+            return 2
     dump = None
     if "--dump" in sys.argv:
         dump = sys.argv[sys.argv.index("--dump") + 1]

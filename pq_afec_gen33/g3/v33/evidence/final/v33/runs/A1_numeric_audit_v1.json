@@ -1,0 +1,1407 @@
+{
+  "status": "PASS",
+  "kind": "read_only_historical_reanalysis_and_explicit_calculation",
+  "H1": [
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "unit_count": 10,
+      "means_ms": {
+        "g2auto": 128.47253755555556,
+        "g3auto": 100.46328155555555
+      },
+      "difference_ms": 28.009256000000008,
+      "stored_difference_ms": 28.009256,
+      "stored_interval": {
+        "lo95": 24.33056450085965,
+        "hi95": 31.68794749914035
+      }
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "unit_count": 10,
+      "means_ms": {
+        "g2auto": 239.098464,
+        "g3auto": 226.716024
+      },
+      "difference_ms": 12.382440000000003,
+      "stored_difference_ms": 12.382439999999997,
+      "stored_interval": {
+        "lo95": 11.036674487473816,
+        "hi95": 13.728205512526179
+      }
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "unit_count": 10,
+      "means_ms": {
+        "g2auto": 127.94888133333333,
+        "g3auto": 99.02935111111111
+      },
+      "difference_ms": 28.91953022222222,
+      "stored_difference_ms": 28.919530222222228,
+      "stored_interval": {
+        "lo95": 25.579745807908118,
+        "hi95": 32.25931463653634
+      }
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "unit_count": 10,
+      "means_ms": {
+        "g2auto": 236.20215755555557,
+        "g3auto": 225.87138177777777
+      },
+      "difference_ms": 10.330775777777802,
+      "stored_difference_ms": 10.33077577777778,
+      "stored_interval": {
+        "lo95": 7.3271900831773635,
+        "hi95": 13.334361472378195
+      }
+    }
+  ],
+  "original_decisions": {
+    "H2": {
+      "run1": {
+        "rule": "every S, D and H condition: Holm 95% lower bound of g2-g3 > -1.0 ms (Holm step-down rejection); categories per condition: '비열등 확인' if that holds, otherwise '열등 확인' if a separate Holm step-down over the same family for H0: g2-g3 >= 0 rejects (its Holm upper bound < 0), else '판정불능(검정력 부족)'",
+        "family_size": 18,
+        "tests": [
+          {
+            "cond": "S_bigcert",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 28.009256,
+            "se": 1.4773444655259818,
+            "df": 5.59862849044291,
+            "lo95": 24.33056450085965,
+            "hi95": 31.68794749914035,
+            "q": 2.229285369712567e-06,
+            "holm_rank": 9,
+            "holm_m": 18,
+            "holm_level": 0.005,
+            "p_holm": 2.229285369712567e-05,
+            "reject": true,
+            "lb_holm": 21.401362346517015,
+            "ub_holm": 35.32626266631927,
+            "inferior_holm_rank": 3,
+            "inferior_holm_level": 0.003125,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "S_rtt200",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 12.382439999999997,
+            "se": 0.5649132412135695,
+            "df": 6.753255038315312,
+            "lo95": 11.036674487473816,
+            "hi95": 13.728205512526179,
+            "q": 9.416078779498341e-08,
+            "holm_rank": 6,
+            "holm_m": 18,
+            "holm_level": 0.0038461538461538464,
+            "p_holm": 1.2240902413347844e-06,
+            "reject": true,
+            "lb_holm": 9.949664344271596,
+            "ub_holm": 14.883385434325632,
+            "inferior_holm_rank": 4,
+            "inferior_holm_level": 0.0033333333333333335,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p17_mbps2",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 1.9774982222222222,
+            "se": 0.28025812287868046,
+            "df": 7.110662899081023,
+            "lo95": 1.3168781093804287,
+            "hi95": 2.6381183350640156,
+            "q": 1.2821359513515276e-05,
+            "holm_rank": 10,
+            "holm_m": 18,
+            "holm_level": 0.005555555555555556,
+            "p_holm": 0.00011539223562163749,
+            "reject": true,
+            "lb_holm": 0.8781925907487851,
+            "ub_holm": 3.17410719596878,
+            "inferior_holm_rank": 5,
+            "inferior_holm_level": 0.0035714285714285718,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p17_unlimited",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 1.7044284444444437,
+            "se": 0.22178528281695709,
+            "df": 4.435590052392181,
+            "lo95": 1.111784701944353,
+            "hi95": 2.2970721869445345,
+            "q": 0.0001404036842665144,
+            "holm_rank": 14,
+            "holm_m": 18,
+            "holm_level": 0.01,
+            "p_holm": 0.000702018421332572,
+            "reject": true,
+            "lb_holm": 0.7486417659066975,
+            "ub_holm": 2.9302418847791043,
+            "inferior_holm_rank": 6,
+            "inferior_holm_level": 0.0038461538461538464,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p11_2955_l0",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": -0.060045624999999346,
+            "se": 0.008750746002424994,
+            "df": 9.0,
+            "lo95": -0.07984118774920969,
+            "hi95": -0.040250062250789004,
+            "q": 2.6664302845456396e-15,
+            "holm_rank": 1,
+            "holm_m": 18,
+            "holm_level": 0.002777777777777778,
+            "p_holm": 4.799574512182151e-14,
+            "reject": true,
+            "lb_holm": -0.09570695079017487,
+            "ub_holm": -0.024384299209823823,
+            "inferior_holm_rank": 1,
+            "inferior_holm_level": 0.002777777777777778,
+            "inferior_reject": true,
+            "holm_ub_below_0": true,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p11_2955_l2",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 0.052336874999999596,
+            "se": 0.04380565733982257,
+            "df": 9.0,
+            "lo95": -0.046758406522348174,
+            "hi95": 0.15143215652234737,
+            "q": 1.7937127300692077e-09,
+            "holm_rank": 4,
+            "holm_m": 18,
+            "holm_level": 0.0033333333333333335,
+            "p_holm": 2.6905690951038114e-08,
+            "reject": true,
+            "lb_holm": -0.12088028290962471,
+            "ub_holm": 0.21914349334137012,
+            "inferior_holm_rank": 7,
+            "inferior_holm_level": 0.004166666666666667,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p11_2955_l5",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 0.1654818750000004,
+            "se": 0.22734865397049547,
+            "df": 9.0,
+            "lo95": -0.3488165110318054,
+            "hi95": 0.6797802610318062,
+            "q": 0.0006225810951216087,
+            "holm_rank": 17,
+            "holm_m": 18,
+            "holm_level": 0.025,
+            "p_holm": 0.001410170318700441,
+            "reject": true,
+            "lb_holm": -0.44495172691982304,
+            "ub_holm": 1.0183382146611866,
+            "inferior_holm_rank": 8,
+            "inferior_holm_level": 0.004545454545454546,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p11_9000_l0",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 0.38713187500000146,
+            "se": 0.04417620827996483,
+            "df": 9.0,
+            "lo95": 0.2871983490142294,
+            "hi95": 0.4870654009857735,
+            "q": 1.6533389240253924e-10,
+            "holm_rank": 2,
+            "holm_m": 18,
+            "holm_level": 0.0029411764705882353,
+            "p_holm": 2.810676170843167e-09,
+            "reject": true,
+            "lb_holm": 0.20878592101170332,
+            "ub_holm": 0.5501271693251738,
+            "inferior_holm_rank": 9,
+            "inferior_holm_level": 0.005,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p11_9000_l2",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 0.37057875000000207,
+            "se": 0.04689298067363958,
+            "df": 9.0,
+            "lo95": 0.2644994578841872,
+            "hi95": 0.4766580421158169,
+            "q": 3.1338932575447933e-10,
+            "holm_rank": 3,
+            "holm_m": 18,
+            "holm_level": 0.003125,
+            "p_holm": 5.014229212071669e-09,
+            "reject": true,
+            "lb_holm": 0.18315208118074935,
+            "ub_holm": 0.5404189468080334,
+            "inferior_holm_rank": 10,
+            "inferior_holm_level": 0.005555555555555556,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p11_9000_l5",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 0.3032881249999996,
+            "se": 0.09695044035006334,
+            "df": 9.0,
+            "lo95": 0.08397099192569826,
+            "hi95": 0.5226052580743009,
+            "q": 2.9112144297768526e-07,
+            "holm_rank": 8,
+            "holm_m": 18,
+            "holm_level": 0.004545454545454546,
+            "p_holm": 3.2023358727545377e-06,
+            "reject": true,
+            "lb_holm": -0.0604034836436379,
+            "ub_holm": 0.6471236855938894,
+            "inferior_holm_rank": 11,
+            "inferior_holm_level": 0.00625,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p15_4032_l0",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": -0.01279812499999906,
+            "se": 0.06483413082635373,
+            "df": 9.0,
+            "lo95": -0.1594631184426079,
+            "hi95": 0.1338668684426098,
+            "q": 9.903074166152786e-08,
+            "holm_rank": 7,
+            "holm_m": 18,
+            "holm_level": 0.004166666666666667,
+            "p_holm": 1.2240902413347844e-06,
+            "reject": true,
+            "lb_holm": -0.25967861425622707,
+            "ub_holm": 0.24894694917994797,
+            "inferior_holm_rank": 2,
+            "inferior_holm_level": 0.0029411764705882353,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p15_4032_l2",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 0.34331937499999937,
+            "se": 0.19124675343887887,
+            "df": 9.0,
+            "lo95": -0.08931083815359447,
+            "hi95": 0.7759495881535932,
+            "q": 6.159497863817803e-05,
+            "holm_rank": 13,
+            "holm_m": 18,
+            "holm_level": 0.008333333333333333,
+            "p_holm": 0.0003695698718290682,
+            "reject": true,
+            "lb_holm": -0.30007360936195965,
+            "ub_holm": 1.0053374352081914,
+            "inferior_holm_rank": 12,
+            "inferior_holm_level": 0.0071428571428571435,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p15_4032_l5",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 0.5128106250000009,
+            "se": 0.1989610888990021,
+            "df": 9.0,
+            "lo95": 0.0627293726290638,
+            "hi95": 0.9628918773709378,
+            "q": 3.314424400064402e-05,
+            "holm_rank": 12,
+            "holm_m": 18,
+            "holm_level": 0.0071428571428571435,
+            "p_holm": 0.0002320097080045081,
+            "reject": true,
+            "lb_holm": -0.17591131020358153,
+            "ub_holm": 1.1821562031958952,
+            "inferior_holm_rank": 13,
+            "inferior_holm_level": 0.008333333333333333,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "D_p18_burst3",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 16.782504374999995,
+            "se": 3.3316557763293653,
+            "df": 9.0,
+            "lo95": 9.245775396599695,
+            "hi95": 24.319233353400293,
+            "q": 0.000470056772900147,
+            "holm_rank": 16,
+            "holm_m": 18,
+            "holm_level": 0.016666666666666666,
+            "p_holm": 0.001410170318700441,
+            "reject": true,
+            "lb_holm": 7.009678232121622,
+            "ub_holm": 27.609837729268122,
+            "inferior_holm_rank": 14,
+            "inferior_holm_level": 0.01,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "H_h_c6000_r120_u10",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 19.74155999999999,
+            "se": 7.7476039290855825,
+            "df": 2.937027096111578,
+            "lo95": -5.216560990502678,
+            "hi95": 44.69968099050266,
+            "q": 0.07695997854949826,
+            "holm_rank": 18,
+            "holm_m": 18,
+            "holm_level": 0.05,
+            "p_holm": 0.07695997854949826,
+            "reject": false,
+            "lb_holm": -5.216560990502678,
+            "ub_holm": 62.35897213946987,
+            "inferior_holm_rank": 15,
+            "inferior_holm_level": 0.0125,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "판정불능(검정력 부족)"
+          },
+          {
+            "cond": "H_h_c8000_r120_u10",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 5.5478383333333285,
+            "se": 0.2946023606218267,
+            "df": 3.0610292174366855,
+            "lo95": 4.620768688480645,
+            "hi95": 6.474907978186012,
+            "q": 0.0001744428035839859,
+            "holm_rank": 15,
+            "holm_m": 18,
+            "holm_level": 0.0125,
+            "p_holm": 0.000702018421332572,
+            "reject": true,
+            "lb_holm": 3.9884034641008435,
+            "ub_holm": 6.954680341680296,
+            "inferior_holm_rank": 16,
+            "inferior_holm_level": 0.016666666666666666,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "H_h_c12000_r120_u5",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 118.90557555555554,
+            "se": 0.7185473318157779,
+            "df": 3.889108234202193,
+            "lo95": 116.88793272814061,
+            "hi95": 120.92321838297048,
+            "q": 1.2111281247112602e-08,
+            "holm_rank": 5,
+            "holm_m": 18,
+            "holm_level": 0.0035714285714285718,
+            "p_holm": 1.695579374595764e-07,
+            "reject": true,
+            "lb_holm": 114.38120211846056,
+            "ub_holm": 121.4542948587388,
+            "inferior_holm_rank": 17,
+            "inferior_holm_level": 0.025,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "H_h_c14000_r120_u5",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 117.01471055555555,
+            "se": 0.7849149747609615,
+            "df": 2.1718383137674375,
+            "lo95": 113.88106715973231,
+            "hi95": 120.1483539513788,
+            "q": 2.100855366201736e-05,
+            "holm_rank": 11,
+            "holm_m": 18,
+            "holm_level": 0.00625,
+            "p_holm": 0.00016806842929613887,
+            "reject": true,
+            "lb_holm": 108.50255910803062,
+            "ub_holm": 120.1483539513788,
+            "inferior_holm_rank": 18,
+            "inferior_holm_level": 0.05,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          }
+        ],
+        "category_counts": {
+          "비열등 확인": 17,
+          "열등 확인": 0,
+          "판정불능(검정력 부족)": 1
+        },
+        "by_category": {
+          "비열등 확인": [
+            "S_bigcert",
+            "S_rtt200",
+            "D_p17_mbps2",
+            "D_p17_unlimited",
+            "D_p11_2955_l0",
+            "D_p11_2955_l2",
+            "D_p11_2955_l5",
+            "D_p11_9000_l0",
+            "D_p11_9000_l2",
+            "D_p11_9000_l5",
+            "D_p15_4032_l0",
+            "D_p15_4032_l2",
+            "D_p15_4032_l5",
+            "D_p18_burst3",
+            "H_h_c8000_r120_u10",
+            "H_h_c12000_r120_u5",
+            "H_h_c14000_r120_u5"
+          ],
+          "열등 확인": [],
+          "판정불능(검정력 부족)": [
+            "H_h_c6000_r120_u10"
+          ]
+        },
+        "failed": [
+          "H_h_c6000_r120_u10"
+        ],
+        "reading": "'판정불능(검정력 부족)' means the interval was too wide to decide; it is not evidence that g3 is slower",
+        "pass": false
+      },
+      "run2": {
+        "rule": "every S, D and H condition: Holm 95% lower bound of g2-g3 > -1.0 ms (Holm step-down rejection); categories per condition: '비열등 확인' if that holds, otherwise '열등 확인' if a separate Holm step-down over the same family for H0: g2-g3 >= 0 rejects (its Holm upper bound < 0), else '판정불능(검정력 부족)'",
+        "family_size": 2,
+        "tests": [
+          {
+            "cond": "S_bigcert",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 28.919530222222228,
+            "se": 1.402783814008855,
+            "df": 6.772446389184286,
+            "lo95": 25.579745807908118,
+            "hi95": 32.25931463653634,
+            "q": 1.8369055620423302e-07,
+            "holm_rank": 1,
+            "holm_m": 2,
+            "holm_level": 0.025,
+            "p_holm": 3.6738111240846603e-07,
+            "reject": true,
+            "lb_holm": 24.89887104419367,
+            "ub_holm": 32.94018940025079,
+            "inferior_holm_rank": 1,
+            "inferior_holm_level": 0.025,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          },
+          {
+            "cond": "S_rtt200",
+            "contrast": "g2-g3",
+            "c": -1.0,
+            "est": 10.33077577777778,
+            "se": 1.1474885873532044,
+            "df": 4.717776348691885,
+            "lo95": 7.3271900831773635,
+            "hi95": 13.334361472378195,
+            "q": 0.000250251541233083,
+            "holm_rank": 2,
+            "holm_m": 2,
+            "holm_level": 0.05,
+            "p_holm": 0.000250251541233083,
+            "reject": true,
+            "lb_holm": 7.3271900831773635,
+            "ub_holm": 13.334361472378195,
+            "inferior_holm_rank": 2,
+            "inferior_holm_level": 0.05,
+            "inferior_reject": false,
+            "holm_ub_below_0": false,
+            "category": "비열등 확인"
+          }
+        ],
+        "category_counts": {
+          "비열등 확인": 2,
+          "열등 확인": 0,
+          "판정불능(검정력 부족)": 0
+        },
+        "by_category": {
+          "비열등 확인": [
+            "S_bigcert",
+            "S_rtt200"
+          ],
+          "열등 확인": [],
+          "판정불능(검정력 부족)": []
+        },
+        "failed": [],
+        "reading": "'판정불능(검정력 부족)' means the interval was too wide to decide; it is not evidence that g3 is slower",
+        "pass": true
+      }
+    },
+    "H3": {
+      "rule": "H cells with sealed delta_hat >= 2 ms: Holm (within those cells) 95% lower bound of g2-g3 > 0 and observed/predicted in [0.5, 2.0]; other H cells: H2 only",
+      "evaluable": true,
+      "missing_predictions": [],
+      "target_count": 4,
+      "status": "evaluated",
+      "strong": [
+        {
+          "cond": "H_h_c6000_r120_u10",
+          "contrast": "g2-g3",
+          "c": 0.0,
+          "est": 19.74155999999999,
+          "se": 7.7476039290855825,
+          "df": 2.937027096111578,
+          "lo95": -5.216560990502678,
+          "hi95": 44.69968099050266,
+          "delta_hat_ms": 4.069709092835225,
+          "q": 0.08587078041338833,
+          "holm_rank": 4,
+          "holm_m": 4,
+          "holm_level": 0.05,
+          "p_holm": 0.08587078041338833,
+          "reject": false,
+          "lb_holm": -5.216560990502678,
+          "ratio": 4.8508528618802895,
+          "ratio_ok": false,
+          "pass": false
+        },
+        {
+          "cond": "H_h_c8000_r120_u10",
+          "contrast": "g2-g3",
+          "c": 0.0,
+          "est": 5.5478383333333285,
+          "se": 0.2946023606218267,
+          "df": 3.0610292174366855,
+          "lo95": 4.620768688480645,
+          "hi95": 6.474907978186012,
+          "delta_hat_ms": 4.069709092835225,
+          "q": 0.00028885391089062735,
+          "holm_rank": 3,
+          "holm_m": 4,
+          "holm_level": 0.025,
+          "p_holm": 0.0005777078217812547,
+          "reject": true,
+          "lb_holm": 4.335396429427284,
+          "ratio": 1.3632026778278499,
+          "ratio_ok": true,
+          "pass": true
+        },
+        {
+          "cond": "H_h_c12000_r120_u5",
+          "contrast": "g2-g3",
+          "c": 0.0,
+          "est": 118.90557555555554,
+          "se": 0.7185473318157779,
+          "df": 3.889108234202193,
+          "lo95": 116.88793272814061,
+          "hi95": 120.92321838297048,
+          "delta_hat_ms": 114.74629988998952,
+          "q": 1.2512201774205046e-08,
+          "holm_rank": 1,
+          "holm_m": 4,
+          "holm_level": 0.0125,
+          "p_holm": 5.004880709682018e-08,
+          "reject": true,
+          "lb_holm": 115.74796950487638,
+          "ratio": 1.0362475798309283,
+          "ratio_ok": true,
+          "pass": true
+        },
+        {
+          "cond": "H_h_c14000_r120_u5",
+          "contrast": "g2-g3",
+          "c": 0.0,
+          "est": 117.01471055555555,
+          "se": 0.7849149747609615,
+          "df": 2.1718383137674375,
+          "lo95": 113.88106715973231,
+          "hi95": 120.1483539513788,
+          "delta_hat_ms": 114.74629988998952,
+          "q": 2.140040482037238e-05,
+          "holm_rank": 2,
+          "holm_m": 4,
+          "holm_level": 0.016666666666666666,
+          "p_holm": 6.420121446111714e-05,
+          "reject": true,
+          "lb_holm": 111.65169332468717,
+          "ratio": 1.0197689221154915,
+          "ratio_ok": true,
+          "pass": true
+        }
+      ],
+      "weak": [],
+      "pass": false
+    },
+    "H4": {
+      "rule": "exploratory: write 'adaptation contributed' for an S condition only if the Holm (m=2) 95% lower bound of (g3-fixed minimax) - g3 > 0",
+      "tests": [
+        {
+          "cond": "S_bigcert",
+          "contrast": "fix-g3",
+          "c": 0.0,
+          "est": -3.800909333333337,
+          "se": 1.913266151362246,
+          "df": 4.806311549305771,
+          "lo95": -8.779332024491739,
+          "hi95": 1.177513357825065,
+          "q": 1.0,
+          "holm_rank": 2,
+          "holm_m": 2,
+          "holm_level": 0.05,
+          "p_holm": 1.0,
+          "reject": false,
+          "lb_holm": -8.779332024491739,
+          "adaptation_contributed": false
+        },
+        {
+          "cond": "S_rtt200",
+          "contrast": "fix-g3",
+          "c": 0.0,
+          "est": 0.7273017777777738,
+          "se": 0.7371503183342085,
+          "df": 4.066667558924375,
+          "lo95": -1.3061909608581508,
+          "hi95": 2.7607945164136987,
+          "q": 0.37882239596341016,
+          "holm_rank": 1,
+          "holm_m": 2,
+          "holm_level": 0.025,
+          "p_holm": 0.7576447919268203,
+          "reject": false,
+          "lb_holm": -1.827828447983297,
+          "adaptation_contributed": false
+        }
+      ]
+    }
+  },
+  "observed_non_DER_offsets": [
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g2auto",
+      "count": 4500,
+      "min_B": 2172,
+      "median_B": 2224.5,
+      "max_B": 4842,
+      "definition": "recorded row.server_bytes minus actual unit.servers[slot].cert_der; includes recorded transport accounting, not isolated TLS overhead"
+    },
+    {
+      "run": "run1",
+      "condition": "S_bigcert",
+      "arm": "g3auto",
+      "count": 4500,
+      "min_B": 2172,
+      "median_B": 2225.0,
+      "max_B": 4883,
+      "definition": "recorded row.server_bytes minus actual unit.servers[slot].cert_der; includes recorded transport accounting, not isolated TLS overhead"
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g2auto",
+      "count": 4500,
+      "min_B": 1933,
+      "median_B": 1985.0,
+      "max_B": 4630,
+      "definition": "recorded row.server_bytes minus actual unit.servers[slot].cert_der; includes recorded transport accounting, not isolated TLS overhead"
+    },
+    {
+      "run": "run1",
+      "condition": "S_rtt200",
+      "arm": "g3auto",
+      "count": 4500,
+      "min_B": 1930,
+      "median_B": 1984.0,
+      "max_B": 4592,
+      "definition": "recorded row.server_bytes minus actual unit.servers[slot].cert_der; includes recorded transport accounting, not isolated TLS overhead"
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "arm": "g2auto",
+      "count": 4500,
+      "min_B": 2172,
+      "median_B": 2225.0,
+      "max_B": 4877,
+      "definition": "recorded row.server_bytes minus actual unit.servers[slot].cert_der; includes recorded transport accounting, not isolated TLS overhead"
+    },
+    {
+      "run": "run2",
+      "condition": "S_bigcert",
+      "arm": "g3auto",
+      "count": 4500,
+      "min_B": 2169,
+      "median_B": 2225.0,
+      "max_B": 4842,
+      "definition": "recorded row.server_bytes minus actual unit.servers[slot].cert_der; includes recorded transport accounting, not isolated TLS overhead"
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "arm": "g2auto",
+      "count": 4500,
+      "min_B": 1931,
+      "median_B": 1985.0,
+      "max_B": 4631,
+      "definition": "recorded row.server_bytes minus actual unit.servers[slot].cert_der; includes recorded transport accounting, not isolated TLS overhead"
+    },
+    {
+      "run": "run2",
+      "condition": "S_rtt200",
+      "arm": "g3auto",
+      "count": 4500,
+      "min_B": 1933,
+      "median_B": 1985.0,
+      "max_B": 4589,
+      "definition": "recorded row.server_bytes minus actual unit.servers[slot].cert_der; includes recorded transport accounting, not isolated TLS overhead"
+    }
+  ],
+  "p3_drift": [
+    {
+      "group": "X25519MLKEM768",
+      "arm": "off",
+      "m": 1,
+      "n": 1200,
+      "p50": 53.801,
+      "quartile_difference_ms": -0.18099999999999739,
+      "linear_change_ms": -0.19684102836182504
+    },
+    {
+      "group": "X25519MLKEM768",
+      "arm": "on1",
+      "m": 1,
+      "n": 1200,
+      "p50": 53.876,
+      "quartile_difference_ms": 0.04399999999999693,
+      "linear_change_ms": 0.3075725927587449
+    },
+    {
+      "group": "X25519MLKEM768",
+      "arm": "on2",
+      "m": 2,
+      "n": 1200,
+      "p50": 54.033,
+      "quartile_difference_ms": -0.013500000000007617,
+      "linear_change_ms": -0.2418180470958658
+    },
+    {
+      "group": "x25519",
+      "arm": "off",
+      "m": 1,
+      "n": 1200,
+      "p50": 53.366,
+      "quartile_difference_ms": -0.050499999999999545,
+      "linear_change_ms": -0.0009054631287938604
+    },
+    {
+      "group": "x25519",
+      "arm": "on1",
+      "m": 1,
+      "n": 1200,
+      "p50": 53.457,
+      "quartile_difference_ms": -0.07100000000000506,
+      "linear_change_ms": -0.040186790407493345
+    },
+    {
+      "group": "x25519",
+      "arm": "on2",
+      "m": 2,
+      "n": 1200,
+      "p50": 53.455,
+      "quartile_difference_ms": -0.10449999999999449,
+      "linear_change_ms": -0.34010096118122296
+    }
+  ],
+  "p3_lossless_comparisons": [
+    {
+      "group": "X25519MLKEM768",
+      "loss": 0.0,
+      "burst": 1.0,
+      "dir": "c2s",
+      "arm": "on1",
+      "d_success": 0.0,
+      "d_p50": 0.07499999999999574,
+      "d_p95": 0.04399999999999693,
+      "d_p99": -0.03700000000000614,
+      "pto_off": 0.0,
+      "pto_on": 0.0,
+      "recovered": 0
+    },
+    {
+      "group": "X25519MLKEM768",
+      "loss": 0.0,
+      "burst": 1.0,
+      "dir": "c2s",
+      "arm": "on2",
+      "d_success": 0.0,
+      "d_p50": 0.23199999999999932,
+      "d_p95": 0.12399999999999523,
+      "d_p99": -0.05300000000000438,
+      "pto_off": 0.0,
+      "pto_on": 0.0,
+      "recovered": 0
+    },
+    {
+      "group": "x25519",
+      "loss": 0.0,
+      "burst": 1.0,
+      "dir": "c2s",
+      "arm": "on1",
+      "d_success": 0.0,
+      "d_p50": 0.09100000000000108,
+      "d_p95": 0.09199999999999875,
+      "d_p99": 0.15100000000000335,
+      "pto_off": 0.0,
+      "pto_on": 0.0,
+      "recovered": 0
+    },
+    {
+      "group": "x25519",
+      "loss": 0.0,
+      "burst": 1.0,
+      "dir": "c2s",
+      "arm": "on2",
+      "d_success": 0.0,
+      "d_p50": 0.08899999999999864,
+      "d_p95": 0.22500000000000142,
+      "d_p99": 0.8710000000000022,
+      "pto_off": 0.0,
+      "pto_on": 0.0,
+      "recovered": 0
+    }
+  ],
+  "p18": {
+    "verdict": [
+      {
+        "cond": "m_max2포기·무손실",
+        "uplink": 0.0,
+        "obs": {
+          "1": 103.47835400000001,
+          "2": 103.535228,
+          "3": 51.715664,
+          "4": 51.71157
+        },
+        "model": {
+          "1": 100.0,
+          "2": 100.0,
+          "3": 50.0,
+          "4": 50.0
+        },
+        "pred_gain_m2_to_m4": 50.0,
+        "obs_gain_m2_to_m4": 51.823658,
+        "obs_gain_ci95_half": 0.038802520368605,
+        "alpha": 0.01,
+        "n_per_arm": 500,
+        "n_needed_per_arm": 1,
+        "design_balanced": true,
+        "design_note": "팔 4 x 자리 4, 각 칸 1 회",
+        "blocked_gain_m2_to_m4": 51.823658,
+        "blocked_ci_half": 0.11361978224249732,
+        "blocked_mse": 0.0018784188800778782,
+        "blocked_df_resid": 6,
+        "pos_f": 1.068839109295874,
+        "pos_ss_share": 5.613321222641096e-07,
+        "ci_half_used": 0.11361978224249732,
+        "significant": true,
+        "pos_effect_ms": 0.054506000000003496
+      },
+      {
+        "cond": "임계사이·버스트3",
+        "uplink": 0.0,
+        "obs": {
+          "1": 109.56043035019455,
+          "2": 100.16351544444444,
+          "3": 77.84045011111111,
+          "4": 66.98133688888889
+        },
+        "model": {
+          "1": 93.72689625001101,
+          "2": 87.58314443066239,
+          "3": 72.41300085051893,
+          "4": 64.01421504003255
+        },
+        "pred_gain_m2_to_m4": 23.568929390629833,
+        "obs_gain_m2_to_m4": 33.18217855555555,
+        "obs_gain_ci95_half": 5.892580255458547,
+        "alpha": 0.01,
+        "n_per_arm": 9000,
+        "n_needed_per_arm": 613,
+        "design_balanced": true,
+        "design_note": "팔 4 x 자리 4, 각 칸 1 회",
+        "blocked_gain_m2_to_m4": 33.18217855555555,
+        "blocked_ci_half": 8.654650590862918,
+        "blocked_mse": 10.898923834923268,
+        "blocked_df_resid": 6,
+        "pos_f": 1.786184972212596,
+        "pos_ss_share": 0.012241357901174938,
+        "ci_half_used": 8.654650590862918,
+        "significant": true,
+        "pos_effect_ms": 5.285292684764883
+      },
+      {
+        "cond": "임계위·무버스트",
+        "uplink": 0.0,
+        "obs": {
+          "1": 80.570039,
+          "2": 63.54830866666667,
+          "3": 55.068492,
+          "4": 52.355018333333334
+        },
+        "model": {
+          "1": 76.1978657633955,
+          "2": 61.78094083735999,
+          "3": 52.61541248976893,
+          "4": 50.54801721271125
+        },
+        "pred_gain_m2_to_m4": 11.232923624648741,
+        "obs_gain_m2_to_m4": 11.193290333333337,
+        "obs_gain_ci95_half": 2.027301624148785,
+        "alpha": 0.01,
+        "n_per_arm": 3000,
+        "n_needed_per_arm": 497,
+        "design_balanced": true,
+        "design_note": "팔 4 x 자리 4, 각 칸 1 회",
+        "blocked_gain_m2_to_m4": 11.193290333333337,
+        "blocked_ci_half": 4.555060279738245,
+        "blocked_mse": 3.019067317171256,
+        "blocked_df_resid": 6,
+        "pos_f": 1.7216235719649258,
+        "pos_ss_share": 0.007829824291828113,
+        "ci_half_used": 4.555060279738245,
+        "significant": true,
+        "pos_effect_ms": 2.344166666666659
+      },
+      {
+        "cond": "임계위·2Mbps",
+        "uplink": 2.0,
+        "obs": {
+          "1": 120.098855,
+          "2": 69.353939,
+          "3": 69.29004633333334,
+          "4": 69.163527
+        },
+        "model": {
+          "1": 100.34658737734249,
+          "2": 56.690141838880955,
+          "3": 56.54150200370058,
+          "4": 56.537080504611716
+        },
+        "pred_gain_m2_to_m4": 0.15306133426923907,
+        "obs_gain_m2_to_m4": 0.19041199999999492,
+        "obs_gain_ci95_half": 0.612543159987209,
+        "alpha": 0.01,
+        "n_per_arm": 3000,
+        "n_needed_per_arm": 95473,
+        "design_balanced": true,
+        "design_note": "팔 4 x 자리 4, 각 칸 1 회",
+        "blocked_gain_m2_to_m4": 0.19041199999999492,
+        "blocked_ci_half": 1.0741716928275058,
+        "blocked_mse": 0.16789275141247262,
+        "blocked_df_resid": 6,
+        "pos_f": 0.1215188582229677,
+        "pos_ss_share": 7.895077756703442e-06,
+        "ci_half_used": 1.0741716928275058,
+        "significant": false,
+        "pos_effect_ms": 0.17096200000000294
+      },
+      {
+        "cond": "임계위·2Mbps·손실15",
+        "uplink": 2.0,
+        "obs": {
+          "1": 131.272901,
+          "2": 87.23142533333333,
+          "3": 77.607444,
+          "4": 76.825528
+        },
+        "model": {
+          "1": 109.38945371014105,
+          "2": 73.06455947937182,
+          "3": 66.15744546315969,
+          "4": 64.75680269806728
+        },
+        "pred_gain_m2_to_m4": 8.307756781304548,
+        "obs_gain_m2_to_m4": 10.405897333333328,
+        "obs_gain_ci95_half": 2.535693234343644,
+        "alpha": 0.01,
+        "n_per_arm": 3000,
+        "n_needed_per_arm": 179,
+        "design_balanced": true,
+        "design_note": "팔 4 x 자리 4, 각 칸 1 회",
+        "blocked_gain_m2_to_m4": 10.405897333333343,
+        "blocked_ci_half": 2.374726713153428,
+        "blocked_mse": 0.8205627816903301,
+        "blocked_df_resid": 6,
+        "pos_f": 4.865233369154555,
+        "pos_ss_share": 0.0014963398718387299,
+        "ci_half_used": 2.535693234343644,
+        "significant": true,
+        "pos_effect_ms": 2.1845113333333472
+      }
+    ],
+    "checks": [
+      {
+        "check": "1. 모든 팔·블록의 계획 시행이 성공했고 실행 오류가 없다",
+        "ok": false,
+        "detail": "80/80 구간 | 계획 74000, 기록 74000, 성공 73995, 실패 5, 누락 0 | 임계사이·버스트3: 조건의 complete 계약 또는 오류 검사 실패; 임계사이·버스트3 block0 m1: 계획 2250, 기록 2250, 성공 2249, 오류 없음; 임계사이·버스트3 block1 m1: 계획 2250, 기록 2250, 성공 2247, 오류 없음; 임계사이·버스트3 block3 m1: 계획 2250, 기록 2250, 성공 2249, 오류 없음"
+      },
+      {
+        "check": "2. 서버 통계가 실제로 있었다",
+        "ok": true,
+        "detail": "5/5"
+      },
+      {
+        "check": "3. 팔들이 서로 갈린다",
+        "ok": true,
+        "detail": "팔 산포 ['51.82', '42.58', '28.22', '50.94', '54.45']"
+      },
+      {
+        "check": "4. 라틴 방격이 균형이다 (팔 효과 추정이 자리에 편향되지 않는다)",
+        "ok": true,
+        "detail": "m_max2포기·무손실: 팔 4 x 자리 4, 각 칸 1 회 | 자리 F=1.07 제곱합몫 0.0% (진단) | 임계사이·버스트3: 팔 4 x 자리 4, 각 칸 1 회 | 자리 F=1.79 제곱합몫 1.2% (진단) | 임계위·무버스트: 팔 4 x 자리 4, 각 칸 1 회 | 자리 F=1.72 제곱합몫 0.8% (진단) | 임계위·2Mbps: 팔 4 x 자리 4, 각 칸 1 회 | 자리 F=0.12 제곱합몫 0.0% (진단) | 임계위·2Mbps·손실15: 팔 4 x 자리 4, 각 칸 1 회 | 자리 F=4.87 제곱합몫 0.1% (진단)"
+      },
+      {
+        "check": "4b. 두 신뢰반폭(연결 기준 vs 블록 기준)을 나란히 보고한다",
+        "ok": true,
+        "detail": "m_max2포기·무손실: Welch 0.04 vs 방격 0.11 (2.93배) | 임계사이·버스트3: Welch 5.89 vs 방격 8.65 (1.47배) | 임계위·무버스트: Welch 2.03 vs 방격 4.56 (2.25배) | 임계위·2Mbps: Welch 0.61 vs 방격 1.07 (1.75배) | 임계위·2Mbps·손실15: Welch 2.54 vs 방격 2.37 (0.94배)"
+      },
+      {
+        "check": "5. ⭐ m=4 가 m=2 보다 빠른 것이 **잡음과 구별된다** (판정 가능 4/5 조건)",
+        "ok": true,
+        "detail": "m_max2포기·무손실: +51.82 ± 0.11 유의 | 임계사이·버스트3: +33.18 ± 8.65 유의 | 임계위·무버스트: +11.19 ± 4.56 유의 | 임계위·2Mbps·손실15: +10.41 ± 2.54 유의  || 판정 불능: 임계위·2Mbps +0.19 ± 1.07 (팔당 95473 판 필요, 지금 3000)"
+      },
+      {
+        "check": "6. ⭐ 이득 크기가 모형 예측의 0.5~2 배 (판정 가능 4/5 조건)",
+        "ok": true,
+        "detail": "m_max2포기·무손실: 실측 +51.82 / 예측 +50.00 (104%) | 임계사이·버스트3: 실측 +33.18 / 예측 +23.57 (141%) | 임계위·무버스트: 실측 +11.19 / 예측 +11.23 (100%) | 임계위·2Mbps: 실측 +0.19 / 예측 +0.15 (판정 불능 - 실측이 잡음과 구별 안 됨) | 임계위·2Mbps·손실15: 실측 +10.41 / 예측 +8.31 (125%)"
+      },
+      {
+        "check": "8. ⭐ 대역 조건에서 m=1 이 잃는 왕복을 모형이 낸다 (m1-m2 부호·크기, 조건 2 개)",
+        "ok": true,
+        "detail": "임계위·2Mbps: 실측 m1-m2 +50.74 / 모형 +43.66 (116%) | 임계위·2Mbps·손실15: 실측 m1-m2 +44.04 / 모형 +36.32 (121%)"
+      },
+      {
+        "check": "7. 복구 CRC 실패 0",
+        "ok": true,
+        "detail": "총 0 건"
+      },
+      {
+        "check": "8. 무손실 자리에서 m=2 가 실제로 2-RTT 다 (절벽을 재고 있다)",
+        "ok": true,
+        "detail": "m_max2포기·무손실: m2 103.5 ms (1.5RTT=75 초과여야)"
+      },
+      {
+        "check": "9. 그 자리에서 m=4 는 1-RTT 다 (절벽을 넘었다)",
+        "ok": true,
+        "detail": "m_max2포기·무손실: m4 51.7 ms"
+      }
+    ],
+    "hct_scope": "successful_trials_only",
+    "trial_coverage": {
+      "planned_n": 74000,
+      "recorded_n": 74000,
+      "ok_n": 73995,
+      "failed_n": 5,
+      "missing_n": 0,
+      "planned_segments": 80,
+      "recorded_segments": 80,
+      "complete": false,
+      "problems": [
+        "임계사이·버스트3: 조건의 complete 계약 또는 오류 검사 실패",
+        "임계사이·버스트3 block0 m1: 계획 2250, 기록 2250, 성공 2249, 오류 없음",
+        "임계사이·버스트3 block1 m1: 계획 2250, 기록 2250, 성공 2247, 오류 없음",
+        "임계사이·버스트3 block3 m1: 계획 2250, 기록 2250, 성공 2249, 오류 없음"
+      ],
+      "hct_scope": "successful_trials_only"
+    },
+    "model_recalculated": [
+      93.72689625001101,
+      87.58314443066239,
+      72.41300085051893,
+      64.01421504003255
+    ]
+  },
+  "p17": [
+    {
+      "cond": "2Mbps",
+      "gain_ms": 0.01913999999999305,
+      "oracle_gain_ms": 0.0,
+      "oracle_gain_ci95_half_ms": 0.0,
+      "oracle_verdict": "값 없다"
+    },
+    {
+      "cond": "무제한",
+      "gain_ms": -0.3003055555555534,
+      "oracle_gain_ms": 0.041499999999999204,
+      "oracle_gain_ci95_half_ms": 0.16047952562916132,
+      "oracle_verdict": "값 없다"
+    },
+    {
+      "cond": "큰cert",
+      "gain_ms": -3.7518540000000087,
+      "oracle_gain_ms": 1.1674999999999898,
+      "oracle_gain_ci95_half_ms": 1.2745331473785022,
+      "oracle_verdict": "판정 불능"
+    },
+    {
+      "cond": "RTT200",
+      "gain_ms": -2.6241328888889086,
+      "oracle_gain_ms": 0.0,
+      "oracle_gain_ci95_half_ms": 0.0,
+      "oracle_verdict": "값 없다"
+    }
+  ],
+  "p15_pad_rounds": [
+    {
+      "round": 1,
+      "n": 1600,
+      "ips_used": {
+        "1280": 1039,
+        "1281": 561
+      },
+      "m_used": {
+        "0": 67,
+        "3": 1533
+      },
+      "added_bytes_mean": 3812.908125,
+      "p_est": 0.0101
+    },
+    {
+      "round": 2,
+      "n": 1600,
+      "ips_used": {
+        "1280": 1281,
+        "1281": 319
+      },
+      "m_used": {
+        "3": 1281,
+        "0": 80,
+        "1": 239
+      },
+      "added_bytes_mean": 3383.28125,
+      "p_est": 0.0064
+    },
+    {
+      "round": 3,
+      "n": 1600,
+      "ips_used": {
+        "1281": 1600
+      },
+      "m_used": {
+        "1": 1520,
+        "0": 80
+      },
+      "added_bytes_mean": 1261.570625,
+      "p_est": 0.0055
+    },
+    {
+      "round": 4,
+      "n": 1600,
+      "ips_used": {
+        "1281": 1600
+      },
+      "m_used": {
+        "1": 1520,
+        "0": 80
+      },
+      "added_bytes_mean": 1261.548125,
+      "p_est": 0.0052
+    },
+    {
+      "round": 5,
+      "n": 1600,
+      "ips_used": {
+        "1281": 1600
+      },
+      "m_used": {
+        "1": 1520,
+        "0": 80
+      },
+      "added_bytes_mean": 1261.47125,
+      "p_est": 0.0051
+    },
+    {
+      "round": 6,
+      "n": 1600,
+      "ips_used": {
+        "1281": 1600
+      },
+      "m_used": {
+        "1": 1520,
+        "0": 80
+      },
+      "added_bytes_mean": 1261.506875,
+      "p_est": 0.005
+    },
+    {
+      "round": 7,
+      "n": 1600,
+      "ips_used": {
+        "1281": 1600
+      },
+      "m_used": {
+        "1": 1520,
+        "0": 80
+      },
+      "added_bytes_mean": 1261.669375,
+      "p_est": 0.005
+    },
+    {
+      "round": 8,
+      "n": 1600,
+      "ips_used": {
+        "1281": 1600
+      },
+      "m_used": {
+        "1": 1520,
+        "0": 80
+      },
+      "added_bytes_mean": 1261.44875,
+      "p_est": 0.005
+    },
+    {
+      "round": 9,
+      "n": 1600,
+      "ips_used": {
+        "1281": 1600
+      },
+      "m_used": {
+        "1": 1520,
+        "0": 80
+      },
+      "added_bytes_mean": 1261.49125,
+      "p_est": 0.005
+    },
+    {
+      "round": 10,
+      "n": 1600,
+      "ips_used": {
+        "1281": 1600
+      },
+      "m_used": {
+        "1": 1520,
+        "0": 80
+      },
+      "added_bytes_mean": 1261.42375,
+      "p_est": 0.005
+    }
+  ],
+  "expected_rounds": [
+    1.2147657311438789,
+    1.1886586650648074,
+    1.1148003288238897,
+    1.0727767510844335
+  ],
+  "pad_threshold_p": 4.978282525173353e-05,
+  "q17": {
+    "rounded_rates": [
+      0.12,
+      0.104
+    ],
+    "assumed_equal_n_for_z079": 484.9257,
+    "z_by_equal_n": {
+      "485": 0.790060519324706,
+      "2000": 1.6043698370396315,
+      "20000": 5.07346289431841
+    },
+    "note": "Rounded percentages only; original valid denominators unavailable, not a recovered historical test"
+  },
+  "gemodel_stationary": 0.09090909090909091,
+  "certificate_mapping": [
+    {
+      "algorithm": "ML-DSA-44",
+      "leaf_intermediate_DER_B": 8082,
+      "measured_CV_signature_B": 2420,
+      "synthetic_ECDSA_certsize_equivalent_B": 10435,
+      "formula": "sum(two DER)+one extra CertificateEntry overhead5+(measured CV signature-ECDSA signature72)",
+      "server_bytes_if_s0_1724_B": 12159,
+      "kind": "calculated mapping with fixed historical s0 scenario, not a QUIC measurement"
+    },
+    {
+      "algorithm": "ML-DSA-65",
+      "leaf_intermediate_DER_B": 11140,
+      "measured_CV_signature_B": 3309,
+      "synthetic_ECDSA_certsize_equivalent_B": 14382,
+      "formula": "sum(two DER)+one extra CertificateEntry overhead5+(measured CV signature-ECDSA signature72)",
+      "server_bytes_if_s0_1724_B": 16106,
+      "kind": "calculated mapping with fixed historical s0 scenario, not a QUIC measurement"
+    },
+    {
+      "algorithm": "ECDSA-P256",
+      "leaf_intermediate_DER_B": 893,
+      "measured_CV_signature_B": 72,
+      "synthetic_ECDSA_certsize_equivalent_B": 898,
+      "formula": "sum(two DER)+one extra CertificateEntry overhead5+(measured CV signature-ECDSA signature72)",
+      "server_bytes_if_s0_1724_B": 2622,
+      "kind": "calculated mapping with fixed historical s0 scenario, not a QUIC measurement"
+    }
+  ],
+  "inputs_sha256": {
+    "C:\\dev\\pq_afec_gen31\\experiments\\results\\p31_gencompare_decisions.json": "d44fb24802a9c196d4c9504a61b1f7d28dc6439837762c1c4cb29631edae9e93",
+    "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_S_bigcert_units.jsonl": "2e8c129920bce96d1cb10349e5047a58b8a470d3da30246f73a6b97a63f3478d",
+    "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run1_S_rtt200_units.jsonl": "4d00530a99b466f22be1665cfc148456ea7a4c8250c785c0f99f03c8d3162229",
+    "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run2_S_bigcert_units.jsonl": "1fc6e1b15a0a7353043c9e6b8ef6459be4cfe0a9693c2c8f80b390ed0e1b2457",
+    "C:\\dev\\pq_afec_gen31\\experiments\\state\\p31_run2_S_rtt200_units.jsonl": "fe6c482ffee14d1057ebd1b9958a283c820a822775d79f16636906d5cfe7f21e",
+    "C:\\dev\\pq_afec\\experiments\\results\\p3_effect.json": "f0928bc5d33e6af8663adfd77060f55a6b3558feeacba86b628fa3856f8a2548",
+    "C:\\dev\\pq_afec\\experiments\\results\\p18_mmax.json": "1f0dedb483d155ad10b90cfecdc9682f95015626529d513d1c9b601065d609ea",
+    "C:\\dev\\pq_afec\\experiments\\results\\p17_adaptive_value.json": "bc3979b76a74961989dd6abc7d996c9eebe7c70c9ecbb56973b1709f497f071b",
+    "C:\\dev\\pq_afec\\experiments\\results\\p15_v2policy.json": "6200206324256f3ad4b1c2960dd9cd5e58caecda2262d1dc334b7ca803a87989",
+    "C:\\dev\\codex_handoff\\v33\\runs\\A1_certificate_v1\\sizes.json": "1abe680a8f679447466fc0d82d2b14a16e47a8d8a8f33b6be4ea35d65a02b164"
+  },
+  "model_sources_sha256": {
+    "C:\\dev\\pq_afec_gen33\\padfec\\policy.py": "abfb04a8019e0a443e94d28063be1643d3438fd8865122a70c96195f8f69c016",
+    "C:\\dev\\pq_afec_gen33\\padfec\\quantum.py": "4ebbc265bec75d4cb764b7810f8c8d13b6e231b72d1c7c3236baa34bf506df4e",
+    "C:\\dev\\pq_afec_gen33\\afec\\channel.py": "7d0dace1e53cf566016401dd688a9d27765241c03edeeaa8aaa2fbcc4368de2d"
+  }
+}

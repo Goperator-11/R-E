@@ -1,0 +1,2322 @@
+{
+ "schema": "padfec.v33fix.world_diagnostics/1",
+ "sections": {
+  "initial_count": {
+   "definitions": {
+    "key_discard": "quic-go client Initial keys are discarded when the client first sends a Handshake packet (RFC 9001 4.9.1). In this world that is the first R, which still coalesces the Initial ACK. O and B datagrams sent before it and the first R count; R retransmissions do not.",
+    "w0": "W0 validate_world.py: every client O, R and B datagram is an Initial datagram"
+   },
+   "finished_kst": "2026-11-02T02:34:29.633563+09:00",
+   "item": "C-E5",
+   "protocol": "C:\\dev\\pq_afec_gen33\\g3\\v33\\world_validation_protocol.json",
+   "protocol_sha256": "ed5370e4874a30add24133b3b35b24aae98849e82a6db8128066b74f663d747d",
+   "rows": [
+    {
+     "action": [
+      0,
+      3,
+      1
+     ],
+     "checks": {
+      "key_discard": {
+       "failure_or_initial_retransmission": {
+        "difference": -0.0010122222222222223,
+        "observed": 0.0022222222222222222,
+        "within_w0_tolerance": true,
+        "world": 0.00121
+       },
+       "one": {
+        "difference": -0.0061833333333333185,
+        "observed": 0.9453333333333334,
+        "within_w0_tolerance": true,
+        "world": 0.93915
+       },
+       "tail": {
+        "difference": 3e-05,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 3e-05
+       },
+       "two": {
+        "difference": 0.007165555555555557,
+        "observed": 0.052444444444444446,
+        "within_w0_tolerance": true,
+        "world": 0.05961
+       },
+       "unclassified": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       }
+      },
+      "w0": {
+       "failure_or_initial_retransmission": {
+        "difference": -0.0009822222222222222,
+        "observed": 0.0022222222222222222,
+        "within_w0_tolerance": true,
+        "world": 0.00124
+       },
+       "one": {
+        "difference": -0.0061833333333333185,
+        "observed": 0.9453333333333334,
+        "within_w0_tolerance": true,
+        "world": 0.93915
+       },
+       "tail": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       },
+       "two": {
+        "difference": 0.007165555555555557,
+        "observed": 0.052444444444444446,
+        "within_w0_tolerance": true,
+        "world": 0.05961
+       },
+       "unclassified": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       }
+      }
+     },
+     "context": {
+      "cert_bytes": 16000,
+      "k": 2,
+      "loss_model": "iid",
+      "n_need": 15,
+      "p": 0.02,
+      "rtt_ms": 50.0,
+      "uplink_mbps": 2.0,
+      "w": 1280
+     },
+     "definitions": {
+      "key_discard": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 0.00121,
+        "one": 0.93915,
+        "tail": 3e-05,
+        "two": 0.05961,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 121,
+        "one": 93915,
+        "tail": 3,
+        "two": 5961,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 0.00121,
+       "initial_5_fraction": 0.00121,
+       "initial_datagrams": {
+        "3": 99879,
+        "5": 121
+       },
+       "retransmitted_or_failed": 121
+      },
+      "w0": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 0.00124,
+        "one": 0.93915,
+        "tail": 0.0,
+        "two": 0.05961,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 124,
+        "one": 93915,
+        "tail": 0,
+        "two": 5961,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 0.00124,
+       "initial_5_fraction": 0.00121,
+       "initial_datagrams": {
+        "3": 99876,
+        "4": 3,
+        "5": 121
+       },
+       "retransmitted_or_failed": 124
+      }
+     },
+     "id": "bigcert_2_g3fixL3_3",
+     "mean_hct_ms": 82.51682402746691,
+     "n": 100000,
+     "observed": {
+      "class_fractions": {
+       "failure_or_initial_retransmission": 0.0022222222222222222,
+       "one": 0.9453333333333334,
+       "tail": 0.0,
+       "two": 0.052444444444444446,
+       "unclassified": 0.0
+      },
+      "mean_ms": 83.06209777777778,
+      "n": 2250
+     },
+     "reclassified": {
+      "count": 3,
+      "max_hct_ms": 326.44876051645747,
+      "median_hct_ms": 326.30768642032274,
+      "min_hct_ms": 326.2217665539672
+     },
+     "seed": 20261030
+    },
+    {
+     "action": [
+      0,
+      0,
+      4
+     ],
+     "checks": {
+      "key_discard": {
+       "failure_or_initial_retransmission": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       },
+       "one": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       },
+       "tail": {
+        "difference": 0.00051,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.00051
+       },
+       "two": {
+        "difference": -0.0005100000000000104,
+        "observed": 1.0,
+        "within_w0_tolerance": true,
+        "world": 0.99949
+       },
+       "unclassified": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       }
+      },
+      "w0": {
+       "failure_or_initial_retransmission": {
+        "difference": 0.00051,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.00051
+       },
+       "one": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       },
+       "tail": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       },
+       "two": {
+        "difference": -0.0005100000000000104,
+        "observed": 1.0,
+        "within_w0_tolerance": true,
+        "world": 0.99949
+       },
+       "unclassified": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       }
+      }
+     },
+     "context": {
+      "cert_bytes": 16000,
+      "k": 2,
+      "loss_model": "iid",
+      "n_need": 15,
+      "p": 0.02,
+      "rtt_ms": 50.0,
+      "uplink_mbps": 2.0,
+      "w": 1280
+     },
+     "definitions": {
+      "key_discard": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 0.0,
+        "one": 0.0,
+        "tail": 0.00051,
+        "two": 0.99949,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 0,
+        "one": 0,
+        "tail": 51,
+        "two": 99949,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 0.0,
+       "initial_5_fraction": 0.0,
+       "initial_datagrams": {
+        "3": 100000
+       },
+       "retransmitted_or_failed": 0
+      },
+      "w0": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 0.00051,
+        "one": 0.0,
+        "tail": 0.0,
+        "two": 0.99949,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 51,
+        "one": 0,
+        "tail": 0,
+        "two": 99949,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 0.00051,
+       "initial_5_fraction": 0.0,
+       "initial_datagrams": {
+        "3": 99949,
+        "4": 51
+       },
+       "retransmitted_or_failed": 51
+      }
+     },
+     "id": "bigcert_2_g3auto_0",
+     "mean_hct_ms": 118.57708364746729,
+     "n": 100000,
+     "observed": {
+      "class_fractions": {
+       "failure_or_initial_retransmission": 0.0,
+       "one": 0.0,
+       "tail": 0.0,
+       "two": 1.0,
+       "unclassified": 0.0
+      },
+      "mean_ms": 119.72021111111111,
+      "n": 90
+     },
+     "reclassified": {
+      "count": 51,
+      "max_hct_ms": 284.281821860388,
+      "median_hct_ms": 283.8337665539673,
+      "min_hct_ms": 283.5877513620939
+     },
+     "seed": 20261030
+    },
+    {
+     "action": [
+      0,
+      3,
+      1
+     ],
+     "checks": {
+      "key_discard": {
+       "failure_or_initial_retransmission": {
+        "difference": 0.004032222222222222,
+        "observed": 0.057777777777777775,
+        "within_w0_tolerance": true,
+        "world": 0.06181
+       },
+       "one": {
+        "difference": -0.0024899999999999922,
+        "observed": 0.576,
+        "within_w0_tolerance": true,
+        "world": 0.57351
+       },
+       "tail": {
+        "difference": 0.0009144444444444443,
+        "observed": 0.007555555555555556,
+        "within_w0_tolerance": true,
+        "world": 0.00847
+       },
+       "two": {
+        "difference": -0.0024566666666666626,
+        "observed": 0.3586666666666667,
+        "within_w0_tolerance": true,
+        "world": 0.35621
+       },
+       "unclassified": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       }
+      },
+      "w0": {
+       "failure_or_initial_retransmission": {
+        "difference": 0.01250222222222222,
+        "observed": 0.057777777777777775,
+        "within_w0_tolerance": true,
+        "world": 0.07028
+       },
+       "one": {
+        "difference": -0.0024899999999999922,
+        "observed": 0.576,
+        "within_w0_tolerance": true,
+        "world": 0.57351
+       },
+       "tail": {
+        "difference": -0.007555555555555556,
+        "observed": 0.007555555555555556,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       },
+       "two": {
+        "difference": -0.0024566666666666626,
+        "observed": 0.3586666666666667,
+        "within_w0_tolerance": true,
+        "world": 0.35621
+       },
+       "unclassified": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       }
+      }
+     },
+     "context": {
+      "cert_bytes": 16000,
+      "k": 2,
+      "loss_model": "iid",
+      "n_need": 15,
+      "p": 0.15,
+      "rtt_ms": 50.0,
+      "uplink_mbps": 2.0,
+      "w": 1280
+     },
+     "definitions": {
+      "key_discard": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 0.06181,
+        "one": 0.57351,
+        "tail": 0.00847,
+        "two": 0.35621,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 6181,
+        "one": 57351,
+        "tail": 847,
+        "two": 35621,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 0.06181,
+       "initial_5_fraction": 0.05885,
+       "initial_datagrams": {
+        "3": 93819,
+        "5": 5885,
+        "7": 286,
+        "9": 10
+       },
+       "retransmitted_or_failed": 6181
+      },
+      "w0": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 0.07028,
+        "one": 0.57351,
+        "tail": 0.0,
+        "two": 0.35621,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 7028,
+        "one": 57351,
+        "tail": 0,
+        "two": 35621,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 0.07028,
+       "initial_5_fraction": 0.059,
+       "initial_datagrams": {
+        "3": 92972,
+        "4": 832,
+        "5": 5900,
+        "7": 286,
+        "9": 10
+       },
+       "retransmitted_or_failed": 7028
+      }
+     },
+     "id": "bigcert_15_g3fixL3_3",
+     "mean_hct_ms": 110.00242504751256,
+     "n": 100000,
+     "observed": {
+      "class_fractions": {
+       "failure_or_initial_retransmission": 0.057777777777777775,
+       "one": 0.576,
+       "tail": 0.007555555555555556,
+       "two": 0.3586666666666667,
+       "unclassified": 0.0
+      },
+      "mean_ms": 110.26264666666667,
+      "n": 2250
+     },
+     "reclassified": {
+      "count": 847,
+      "max_hct_ms": 721.7690117827133,
+      "median_hct_ms": 326.4154931246348,
+      "min_hct_ms": 283.7366223750589
+     },
+     "seed": 20261030
+    },
+    {
+     "action": [
+      0,
+      0,
+      4
+     ],
+     "checks": {
+      "key_discard": {
+       "failure_or_initial_retransmission": {
+        "difference": -0.0006610079575596816,
+        "observed": 0.0010610079575596816,
+        "within_w0_tolerance": true,
+        "world": 0.0004
+       },
+       "one": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       },
+       "tail": {
+        "difference": -0.004726710875331563,
+        "observed": 0.028116710875331564,
+        "within_w0_tolerance": true,
+        "world": 0.02339
+       },
+       "two": {
+        "difference": 0.005387718832891242,
+        "observed": 0.9708222811671088,
+        "within_w0_tolerance": true,
+        "world": 0.97621
+       },
+       "unclassified": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       }
+      },
+      "w0": {
+       "failure_or_initial_retransmission": {
+        "difference": 0.02272899204244032,
+        "observed": 0.0010610079575596816,
+        "within_w0_tolerance": false,
+        "world": 0.02379
+       },
+       "one": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       },
+       "tail": {
+        "difference": -0.028116710875331564,
+        "observed": 0.028116710875331564,
+        "within_w0_tolerance": false,
+        "world": 0.0
+       },
+       "two": {
+        "difference": 0.005387718832891242,
+        "observed": 0.9708222811671088,
+        "within_w0_tolerance": true,
+        "world": 0.97621
+       },
+       "unclassified": {
+        "difference": 0.0,
+        "observed": 0.0,
+        "within_w0_tolerance": true,
+        "world": 0.0
+       }
+      }
+     },
+     "context": {
+      "cert_bytes": 16000,
+      "k": 2,
+      "loss_model": "iid",
+      "n_need": 15,
+      "p": 0.15,
+      "rtt_ms": 50.0,
+      "uplink_mbps": 2.0,
+      "w": 1280
+     },
+     "definitions": {
+      "key_discard": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 0.0004,
+        "one": 0.0,
+        "tail": 0.02339,
+        "two": 0.97621,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 40,
+        "one": 0,
+        "tail": 2339,
+        "two": 97621,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 0.0004,
+       "initial_5_fraction": 0.0004,
+       "initial_datagrams": {
+        "3": 99960,
+        "5": 40
+       },
+       "retransmitted_or_failed": 40
+      },
+      "w0": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 0.02379,
+        "one": 0.0,
+        "tail": 0.0,
+        "two": 0.97621,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 2379,
+        "one": 0,
+        "tail": 0,
+        "two": 97621,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 0.02379,
+       "initial_5_fraction": 0.00089,
+       "initial_datagrams": {
+        "3": 97621,
+        "4": 2288,
+        "5": 89,
+        "6": 2
+       },
+       "retransmitted_or_failed": 2379
+      }
+     },
+     "id": "bigcert_15_g3auto_0",
+     "mean_hct_ms": 122.68725395228392,
+     "n": 100000,
+     "observed": {
+      "class_fractions": {
+       "failure_or_initial_retransmission": 0.0010610079575596816,
+       "one": 0.0,
+       "tail": 0.028116710875331564,
+       "two": 0.9708222811671088,
+       "unclassified": 0.0
+      },
+      "mean_ms": 123.61882440318303,
+      "n": 1885
+     },
+     "reclassified": {
+      "count": 2339,
+      "max_hct_ms": 615.2989203030822,
+      "median_hct_ms": 283.8801697592337,
+      "min_hct_ms": 283.3653136996481
+     },
+     "seed": 20261030
+    },
+    {
+     "action": [
+      0,
+      0,
+      4
+     ],
+     "checks": {
+      "key_discard": {
+       "failure_fraction": {
+        "difference": 0.0012843274853801198,
+        "observed": 0.04093567251461988,
+        "within_w0_tolerance": true,
+        "world": 0.04222
+       }
+      },
+      "w0": {
+       "failure_fraction": {
+        "difference": 0.0012843274853801198,
+        "observed": 0.04093567251461988,
+        "within_w0_tolerance": true,
+        "world": 0.04222
+       }
+      }
+     },
+     "context": {
+      "burst_length": 3.0,
+      "cert_bytes": 4032,
+      "k": 2,
+      "loss_model": "ge",
+      "n_need": 5,
+      "p": 0.15,
+      "rtt_ms": 50.0,
+      "uplink_mbps": 0.0,
+      "w": 1280
+     },
+     "definitions": {
+      "key_discard": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 0.04222,
+        "one": 0.95778,
+        "tail": 0.0,
+        "two": 0.0,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 4222,
+        "one": 95778,
+        "tail": 0,
+        "two": 0,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 0.04222,
+       "initial_5_fraction": 0.03676,
+       "initial_datagrams": {
+        "11": 6,
+        "3": 95778,
+        "5": 3676,
+        "7": 494,
+        "9": 46
+       },
+       "retransmitted_or_failed": 4222
+      },
+      "w0": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 0.04222,
+        "one": 0.95778,
+        "tail": 0.0,
+        "two": 0.0,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 4222,
+        "one": 95778,
+        "tail": 0,
+        "two": 0,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 0.04222,
+       "initial_5_fraction": 0.03676,
+       "initial_datagrams": {
+        "11": 6,
+        "3": 95778,
+        "5": 3676,
+        "7": 494,
+        "9": 46
+       },
+       "retransmitted_or_failed": 4222
+      }
+     },
+     "id": "p18_burst3",
+     "mean_hct_ms": 64.26107692746739,
+     "n": 100000,
+     "observed": {
+      "failure_fraction": 0.04093567251461988,
+      "mean_ms": 60.97579824561404,
+      "n": 1368
+     },
+     "reclassified": {
+      "count": 0
+     },
+     "seed": 20261030
+    },
+    {
+     "action": [
+      0,
+      2,
+      2
+     ],
+     "checks": {
+      "key_discard": {
+       "initial_5_fraction": {
+        "difference": 0.0,
+        "observed": 1.0,
+        "within_w0_tolerance": true,
+        "world": 1.0
+       }
+      },
+      "w0": {
+       "initial_5_fraction": {
+        "difference": 0.0,
+        "observed": 1.0,
+        "within_w0_tolerance": true,
+        "world": 1.0
+       }
+      }
+     },
+     "context": {
+      "cert_bytes": 9000,
+      "k": 2,
+      "loss_model": "iid",
+      "n_need": 9,
+      "p": 0.02,
+      "rtt_ms": 200.0,
+      "uplink_mbps": 2.0,
+      "w": 1280
+     },
+     "definitions": {
+      "key_discard": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 1.0,
+        "one": 0.0,
+        "tail": 0.0,
+        "two": 0.0,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 100000,
+        "one": 0,
+        "tail": 0,
+        "two": 0,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 1.0,
+       "initial_5_fraction": 1.0,
+       "initial_datagrams": {
+        "5": 100000
+       },
+       "retransmitted_or_failed": 100000
+      },
+      "w0": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 1.0,
+        "one": 0.0,
+        "tail": 0.0,
+        "two": 0.0,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 100000,
+        "one": 0,
+        "tail": 0,
+        "two": 0,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 1.0,
+       "initial_5_fraction": 1.0,
+       "initial_datagrams": {
+        "5": 100000
+       },
+       "retransmitted_or_failed": 100000
+      }
+     },
+     "id": "rtt200_2",
+     "mean_hct_ms": 223.88307124393955,
+     "n": 100000,
+     "observed": {
+      "initial_5_fraction": 1.0,
+      "initial_datagrams": {
+       "5": 3874
+      },
+      "n": 3874
+     },
+     "reclassified": {
+      "count": 0
+     },
+     "seed": 20261030
+    },
+    {
+     "action": [
+      0,
+      2,
+      2
+     ],
+     "checks": {
+      "key_discard": {
+       "initial_5_fraction": {
+        "difference": -0.00014999999999998348,
+        "observed": 1.0,
+        "within_w0_tolerance": true,
+        "world": 0.99985
+       }
+      },
+      "w0": {
+       "initial_5_fraction": {
+        "difference": -0.00017000000000000348,
+        "observed": 1.0,
+        "within_w0_tolerance": true,
+        "world": 0.99983
+       }
+      }
+     },
+     "context": {
+      "cert_bytes": 9000,
+      "k": 2,
+      "loss_model": "iid",
+      "n_need": 9,
+      "p": 0.15,
+      "rtt_ms": 200.0,
+      "uplink_mbps": 2.0,
+      "w": 1280
+     },
+     "definitions": {
+      "key_discard": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 1.0,
+        "one": 0.0,
+        "tail": 0.0,
+        "two": 0.0,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 100000,
+        "one": 0,
+        "tail": 0,
+        "two": 0,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 1.0,
+       "initial_5_fraction": 0.99985,
+       "initial_datagrams": {
+        "5": 99985,
+        "7": 15
+       },
+       "retransmitted_or_failed": 100000
+      },
+      "w0": {
+       "class_fractions": {
+        "failure_or_initial_retransmission": 1.0,
+        "one": 0.0,
+        "tail": 0.0,
+        "two": 0.0,
+        "unclassified": 0.0
+       },
+       "classes": {
+        "failure_or_initial_retransmission": 100000,
+        "one": 0,
+        "tail": 0,
+        "two": 0,
+        "unclassified": 0
+       },
+       "failure_or_initial_retransmission_fraction": 1.0,
+       "initial_5_fraction": 0.99983,
+       "initial_datagrams": {
+        "5": 99983,
+        "6": 2,
+        "7": 15
+       },
+       "retransmitted_or_failed": 100000
+      }
+     },
+     "id": "rtt200_15",
+     "mean_hct_ms": 229.54646941143568,
+     "n": 100000,
+     "observed": {
+      "initial_5_fraction": 1.0,
+      "initial_datagrams": {
+       "5": 4451
+      },
+      "n": 4451
+     },
+     "reclassified": {
+      "count": 0
+     },
+     "seed": 20261030
+    }
+   ],
+   "scope": "Reclassification only. validate_world.py and the W0 tolerances are unchanged. Policy inputs do not contain Initial counts.",
+   "script_sha256": "c2b79c000bb1d87abe66d2525b39246ec3bfeb62872d662ff1c8eba5dbfe8246",
+   "seconds": 23.220833699999275,
+   "started_kst": "2026-11-02T02:34:06.412733+09:00",
+   "w0_reproduced_exactly": {
+    "bigcert_15_g3auto_0": true,
+    "bigcert_15_g3fixL3_3": true,
+    "bigcert_2_g3auto_0": true,
+    "bigcert_2_g3fixL3_3": true,
+    "p18_burst3": true,
+    "rtt200_15": true,
+    "rtt200_2": true
+   },
+   "w0_result": "C:\\dev\\pq_afec_gen33\\g3\\v33\\validation\\W0\\W0_world_validation.json",
+   "w0_result_sha256": "fb266b6e38bbb4479808f7fb8523a7b2da723be9591e3804d560719373225e96",
+   "world_sources_sha256": {
+    "worldparams.json": "57e9352c5ff778fd278772e496fbbfe74a685ef7ba49b3849b40df45648db6ed",
+    "worldsim.py": "8f86bb520af2d18d03f9188f14104bc988af680665f705dbe0121b83d391e374"
+   }
+  },
+  "j8_pto": {
+   "actions": [
+    {
+     "action": [
+      0,
+      0,
+      0
+     ],
+     "connections_changed": 2532,
+     "connections_with_server_retransmission_w0": 11321,
+     "last_send_gap_to_reference_ms": 53.88875181380812,
+     "last_send_mean_hct_ms": 131.60960204361726,
+     "paired_change_ms": -0.5947525029232871,
+     "paired_change_se_ms": 0.015780592999451518,
+     "w0_gap_to_reference_ms": 52.13645513108153,
+     "w0_mean_hct_ms": 132.2043545465373
+    },
+    {
+     "action": [
+      0,
+      1,
+      1
+     ],
+     "connections_changed": 2562,
+     "connections_with_server_retransmission_w0": 11320,
+     "last_send_gap_to_reference_ms": 0.19409541130065922,
+     "last_send_mean_hct_ms": 77.91494564111026,
+     "paired_change_ms": -2.3434228400443877,
+     "paired_change_se_ms": 0.0547786502710074,
+     "w0_gap_to_reference_ms": 0.19046906569495306,
+     "w0_mean_hct_ms": 80.25836848115394
+    },
+    {
+     "action": [
+      0,
+      1,
+      2
+     ],
+     "connections_changed": 2566,
+     "connections_with_server_retransmission_w0": 11322,
+     "last_send_gap_to_reference_ms": 0.0,
+     "last_send_mean_hct_ms": 77.72085022980943,
+     "paired_change_ms": -2.3470491856500972,
+     "paired_change_se_ms": 0.05481792526666929,
+     "w0_gap_to_reference_ms": 0.0,
+     "w0_mean_hct_ms": 80.06789941545719
+    },
+    {
+     "action": [
+      0,
+      1,
+      3
+     ],
+     "connections_changed": 2565,
+     "connections_with_server_retransmission_w0": 11323,
+     "last_send_gap_to_reference_ms": -0.005903028488159249,
+     "last_send_mean_hct_ms": 77.71494720131933,
+     "paired_change_ms": -2.346647181408154,
+     "paired_change_se_ms": 0.054814922092537605,
+     "w0_gap_to_reference_ms": -0.0063050327301025205,
+     "w0_mean_hct_ms": 80.06159438272907
+    },
+    {
+     "action": [
+      0,
+      2,
+      1
+     ],
+     "connections_changed": 2563,
+     "connections_with_server_retransmission_w0": 11320,
+     "last_send_gap_to_reference_ms": 4.317064811681483,
+     "last_send_mean_hct_ms": 82.0379150414913,
+     "paired_change_ms": -2.475789507123779,
+     "paired_change_se_ms": 0.058416019965690014,
+     "w0_gap_to_reference_ms": 4.445805133155118,
+     "w0_mean_hct_ms": 84.51370454861281
+    },
+    {
+     "action": [
+      0,
+      2,
+      2
+     ],
+     "connections_changed": 2564,
+     "connections_with_server_retransmission_w0": 11321,
+     "last_send_gap_to_reference_ms": 4.146455192063935,
+     "last_send_mean_hct_ms": 81.86730542187465,
+     "paired_change_ms": -2.4772626750555755,
+     "paired_change_se_ms": 0.05844416209699713,
+     "w0_gap_to_reference_ms": 4.27666868146941,
+     "w0_mean_hct_ms": 84.3445680969277
+    }
+   ],
+   "comparisons": [
+    {
+     "baseline": "v32",
+     "candidate": "j6_none",
+     "last_send_adjusted_ms": [
+      0.10603996717162227,
+      0.3943960939275079
+     ],
+     "last_send_seed_mean_ms": 0.2502180305495651,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      0.10948083597729638,
+      0.40669681091178556
+     ],
+     "w0_seed_mean_ms": 0.258088823444541,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "v31",
+     "candidate": "j6_none",
+     "last_send_adjusted_ms": [
+      1.0061494800726076,
+      1.632918344151487
+     ],
+     "last_send_seed_mean_ms": 1.3195339121120473,
+     "last_send_status": "fail",
+     "w0_adjusted_ms": [
+      1.038355655159305,
+      1.6837429260596972
+     ],
+     "w0_seed_mean_ms": 1.361049290609501,
+     "w0_status": "fail"
+    },
+    {
+     "baseline": "v32",
+     "candidate": "j6_c1",
+     "last_send_adjusted_ms": [
+      -3.878944677629028,
+      -3.183680321950602
+     ],
+     "last_send_seed_mean_ms": -3.531312499789815,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      -3.9996488434730173,
+      -3.2848291616005314
+     ],
+     "w0_seed_mean_ms": -3.6422390025367744,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "v31",
+     "candidate": "j6_c1",
+     "last_send_adjusted_ms": [
+      -2.7599543055203832,
+      -2.1640389309342827
+     ],
+     "last_send_seed_mean_ms": -2.461996618227333,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      -2.8457985333781295,
+      -2.2327585373654983
+     ],
+     "w0_seed_mean_ms": -2.539278535371814,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "v32",
+     "candidate": "j6_ideal",
+     "last_send_adjusted_ms": [
+      -3.87852225252992,
+      -3.1841777060915515
+     ],
+     "last_send_seed_mean_ms": -3.5313499793107357,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      -3.9992181596842564,
+      -3.2853286377079427
+     ],
+     "w0_seed_mean_ms": -3.6422733986960996,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "v31",
+     "candidate": "j6_ideal",
+     "last_send_adjusted_ms": [
+      -2.760330011490252,
+      -2.163738184006254
+     ],
+     "last_send_seed_mean_ms": -2.462034097748253,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      -2.846172576462705,
+      -2.2324532865995743
+     ],
+     "w0_seed_mean_ms": -2.5393129315311396,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "j6_none",
+     "candidate": "j6_c1",
+     "last_send_adjusted_ms": [
+      -4.105390662181805,
+      -3.457670398496956
+     ],
+     "last_send_seed_mean_ms": -3.7815305303393805,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      -4.233112959715868,
+      -3.5675426922467626
+     ],
+     "w0_seed_mean_ms": -3.900327825981315,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "l1_none",
+     "candidate": "j6_none",
+     "last_send_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "last_send_seed_mean_ms": 0.0,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "w0_seed_mean_ms": 0.0,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "l1_c1",
+     "candidate": "j6_c1",
+     "last_send_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "last_send_seed_mean_ms": 0.0,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "w0_seed_mean_ms": 0.0,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "l1_ideal",
+     "candidate": "j6_ideal",
+     "last_send_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "last_send_seed_mean_ms": 0.0,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "w0_seed_mean_ms": 0.0,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "zero_none",
+     "candidate": "j6_none",
+     "last_send_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "last_send_seed_mean_ms": 0.0,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "w0_seed_mean_ms": 0.0,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "zero_c1",
+     "candidate": "j6_c1",
+     "last_send_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "last_send_seed_mean_ms": 0.0,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "w0_seed_mean_ms": 0.0,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "l1_none",
+     "candidate": "zero_none",
+     "last_send_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "last_send_seed_mean_ms": 0.0,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "w0_seed_mean_ms": 0.0,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "l1_c1",
+     "candidate": "zero_c1",
+     "last_send_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "last_send_seed_mean_ms": 0.0,
+     "last_send_status": "pass",
+     "w0_adjusted_ms": [
+      0.0,
+      0.0
+     ],
+     "w0_seed_mean_ms": 0.0,
+     "w0_status": "pass"
+    },
+    {
+     "baseline": "v31",
+     "candidate": "v32",
+     "last_send_adjusted_ms": [
+      0.7567178208405541,
+      1.3819139422844102
+     ],
+     "last_send_seed_mean_ms": 1.0693158815624821,
+     "last_send_status": "fail",
+     "w0_adjusted_ms": [
+      0.7809707322893887,
+      1.4249502020405314
+     ],
+     "w0_seed_mean_ms": 1.10296046716496,
+     "w0_status": "fail"
+    }
+   ],
+   "context": {
+    "cert_bytes": 9000,
+    "k": 2,
+    "p": 0.02,
+    "rtt_ms": 50,
+    "s2c_loss": 0.01,
+    "uplink_mbps": 2,
+    "w": 1280
+   },
+   "context_id": "0998e3f951c80c846cc2",
+   "evaluation_family_size": 116,
+   "finished_kst": "2026-11-02T02:35:02.312623+09:00",
+   "inputs_sha256": {
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0998e3f951c80c846cc2_0_0_0.json": "113b012a590f0404081a136809f6d4665a57304430e81523fb686528029aaf78",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0998e3f951c80c846cc2_0_1_1.json": "18819912754751cfc0fa097a639a57350725b505e1e088441948a4bcdb6dc271",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0998e3f951c80c846cc2_0_1_2.json": "83963a89e24ed0f857d827b9d25e9e660b2aea9bdcca3dffc34dc69360a5a22c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0998e3f951c80c846cc2_0_1_3.json": "d86c4f4aa5e849f50cb03da6d5a7f493651d4849ac162e547d7f1ace3c3593df",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0998e3f951c80c846cc2_0_2_1.json": "4fa4ccbe3313aafed3e2b2983fcff3211250cf8bedf4143b8f29e9ead35231e9",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_joint_action_pool_v1\\results\\0998e3f951c80c846cc2_0_2_2.json": "197656a29543cff02fc159542954f23dbfa10d29355957ceff23565883c28aee",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00031.json": "be049b6ec659f1cdef26fe2c33a33c1ff19d0ca961453a736c13e159232f0b1b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00032.json": "0ddf73cfa047b4d1908930b53023dd199191556db2ec95fc7a79a237071c4b23",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00033.json": "082c07ac6d6321ed01865ab842173883564d96df937089f98f222e4f0733c2b1",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00034.json": "3118e10ed19bf35c43d6beb2912f2292d430705e10aa099146ad1e32f0d482ea",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00035.json": "7f4c84354ecc411ccece34622069e578e01a17fd7706b52f5d79669ebaf3e869",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00036.json": "5d74e91d3622dcfab02c238ea32a080dbffe05198b15988b8d0db07f3a2d10d9",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00037.json": "d08f04a8459923d48078c41175a7fa107a877a6334d49bff5aa2101abc25bb5a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00038.json": "f206f4610d5b3e5dd1edb2e20453c6cb7b66bf42d3512bc69042512e517c5368",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00039.json": "19fb98dcf1bc03c4be012b447d949d10472f2845803b6c42472150a25424dd4e",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00040.json": "b1af73cdee686af6ab3e57665e613781587990294b77caae1889c2ebf252d364",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00041.json": "ecbb61c40d0c67c1f2bbb35a59d1613d64f9df93338bae29585dcce863df8a01",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00042.json": "3cd382fd510d01ef8aacf4852bfaac3502ae43f956b31cef490b285f4feb9057",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00043.json": "70bfd1bf4b0e3cd005205ab2bc5266159e6dc51d348552471cdafab01ea7d67a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00044.json": "c19086457ae2f14f5c0a086d33cd8ffb39a3b11c4dfd32d5f12b8c2431995db5",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00045.json": "d977de0e35a88498b3dfff24c70f67116825c19aee659f5aa1803b9f71183c47",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00046.json": "58babad454af041f24200010e05f44154fc147c54c97b6d0dee3e080f66caa23",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00047.json": "79beb3043661dbae69ee4c5bf7d82ac331a74675e1be724f72b50a30f9553528",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00048.json": "ead9114c717cfacbdf922a0a2ded48df782a80106b9fb544ffc6cf6f48f1c095",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00049.json": "bc4a6d9ccffed9afc6bbf57b5cbdf81252d3e2aa458385642fb046a7e9be8f2c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_23\\c1\\B7\\seed00050.json": "7ae5e6f5a87f7b36f04f0c8fa102f306229b74a0049bb5359933be03f06382f1",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00031.json": "3c86230888301b7520bea0d0d825cc0d8ff3a0a0ed1d3f2d984b7b77f4efaf39",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00032.json": "fc9dce2e2edbf040d93451a190bdca3c40aa2224d60f2945173cd46dd69245b7",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00033.json": "cd8f58853c5b3b24251de77d087d3a9b8b1500c8114d36aceb5f85f4e98a2539",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00034.json": "90efeb40f349dfeb4a52320516c7ecaaec33faf3edc501b3fd1380a7dc40156e",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00035.json": "aea2f7dc88e024f17558e5247eb25f5e7bf047dacee4910984516811867d1260",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00036.json": "8d3f3d99403caa3c6e467a84f96535eef22f5357d5c3644f1fc63e220f5bd080",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00037.json": "eefcc1a6523f976395cd6c51a549c39e5e9700b934109fea04f5a125734060da",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00038.json": "89cf25b235af09c1a145bad86746bb6a221aefbc6bf5c42889bb675e7c65524c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00039.json": "24bbb0ccb87f32e9867fd2a816b7036ff05dd3fa6be927de7e6d4dfd0a781437",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00040.json": "89246d5e14c04260f617bd0fea1fc6ff6ed9faaa28906c881a57293834e8bb6b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00041.json": "dcde8f21bef08c6152dbb0e4a2e92f3f4767a25ed7cb32433a45ce542932b885",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00042.json": "1951a7761ab01554596d49062c3a835826e6198e14e4e2949ac1f2ee77289752",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00043.json": "2de43965daf4c03af712724acccced271f84db688321dea49aca20296dacee8e",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00044.json": "3d0f402b1225270ae706281e79a5e644074d6e788d0986731697ffc57e2f1b14",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00045.json": "9c0d7f232f7386ae7a2c44cbf36af8ff6416d78b0b9028c060c1c28e19bb1b14",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00046.json": "b967c120c6bbac63a93a46060623de621f2284d74d273eee211affdfbced885a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00047.json": "0ce5cf20bc84b749de439bf4840404572d8a99a87dc85de4b3412e36030b6c6b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00048.json": "6f5872ffe52e7c198271d2ba8cda16d93d77ec73d5b8298af0b6fcb7c6793df6",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00049.json": "e0e971f17fb065c74d7d5b0ea5309debe9e43d79b2747c3ed9a73f9c06831c6a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_34\\none\\B7\\seed00050.json": "389023bf07c61567907db6d553614577be30d75a404b0058f5b494cc4db96042",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00031.json": "6ce92c20efbdc97dc914ba3a1e5717aeb76ad94960af694272be619a8cf28960",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00032.json": "0e667810c955be70cc344b57df959c94abb25655c253022f1f61a2a39fbb2019",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00033.json": "11d1c1a08dfacd9213b51cdb77efee704c707e9f174812aae617474f32f2cd81",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00034.json": "3fe6a40056bfd5ef9cfc6385011befb1b6c6f03a96bdc9fcbfb79be0ae2aaad9",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00035.json": "5c59e0870158e4a5602625b9b21532fc16191a743dda0198be74ebc5b44bd54b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00036.json": "ba7cb6a8b132e7d9077d663d4d078ae0cb9d2298cb780a1e66045a28fe3f697e",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00037.json": "88dcaa7ce9b6cf10e07d8e60b5542c00b81c1ba1c599a208feb3bb93d8798f84",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00038.json": "93a1adafbecaf5aef5881c92846aebcc6800e68bc3e312af73d7b2f043a316f8",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00039.json": "3dd5fcf36535a81179cc098f51d140f850fcac27ef47c32df052b593cfd59026",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00040.json": "687740c1552cc0a42c56abb3fc3044d7129e9a998d73a520e6e82b8f9305d044",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00041.json": "932d5c99e56a76600eccb9bdf53b32c4f2dd2596d29f86054ad79fc74b563ddc",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00042.json": "2476f831e6a6f4eceaeaf58a09225e41c1c0a2a4dba368d23505f97a2adc8eb3",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00043.json": "85663518e5f7244316cc45bd18122212e04c7dd6717e9444521f9f3e5dd2316b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00044.json": "071de5f94f4454f20235590b47dd9812a374c62db15fc47f02e5d81e1a49ff40",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00045.json": "5fab354b4aa7fab051c7f626d1d1f6f65755eb6ee0c6e3694d0295987c4c938c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00046.json": "f3e4fb32ad50877679c57ef17312c1f6e2b4aa504dc3462786dcc051c0ed48ba",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00047.json": "f7415ae631c2cdf6693821bb6a5488477938184f1100b6cd9eb49ed8c4d496f9",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00048.json": "7f8e088b52791f3fe08c495a15ea18e77c73892b05551a9b34adb720a222ab51",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00049.json": "29677040a7e30fd9b123d0eacc1f3760298e072235b2923233352e3588c097de",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_45\\c1\\B7\\seed00050.json": "24a6600becda39afb2520a23f2323ce08cfdc50ab219eeaec067562aed86d30b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00031.json": "64affad4a3679a1725f488f340ad824b79c8039f0d78869da0edb7881f0a1469",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00032.json": "726d407bdc75c54342198b556733809d94612d5bf34a4bc2bc9d9c5612441162",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00033.json": "c40c986a1b0e7703dec7637e4430525040ce575171f76d54a4adbacaa6232983",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00034.json": "aae68d7629f028210789ad2fbce096a7d208732eb206f98a8cbdf494841f0d57",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00035.json": "de5a02ffbb6490b7bfef8913875e56e9fd9c97385dc82238caa88ac2fdbf8db4",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00036.json": "b2bcc8a5a34f3c7b68c48f637b7aa2c25cf3e530a7ca43509add68fbb63506c4",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00037.json": "220b4a26d760fab263e08d92db3d7367f7564fdc715a6ed397a2e90944ff67f0",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00038.json": "eb5e0553b3172ca9e6f46d27b1bd631befa9ec618c973847193d0b5cc971f790",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00039.json": "32c8c1d3089a0a307ce8bb909b3212148057f8698d1e1a127f6037aa41572475",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00040.json": "c38d942dca7c0ae857bacea90596dc863a80f6352ddf8fdb62423ab8f2210118",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00041.json": "82ced46758bf9f9ec44268fac19490289d2cf322591e14eafa529cb75eb375dc",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00042.json": "d8e19406873ea00c9d28f58f4cc0565a90bb6eb86bac3f15cbdca45dc127dfe9",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00043.json": "095f7979ca4156a4dae84552827c0a55692459ddd6b3d1c90afdd09fa10b8418",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00044.json": "ff5ca78386e11a79e5be4767c9b61097a0e00a2b519571d95a8c438129e3fa78",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00045.json": "621d793605164dd209b155dac8a70850252cf78ce124513438591d7c000b020e",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00046.json": "8bfe7379c6431e0f9a733fcb3535b9c9c145aa34d498cebfb3c6a7e4e5e40b05",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00047.json": "aca46091e4b68a3c87b0953000308b63c963a9ef8a43bbb23743c4e5e957157a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00048.json": "71121e5c5ef183188ef6297be37740abd947494e28752f114f153f09fe201a41",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00049.json": "67462b4e8c6a2a7588730f67742982d4bfe516349dc71167ee967c94f2fcbc4d",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_56\\ideal\\B7\\seed00050.json": "13b0400888a28810edf9d90312c4a15c5bff54b73f322b39ef29795ef5c5a3f1",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00031.json": "7524e587d6ddf19ac97f0dfab90ee8bad57af680f35f1a534b0989c29ad598cb",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00032.json": "27357fad5f303380d0b777a9753e39cc700f4a66238e5b5b084eed8e604aa78d",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00033.json": "69332242fd204bad2825db4a5a8b5136d34693aa16de6a6fe89d8c8c1d394053",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00034.json": "c96e56bc3d6e8f5fa1e1de0fcfd7debef3c1af379fb200a35bf0af7d5265bc3b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00035.json": "6638e45b3a2f5fb1c9f794f0995cab99fa5f32cf2b3e0b5b34c2ff8778a5ad13",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00036.json": "f19f66ef9940e9045a2ac60ec4dfe0163d5e30a33f1a436ff11d170540374192",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00037.json": "cc3bfce3502391e0920a67a5c4a1ebdfc450b076ab9b59160e957d57f7458e8d",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00038.json": "542c99868a94a4a888d839dc048f1c7c08a567d1bb3ee09d654e195ea8b7ce68",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00039.json": "3a810e9149baa492eda7079c96ca95c18f19e49014bd7893fcc8974b3b0dc705",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00040.json": "610318c1e381bb3c032f24c4a1d7ca94d7c771626095e79a8d8e67bb9fce6911",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00041.json": "33b5e99615d334284893b7eefa9d06a0ef258eb28fbce82c90cd64670df8dea4",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00042.json": "fd2760d469c9d08862d19c76df789c22c37bb59fa5747cace5e224b4fc61950b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00043.json": "ae610450cea758b66a5b5af41b2b60202c30b2b090886ee998f711b054087dfa",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00044.json": "4b4af5a0b4b3d55781f022faa0382757cecea367255cf3e30ed9fecc8cd9c662",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00045.json": "01c102757ef88b7044948420ba3e0bc16e2a8f275288422fd3814a9345649455",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00046.json": "352e4a8964b74831ea6f5f5dedf8a7b2333adc6cab1384af4c9a77c42a249dc9",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00047.json": "551ee05014f5886c23779be97b7074f55de4d00f235f0ad8e57c1941885b74f8",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00048.json": "a02e04311f85bc03c7600041f880aec16cca4c20db2f51b426a78b3ad90dbdaf",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00049.json": "242e96e95b975a671d6869fb4e3a8496ca236fa9b9ee117e902a1afc1b905c21",
+    "C:\\dev\\codex_handoff\\v33\\runs\\J6_raw_v1_67\\none\\B7\\seed00050.json": "d5c3bd3bf6f7b2354911ed67cce9d1da9397b7d48f215417503dd78e6d4b23e7",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00031.json": "a63b89784df72c95f3b8dd966164fdfbefe2982d1d373cc493173d77f41facf5",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00032.json": "c9c9e82510c5e71dfc714b41195baf0ab79088c1d347c9bb6ff5ad50014f6113",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00033.json": "3760208cdf5f7d16f5b16dae4f36ad524092f0e1fcf0e3c560c7dbe68fa941c6",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00034.json": "85226317d138a4599782071740340c01e95d7eb1411142bdaed45790a4b12980",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00035.json": "392733f577f95db3a44f4957a3af4f59087486bc7791338f0b556c9b141c45a4",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00036.json": "4800478741cede40ec3421cc96e30ecb71f8d7c64effad5bf8829c4fc43ad917",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00037.json": "dbe8f895ddeba48d64edb41ee344c69eb47cd0dabc60a2beae11d7db5961ad54",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00038.json": "9c3ab9189ddf871a09b640a5d66746eb613f59f66b1258c06e19d141b458858f",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00039.json": "89cbc7b39f16e618be55573fa23e09c75be0e13971f7c9be143dcb27b5c69b97",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00040.json": "3d8c3adeb35d770402c694d74a21c36ee463db907b01ca9c5d71842aab5d2a4f",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00041.json": "6d4f69acc9069bdfc33bbc4ca10cd163ba8dbb4ea4bed4be180aa0bd5274d728",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00042.json": "ee84d92fa0e0628a8eba6cae494a016ba1fa522713246ec4d5f5b0f8259aa419",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00043.json": "4387c5b1b62b331b54d81766b0ed1a89f18663486794ef1f6a3662a999466d3a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00044.json": "1ff9293cf1f01111f332b9f3fb6ee0c78b167b972197f88167571c772dc35271",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00045.json": "8a3850607bbfc55dbf622225ec8b7c3b6cc857512fabe10932af93494cc1d768",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00046.json": "f8582df1adef35581749ae14cd92a48e2fbe0bea7e714da7232a4b9244d43575",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00047.json": "6846b0d52d39600d06cbbb9a7cc923646d79d737721d6e1e9642115c595eba30",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00048.json": "74c9b9bc4721b264c1e1e9d130259f3005f32438778bc704db1f2ce06998b762",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00049.json": "40482d6e2f7563025b5b0262df5b7ba8d4818a2d4950b6adfe5f42c4392731b3",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_17\\c1\\B7\\seed00050.json": "5d32e5b14f038b255504152f0b3c1133a06ce51b183c6a3e24bc32ae32c27c61",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00031.json": "1afc42e50b68a352ed3048aface47d0fca6b90c5973b48d369f20e8ed6b60736",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00032.json": "67968b3b986c913bef062eff00ac62d7b0508d8bf23b63dd41c6cd335c92d6fa",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00033.json": "3af736eb98b8853b4e89334dadef318af177d3659bac7c6d33eba8b79c1d0a9c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00034.json": "2dac2376bda851cc1399edba9f5e96d234e3991018ccf48124853ea062502e17",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00035.json": "ffcf606376cebadcdb8a0679b90ba9dce84df13085adb085fe74d1ca3dea172c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00036.json": "808f2661eb44a676894ca125b8a8e6083a8cd497ade7ed4b2d6f565432ef7cae",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00037.json": "d794da075f93772b54f1b53f0729a25d503afb68cf5edb5726c3b608afd778b5",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00038.json": "7a74b5c78d1a986b87ac782dcffeaf247246d1ee6a8b18f50de122013ac5b9ef",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00039.json": "2c20e43d3771c53e11431680406eb011ebd0d11b86d236126952193b581c25a6",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00040.json": "8580974f6c8033d67e4c7a9d85aca23b93730e96f0f79643024965188bc65f3c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00041.json": "3620fe3fee5fcb4ca00dfbba054668108ebeb3ef226e688f8817011d885a8245",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00042.json": "eca2e9890a29b97413f03724842d8d759cff529a566103014717b6a969a49688",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00043.json": "14f36a26046df1c7f916447d31cff4fb7691d497943e91fe0058fd2d34b3e539",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00044.json": "3ac215785f8f4b0839dc310decb1fc71eb6cbcb75a09988630f2c22b3bd7822c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00045.json": "07db047f4f0f68dc1476ddc609ce73ae2e8e78e15bd33777495cb8e31233be6b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00046.json": "f905e63150b88fc7d587bdf359aed8ff20f1d1b14fa467630cf87aabb6c47478",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00047.json": "b18a53d9bd5dda8747b910683806d892bfb1be8fbb30cfd9e0e91b43c6c77009",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00048.json": "5d5b29e04d1aa304b31ba6266caa0bb20205d415f0624ec2ff8f7ecc6d7f43c5",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00049.json": "ece82229084d0780316dcd33835702f863f432f96ea821a6998aa525c5b364ab",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_28\\ideal\\B7\\seed00050.json": "b6c9de71dde88418cc941d8df650dbff8e63396ba39057a8b9babc5a758a5fd9",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00031.json": "f625bcf1daa600b14c4bc444074519b68d5a28678e8ec3ab70d0aaf8adbf865a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00032.json": "42cc42b3dd8bd0e1927bf94fe209952895c79a811a781fef06e23705b5f6b5ab",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00033.json": "d0c82e28d2575de557e816ac5a3ca8c766205de1c404316ad244a29f15f03feb",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00034.json": "79cfde95670a9b36288df65d9dbce41af5f41e08a1a9ed60bf02475de95afd18",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00035.json": "0be0eadf32ecec8b1b8dc13f9a5cacbd7ea3f10e72ad71c9a1c489814d5bac02",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00036.json": "c47550abbf85ee5d8ae322bca23535b7c26174f9be5a93f18d440b5f00c6162b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00037.json": "e0cfa9f33f9ee00edcdd407ff9a5c0cb2a94e848b25b00173c4d4b681743e4c1",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00038.json": "33f06d03d6a6f76f0b2ab34a31bff2b3ab3c55cd5f6b94bde9a51b4afe6b94bc",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00039.json": "a3f1d8140e075b23d8a78f4093d8fa78b6e9883ddc95b63397667b78db9bbd97",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00040.json": "d3458310ebdf0777f659f6ae4cda5bf0ccdd20a8d027579f168d3069852788d2",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00041.json": "5aae9291e42a38a4d98c14beed20ee746ca2c1eb32f2bc3c48deb3db3176d72c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00042.json": "05231517a32a22b222833f35c5343f67c0c14e23087a9d1d237f6d7434544883",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00043.json": "a545aea70cad36dff71aca94cc86fee4860a7d9d99c30ff6c8cbe2fddb3acd7d",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00044.json": "948c5933759c8a43c9a8abcb1f6607546bbc28fbc689a06f202e6905bbe08b1a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00045.json": "1c136e68f112a71f569326eaa609d8d166d8c6ac50d7faa813ea2bfc61182c5c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00046.json": "c11b19efa676c22843e35159e98dac329bbc0ab25bd7e8763657df8f80daf878",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00047.json": "41c37db3b6be7279a18b521a43f0422470be881beb8dfb80b7749e418235dfe8",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00048.json": "8c2e5bef58dc0b0f8f29a48dbebb94f597b440aa02ba7c0f5313be1665824889",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00049.json": "9a6e68e097e0651fc82525fe1dbb5cbfeac1e25ec34464c074af3c3cab17cbef",
+    "C:\\dev\\codex_handoff\\v33\\runs\\L1_raw_v1_39\\none\\B7\\seed00050.json": "789ef0954b2595ecf36b7c935554893ea717fc5b7b6b162bfc08f2c148e24717",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00031.json": "324ec73eaf9cb667d27bf5ffc2dee1b56a5ddb59f1c0930a6f9128fe41f9604a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00032.json": "dbe6374f461bf7e5ae4b466d5ea6291cbe761cc22591342ddb8b3e985de77414",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00033.json": "e37fabffa2ac796fe1b3ca698d0aafc0ce919910ab6c6110f5fddf13eedfdab9",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00034.json": "06a159de4ab96068b768564ab55475badee552c46470f12cf70fd42dc9957dce",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00035.json": "111d915e3530e63966f29c1084a078bbb94102ca1bad12a7de3c764f7e865ed8",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00036.json": "dbc2eadffc9c6041c5f76307ef06b5cae2d0144fdd8d8e18eac7329f45bc6bca",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00037.json": "6867ef7a1a631d3eece2034b6aea86c8e437c5d2c9469ff9909d325d287bb833",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00038.json": "cd4599ca9b81d7a0f069874d6d26b1c8adc6e561910ff9b03b481dfdfaa7c650",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00039.json": "630a33a819e1b24f91a791e54840b32333527039c9cc3bccde0d59286bfebc00",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00040.json": "88e52a9ab5f4351c0bb0da2245b233a2174848bfbf8105df34a1adf85b828532",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00041.json": "c1d08dc43268c5ec22e2aa9736b0058ab712c05bce55413988be5d2607631f7e",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00042.json": "c886a48ba01830cb63011b72444f59025ac1731fc7a6052fdfd6f69668a41c6a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00043.json": "ed0bf5bff7d1c3b57a8cf888adf60ea56aad4fda0ecc70de82886e3b66b3436c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00044.json": "88f8bb42a746c3b5a7e21524a4922ac037e002ac0a4e6eb20341fa4926100b16",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00045.json": "8bb899cfcae6064d14b9d15ae7a43f813ab4677f333670786bd0dd0986e63141",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00046.json": "f1d4bf73d05fce931cca7ccd9e7c514f719c5de855b10ae1fc73ebc28c7c9dce",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00047.json": "e1f06457b02bf073ff696a03c0e6da9e6da3aa80ba736c28fa6183a462db4f7e",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00048.json": "3c8dee568bc30484cb668e60d77b5d83c49a4a72127c7f137ebdd67f7627696a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00049.json": "2ef3cb05534a55b306333f25615159342d70b9a27e6abfe2118f50e6a4c8633e",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v31\\v31\\full\\B7\\seed00050.json": "fc153377bdc92461d99dea32b4c0f864a18514937c15bc426d506be4cd32c5d8",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00031.json": "4901af8ee171aaea9b571df5eb58f689970a800e98499b9567e229ba730a5db2",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00032.json": "5ef7ffffd6cc6d37dc8e29e87251ab933272c003bacabc3c1f30b669bb4908c1",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00033.json": "181027580a9c85335173a8fb5f8be2eb19e5ecf5880a47ebef6c34ffd7499c1a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00034.json": "5002751a60b4e6f4985cd887d8f9f1d966b3dc742ce3b81a3357d8a64b25245d",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00035.json": "194bbf444272f7aaa6fa055660a3918e69219cba3d63293b8ac5ff9d42764f96",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00036.json": "c88d05d1e74d29035e519f15d81d4af038615adbb4bd3949a8731cd6a476688e",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00037.json": "88eb436c6161abfa2b980ae1d870c922e9d79ab25dff0726c97cacbe9f332771",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00038.json": "1f5b01fefb3d268c29208169dcb6fa5583b597bead3f131a7aacf6c35de64a9f",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00039.json": "bd080d5e205e84f9529dbace722b8e3b2937f21d251952fb3776702a887a69f9",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00040.json": "3fd99a0f8caa133cde08d02675c625fa2ea431990b0c760f7d7fc00637d0c2bb",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00041.json": "f1e81c948c6f7d4db7d6a7847db44e827b7dd029b2414cff59c6ccd9bdbff2ab",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00042.json": "52a29e54700fd955764988526a2ad0dd9c50f0aa3030912d5d4359a56e05104b",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00043.json": "4b87c5b319cb63bd5f9571442ecfc3c4340432fef3137b445640f878b6668286",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00044.json": "f3e3ce539a0d415e91a2f2711097fc5ef4feb5bb860ce45b673b26666a93165a",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00045.json": "64a6f7b24cd9067da350ae534b51e5a1c3d274c54d06b930f82d4a50a4c1c4d7",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00046.json": "21d17d62f89a4c413983bc8a03d92842b52edf24f3ff81c2a0b0c10cc1f1af11",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00047.json": "a70e1ea6ffa96fe7abc99c505ddf686c544b260ce03aaebcf3aac7579f9eea65",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00048.json": "ab5054db5eedd90ab8d435d75ef9eff628881d74cc756d8b84cf63bdf3e683de",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00049.json": "722a54adaf77504fbdde727ac287eaac91166ba50aa6eb8f78ec6cce6e5e070c",
+    "C:\\dev\\codex_handoff\\v33\\runs\\W1_raw_v32\\v32\\full\\B7\\seed00050.json": "c65bce1398169daa7f393e0c2a60f74e33d5e320645a38771d7f627da3d0acab"
+   },
+   "item": "E-J8-1",
+   "patch": "server PTO deadline = max(now, last ack-eliciting server data send + PTO * 2^retry), as quic-go v0.61.0 getPTOTimeAndSpace; single packet-number space; worldsim.py on disk is unchanged",
+   "patch_text": [
+    [
+     "                 \"last_retry_flight\": -1,\n",
+     "                 \"last_retry_flight\": -1, \"server_last_eliciting\": None,\n"
+    ],
+    [
+     "            counters[\"server_sent\"] += size\n",
+     "            counters[\"server_sent\"] += size\n            if kind == \"data\":\n                state[\"server_last_eliciting\"] = time\n"
+    ],
+    [
+     "            schedule(time + base * 2 ** state[\"server_retry\"], \"server_pto\", state[\"server_epoch\"])\n",
+     "            reference = time if state[\"server_last_eliciting\"] is None else state[\"server_last_eliciting\"]\n            schedule(max(time, reference + base * 2 ** state[\"server_retry\"]), \"server_pto\", state[\"server_epoch\"])\n"
+    ]
+   ],
+   "patched_source_sha256": "32b2526da4368da1c846b52d810822135bc22853d83334a88a6e73a7a067e3b6",
+   "reference_action": [
+    0,
+    1,
+    2
+   ],
+   "samples": 131072,
+   "scenario": "B7",
+   "scope": "Diagnostic of the W1 B7 judgments under a corrected server PTO base. Selection seed 850001 is reused only to reproduce the stored tables. No frozen result is replaced.",
+   "script_sha256": "7e03954a7bc6aed726b26762b96b41825ef00b374d55b619fe9cdcfe8016be24",
+   "seconds": 32.35922920000121,
+   "seed": 850001,
+   "started_kst": "2026-11-02T02:34:29.953393+09:00",
+   "w0_tables_reproduce_j6_pool": {
+    "0,0,0": true,
+    "0,1,1": true,
+    "0,1,2": true,
+    "0,1,3": true,
+    "0,2,1": true,
+    "0,2,2": true
+   },
+   "world_source_sha256": "8f86bb520af2d18d03f9188f14104bc988af680665f705dbe0121b83d391e374"
+  },
+  "m1_cost_model": {
+   "b2_pure_lead": {
+    "frozen_run_selection_l1_c1": {
+     "arm": "hold_l1_c1_B2",
+     "connections": 9000,
+     "inputs_sha256": {
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00031.jsonl.gz": "fe31c9d7b24ee84be47fd900892b8e49230a449b2d23d34bcde71416515dba5c",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00032.jsonl.gz": "4b2125ce42a08e70ebb2f3a092057a6a8b5c5e96fce7ced441e34d2b8156acb1",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00033.jsonl.gz": "d74c9d97e6a7e9877b2f9625f8ec7ae31c6c13d29e91294ffb693515f8838e37",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00034.jsonl.gz": "201484d2d600a8a45e003f0007ecf54b072cb037893b3b44087191e7b1d52e74",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00035.jsonl.gz": "ecf861b2ed6432c4e9614c28bba8bdd4329a5ed3032bfe0493e3d00897bf219e",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00036.jsonl.gz": "61b6637be85cc887cbc0f41861aeec49abc7f7cd73705c2cbfe0636d8df09e77",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00037.jsonl.gz": "838f861baa8134b989df3ca51253ef2dda8bdca9dbe74910a33ecdd111c86033",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00038.jsonl.gz": "cf9efd661dd6791dbc1521d24a405ca713f8357497a0a227440114f6b90e5efb",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00039.jsonl.gz": "6884db14b4f29adda8eacf9c513672ee24e08273b18353a1fb0abe994254ec41",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00040.jsonl.gz": "9a85aebfac70e10bb6ad0d4624da69c26bb075de4a50dd3f3ae85401e18cd1fc",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00041.jsonl.gz": "018e8db72a916cd58f927655312ea8588f174436c78a64d87ea63d2e124f1d4e",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00042.jsonl.gz": "8694b22883d7a0cb1c19ca2e5f564fbd1bf71e0bb76e0aeaeeafe25d4b41ca8e",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00043.jsonl.gz": "55def26220ba947f8e1e8a745a3c598be36b181391cbc9367b7a1fab862d5fa0",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00044.jsonl.gz": "3ecfb1b69984b798387dffd2f65404f31b9c9422709fa9f0ee645f198b738f3b",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00045.jsonl.gz": "ec5319aaee5f7aa755cd426e737783d8b1c126e021efc65bcb4233886cb1e740",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00046.jsonl.gz": "6083b3fab9abe359df16b85f2af63645778e6ab69822a9d12535ee6b722b8c6e",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00047.jsonl.gz": "0db17111d07550e8bf84c749a16b467b7fda758c390261ddb1f528bb23909bb5",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00048.jsonl.gz": "1dffdeb80bc04c68dcff2ec1b94566cd92e0abff0b213956236a011726853248",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00049.jsonl.gz": "6848a15402c34d83ba92b4f713caa7e69ed3c7a5fbcb8ea292156abacb3bfa07",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_c1_B2\\seed00050.jsonl.gz": "18dfcaf2044db76abe093152c9ebf337babaaa2c657ad6295d183876d4ac0685"
+     },
+     "p_mean_pre_median": 0.2552459883757475,
+     "phase": 1,
+     "top_actions": [
+      {
+       "action": [
+        0,
+        0,
+        4
+       ],
+       "mean_hct_ms": 103.87760018438493,
+       "share": 0.6828888888888889
+      },
+      {
+       "action": [
+        0,
+        0,
+        3
+       ],
+       "mean_hct_ms": 119.6404164942095,
+       "share": 0.10877777777777778
+      },
+      {
+       "action": [
+        0,
+        1,
+        3
+       ],
+       "mean_hct_ms": 103.95970536582388,
+       "share": 0.10644444444444444
+      },
+      {
+       "action": [
+        0,
+        3,
+        1
+       ],
+       "mean_hct_ms": 108.8840342983968,
+       "share": 0.09311111111111112
+      }
+     ]
+    },
+    "frozen_run_selection_m1_c1": {
+     "arm": "hold_m1_c1_B2",
+     "connections": 9000,
+     "inputs_sha256": {
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00031.jsonl.gz": "b2d4dc4103e67cfcd8a82e063f032089740c17aad247ebb3cb30d239b3703c0d",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00032.jsonl.gz": "2bd2ab160a0488f525708264c8f7809bcc59fb4fbb718faff83e4c749e6827cc",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00033.jsonl.gz": "7009c4aa01e2dadc61015e7a5d342dcf332c9771340a02c9255cb74a06c32e97",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00034.jsonl.gz": "c7949d066887ea7df430f6911f51ea8523aa0dcec7d242c0bc50a7ba57ba955e",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00035.jsonl.gz": "9849dbb0d5549ad48ede4bf265f1dab61eec84bf02542236a2ff66823fa37b9a",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00036.jsonl.gz": "84dfe761f111a2b0783b0696b84cec450a6afc79c1eb6d70fc11b8fcfb6a868a",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00037.jsonl.gz": "b8142a8a4002bc79c51594dc7d186c14ea93627fd6d67d667a9f95509d9b9854",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00038.jsonl.gz": "83b7483024e685c02472e743a2a557db48bf53cdfe01a488aa69c162caf67f7b",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00039.jsonl.gz": "1d29beebda923a5b1f15d8ccd7fb351dd928742d834136d86a9b24ccf7e11337",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00040.jsonl.gz": "5be3e30c206cd4426bf7947322a2d1ec218b4a9ab3f2555ebef0a2c0256c5c25",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00041.jsonl.gz": "efc5e15b15194dda34f8851ec544accc29886254b44461e57c0eeda5bc7e4319",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00042.jsonl.gz": "5fedaaf5f969441f00d59267235c945b16086a9940afd07c51de71ce48af851b",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00043.jsonl.gz": "2a48d431183e657ec0c02ca9e8a3aa65a8032d402aa8bc078490baeab0726251",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00044.jsonl.gz": "999a257fd9d5042b6caa42126c1cf543bb784b0973b1e93a61f481e0a783de55",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00045.jsonl.gz": "fff95f0709bdf3cf7fbb22f0c571f477c5cf893fdb6158ee7c52afff31d4177a",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00046.jsonl.gz": "b5cd2f453ede8ae57df59e2ba4e11f6b3cb665fc7f6196c97c1bfbdc908c553b",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00047.jsonl.gz": "e5c45688c6a867e90a39683b7e2b049fbb17bfa205a2d24ffb13d317a88164ed",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00048.jsonl.gz": "fac3ce923086fcd39b32a0006e037cd489af46e6449597b61b23c3e8f225dfad",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00049.jsonl.gz": "b1bc92a47a9fb8d4a3fe49d619bd0fee521c4ce9ead64e2b336895dfa293221d",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_c1_B2\\seed00050.jsonl.gz": "952aa24f16b04a474ccf37e0a6494c04ffbb67f5f325b884f6307b75316cf7f0"
+     },
+     "p_mean_pre_median": 0.24595989063863788,
+     "phase": 1,
+     "top_actions": [
+      {
+       "action": [
+        0,
+        4,
+        0
+       ],
+       "mean_hct_ms": 154.91949010205187,
+       "share": 0.5665555555555556
+      },
+      {
+       "action": [
+        0,
+        3,
+        1
+       ],
+       "mean_hct_ms": 108.11110972075673,
+       "share": 0.3917777777777778
+      },
+      {
+       "action": [
+        0,
+        0,
+        4
+       ],
+       "mean_hct_ms": 100.77841690807023,
+       "share": 0.022444444444444444
+      },
+      {
+       "action": [
+        0,
+        3,
+        0
+       ],
+       "mean_hct_ms": 173.90457289649908,
+       "share": 0.019222222222222224
+      }
+     ]
+    },
+    "model_hold_J_ms": {
+     "0,0,4": 116.0653533254384,
+     "0,1,3": 119.09694707543841,
+     "0,2,2": 122.97736211450093,
+     "0,3,1": 110.92118520485677,
+     "0,4,0": 102.6068637943289
+    },
+    "model_off_J_ms": {
+     "0,0,4": 116.0653533254384,
+     "0,1,3": 121.4427669890873,
+     "0,2,2": 130.04641489840535,
+     "0,3,1": 129.4247398726852,
+     "0,4,0": 205.3382426215278
+    },
+    "paired_hold_040_minus_031_ms": {
+     "mean_ms": 31.628502596837066,
+     "se_ms": 4.608651595303084
+    },
+    "world": {
+     "hold:0,0,4": {
+      "class_counts": {
+       "failure": 26,
+       "tail": 361,
+       "two": 5613
+      },
+      "mean_hct_ms": 130.87953696829467,
+      "n": 6000,
+      "se_ms": 0.6854710828389989,
+      "tail_mean_hct_ms": 306.95342255486065
+     },
+     "hold:0,1,3": {
+      "class_counts": {
+       "failure": 26,
+       "tail": 361,
+       "two": 5613
+      },
+      "mean_hct_ms": 134.66114658758391,
+      "n": 6000,
+      "se_ms": 0.7328058008360773,
+      "tail_mean_hct_ms": 323.26770985606686
+     },
+     "hold:0,2,2": {
+      "class_counts": {
+       "failure": 26,
+       "tail": 361,
+       "two": 5613
+      },
+      "mean_hct_ms": 139.18951678908738,
+      "n": 6000,
+      "se_ms": 0.7582292299601634,
+      "tail_mean_hct_ms": 340.4545421117374
+     },
+     "hold:0,3,1": {
+      "class_counts": {
+       "failure": 26,
+       "one": 1793,
+       "tail": 246,
+       "two": 3935
+      },
+      "mean_hct_ms": 123.13850812455723,
+      "n": 6000,
+      "se_ms": 0.7581166814074741,
+      "tail_mean_hct_ms": 351.890133608451
+     },
+     "hold:0,4,0": {
+      "class_counts": {
+       "failure": 26,
+       "one": 3203,
+       "tail": 691,
+       "two": 2080
+      },
+      "mean_hct_ms": 154.76701072139429,
+      "n": 6000,
+      "se_ms": 5.044880436703848,
+      "tail_mean_hct_ms": 555.1225977101614
+     },
+     "hold_no_response_xor:0,3,1": {
+      "class_counts": {
+       "failure": 26,
+       "one": 1793,
+       "tail": 1051,
+       "two": 3130
+      },
+      "mean_hct_ms": 180.43126806409094,
+      "n": 6000,
+      "se_ms": 5.140485407663532,
+      "tail_mean_hct_ms": 506.4358269347901
+     },
+     "hold_no_response_xor:0,4,0": {
+      "class_counts": {
+       "failure": 26,
+       "one": 3203,
+       "tail": 691,
+       "two": 2080
+      },
+      "mean_hct_ms": 154.76701072139429,
+      "n": 6000,
+      "se_ms": 5.044880436703848,
+      "tail_mean_hct_ms": 555.1225977101614
+     },
+     "off:0,0,4": {
+      "class_counts": {
+       "failure": 26,
+       "tail": 361,
+       "two": 5613
+      },
+      "mean_hct_ms": 130.87953696829467,
+      "n": 6000,
+      "se_ms": 0.6854710828389989,
+      "tail_mean_hct_ms": 306.95342255486065
+     },
+     "off:0,1,3": {
+      "class_counts": {
+       "failure": 91,
+       "tail": 360,
+       "two": 5549
+      },
+      "mean_hct_ms": 137.53381176191618,
+      "n": 6000,
+      "se_ms": 0.7758429042110325,
+      "tail_mean_hct_ms": 325.0503008748816
+     },
+     "off:0,2,2": {
+      "class_counts": {
+       "failure": 260,
+       "tail": 350,
+       "two": 5390
+      },
+      "mean_hct_ms": 145.51561461345625,
+      "n": 6000,
+      "se_ms": 0.8686426107884752,
+      "tail_mean_hct_ms": 340.6303099121637
+     },
+     "off:0,3,1": {
+      "class_counts": {
+       "failure": 908,
+       "one": 2142,
+       "tail": 175,
+       "two": 2775
+      },
+      "mean_hct_ms": 143.11140705243034,
+      "n": 6000,
+      "se_ms": 1.659024734526813,
+      "tail_mean_hct_ms": 342.87748730771483
+     },
+     "off:0,4,0": {
+      "class_counts": {
+       "failure": 2653,
+       "one": 2456,
+       "tail": 240,
+       "two": 651
+      },
+      "mean_hct_ms": 255.9880957316219,
+      "n": 6000,
+      "se_ms": 7.453760991997754,
+      "tail_mean_hct_ms": 570.7800337575136
+     }
+    }
+   },
+   "b7_none": {
+    "frozen_run_selection_l1_none": {
+     "arm": "hold_l1_none_B7",
+     "connections": 27000,
+     "inputs_sha256": {
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00031.jsonl.gz": "cd70d413d3aec78d3cc69638983ca1c924ffd239d1a51acbd56a034f827c9a3b",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00032.jsonl.gz": "e711fc3566e2ddbd2338033c3358f8eb69bca0b8fbefb3815c0ba438cdbf63c0",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00033.jsonl.gz": "65efbe978fa4de6eb14330884c0fb142481c64e377431c8155473bb96495ac2c",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00034.jsonl.gz": "9792ada1f037befb5625faa6757923d253dda2e2925e073706e5597b3e09f976",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00035.jsonl.gz": "98f8799cf70c2ef237135b2afb412d630d066d8910283c0f540b9d3918558419",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00036.jsonl.gz": "65564ce80d5395769f0423c43640ba496e3a445735ae009459eb42c2fe874f78",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00037.jsonl.gz": "cfecf2d5acdb5bb0493dc74e08341f79dae13b2585c984dc6f00d3d1e163bf22",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00038.jsonl.gz": "6e8490a640a6a784272abce004f80e1cc9330e5a0ad710a84168314ad5840a78",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00039.jsonl.gz": "9304184dfec49c016ef23fdfcd94c3aa0eb0988f370b92f33991e16f93e348a9",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00040.jsonl.gz": "da7d5a863aec24c59ed3ecdd51d76cc1b9c84a49f7e573aed20a7942e67ec914",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00041.jsonl.gz": "b8763a91bfec22fd4f0749308c1fad4b3771dbbc300f5ede2e1afd6e5c1806c7",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00042.jsonl.gz": "f712ce8a0b5c31ceb43d5f8640abd7a728598f0794cfe1eeb3c68d68f1fe581b",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00043.jsonl.gz": "f2f086ea6bffcd13b19cc7372baeda498deaf73fcd3792491f62b571521db066",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00044.jsonl.gz": "4b39787ce6500d593d71e6c6fc661ef3270263fbd5e2e12e7ddebba7f2e15346",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00045.jsonl.gz": "82921cb50b4ee21f04af2d2ccfbd87d22f070604dcd898535450f28b76554ffd",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00046.jsonl.gz": "756d69f76db2566e98984ff4a3b55c21fcadde4d783f15de9a2541c245b0c972",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00047.jsonl.gz": "711dab3da67ab07ed463a90f5e1f573eeccef23516995018db9414c48798bef9",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00048.jsonl.gz": "43e0c72c4327de7722d8a1e9ea48e3e5702a12bcb41bcc42fa2cfb71d59449cc",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00049.jsonl.gz": "f13143e2daf426743a36a84a58f35203585dd958eac4f72fb6e1d9d77200e786",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_l1_none_B7\\seed00050.jsonl.gz": "dfffbc3e17f2c265047b7b542fe660c17b09e3acb98955dadd93151d1024b0e5"
+     },
+     "p_mean_pre_median": 0.2093743716652628,
+     "phase": null,
+     "top_actions": [
+      {
+       "action": [
+        0,
+        2,
+        2
+       ],
+       "mean_hct_ms": 84.90843669821444,
+       "share": 0.8555555555555555
+      },
+      {
+       "action": [
+        0,
+        1,
+        3
+       ],
+       "mean_hct_ms": 79.6307670507903,
+       "share": 0.1437037037037037
+      },
+      {
+       "action": [
+        0,
+        0,
+        0
+       ],
+       "mean_hct_ms": 130.49903561351823,
+       "share": 0.0007407407407407407
+      }
+     ]
+    },
+    "frozen_run_selection_m1_none": {
+     "arm": "hold_m1_none_B7",
+     "connections": 27000,
+     "inputs_sha256": {
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00031.jsonl.gz": "89a61b86e1ed31b8ba7c4020cad1b3ea60547d6144a16e19644121c92b8df68c",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00032.jsonl.gz": "f9dacbaecf234c737a7593aff745ac649540766046ad1310dd791314ef2a02d5",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00033.jsonl.gz": "8fd5705e4db09940ba578a3f1f7d7a4d6b229ba739a90c9c8c7e4eac366c5ae1",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00034.jsonl.gz": "1ca2f06a6bb80f72aeef13b833f65f9a8b5384c8530d6e42888cf944b07e2072",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00035.jsonl.gz": "2462242b9c778576ca17c3087cd2faca08298dd12285796e3b8838b6df391657",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00036.jsonl.gz": "a8aecee15f3ab5daf4830577bde1111afa0f4c6b98c4b7cccb0e43c1b81ae736",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00037.jsonl.gz": "a1251262b70c7b55bc263220a3c986b3c4f26020b0e494c40dee607595253394",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00038.jsonl.gz": "3de958060a781e2d7af0bdbec0be6f66e5d20db44978c8d5aed063607f725b4d",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00039.jsonl.gz": "72c6c69bcbee5725eb3fd8296420b77a373d5cde24b294c13b5095c198ed7385",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00040.jsonl.gz": "57256f296638634ecf18a0b166928a153ed337239729c395ee4a770b1aa02108",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00041.jsonl.gz": "a38fa99df7b90d6d72188d2616aa799b033265d7c4a0f2e0c52a70e653c25170",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00042.jsonl.gz": "91f612bd97ab968c900c92dd98a2e0d027924d8d8eeb3fcc1a16e50fbeb16c98",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00043.jsonl.gz": "759a8e4d2c5c9e1603caf112f463c7eb200314400e0322d4022d1e793b598f40",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00044.jsonl.gz": "7b91ed31b2b35ad5cbb2206e739e8994d1c6e448834f128bc1c2de5fdf6c2fe1",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00045.jsonl.gz": "294056c323be6b7019b4d0ba8c26a28a406e2670728b1d54f4ff00d73ff9d76e",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00046.jsonl.gz": "f79649d99d733b779bf5196c9d081c6908269caffe49323ab385d98267833fb6",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00047.jsonl.gz": "175ae7475ae7303ade7e83ff7178ab6c9d00cb241d566ce88adc7f8c8d091e81",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00048.jsonl.gz": "6f98f949a0ae194b5af1bc856217b8bce35a7c54916790479ef7ff2254e9f27c",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00049.jsonl.gz": "edfc8124047e13543c0f053b8ee98ac8099cb756df54ab740a887885f24f1ff0",
+      "C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\\hold_m1_none_B7\\seed00050.jsonl.gz": "5251dba339bd1eb4aae8e0e1fe9aed4dcb43dfcc1924002b4c24d4d4e06fc2b8"
+     },
+     "p_mean_pre_median": 0.26076017100739834,
+     "phase": null,
+     "top_actions": [
+      {
+       "action": [
+        0,
+        3,
+        1
+       ],
+       "mean_hct_ms": 90.21031468306721,
+       "share": 0.7537777777777778
+      },
+      {
+       "action": [
+        0,
+        2,
+        2
+       ],
+       "mean_hct_ms": 84.8178583010372,
+       "share": 0.24003703703703705
+      },
+      {
+       "action": [
+        0,
+        1,
+        3
+       ],
+       "mean_hct_ms": 86.39526870859892,
+       "share": 0.004518518518518519
+      },
+      {
+       "action": [
+        0,
+        1,
+        2
+       ],
+       "mean_hct_ms": 71.22570577789469,
+       "share": 0.000925925925925926
+      }
+     ]
+    },
+    "model_hold_J_ms_at_p": {
+     "0.02": {
+      "0,0,4": 115.3681624181068,
+      "0,1,3": 67.54409476352302,
+      "0,2,2": 70.64214523522652,
+      "0,3,1": 75.79860425789245
+     },
+     "0.1378": {
+      "0,0,4": 115.45014084028263,
+      "0,1,3": 78.44843436878209,
+      "0,2,2": 71.71412285377991,
+      "0,3,1": 74.12399729551977
+     },
+     "0.25": {
+      "0,0,4": 116.0653533254384,
+      "0,1,3": 88.17163917145781,
+      "0,2,2": 76.77131383443569,
+      "0,3,1": 75.62995147913762
+     }
+    },
+    "paired_hold_031_minus_022_ms": {
+     "mean_ms": 5.309714083333332,
+     "se_ms": 0.030317764407829753
+    },
+    "world_hold": {
+     "0,0,4": {
+      "class_counts": {
+       "tail": 529,
+       "two": 5471
+      },
+      "mean_hct_ms": 126.77881341906433,
+      "n": 6000,
+      "se_ms": 0.5938627023718295,
+      "tail_mean_hct_ms": 212.44919260870023
+     },
+     "0,1,3": {
+      "class_counts": {
+       "one": 5250,
+       "tail": 526,
+       "two": 224
+      },
+      "mean_hct_ms": 82.15930665069844,
+      "n": 6000,
+      "se_ms": 0.7644289036209209,
+      "tail_mean_hct_ms": 201.06780823557003
+     },
+     "0,2,2": {
+      "class_counts": {
+       "one": 5468,
+       "tail": 526,
+       "two": 6
+      },
+      "mean_hct_ms": 85.37187296319846,
+      "n": 6000,
+      "se_ms": 0.7692831738029563,
+      "tail_mean_hct_ms": 206.15238214241413
+     },
+     "0,3,1": {
+      "class_counts": {
+       "one": 5474,
+       "tail": 526
+      },
+      "mean_hct_ms": 90.68158704653179,
+      "n": 6000,
+      "se_ms": 0.7849536496026291,
+      "tail_mean_hct_ms": 212.93692301693886
+     }
+    }
+   },
+   "connections": 6000,
+   "decision_rule_p0.02": {
+    "first_flight_bound_ms_m1_fixed_checks": 32.536,
+    "masked_pattern_world": {
+     "hold": {
+      "hct_ms": 128.812,
+      "server_ready_ms": 46.092,
+      "stack_credit_at_ready": 5222
+     },
+     "off": {
+      "hct_ms": 79.01599999999999,
+      "server_ready_ms": 51.416,
+      "stack_credit_at_ready": 6553
+     }
+    },
+    "model_pattern": {
+     "hold": {
+      "credit_at_decision": 5222,
+      "expected_hct_ms": 126.212,
+      "t_dec_ms": 21.092
+     },
+     "model_total_hold_minus_off_ms": 0.8040923942499774,
+     "off": {
+      "credit_at_decision": 6553,
+      "expected_hct_ms": 76.416,
+      "t_dec_ms": 26.415999999999997
+     },
+     "pattern": [
+      1,
+      1,
+      1,
+      0,
+      1,
+      1
+     ],
+     "probability": 0.018078415935999997,
+     "weighted_contribution_ms": 0.9002327999490559
+    },
+    "one_parity_datagram_ms_at_2mbps": 5.324,
+    "world_bigcert_p0.02": {
+     "hold": {
+      "class_counts": {
+       "one": 5548,
+       "two": 452
+      },
+      "mean_hct_ms": 83.08646121847482,
+      "n": 6000,
+      "se_ms": 0.16959112623218836,
+      "tail_mean_hct_ms": null
+     },
+     "off": {
+      "class_counts": {
+       "failure": 7,
+       "one": 5644,
+       "two": 349
+      },
+      "mean_hct_ms": 82.4514116351415,
+      "n": 6000,
+      "se_ms": 0.17178319652524635,
+      "tail_mean_hct_ms": null
+     },
+     "paired_hold_minus_off_ms": {
+      "mean_ms": 0.6350495833333334,
+      "se_ms": 0.10170926411494624
+     }
+    }
+   },
+   "hold_uplink": [
+    {
+     "action": [
+      0,
+      1,
+      3
+     ],
+     "context": "B10",
+     "context_oracle": {
+      "class_counts": {
+       "failure": 260,
+       "one": 5740
+      },
+      "mean_hct_ms": 64.07342321847484,
+      "n": 6000,
+      "se_ms": 0.8233394219647168,
+      "tail_mean_hct_ms": null
+     },
+     "context_uplink_mbps": 0.0,
+     "d20_fixed": {
+      "class_counts": {
+       "failure": 260,
+       "one": 5740
+      },
+      "mean_hct_ms": 64.50155255180817,
+      "n": 6000,
+      "se_ms": 0.824302469148274,
+      "tail_mean_hct_ms": null
+     },
+     "paired_fixed_minus_oracle_ms": {
+      "mean_ms": 0.4281293333333333,
+      "se_ms": 0.042896525638612334
+     }
+    },
+    {
+     "action": [
+      0,
+      0,
+      4
+     ],
+     "context": "B10",
+     "context_oracle": {
+      "class_counts": {
+       "failure": 260,
+       "one": 5740
+      },
+      "mean_hct_ms": 64.05708988514151,
+      "n": 6000,
+      "se_ms": 0.8233469181208501,
+      "tail_mean_hct_ms": null
+     },
+     "context_uplink_mbps": 0.0,
+     "d20_fixed": {
+      "class_counts": {
+       "failure": 260,
+       "one": 5740
+      },
+      "mean_hct_ms": 64.05708988514151,
+      "n": 6000,
+      "se_ms": 0.8233469181208501,
+      "tail_mean_hct_ms": null
+     },
+     "paired_fixed_minus_oracle_ms": {
+      "mean_ms": 0.0,
+      "se_ms": 0.0
+     }
+    },
+    {
+     "action": [
+      0,
+      3,
+      1
+     ],
+     "context": "B12_c6000_p0.08",
+     "context_oracle": {
+      "class_counts": {
+       "failure": 1,
+       "one": 5994,
+       "two": 5
+      },
+      "mean_hct_ms": 128.1807510851415,
+      "n": 6000,
+      "se_ms": 0.055846843649900876,
+      "tail_mean_hct_ms": null
+     },
+     "context_uplink_mbps": 10.0,
+     "d20_fixed": {
+      "class_counts": {
+       "failure": 1,
+       "one": 5994,
+       "two": 5
+      },
+      "mean_hct_ms": 128.29187908514152,
+      "n": 6000,
+      "se_ms": 0.05988422147453619,
+      "tail_mean_hct_ms": null
+     },
+     "paired_fixed_minus_oracle_ms": {
+      "mean_ms": 0.11112799999999996,
+      "se_ms": 0.019606472291163773
+     }
+    },
+    {
+     "action": [
+      0,
+      0,
+      4
+     ],
+     "context": "B12_c6000_p0.08",
+     "context_oracle": {
+      "class_counts": {
+       "failure": 1,
+       "one": 23,
+       "tail": 35,
+       "two": 5941
+      },
+      "mean_hct_ms": 247.8994493518082,
+      "n": 6000,
+      "se_ms": 0.3722703249754922,
+      "tail_mean_hct_ms": 609.2381746034473
+     },
+     "context_uplink_mbps": 10.0,
+     "d20_fixed": {
+      "class_counts": {
+       "failure": 1,
+       "one": 23,
+       "tail": 35,
+       "two": 5941
+      },
+      "mean_hct_ms": 247.8994493518082,
+      "n": 6000,
+      "se_ms": 0.3722703249754922,
+      "tail_mean_hct_ms": 609.2381746034473
+     },
+     "paired_fixed_minus_oracle_ms": {
+      "mean_ms": 0.0,
+      "se_ms": 0.0
+     }
+    },
+    {
+     "action": [
+      0,
+      4,
+      0
+     ],
+     "context": "B12_c12000_p0.08",
+     "context_oracle": {
+      "class_counts": {
+       "failure": 1,
+       "one": 5960,
+       "tail": 4,
+       "two": 35
+      },
+      "mean_hct_ms": 136.10180706644624,
+      "n": 6000,
+      "se_ms": 0.20776939681530684,
+      "tail_mean_hct_ms": 638.0903647086536
+     },
+     "context_uplink_mbps": 5.0,
+     "d20_fixed": {
+      "class_counts": {
+       "failure": 1,
+       "one": 5960,
+       "tail": 4,
+       "two": 35
+      },
+      "mean_hct_ms": 137.30727346644625,
+      "n": 6000,
+      "se_ms": 0.22386538942837084,
+      "tail_mean_hct_ms": 657.7493647086536
+     },
+     "paired_fixed_minus_oracle_ms": {
+      "mean_ms": 1.2054663999999997,
+      "se_ms": 0.05443617494756888
+     }
+    },
+    {
+     "action": [
+      0,
+      0,
+      4
+     ],
+     "context": "B12_c12000_p0.08",
+     "context_oracle": {
+      "class_counts": {
+       "failure": 1,
+       "tail": 35,
+       "two": 5964
+      },
+      "mean_hct_ms": 251.48333415180818,
+      "n": 6000,
+      "se_ms": 0.36504445352052095,
+      "tail_mean_hct_ms": 615.3913631748759
+     },
+     "context_uplink_mbps": 5.0,
+     "d20_fixed": {
+      "class_counts": {
+       "failure": 1,
+       "tail": 35,
+       "two": 5964
+      },
+      "mean_hct_ms": 251.48333415180818,
+      "n": 6000,
+      "se_ms": 0.36504445352052095,
+      "tail_mean_hct_ms": 615.3913631748759
+     },
+     "paired_fixed_minus_oracle_ms": {
+      "mean_ms": 0.0,
+      "se_ms": 0.0
+     }
+    }
+   ],
+   "item": "E-M1-1, E-M1-3, E-M1-4, E verifier missed 1",
+   "scope": "Small development diagnostic in the V33FIX M1 world. Not a 120-cell M1 reevaluation (E14 to E16).",
+   "script_sha256": "d1ed9009d07a04f8e4c7165db162445c1c8c5d04511b95ad64397fc38716729d",
+   "script_source": "import sys\nsys.dont_write_bytecode = True\nsys.stdout.reconfigure(encoding=\"utf-8\")\nROOT = r\"C:\\dev\\pq_afec_gen33\"\nSNAP = ROOT + r\"\\g3\\v33\\policy_snapshots\\M1_v1\"\nsys.path.insert(0, ROOT)\nsys.path.insert(0, SNAP)\nimport collections\nfrom concurrent.futures import ProcessPoolExecutor\nimport datetime\nimport gzip\nimport hashlib\nimport json\nimport math\nfrom pathlib import Path\nimport statistics\nimport time\n\nRAW = Path(r\"C:\\dev\\codex_handoff\\v33\\runs\\M1_factorial_raw_v1\")\nSEED = 31\nN = int(sys.argv[2]) if len(sys.argv) > 2 else 6000\nBIG = dict(k=2, w=1280, rtt_ms=50.0, uplink_mbps=2.0, cert_bytes=16000)\nB7 = dict(k=2, w=1280, rtt_ms=50.0, uplink_mbps=2.0, cert_bytes=9000, p=0.02, s2c_loss=0.01)\nB10 = dict(k=2, w=1280, rtt_ms=50.0, uplink_mbps=0.0, cert_bytes=4032, p=0.15, loss_model=\"ge\", burst_length=3)\nC6 = dict(k=2, w=1280, rtt_ms=120.0, uplink_mbps=10.0, cert_bytes=6000, p=0.08)\nC12 = dict(k=2, w=1280, rtt_ms=120.0, uplink_mbps=5.0, cert_bytes=12000, p=0.08)\nUPLINK_CASES = ((\"B10\", B10, (0, 1, 3)), (\"B10\", B10, (0, 0, 4)), (\"B12_c6000_p0.08\", C6, (0, 3, 1)),\n                (\"B12_c6000_p0.08\", C6, (0, 0, 4)), (\"B12_c12000_p0.08\", C12, (0, 4, 0)), (\"B12_c12000_p0.08\", C12, (0, 0, 4)))\n\n\ndef file_hash(path):\n    return hashlib.sha256(Path(path).read_bytes()).hexdigest()\n\n\ndef key(action):\n    return \",\".join(map(str, action))\n\n\ndef series(job):\n    label, context, action, params, seed, n = job\n    from experiments.v33 import worldsim_m1 as M\n    world = M.World(params=params, seed=seed)\n    ctx = M.WorldContext(**context)\n    rows = []\n    for connection in range(n):\n        row = world.sample(ctx, M.Action(*action), connection=connection)\n        rows.append((row[\"hct\"], row[\"world_class\"]))\n    return label, rows\n\n\ndef summary(rows):\n    values = [x[0] for x in rows]\n    classes = collections.Counter(x[1] for x in rows)\n    tail = [x[0] for x in rows if x[1] == \"tail\"]\n    return {\"n\": len(values), \"mean_hct_ms\": statistics.fmean(values), \"se_ms\": statistics.stdev(values) / math.sqrt(len(values)),\n            \"class_counts\": dict(classes), \"tail_mean_hct_ms\": statistics.fmean(tail) if tail else None}\n\n\ndef paired(a, b):\n    diffs = [x[0] - y[0] for x, y in zip(a, b)]\n    return {\"mean_ms\": statistics.fmean(diffs), \"se_ms\": statistics.stdev(diffs) / math.sqrt(len(diffs))}\n\n\ndef model(action, p, n_need, hold, rtt=50.0, u=2.0):\n    from padfec3 import layout\n    d, lead, trail = action\n    return layout.evaluate(2, 1280 + d, lead + trail, lead, p, rtt, u, n_need, lead_hold=hold)[\"J\"]\n\n\ndef pattern_terms(p):\n    from padfec3 import layout\n    k, w, rtt, u, n = 2, 1280, 50.0, 2.0, 15\n    lead, trail = 3, 1\n    m = lead + trail\n    resp = layout.response_term(m, w, u, \"v3\")\n    apre = layout.preflight_bytes(k, u)\n    out = {}\n    for hold in (False, True):\n        rows = {}\n        for rec in layout.outcomes(k, m, lead, w, p, u, lead_hold=hold):\n            if rec[\"kind\"] != \"ok\":\n                continue\n            value = 0.0\n            for weight, credit in rec[\"branches\"]:\n                rounds = layout.rtt_count(credit, n, apre)\n                value += weight * (rec[\"t_dec\"] + rtt * rounds + (resp if rounds == 2 else 0.0))\n            rows[tuple(int(x) for x in rec[\"pattern\"])] = (rec[\"pr\"], rec[\"t_dec\"], rec.get(\"base_credit\"), value)\n        out[hold] = rows\n    target = (1, 1, 1, 0, 1, 1)\n    contribution = (out[True][target][3] - out[False][target][3]) * out[False][target][0]\n    total = model((0, 3, 1), p, 15, True) - model((0, 3, 1), p, 15, False)\n    return {\"pattern\": list(target), \"probability\": out[False][target][0],\n            \"off\": {\"t_dec_ms\": out[False][target][1], \"credit_at_decision\": out[False][target][2], \"expected_hct_ms\": out[False][target][3]},\n            \"hold\": {\"t_dec_ms\": out[True][target][1], \"credit_at_decision\": out[True][target][2], \"expected_hct_ms\": out[True][target][3]},\n            \"weighted_contribution_ms\": contribution, \"model_total_hold_minus_off_ms\": total}\n\n\ndef raw_actions(arm, phase=None):\n    counts, hcts, p_pre = collections.Counter(), collections.defaultdict(list), []\n    hashes = {}\n    for seed in range(31, 51):\n        path = RAW / arm / f\"seed{seed:05d}.jsonl.gz\"\n        hashes[str(path)] = file_hash(path)\n        with gzip.open(path, \"rt\", encoding=\"utf-8\") as stream:\n            for line in stream:\n                row = json.loads(line)\n                if phase is not None and row.get(\"phase\") != phase:\n                    continue\n                action = tuple(row[\"action\"])\n                counts[action] += 1\n                hcts[action].append(row[\"hct_ms\"])\n                p_pre.append(row[\"p_mean_pre\"])\n    total = sum(counts.values())\n    top = [{\"action\": list(a), \"share\": c / total, \"mean_hct_ms\": statistics.fmean(hcts[a])} for a, c in counts.most_common(4)]\n    return {\"arm\": arm, \"phase\": phase, \"connections\": total, \"top_actions\": top,\n            \"p_mean_pre_median\": statistics.median(p_pre), \"inputs_sha256\": hashes}\n\n\ndef masked(action, params):\n    from experiments.v33 import worldsim_m1 as M\n    ctx = M.WorldContext(**dict(BIG, p=0.0))\n    row = M.World(params=params, seed=SEED).sample(ctx, M.Action(*action), trace=True,\n                                                   overrides={\"c2s\": [1, 1, 1, 0, 1, 1] + [1] * 200, \"decision_delay_ms\": 0.0})\n    ready = next(r[\"time_ms\"] for r in row[\"trace\"] if r[\"event\"] == \"server_ready\")\n    credit = max((r[\"total\"] for r in row[\"trace\"] if r[\"event\"] == \"server_credit\" and r[\"time_ms\"] <= ready), default=0)\n    return {\"hct_ms\": row[\"hct\"], \"server_ready_ms\": ready, \"stack_credit_at_ready\": credit}\n\n\ndef main():\n    started_kst = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).isoformat()\n    started = time.monotonic()\n    off = {\"lead_mode\": \"credit_only\"}\n    b2_actions = ((0, 4, 0), (0, 3, 1), (0, 0, 4), (0, 2, 2), (0, 1, 3))\n    b7_actions = ((0, 3, 1), (0, 2, 2), (0, 1, 3), (0, 0, 4))\n    jobs = []\n    for action in b2_actions:\n        for name, params in ((\"hold\", None), (\"off\", off)):\n            jobs.append(((\"B2_p0.25\", name, action), dict(BIG, p=0.25), action, params, SEED, N))\n    for action in ((0, 4, 0), (0, 3, 1)):\n        jobs.append(((\"B2_p0.25\", \"hold_no_response_xor\", action), dict(BIG, p=0.25), action, {\"fec\": {\"response_xor\": False}}, SEED, N))\n    for action in b7_actions:\n        jobs.append(((\"B7\", \"hold\", action), B7, action, None, SEED, N))\n    for name, params in ((\"hold\", None), (\"off\", off)):\n        jobs.append(((\"bigcert_p0.02\", name, (0, 3, 1)), dict(BIG, p=0.02), (0, 3, 1), params, SEED, N))\n    for label, context, action in UPLINK_CASES:\n        for name, params in ((\"hold_d20_fixed\", None), (\"hold_context_oracle\", {\"hold_uplink_source\": \"context\"})):\n            jobs.append(((label, name, action), context, action, params, SEED, N))\n    with ProcessPoolExecutor(max_workers=24) as pool:\n        data = dict(pool.map(series, jobs))\n    b2 = {\"world\": {name + \":\" + key(a): summary(rows) for (label, name, a), rows in data.items() if label == \"B2_p0.25\"},\n          \"paired_hold_040_minus_031_ms\": paired(data[(\"B2_p0.25\", \"hold\", (0, 4, 0))], data[(\"B2_p0.25\", \"hold\", (0, 3, 1))]),\n          \"model_hold_J_ms\": {key(a): model(a, 0.25, 15, True) for a in b2_actions},\n          \"model_off_J_ms\": {key(a): model(a, 0.25, 15, False) for a in b2_actions},\n          \"frozen_run_selection_m1_c1\": raw_actions(\"hold_m1_c1_B2\", phase=1),\n          \"frozen_run_selection_l1_c1\": raw_actions(\"hold_l1_c1_B2\", phase=1)}\n    b7 = {\"world_hold\": {key(a): summary(data[(\"B7\", \"hold\", a)]) for a in b7_actions},\n          \"paired_hold_031_minus_022_ms\": paired(data[(\"B7\", \"hold\", (0, 3, 1))], data[(\"B7\", \"hold\", (0, 2, 2))]),\n          \"frozen_run_selection_m1_none\": raw_actions(\"hold_m1_none_B7\"),\n          \"frozen_run_selection_l1_none\": raw_actions(\"hold_l1_none_B7\"),\n          \"model_hold_J_ms_at_p\": {str(p): {key(a): model(a, p, 9, True) for a in b7_actions} for p in (0.02, 0.1378, 0.25)}}\n    decision = {\"world_bigcert_p0.02\": {\"hold\": summary(data[(\"bigcert_p0.02\", \"hold\", (0, 3, 1))]),\n                                        \"off\": summary(data[(\"bigcert_p0.02\", \"off\", (0, 3, 1))]),\n                                        \"paired_hold_minus_off_ms\": paired(data[(\"bigcert_p0.02\", \"hold\", (0, 3, 1))], data[(\"bigcert_p0.02\", \"off\", (0, 3, 1))])},\n                \"model_pattern\": pattern_terms(0.02),\n                \"masked_pattern_world\": {\"off\": masked((0, 3, 1), off), \"hold\": masked((0, 3, 1), None)},\n                \"one_parity_datagram_ms_at_2mbps\": 8.0 * 1331 / 2000.0,\n                \"first_flight_bound_ms_m1_fixed_checks\": 8.0 * (2 * 1280 + 4 * 1331) / 2000.0 + 1.0}\n    uplink = []\n    for label, context, action in UPLINK_CASES:\n        a, b = data[(label, \"hold_d20_fixed\", action)], data[(label, \"hold_context_oracle\", action)]\n        uplink.append({\"context\": label, \"context_uplink_mbps\": context[\"uplink_mbps\"], \"action\": list(action),\n                       \"d20_fixed\": summary(a), \"context_oracle\": summary(b), \"paired_fixed_minus_oracle_ms\": paired(a, b)})\n    from experiments.v33 import initial_count_diag\n    source = Path(__file__).read_text(encoding=\"utf-8\")\n    payload = {\"item\": \"E-M1-1, E-M1-3, E-M1-4, E verifier missed 1\", \"started_kst\": started_kst,\n               \"seconds\": time.monotonic() - started, \"seed\": SEED, \"connections\": N,\n               \"world_sources_sha256\": {name: file_hash(Path(ROOT) / \"experiments\" / \"v33\" / name) for name in (\"worldsim_m1.py\", \"world_receiver_m1.py\", \"worldparams_m1.json\")},\n               \"snapshot_sha256\": {name: file_hash(Path(SNAP) / \"padfec3\" / name) for name in (\"layout.py\", \"hold_layout.py\")},\n               \"script_sha256\": hashlib.sha256(source.encode(\"utf-8\")).hexdigest(), \"script_source\": source,\n               \"b2_pure_lead\": b2, \"b7_none\": b7, \"decision_rule_p0.02\": decision, \"hold_uplink\": uplink,\n               \"scope\": \"Small development diagnostic in the V33FIX M1 world. Not a 120-cell M1 reevaluation (E14 to E16).\"}\n    initial_count_diag.merge_section(sys.argv[1] if len(sys.argv) > 1 else initial_count_diag.DIAG, \"m1_cost_model\", payload)\n    print(json.dumps({\"seconds\": payload[\"seconds\"]}))\n\n\nif __name__ == \"__main__\":\n    main()\n",
+   "seconds": 26.16601669999727,
+   "seed": 31,
+   "snapshot_sha256": {
+    "hold_layout.py": "0984729d98bd0c2438cf81b1c7d8fcdb17eee82d1deb90cfa59a0e52e8e2b147",
+    "layout.py": "ac9eb44321ffc05b57ee2667734889d27fad74820dbb376e9564a9ebcaae11ea"
+   },
+   "started_kst": "2026-11-02T06:31:22.885380+09:00",
+   "world_sources_sha256": {
+    "world_receiver_m1.py": "ca05209f80beb2a7bfffb05569dbc81da39a95736bc3f7ca70870876b95beab3",
+    "worldparams_m1.json": "b817e32c5934a1191342727668944ddf3cb59896ef3cbcfbd71470ebbcc3538b",
+    "worldsim_m1.py": "383034eb7b8cfb2468ae4223682e9dd9ad412d11e3f76b9bae0f56820e7a035d"
+   }
+  }
+ }
+}

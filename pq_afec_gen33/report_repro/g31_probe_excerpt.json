@@ -1,0 +1,1318 @@
+{
+  "schema": "padfec.report.g31_probe_excerpt/1",
+  "source": {
+    "alias": "g31_probe",
+    "path": "pq_afec_gen31/experiments/results/g31_probe.json",
+    "sha256": "fc6e22337fa8718ca72be15a8a174c577b268a080d7ac3a0bb9f5e8a6d69238c",
+    "bytes": 19683320
+  },
+  "report_location": "Ⅳ-5",
+  "selection": "rate_mbit > 0인 모든 셀의 first_tx_size_hist 전체와 각 arm에서 tx_sizes[0] == 41인 첫 연결의 지정 필드",
+  "limitations": [
+    "first_tx_size_hist는 41 B 외의 관측값도 그대로 보존한다. 41 B를 모든 연결의 고정값으로 해석하지 않는다.",
+    "각 witness는 41 B 관측의 직접 근거이며 전체 연결 표본을 대신하지 않는다.",
+    "송신 크기는 qamp wrapper 기록이다. datagram이 ACK 전용이라는 해석과 모든 실패 셀의 원인 설명은 이 발췌로 확인하지 않는다.",
+    "fixed arm의 development probe이며 v3 또는 v3.1 정책의 평가 자료가 아니다."
+  ],
+  "source_fields": {
+    "/schema": "g31_probe.result.v1",
+    "/label": "development (not confirmatory)",
+    "/status": "development (not confirmatory)",
+    "/confirmatory": false,
+    "/mode": "run",
+    "/generated_at": "2026-10-02T09:11:42.406542+00:00",
+    "/plan/group": "X25519MLKEM768",
+    "/plan/loss_direction": "client_to_server_only",
+    "/notes/0": "beff_* and tx_rx_timeline are the qamp wrapper's records at the moment a datagram is handed to or taken from quic-go, not quic-go's internal gate state",
+    "/notes/3": "fixed arms only; nothing here evaluates the v3 or v3.1 policy"
+  },
+  "cells": [
+    {
+      "source_pointer": "/cells/0",
+      "fields": {
+        "/cells/0/cell": "c6000_r80_u10_l0",
+        "/cells/0/group_id": "A",
+        "/cells/0/probe_cell": "c6000_r80_u10",
+        "/cells/0/h_cell": "h_c6000_r80_u10",
+        "/cells/0/cert": 6000,
+        "/cells/0/rtt_ms": 80.0,
+        "/cells/0/rate_mbit": 10.0,
+        "/cells/0/loss_pct": 0.0,
+        "/cells/0/blocks_planned": 5,
+        "/cells/0/blocks_done": 5,
+        "/cells/0/server_cert_der": [
+          "{\"g2\": 6006, \"g3b\": 6007}",
+          "{\"g2\": 6007, \"g3b\": 6006}",
+          "{\"g2\": 6007, \"g3b\": 6008}"
+        ]
+      },
+      "arms": [
+        {
+          "source_pointer": "/cells/0/arms/none",
+          "fields": {
+            "/cells/0/arms/none/label": "none (no FEC)",
+            "/cells/0/arms/none/action_delta_lead_trail": [
+              0,
+              0,
+              0
+            ],
+            "/cells/0/arms/none/binary": "g3b",
+            "/cells/0/arms/none/flags": [
+              "-fec",
+              "off",
+              "-ips",
+              "1280"
+            ],
+            "/cells/0/arms/none/n_requested": 200,
+            "/cells/0/arms/none/n_returned": 200,
+            "/cells/0/arms/none/ok": 200,
+            "/cells/0/arms/none/failed": 0,
+            "/cells/0/arms/none/timeouts": 0,
+            "/cells/0/arms/none/missing": 0,
+            "/cells/0/arms/none/server/conns": 200,
+            "/cells/0/arms/none/server/conns_with_tx": 200,
+            "/cells/0/arms/none/server/timeline_truncated": 0,
+            "/cells/0/arms/none/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/0/arms/none/per_connection/joined/0",
+            "fields": {
+              "/cells/0/arms/none/per_connection/joined/0/block": 0,
+              "/cells/0/arms/none/per_connection/joined/0/index": 0,
+              "/cells/0/arms/none/per_connection/joined/0/row/ok": true,
+              "/cells/0/arms/none/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/0/arms/none/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/0/arms/none/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/0/arms/none/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/0/arms/none/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/0/arms/none/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/0/arms/none/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/0/arms/none/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/0/arms/none/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/0/arms/pad",
+          "fields": {
+            "/cells/0/arms/pad/label": "pad-only (1,0,0)",
+            "/cells/0/arms/pad/action_delta_lead_trail": [
+              1,
+              0,
+              0
+            ],
+            "/cells/0/arms/pad/binary": "g3b",
+            "/cells/0/arms/pad/flags": [
+              "-fec",
+              "off",
+              "-ips",
+              "1281"
+            ],
+            "/cells/0/arms/pad/n_requested": 200,
+            "/cells/0/arms/pad/n_returned": 200,
+            "/cells/0/arms/pad/ok": 200,
+            "/cells/0/arms/pad/failed": 0,
+            "/cells/0/arms/pad/timeouts": 0,
+            "/cells/0/arms/pad/missing": 0,
+            "/cells/0/arms/pad/server/conns": 200,
+            "/cells/0/arms/pad/server/conns_with_tx": 200,
+            "/cells/0/arms/pad/server/timeline_truncated": 0,
+            "/cells/0/arms/pad/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/0/arms/pad/per_connection/joined/0",
+            "fields": {
+              "/cells/0/arms/pad/per_connection/joined/0/block": 0,
+              "/cells/0/arms/pad/per_connection/joined/0/index": 0,
+              "/cells/0/arms/pad/per_connection/joined/0/row/ok": true,
+              "/cells/0/arms/pad/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/0/arms/pad/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/0/arms/pad/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/0/arms/pad/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/0/arms/pad/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/0/arms/pad/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/0/arms/pad/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/0/arms/pad/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/0/arms/pad/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/0/arms/a104",
+          "fields": {
+            "/cells/0/arms/a104/label": "(1,0,4)",
+            "/cells/0/arms/a104/action_delta_lead_trail": [
+              1,
+              0,
+              4
+            ],
+            "/cells/0/arms/a104/binary": "g3b",
+            "/cells/0/arms/a104/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1281",
+              "-layout",
+              "v3",
+              "-lead",
+              "0"
+            ],
+            "/cells/0/arms/a104/n_requested": 200,
+            "/cells/0/arms/a104/n_returned": 200,
+            "/cells/0/arms/a104/ok": 200,
+            "/cells/0/arms/a104/failed": 0,
+            "/cells/0/arms/a104/timeouts": 0,
+            "/cells/0/arms/a104/missing": 0,
+            "/cells/0/arms/a104/server/conns": 200,
+            "/cells/0/arms/a104/server/conns_with_tx": 200,
+            "/cells/0/arms/a104/server/timeline_truncated": 0,
+            "/cells/0/arms/a104/server/first_tx_size_hist": {
+              "41": 199,
+              "1280": 1
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/0/arms/a104/per_connection/joined/0",
+            "fields": {
+              "/cells/0/arms/a104/per_connection/joined/0/block": 0,
+              "/cells/0/arms/a104/per_connection/joined/0/index": 0,
+              "/cells/0/arms/a104/per_connection/joined/0/row/ok": true,
+              "/cells/0/arms/a104/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/0/arms/a104/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/0/arms/a104/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/0/arms/a104/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/0/arms/a104/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/0/arms/a104/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/0/arms/a104/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/0/arms/a104/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/0/arms/a104/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/0/arms/a113",
+          "fields": {
+            "/cells/0/arms/a113/label": "(1,1,3)",
+            "/cells/0/arms/a113/action_delta_lead_trail": [
+              1,
+              1,
+              3
+            ],
+            "/cells/0/arms/a113/binary": "g3b",
+            "/cells/0/arms/a113/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1281",
+              "-layout",
+              "v3",
+              "-lead",
+              "1"
+            ],
+            "/cells/0/arms/a113/n_requested": 200,
+            "/cells/0/arms/a113/n_returned": 200,
+            "/cells/0/arms/a113/ok": 200,
+            "/cells/0/arms/a113/failed": 0,
+            "/cells/0/arms/a113/timeouts": 0,
+            "/cells/0/arms/a113/missing": 0,
+            "/cells/0/arms/a113/server/conns": 200,
+            "/cells/0/arms/a113/server/conns_with_tx": 200,
+            "/cells/0/arms/a113/server/timeline_truncated": 0,
+            "/cells/0/arms/a113/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/0/arms/a113/per_connection/joined/0",
+            "fields": {
+              "/cells/0/arms/a113/per_connection/joined/0/block": 0,
+              "/cells/0/arms/a113/per_connection/joined/0/index": 0,
+              "/cells/0/arms/a113/per_connection/joined/0/row/ok": true,
+              "/cells/0/arms/a113/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/0/arms/a113/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/0/arms/a113/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/0/arms/a113/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/0/arms/a113/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/0/arms/a113/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/0/arms/a113/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/0/arms/a113/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/0/arms/a113/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/0/arms/a004",
+          "fields": {
+            "/cells/0/arms/a004/label": "(0,0,4)",
+            "/cells/0/arms/a004/action_delta_lead_trail": [
+              0,
+              0,
+              4
+            ],
+            "/cells/0/arms/a004/binary": "g3b",
+            "/cells/0/arms/a004/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1280",
+              "-layout",
+              "v3",
+              "-lead",
+              "0"
+            ],
+            "/cells/0/arms/a004/n_requested": 200,
+            "/cells/0/arms/a004/n_returned": 200,
+            "/cells/0/arms/a004/ok": 200,
+            "/cells/0/arms/a004/failed": 0,
+            "/cells/0/arms/a004/timeouts": 0,
+            "/cells/0/arms/a004/missing": 0,
+            "/cells/0/arms/a004/server/conns": 200,
+            "/cells/0/arms/a004/server/conns_with_tx": 200,
+            "/cells/0/arms/a004/server/timeline_truncated": 0,
+            "/cells/0/arms/a004/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/0/arms/a004/per_connection/joined/0",
+            "fields": {
+              "/cells/0/arms/a004/per_connection/joined/0/block": 0,
+              "/cells/0/arms/a004/per_connection/joined/0/index": 0,
+              "/cells/0/arms/a004/per_connection/joined/0/row/ok": true,
+              "/cells/0/arms/a004/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/0/arms/a004/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/0/arms/a004/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/0/arms/a004/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/0/arms/a004/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/0/arms/a004/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/0/arms/a004/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/0/arms/a004/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/0/arms/a004/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/0/arms/a031",
+          "fields": {
+            "/cells/0/arms/a031/label": "(0,3,1)",
+            "/cells/0/arms/a031/action_delta_lead_trail": [
+              0,
+              3,
+              1
+            ],
+            "/cells/0/arms/a031/binary": "g3b",
+            "/cells/0/arms/a031/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1280",
+              "-layout",
+              "v3",
+              "-lead",
+              "3"
+            ],
+            "/cells/0/arms/a031/n_requested": 200,
+            "/cells/0/arms/a031/n_returned": 200,
+            "/cells/0/arms/a031/ok": 200,
+            "/cells/0/arms/a031/failed": 0,
+            "/cells/0/arms/a031/timeouts": 0,
+            "/cells/0/arms/a031/missing": 0,
+            "/cells/0/arms/a031/server/conns": 200,
+            "/cells/0/arms/a031/server/conns_with_tx": 200,
+            "/cells/0/arms/a031/server/timeline_truncated": 0,
+            "/cells/0/arms/a031/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/0/arms/a031/per_connection/joined/0",
+            "fields": {
+              "/cells/0/arms/a031/per_connection/joined/0/block": 0,
+              "/cells/0/arms/a031/per_connection/joined/0/index": 0,
+              "/cells/0/arms/a031/per_connection/joined/0/row/ok": true,
+              "/cells/0/arms/a031/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/0/arms/a031/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/0/arms/a031/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/0/arms/a031/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/0/arms/a031/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/0/arms/a031/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/0/arms/a031/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/0/arms/a031/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/0/arms/a031/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/0/arms/a013",
+          "fields": {
+            "/cells/0/arms/a013/label": "(0,1,3)",
+            "/cells/0/arms/a013/action_delta_lead_trail": [
+              0,
+              1,
+              3
+            ],
+            "/cells/0/arms/a013/binary": "g3b",
+            "/cells/0/arms/a013/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1280",
+              "-layout",
+              "v3",
+              "-lead",
+              "1"
+            ],
+            "/cells/0/arms/a013/n_requested": 200,
+            "/cells/0/arms/a013/n_returned": 200,
+            "/cells/0/arms/a013/ok": 200,
+            "/cells/0/arms/a013/failed": 0,
+            "/cells/0/arms/a013/timeouts": 0,
+            "/cells/0/arms/a013/missing": 0,
+            "/cells/0/arms/a013/server/conns": 200,
+            "/cells/0/arms/a013/server/conns_with_tx": 200,
+            "/cells/0/arms/a013/server/timeline_truncated": 0,
+            "/cells/0/arms/a013/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/0/arms/a013/per_connection/joined/0",
+            "fields": {
+              "/cells/0/arms/a013/per_connection/joined/0/block": 0,
+              "/cells/0/arms/a013/per_connection/joined/0/index": 0,
+              "/cells/0/arms/a013/per_connection/joined/0/row/ok": true,
+              "/cells/0/arms/a013/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/0/arms/a013/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/0/arms/a013/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/0/arms/a013/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/0/arms/a013/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/0/arms/a013/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/0/arms/a013/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/0/arms/a013/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/0/arms/a013/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/0/arms/g2pad",
+          "fields": {
+            "/cells/0/arms/g2pad/label": "gen-2 pad-only (1,0,0)",
+            "/cells/0/arms/g2pad/action_delta_lead_trail": [
+              1,
+              0,
+              0
+            ],
+            "/cells/0/arms/g2pad/binary": "g2",
+            "/cells/0/arms/g2pad/flags": [
+              "-fec",
+              "off",
+              "-ips",
+              "1281"
+            ],
+            "/cells/0/arms/g2pad/n_requested": 200,
+            "/cells/0/arms/g2pad/n_returned": 200,
+            "/cells/0/arms/g2pad/ok": 200,
+            "/cells/0/arms/g2pad/failed": 0,
+            "/cells/0/arms/g2pad/timeouts": 0,
+            "/cells/0/arms/g2pad/missing": 0,
+            "/cells/0/arms/g2pad/server/conns": 200,
+            "/cells/0/arms/g2pad/server/conns_with_tx": 200,
+            "/cells/0/arms/g2pad/server/timeline_truncated": 0,
+            "/cells/0/arms/g2pad/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/0/arms/g2pad/per_connection/joined/0",
+            "fields": {
+              "/cells/0/arms/g2pad/per_connection/joined/0/block": 0,
+              "/cells/0/arms/g2pad/per_connection/joined/0/index": 0,
+              "/cells/0/arms/g2pad/per_connection/joined/0/row/ok": true,
+              "/cells/0/arms/g2pad/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/0/arms/g2pad/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/0/arms/g2pad/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/0/arms/g2pad/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/0/arms/g2pad/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/0/arms/g2pad/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/0/arms/g2pad/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/0/arms/g2pad/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/0/arms/g2pad/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "source_pointer": "/cells/1",
+      "fields": {
+        "/cells/1/cell": "c6000_r80_u10_l1",
+        "/cells/1/group_id": "A",
+        "/cells/1/probe_cell": "c6000_r80_u10",
+        "/cells/1/h_cell": "h_c6000_r80_u10",
+        "/cells/1/cert": 6000,
+        "/cells/1/rtt_ms": 80.0,
+        "/cells/1/rate_mbit": 10.0,
+        "/cells/1/loss_pct": 1.0,
+        "/cells/1/blocks_planned": 5,
+        "/cells/1/blocks_done": 5,
+        "/cells/1/server_cert_der": [
+          "{\"g2\": 6006, \"g3b\": 6005}",
+          "{\"g2\": 6006, \"g3b\": 6006}",
+          "{\"g2\": 6007, \"g3b\": 6007}",
+          "{\"g2\": 6008, \"g3b\": 6009}"
+        ]
+      },
+      "arms": [
+        {
+          "source_pointer": "/cells/1/arms/none",
+          "fields": {
+            "/cells/1/arms/none/label": "none (no FEC)",
+            "/cells/1/arms/none/action_delta_lead_trail": [
+              0,
+              0,
+              0
+            ],
+            "/cells/1/arms/none/binary": "g3b",
+            "/cells/1/arms/none/flags": [
+              "-fec",
+              "off",
+              "-ips",
+              "1280"
+            ],
+            "/cells/1/arms/none/n_requested": 200,
+            "/cells/1/arms/none/n_returned": 200,
+            "/cells/1/arms/none/ok": 200,
+            "/cells/1/arms/none/failed": 0,
+            "/cells/1/arms/none/timeouts": 0,
+            "/cells/1/arms/none/missing": 0,
+            "/cells/1/arms/none/server/conns": 200,
+            "/cells/1/arms/none/server/conns_with_tx": 200,
+            "/cells/1/arms/none/server/timeline_truncated": 0,
+            "/cells/1/arms/none/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/1/arms/none/per_connection/joined/0",
+            "fields": {
+              "/cells/1/arms/none/per_connection/joined/0/block": 0,
+              "/cells/1/arms/none/per_connection/joined/0/index": 0,
+              "/cells/1/arms/none/per_connection/joined/0/row/ok": true,
+              "/cells/1/arms/none/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/1/arms/none/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/1/arms/none/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/1/arms/none/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/1/arms/none/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/1/arms/none/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/1/arms/none/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/1/arms/none/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/1/arms/none/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/1/arms/pad",
+          "fields": {
+            "/cells/1/arms/pad/label": "pad-only (1,0,0)",
+            "/cells/1/arms/pad/action_delta_lead_trail": [
+              1,
+              0,
+              0
+            ],
+            "/cells/1/arms/pad/binary": "g3b",
+            "/cells/1/arms/pad/flags": [
+              "-fec",
+              "off",
+              "-ips",
+              "1281"
+            ],
+            "/cells/1/arms/pad/n_requested": 200,
+            "/cells/1/arms/pad/n_returned": 200,
+            "/cells/1/arms/pad/ok": 200,
+            "/cells/1/arms/pad/failed": 0,
+            "/cells/1/arms/pad/timeouts": 0,
+            "/cells/1/arms/pad/missing": 0,
+            "/cells/1/arms/pad/server/conns": 200,
+            "/cells/1/arms/pad/server/conns_with_tx": 200,
+            "/cells/1/arms/pad/server/timeline_truncated": 0,
+            "/cells/1/arms/pad/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/1/arms/pad/per_connection/joined/0",
+            "fields": {
+              "/cells/1/arms/pad/per_connection/joined/0/block": 0,
+              "/cells/1/arms/pad/per_connection/joined/0/index": 0,
+              "/cells/1/arms/pad/per_connection/joined/0/row/ok": true,
+              "/cells/1/arms/pad/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/1/arms/pad/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/1/arms/pad/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/1/arms/pad/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/1/arms/pad/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/1/arms/pad/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/1/arms/pad/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/1/arms/pad/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/1/arms/pad/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/1/arms/a104",
+          "fields": {
+            "/cells/1/arms/a104/label": "(1,0,4)",
+            "/cells/1/arms/a104/action_delta_lead_trail": [
+              1,
+              0,
+              4
+            ],
+            "/cells/1/arms/a104/binary": "g3b",
+            "/cells/1/arms/a104/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1281",
+              "-layout",
+              "v3",
+              "-lead",
+              "0"
+            ],
+            "/cells/1/arms/a104/n_requested": 200,
+            "/cells/1/arms/a104/n_returned": 200,
+            "/cells/1/arms/a104/ok": 200,
+            "/cells/1/arms/a104/failed": 0,
+            "/cells/1/arms/a104/timeouts": 0,
+            "/cells/1/arms/a104/missing": 0,
+            "/cells/1/arms/a104/server/conns": 200,
+            "/cells/1/arms/a104/server/conns_with_tx": 200,
+            "/cells/1/arms/a104/server/timeline_truncated": 0,
+            "/cells/1/arms/a104/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/1/arms/a104/per_connection/joined/0",
+            "fields": {
+              "/cells/1/arms/a104/per_connection/joined/0/block": 0,
+              "/cells/1/arms/a104/per_connection/joined/0/index": 0,
+              "/cells/1/arms/a104/per_connection/joined/0/row/ok": true,
+              "/cells/1/arms/a104/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/1/arms/a104/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/1/arms/a104/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/1/arms/a104/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/1/arms/a104/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/1/arms/a104/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/1/arms/a104/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/1/arms/a104/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/1/arms/a104/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/1/arms/a113",
+          "fields": {
+            "/cells/1/arms/a113/label": "(1,1,3)",
+            "/cells/1/arms/a113/action_delta_lead_trail": [
+              1,
+              1,
+              3
+            ],
+            "/cells/1/arms/a113/binary": "g3b",
+            "/cells/1/arms/a113/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1281",
+              "-layout",
+              "v3",
+              "-lead",
+              "1"
+            ],
+            "/cells/1/arms/a113/n_requested": 200,
+            "/cells/1/arms/a113/n_returned": 200,
+            "/cells/1/arms/a113/ok": 200,
+            "/cells/1/arms/a113/failed": 0,
+            "/cells/1/arms/a113/timeouts": 0,
+            "/cells/1/arms/a113/missing": 0,
+            "/cells/1/arms/a113/server/conns": 200,
+            "/cells/1/arms/a113/server/conns_with_tx": 200,
+            "/cells/1/arms/a113/server/timeline_truncated": 0,
+            "/cells/1/arms/a113/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/1/arms/a113/per_connection/joined/0",
+            "fields": {
+              "/cells/1/arms/a113/per_connection/joined/0/block": 0,
+              "/cells/1/arms/a113/per_connection/joined/0/index": 0,
+              "/cells/1/arms/a113/per_connection/joined/0/row/ok": true,
+              "/cells/1/arms/a113/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/1/arms/a113/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/1/arms/a113/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/1/arms/a113/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/1/arms/a113/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/1/arms/a113/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/1/arms/a113/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/1/arms/a113/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/1/arms/a113/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/1/arms/a004",
+          "fields": {
+            "/cells/1/arms/a004/label": "(0,0,4)",
+            "/cells/1/arms/a004/action_delta_lead_trail": [
+              0,
+              0,
+              4
+            ],
+            "/cells/1/arms/a004/binary": "g3b",
+            "/cells/1/arms/a004/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1280",
+              "-layout",
+              "v3",
+              "-lead",
+              "0"
+            ],
+            "/cells/1/arms/a004/n_requested": 200,
+            "/cells/1/arms/a004/n_returned": 200,
+            "/cells/1/arms/a004/ok": 200,
+            "/cells/1/arms/a004/failed": 0,
+            "/cells/1/arms/a004/timeouts": 0,
+            "/cells/1/arms/a004/missing": 0,
+            "/cells/1/arms/a004/server/conns": 200,
+            "/cells/1/arms/a004/server/conns_with_tx": 200,
+            "/cells/1/arms/a004/server/timeline_truncated": 0,
+            "/cells/1/arms/a004/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/1/arms/a004/per_connection/joined/0",
+            "fields": {
+              "/cells/1/arms/a004/per_connection/joined/0/block": 0,
+              "/cells/1/arms/a004/per_connection/joined/0/index": 0,
+              "/cells/1/arms/a004/per_connection/joined/0/row/ok": true,
+              "/cells/1/arms/a004/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/1/arms/a004/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/1/arms/a004/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/1/arms/a004/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/1/arms/a004/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/1/arms/a004/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/1/arms/a004/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/1/arms/a004/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/1/arms/a004/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/1/arms/a031",
+          "fields": {
+            "/cells/1/arms/a031/label": "(0,3,1)",
+            "/cells/1/arms/a031/action_delta_lead_trail": [
+              0,
+              3,
+              1
+            ],
+            "/cells/1/arms/a031/binary": "g3b",
+            "/cells/1/arms/a031/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1280",
+              "-layout",
+              "v3",
+              "-lead",
+              "3"
+            ],
+            "/cells/1/arms/a031/n_requested": 200,
+            "/cells/1/arms/a031/n_returned": 200,
+            "/cells/1/arms/a031/ok": 200,
+            "/cells/1/arms/a031/failed": 0,
+            "/cells/1/arms/a031/timeouts": 0,
+            "/cells/1/arms/a031/missing": 0,
+            "/cells/1/arms/a031/server/conns": 200,
+            "/cells/1/arms/a031/server/conns_with_tx": 200,
+            "/cells/1/arms/a031/server/timeline_truncated": 0,
+            "/cells/1/arms/a031/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/1/arms/a031/per_connection/joined/0",
+            "fields": {
+              "/cells/1/arms/a031/per_connection/joined/0/block": 0,
+              "/cells/1/arms/a031/per_connection/joined/0/index": 0,
+              "/cells/1/arms/a031/per_connection/joined/0/row/ok": true,
+              "/cells/1/arms/a031/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/1/arms/a031/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/1/arms/a031/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/1/arms/a031/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/1/arms/a031/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/1/arms/a031/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/1/arms/a031/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/1/arms/a031/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/1/arms/a031/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/1/arms/a013",
+          "fields": {
+            "/cells/1/arms/a013/label": "(0,1,3)",
+            "/cells/1/arms/a013/action_delta_lead_trail": [
+              0,
+              1,
+              3
+            ],
+            "/cells/1/arms/a013/binary": "g3b",
+            "/cells/1/arms/a013/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1280",
+              "-layout",
+              "v3",
+              "-lead",
+              "1"
+            ],
+            "/cells/1/arms/a013/n_requested": 200,
+            "/cells/1/arms/a013/n_returned": 200,
+            "/cells/1/arms/a013/ok": 200,
+            "/cells/1/arms/a013/failed": 0,
+            "/cells/1/arms/a013/timeouts": 0,
+            "/cells/1/arms/a013/missing": 0,
+            "/cells/1/arms/a013/server/conns": 200,
+            "/cells/1/arms/a013/server/conns_with_tx": 200,
+            "/cells/1/arms/a013/server/timeline_truncated": 0,
+            "/cells/1/arms/a013/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/1/arms/a013/per_connection/joined/0",
+            "fields": {
+              "/cells/1/arms/a013/per_connection/joined/0/block": 0,
+              "/cells/1/arms/a013/per_connection/joined/0/index": 0,
+              "/cells/1/arms/a013/per_connection/joined/0/row/ok": true,
+              "/cells/1/arms/a013/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/1/arms/a013/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/1/arms/a013/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/1/arms/a013/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/1/arms/a013/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/1/arms/a013/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/1/arms/a013/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/1/arms/a013/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/1/arms/a013/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/1/arms/g2pad",
+          "fields": {
+            "/cells/1/arms/g2pad/label": "gen-2 pad-only (1,0,0)",
+            "/cells/1/arms/g2pad/action_delta_lead_trail": [
+              1,
+              0,
+              0
+            ],
+            "/cells/1/arms/g2pad/binary": "g2",
+            "/cells/1/arms/g2pad/flags": [
+              "-fec",
+              "off",
+              "-ips",
+              "1281"
+            ],
+            "/cells/1/arms/g2pad/n_requested": 200,
+            "/cells/1/arms/g2pad/n_returned": 200,
+            "/cells/1/arms/g2pad/ok": 200,
+            "/cells/1/arms/g2pad/failed": 0,
+            "/cells/1/arms/g2pad/timeouts": 0,
+            "/cells/1/arms/g2pad/missing": 0,
+            "/cells/1/arms/g2pad/server/conns": 200,
+            "/cells/1/arms/g2pad/server/conns_with_tx": 200,
+            "/cells/1/arms/g2pad/server/timeline_truncated": 0,
+            "/cells/1/arms/g2pad/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/1/arms/g2pad/per_connection/joined/0",
+            "fields": {
+              "/cells/1/arms/g2pad/per_connection/joined/0/block": 0,
+              "/cells/1/arms/g2pad/per_connection/joined/0/index": 0,
+              "/cells/1/arms/g2pad/per_connection/joined/0/row/ok": true,
+              "/cells/1/arms/g2pad/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/1/arms/g2pad/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/1/arms/g2pad/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/1/arms/g2pad/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/1/arms/g2pad/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/1/arms/g2pad/per_connection/joined/0/server/tx_dgrams": 8,
+              "/cells/1/arms/g2pad/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/1/arms/g2pad/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/1/arms/g2pad/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "source_pointer": "/cells/2",
+      "fields": {
+        "/cells/2/cell": "bigcert_r50_u2_l0",
+        "/cells/2/group_id": "B",
+        "/cells/2/probe_cell": "bigcert",
+        "/cells/2/h_cell": null,
+        "/cells/2/cert": 16000,
+        "/cells/2/rtt_ms": 50.0,
+        "/cells/2/rate_mbit": 2.0,
+        "/cells/2/loss_pct": 0.0,
+        "/cells/2/blocks_planned": 5,
+        "/cells/2/blocks_done": 5,
+        "/cells/2/server_cert_der": [
+          "{\"g2\": 16006, \"g3b\": 16008}",
+          "{\"g2\": 16007, \"g3b\": 16006}",
+          "{\"g2\": 16008, \"g3b\": 16006}",
+          "{\"g2\": 16008, \"g3b\": 16007}"
+        ]
+      },
+      "arms": [
+        {
+          "source_pointer": "/cells/2/arms/none",
+          "fields": {
+            "/cells/2/arms/none/label": "none (no FEC)",
+            "/cells/2/arms/none/action_delta_lead_trail": [
+              0,
+              0,
+              0
+            ],
+            "/cells/2/arms/none/binary": "g3b",
+            "/cells/2/arms/none/flags": [
+              "-fec",
+              "off",
+              "-ips",
+              "1280"
+            ],
+            "/cells/2/arms/none/n_requested": 200,
+            "/cells/2/arms/none/n_returned": 200,
+            "/cells/2/arms/none/ok": 200,
+            "/cells/2/arms/none/failed": 0,
+            "/cells/2/arms/none/timeouts": 0,
+            "/cells/2/arms/none/missing": 0,
+            "/cells/2/arms/none/server/conns": 200,
+            "/cells/2/arms/none/server/conns_with_tx": 200,
+            "/cells/2/arms/none/server/timeline_truncated": 0,
+            "/cells/2/arms/none/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/2/arms/none/per_connection/joined/0",
+            "fields": {
+              "/cells/2/arms/none/per_connection/joined/0/block": 0,
+              "/cells/2/arms/none/per_connection/joined/0/index": 0,
+              "/cells/2/arms/none/per_connection/joined/0/row/ok": true,
+              "/cells/2/arms/none/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/2/arms/none/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/2/arms/none/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/2/arms/none/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/2/arms/none/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/2/arms/none/per_connection/joined/0/server/tx_dgrams": 16,
+              "/cells/2/arms/none/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/2/arms/none/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/2/arms/none/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/2/arms/pad",
+          "fields": {
+            "/cells/2/arms/pad/label": "pad-only (1,0,0)",
+            "/cells/2/arms/pad/action_delta_lead_trail": [
+              1,
+              0,
+              0
+            ],
+            "/cells/2/arms/pad/binary": "g3b",
+            "/cells/2/arms/pad/flags": [
+              "-fec",
+              "off",
+              "-ips",
+              "1281"
+            ],
+            "/cells/2/arms/pad/n_requested": 200,
+            "/cells/2/arms/pad/n_returned": 200,
+            "/cells/2/arms/pad/ok": 200,
+            "/cells/2/arms/pad/failed": 0,
+            "/cells/2/arms/pad/timeouts": 0,
+            "/cells/2/arms/pad/missing": 0,
+            "/cells/2/arms/pad/server/conns": 200,
+            "/cells/2/arms/pad/server/conns_with_tx": 200,
+            "/cells/2/arms/pad/server/timeline_truncated": 0,
+            "/cells/2/arms/pad/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/2/arms/pad/per_connection/joined/0",
+            "fields": {
+              "/cells/2/arms/pad/per_connection/joined/0/block": 0,
+              "/cells/2/arms/pad/per_connection/joined/0/index": 0,
+              "/cells/2/arms/pad/per_connection/joined/0/row/ok": true,
+              "/cells/2/arms/pad/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/2/arms/pad/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/2/arms/pad/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/2/arms/pad/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/2/arms/pad/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/2/arms/pad/per_connection/joined/0/server/tx_dgrams": 16,
+              "/cells/2/arms/pad/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/2/arms/pad/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/2/arms/pad/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/2/arms/a104",
+          "fields": {
+            "/cells/2/arms/a104/label": "(1,0,4)",
+            "/cells/2/arms/a104/action_delta_lead_trail": [
+              1,
+              0,
+              4
+            ],
+            "/cells/2/arms/a104/binary": "g3b",
+            "/cells/2/arms/a104/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1281",
+              "-layout",
+              "v3",
+              "-lead",
+              "0"
+            ],
+            "/cells/2/arms/a104/n_requested": 200,
+            "/cells/2/arms/a104/n_returned": 200,
+            "/cells/2/arms/a104/ok": 200,
+            "/cells/2/arms/a104/failed": 0,
+            "/cells/2/arms/a104/timeouts": 0,
+            "/cells/2/arms/a104/missing": 0,
+            "/cells/2/arms/a104/server/conns": 200,
+            "/cells/2/arms/a104/server/conns_with_tx": 200,
+            "/cells/2/arms/a104/server/timeline_truncated": 0,
+            "/cells/2/arms/a104/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/2/arms/a104/per_connection/joined/0",
+            "fields": {
+              "/cells/2/arms/a104/per_connection/joined/0/block": 0,
+              "/cells/2/arms/a104/per_connection/joined/0/index": 0,
+              "/cells/2/arms/a104/per_connection/joined/0/row/ok": true,
+              "/cells/2/arms/a104/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/2/arms/a104/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/2/arms/a104/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/2/arms/a104/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/2/arms/a104/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/2/arms/a104/per_connection/joined/0/server/tx_dgrams": 16,
+              "/cells/2/arms/a104/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/2/arms/a104/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/2/arms/a104/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/2/arms/a113",
+          "fields": {
+            "/cells/2/arms/a113/label": "(1,1,3)",
+            "/cells/2/arms/a113/action_delta_lead_trail": [
+              1,
+              1,
+              3
+            ],
+            "/cells/2/arms/a113/binary": "g3b",
+            "/cells/2/arms/a113/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1281",
+              "-layout",
+              "v3",
+              "-lead",
+              "1"
+            ],
+            "/cells/2/arms/a113/n_requested": 200,
+            "/cells/2/arms/a113/n_returned": 200,
+            "/cells/2/arms/a113/ok": 200,
+            "/cells/2/arms/a113/failed": 0,
+            "/cells/2/arms/a113/timeouts": 0,
+            "/cells/2/arms/a113/missing": 0,
+            "/cells/2/arms/a113/server/conns": 200,
+            "/cells/2/arms/a113/server/conns_with_tx": 200,
+            "/cells/2/arms/a113/server/timeline_truncated": 0,
+            "/cells/2/arms/a113/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/2/arms/a113/per_connection/joined/0",
+            "fields": {
+              "/cells/2/arms/a113/per_connection/joined/0/block": 0,
+              "/cells/2/arms/a113/per_connection/joined/0/index": 0,
+              "/cells/2/arms/a113/per_connection/joined/0/row/ok": true,
+              "/cells/2/arms/a113/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/2/arms/a113/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/2/arms/a113/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/2/arms/a113/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/2/arms/a113/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/2/arms/a113/per_connection/joined/0/server/tx_dgrams": 16,
+              "/cells/2/arms/a113/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/2/arms/a113/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/2/arms/a113/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/2/arms/a004",
+          "fields": {
+            "/cells/2/arms/a004/label": "(0,0,4)",
+            "/cells/2/arms/a004/action_delta_lead_trail": [
+              0,
+              0,
+              4
+            ],
+            "/cells/2/arms/a004/binary": "g3b",
+            "/cells/2/arms/a004/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1280",
+              "-layout",
+              "v3",
+              "-lead",
+              "0"
+            ],
+            "/cells/2/arms/a004/n_requested": 200,
+            "/cells/2/arms/a004/n_returned": 200,
+            "/cells/2/arms/a004/ok": 200,
+            "/cells/2/arms/a004/failed": 0,
+            "/cells/2/arms/a004/timeouts": 0,
+            "/cells/2/arms/a004/missing": 0,
+            "/cells/2/arms/a004/server/conns": 200,
+            "/cells/2/arms/a004/server/conns_with_tx": 200,
+            "/cells/2/arms/a004/server/timeline_truncated": 0,
+            "/cells/2/arms/a004/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/2/arms/a004/per_connection/joined/0",
+            "fields": {
+              "/cells/2/arms/a004/per_connection/joined/0/block": 0,
+              "/cells/2/arms/a004/per_connection/joined/0/index": 0,
+              "/cells/2/arms/a004/per_connection/joined/0/row/ok": true,
+              "/cells/2/arms/a004/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/2/arms/a004/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/2/arms/a004/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/2/arms/a004/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/2/arms/a004/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/2/arms/a004/per_connection/joined/0/server/tx_dgrams": 16,
+              "/cells/2/arms/a004/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/2/arms/a004/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/2/arms/a004/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/2/arms/a031",
+          "fields": {
+            "/cells/2/arms/a031/label": "(0,3,1)",
+            "/cells/2/arms/a031/action_delta_lead_trail": [
+              0,
+              3,
+              1
+            ],
+            "/cells/2/arms/a031/binary": "g3b",
+            "/cells/2/arms/a031/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1280",
+              "-layout",
+              "v3",
+              "-lead",
+              "3"
+            ],
+            "/cells/2/arms/a031/n_requested": 200,
+            "/cells/2/arms/a031/n_returned": 200,
+            "/cells/2/arms/a031/ok": 200,
+            "/cells/2/arms/a031/failed": 0,
+            "/cells/2/arms/a031/timeouts": 0,
+            "/cells/2/arms/a031/missing": 0,
+            "/cells/2/arms/a031/server/conns": 200,
+            "/cells/2/arms/a031/server/conns_with_tx": 200,
+            "/cells/2/arms/a031/server/timeline_truncated": 0,
+            "/cells/2/arms/a031/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/2/arms/a031/per_connection/joined/0",
+            "fields": {
+              "/cells/2/arms/a031/per_connection/joined/0/block": 0,
+              "/cells/2/arms/a031/per_connection/joined/0/index": 0,
+              "/cells/2/arms/a031/per_connection/joined/0/row/ok": true,
+              "/cells/2/arms/a031/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/2/arms/a031/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/2/arms/a031/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/2/arms/a031/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/2/arms/a031/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/2/arms/a031/per_connection/joined/0/server/tx_dgrams": 16,
+              "/cells/2/arms/a031/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/2/arms/a031/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/2/arms/a031/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/2/arms/a013",
+          "fields": {
+            "/cells/2/arms/a013/label": "(0,1,3)",
+            "/cells/2/arms/a013/action_delta_lead_trail": [
+              0,
+              1,
+              3
+            ],
+            "/cells/2/arms/a013/binary": "g3b",
+            "/cells/2/arms/a013/flags": [
+              "-fec",
+              "fec",
+              "-m",
+              "4",
+              "-ips",
+              "1280",
+              "-layout",
+              "v3",
+              "-lead",
+              "1"
+            ],
+            "/cells/2/arms/a013/n_requested": 200,
+            "/cells/2/arms/a013/n_returned": 200,
+            "/cells/2/arms/a013/ok": 200,
+            "/cells/2/arms/a013/failed": 0,
+            "/cells/2/arms/a013/timeouts": 0,
+            "/cells/2/arms/a013/missing": 0,
+            "/cells/2/arms/a013/server/conns": 200,
+            "/cells/2/arms/a013/server/conns_with_tx": 200,
+            "/cells/2/arms/a013/server/timeline_truncated": 0,
+            "/cells/2/arms/a013/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/2/arms/a013/per_connection/joined/0",
+            "fields": {
+              "/cells/2/arms/a013/per_connection/joined/0/block": 0,
+              "/cells/2/arms/a013/per_connection/joined/0/index": 0,
+              "/cells/2/arms/a013/per_connection/joined/0/row/ok": true,
+              "/cells/2/arms/a013/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/2/arms/a013/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/2/arms/a013/per_connection/joined/0/row/first_flight_bytes": 2560,
+              "/cells/2/arms/a013/per_connection/joined/0/row/ips_used": 1280,
+              "/cells/2/arms/a013/per_connection/joined/0/row/ips_eff": 1280,
+              "/cells/2/arms/a013/per_connection/joined/0/server/tx_dgrams": 16,
+              "/cells/2/arms/a013/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/2/arms/a013/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/2/arms/a013/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        },
+        {
+          "source_pointer": "/cells/2/arms/g2pad",
+          "fields": {
+            "/cells/2/arms/g2pad/label": "gen-2 pad-only (1,0,0)",
+            "/cells/2/arms/g2pad/action_delta_lead_trail": [
+              1,
+              0,
+              0
+            ],
+            "/cells/2/arms/g2pad/binary": "g2",
+            "/cells/2/arms/g2pad/flags": [
+              "-fec",
+              "off",
+              "-ips",
+              "1281"
+            ],
+            "/cells/2/arms/g2pad/n_requested": 200,
+            "/cells/2/arms/g2pad/n_returned": 200,
+            "/cells/2/arms/g2pad/ok": 200,
+            "/cells/2/arms/g2pad/failed": 0,
+            "/cells/2/arms/g2pad/timeouts": 0,
+            "/cells/2/arms/g2pad/missing": 0,
+            "/cells/2/arms/g2pad/server/conns": 200,
+            "/cells/2/arms/g2pad/server/conns_with_tx": 200,
+            "/cells/2/arms/g2pad/server/timeline_truncated": 0,
+            "/cells/2/arms/g2pad/server/first_tx_size_hist": {
+              "41": 200
+            }
+          },
+          "witness": {
+            "source_pointer": "/cells/2/arms/g2pad/per_connection/joined/0",
+            "fields": {
+              "/cells/2/arms/g2pad/per_connection/joined/0/block": 0,
+              "/cells/2/arms/g2pad/per_connection/joined/0/index": 0,
+              "/cells/2/arms/g2pad/per_connection/joined/0/row/ok": true,
+              "/cells/2/arms/g2pad/per_connection/joined/0/row/group": "X25519MLKEM768",
+              "/cells/2/arms/g2pad/per_connection/joined/0/row/first_flight_datagrams": 2,
+              "/cells/2/arms/g2pad/per_connection/joined/0/row/first_flight_bytes": 2562,
+              "/cells/2/arms/g2pad/per_connection/joined/0/row/ips_used": 1281,
+              "/cells/2/arms/g2pad/per_connection/joined/0/row/ips_eff": 1281,
+              "/cells/2/arms/g2pad/per_connection/joined/0/server/tx_dgrams": 16,
+              "/cells/2/arms/g2pad/per_connection/joined/0/server/tx_sizes/0": 41,
+              "/cells/2/arms/g2pad/per_connection/joined/0/derived/server/first_tx_size": 41,
+              "/cells/2/arms/g2pad/per_connection/joined/0/derived/server/timeline_truncated": false
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+{"N": 1000, "summary": {"rows": 800000, "combos": 825, "both_invalid_combo": 25}, "elapsed_s": 372.5}
+exit=0

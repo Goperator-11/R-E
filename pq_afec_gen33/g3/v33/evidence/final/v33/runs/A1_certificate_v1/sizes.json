@@ -1,0 +1,296 @@
+{
+  "status": "PASS",
+  "kind": "generated_artifact_byte_measurement_no_network_handshake",
+  "recorded_utc": "2026-10-31T23:38:29.399760+00:00",
+  "openssl": "OpenSSL 3.5.5 27 Jan 2026 (Library: OpenSSL 3.5.5 27 Jan 2026)\nbuilt on: Wed Sep 16 12:35:01 2026 UTC\nplatform: debian-amd64\noptions:  bn(64,64)\ncompiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -fzero-call-used-regs=used-gpr -Wa,--noexecstack -g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/openssl-4QlAPC/openssl-3.5.5=. -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -fcf-protection -fdebug-prefix-map=/build/openssl-4QlAPC/openssl-3.5.5=/usr/src/openssl-3.5.5-1ubuntu3.6 -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_BUILDING_OPENSSL -DZLIB -DZSTD -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=3\nOPENSSLDIR: \"/usr/lib/ssl\"\nENGINESDIR: \"/usr/lib/x86_64-linux-gnu/engines-3\"\nMODULESDIR: \"/usr/lib/x86_64-linux-gnu/ossl-modules\"\nSeeding source: os-specific JITTER (3060300)\nCPUINFO: OPENSSL_ia32cap=0xfffa32235f8bffff:0x184007a4219c27ab:0x00000810bc104410:0x0000000000000000:0x0000000000000000\n",
+  "algorithms": [
+    {
+      "algorithm": "ML-DSA-44",
+      "certificate_der_B": {
+        "root": 4011,
+        "intermediate": 4019,
+        "leaf": 4063
+      },
+      "leaf_intermediate_der_B": 8082,
+      "three_certificate_der_B": 12093,
+      "certificate_message_B": 8100,
+      "certificate_verify_signature_B": 2420,
+      "certificate_verify_message_B": 2428,
+      "certificate_and_verify_messages_B": 10528,
+      "zlib_compressed_certificate_message_B": 7879,
+      "chain_verified": "/mnt/c/dev/codex_handoff/v33/runs/A1_certificate_v1/ML-DSA-44/leaf.pem: OK",
+      "signature_verified": "Signature Verified Successfully",
+      "root_transmitted": false,
+      "ocsp_sct_added": false
+    },
+    {
+      "algorithm": "ML-DSA-65",
+      "certificate_der_B": {
+        "root": 5540,
+        "intermediate": 5548,
+        "leaf": 5592
+      },
+      "leaf_intermediate_der_B": 11140,
+      "three_certificate_der_B": 16680,
+      "certificate_message_B": 11158,
+      "certificate_verify_signature_B": 3309,
+      "certificate_verify_message_B": 3317,
+      "certificate_and_verify_messages_B": 14475,
+      "zlib_compressed_certificate_message_B": 10939,
+      "chain_verified": "/mnt/c/dev/codex_handoff/v33/runs/A1_certificate_v1/ML-DSA-65/leaf.pem: OK",
+      "signature_verified": "Signature Verified Successfully",
+      "root_transmitted": false,
+      "ocsp_sct_added": false
+    },
+    {
+      "algorithm": "ECDSA-P256",
+      "certificate_der_B": {
+        "root": 416,
+        "intermediate": 424,
+        "leaf": 469
+      },
+      "leaf_intermediate_der_B": 893,
+      "three_certificate_der_B": 1309,
+      "certificate_message_B": 911,
+      "certificate_verify_signature_B": 72,
+      "certificate_verify_message_B": 80,
+      "certificate_and_verify_messages_B": 991,
+      "zlib_compressed_certificate_message_B": 667,
+      "chain_verified": "/mnt/c/dev/codex_handoff/v33/runs/A1_certificate_v1/ECDSA-P256/leaf.pem: OK",
+      "signature_verified": "Signature Verified Successfully",
+      "root_transmitted": false,
+      "ocsp_sct_added": false
+    }
+  ],
+  "private_keys_directory": "/home/scien/v33_runs/A1_certificate_v1/private",
+  "private_keys_published": false,
+  "synthetic_tls_transcript": true,
+  "zlib_note": "RFC8879 framing with algorithm1; computed bytes only, no negotiated transport",
+  "files": [
+    {
+      "path": "ECDSA-P256/certificate_body.zlib",
+      "bytes": 655,
+      "sha256": "f0d95507683e638c733bb60d3d8b6cea234c659735b048b43c76b549567a98bb"
+    },
+    {
+      "path": "ECDSA-P256/certificate_verify_input.bin",
+      "bytes": 130,
+      "sha256": "07e7e6e8b46610ca6dd81717aecb2ec56fe06cc886d4cb5b1f7729f26f26504f"
+    },
+    {
+      "path": "ECDSA-P256/certificate_verify_signature.bin",
+      "bytes": 72,
+      "sha256": "8e1e5521f53522c56dd4a1ddca267d29a8fc6375afd0b8877905a14ef9787172"
+    },
+    {
+      "path": "ECDSA-P256/extensions.cnf",
+      "bytes": 350,
+      "sha256": "dc1479466d0152060c3420826880b867caa25bff12d1972b387cff2404933878"
+    },
+    {
+      "path": "ECDSA-P256/intermediate.csr",
+      "bytes": 387,
+      "sha256": "0894f3847c293af05c42602f3a13a503cebf24e5e30a5b954408445c95265a7e"
+    },
+    {
+      "path": "ECDSA-P256/intermediate.der",
+      "bytes": 424,
+      "sha256": "a112a2e1e5bceffce246f9e9c511e6668a8919b2df3c33f54bdba54e53adee5f"
+    },
+    {
+      "path": "ECDSA-P256/intermediate.pem",
+      "bytes": 631,
+      "sha256": "3288281a55ee2da44183e0dea1160b19f29c49ddf4bd17d0d945961ba81d9212"
+    },
+    {
+      "path": "ECDSA-P256/leaf.csr",
+      "bytes": 379,
+      "sha256": "207556307649f2c4cd668d0f1471975e5b53ead9407bce4ae9cac421977adf4d"
+    },
+    {
+      "path": "ECDSA-P256/leaf.der",
+      "bytes": 469,
+      "sha256": "edd9a16050181923801a670a2cd0ac76008d20089ebe1444c22d7c7209b44d15"
+    },
+    {
+      "path": "ECDSA-P256/leaf.pem",
+      "bytes": 692,
+      "sha256": "c27407a822f93f53b6352d55e02958b5e69decbbbd7640fd091721ff4ddf5178"
+    },
+    {
+      "path": "ECDSA-P256/leaf_public.pem",
+      "bytes": 178,
+      "sha256": "8e497066b451dbdb2b343597d98cd062abc1afe1fd041cd98dba7fd65148e530"
+    },
+    {
+      "path": "ECDSA-P256/root.csr",
+      "bytes": 379,
+      "sha256": "6a08467b634296fea671f73c47d96d3230859c9b7e5ff66b9590f9452d87f0f0"
+    },
+    {
+      "path": "ECDSA-P256/root.der",
+      "bytes": 416,
+      "sha256": "ac56ffd3110f851ccccdfa14aeb1845f719bf72bfc0aaabdcf3111c0ab1ba497"
+    },
+    {
+      "path": "ECDSA-P256/root.pem",
+      "bytes": 619,
+      "sha256": "2669dfe4f3eab8702ff39e38e53c05c3665db4a08e9da4ab080449e751259040"
+    },
+    {
+      "path": "ECDSA-P256/tls_certificate_message.bin",
+      "bytes": 911,
+      "sha256": "9ba89f841ec4ecb86280cd713dd5939aa1e2669f3ccc08ed6c79d6e6190f617e"
+    },
+    {
+      "path": "ML-DSA-44/certificate_body.zlib",
+      "bytes": 7867,
+      "sha256": "a6d68c7965295c52c368b27c03a39d73d51732021cf3e994b5173dae215df431"
+    },
+    {
+      "path": "ML-DSA-44/certificate_verify_input.bin",
+      "bytes": 130,
+      "sha256": "07e7e6e8b46610ca6dd81717aecb2ec56fe06cc886d4cb5b1f7729f26f26504f"
+    },
+    {
+      "path": "ML-DSA-44/certificate_verify_signature.bin",
+      "bytes": 2420,
+      "sha256": "136b382b3e76da2dfdecf62a98933003499f2a731503d22f99ab7c8dc64a7db7"
+    },
+    {
+      "path": "ML-DSA-44/extensions.cnf",
+      "bytes": 350,
+      "sha256": "dc1479466d0152060c3420826880b867caa25bff12d1972b387cff2404933878"
+    },
+    {
+      "path": "ML-DSA-44/intermediate.csr",
+      "bytes": 5258,
+      "sha256": "b40f2b22b3bcef66ef1cefbf7deb1e16cb252f165bb868f3314786b5ef1e7cbd"
+    },
+    {
+      "path": "ML-DSA-44/intermediate.der",
+      "bytes": 4019,
+      "sha256": "c2cc77b42157fbca77dec87cfcbdf84b615dd7e44818af2c9a0c9bfb122a26a5"
+    },
+    {
+      "path": "ML-DSA-44/intermediate.pem",
+      "bytes": 5498,
+      "sha256": "62865287da70ab4c067937d92cb64d46544eee444006fa6176edf827edc0697e"
+    },
+    {
+      "path": "ML-DSA-44/leaf.csr",
+      "bytes": 5246,
+      "sha256": "e5b366ec19f1f5f4dfab27cf3e057c2bc07a0220b6ed9f038a691c3326508657"
+    },
+    {
+      "path": "ML-DSA-44/leaf.der",
+      "bytes": 4063,
+      "sha256": "d0e83ebf0d55e75ec28445ebb9429c399f2eb57dd59f97258d5a0bd0ee359435"
+    },
+    {
+      "path": "ML-DSA-44/leaf.pem",
+      "bytes": 5559,
+      "sha256": "9a252fec014433338fd91ffba9ada439b724387f609473c9f83b76ccb098df61"
+    },
+    {
+      "path": "ML-DSA-44/leaf_public.pem",
+      "bytes": 1860,
+      "sha256": "44d45dedf89d767f7ee4dff57323322a454dc884d952962eeea91822533948ed"
+    },
+    {
+      "path": "ML-DSA-44/root.csr",
+      "bytes": 5246,
+      "sha256": "37ec7c480d09c5dee9138f6f5540eeea2c9c8012275319ca3af7b666df992350"
+    },
+    {
+      "path": "ML-DSA-44/root.der",
+      "bytes": 4011,
+      "sha256": "b913d4b4d47186a130a0037d02ef723b652f47bbec12b47924af56b89bc105c4"
+    },
+    {
+      "path": "ML-DSA-44/root.pem",
+      "bytes": 5486,
+      "sha256": "cb3971008d1d3c8fa6ea04c6f0ad359ba29b4b7068b6bd8c6b80894b033c0772"
+    },
+    {
+      "path": "ML-DSA-44/tls_certificate_message.bin",
+      "bytes": 8100,
+      "sha256": "9f3c40ea04cbb3b659cc0f2b55be6c2b02bb217a1680219fe1e943bc08a695d9"
+    },
+    {
+      "path": "ML-DSA-65/certificate_body.zlib",
+      "bytes": 10927,
+      "sha256": "f5e7c629a446f631d736076825d4bbfc87b8f698e7435a72f0717ebe30439ffb"
+    },
+    {
+      "path": "ML-DSA-65/certificate_verify_input.bin",
+      "bytes": 130,
+      "sha256": "07e7e6e8b46610ca6dd81717aecb2ec56fe06cc886d4cb5b1f7729f26f26504f"
+    },
+    {
+      "path": "ML-DSA-65/certificate_verify_signature.bin",
+      "bytes": 3309,
+      "sha256": "1bf6b117a063e3caa79cf4087385610acc79e19a6e501376e9e30a3b11fc20c2"
+    },
+    {
+      "path": "ML-DSA-65/extensions.cnf",
+      "bytes": 350,
+      "sha256": "dc1479466d0152060c3420826880b867caa25bff12d1972b387cff2404933878"
+    },
+    {
+      "path": "ML-DSA-65/intermediate.csr",
+      "bytes": 7330,
+      "sha256": "1c7be9dbd520342cca8e2e0f11e77b23ca3a57f6eee1a32df4c28ec8664ca51c"
+    },
+    {
+      "path": "ML-DSA-65/intermediate.der",
+      "bytes": 5548,
+      "sha256": "ff8a10e6cf887c6763434d54fd767c440a3e422dc5804a1ab96aa3e9e651776e"
+    },
+    {
+      "path": "ML-DSA-65/intermediate.pem",
+      "bytes": 7570,
+      "sha256": "eeb96a225eb2d0731f7680a1785ede6f48486040747d642f75f2ac232e6a1e4f"
+    },
+    {
+      "path": "ML-DSA-65/leaf.csr",
+      "bytes": 7318,
+      "sha256": "461ed1db3590332413f58d6fdb0bad2aa0a1bcf0620f10c1de8dd0864e77a36c"
+    },
+    {
+      "path": "ML-DSA-65/leaf.der",
+      "bytes": 5592,
+      "sha256": "09de262cd6b8ec07670914c276c3cfed72e30881a687a57d43d45cadea7bdee6"
+    },
+    {
+      "path": "ML-DSA-65/leaf.pem",
+      "bytes": 7627,
+      "sha256": "1ac102e384dc9fa98ae8f0c661304eea077d436cbc9826ac3f9273aef60aa0b5"
+    },
+    {
+      "path": "ML-DSA-65/leaf_public.pem",
+      "bytes": 2726,
+      "sha256": "387d649bed7433db6a50e3dd4cc48e83c5f0bf5a7317cbcd3ccd5f0a0e43fab8"
+    },
+    {
+      "path": "ML-DSA-65/root.csr",
+      "bytes": 7318,
+      "sha256": "dba373fad5b329ae87cfc9a63daaf7ce6df6ce2d40385322c8898156beef6049"
+    },
+    {
+      "path": "ML-DSA-65/root.der",
+      "bytes": 5540,
+      "sha256": "0c68f222cba5f84891c9ad2562ed51d6f7cf161bde6eced32a5f266e389d6006"
+    },
+    {
+      "path": "ML-DSA-65/root.pem",
+      "bytes": 7558,
+      "sha256": "c838f597fb2270029fd62c5bdcb9935205427c2c34f4c5384943cf3f317988de"
+    },
+    {
+      "path": "ML-DSA-65/tls_certificate_message.bin",
+      "bytes": 11158,
+      "sha256": "9f211ac54963dba714fa746ca88226ef07256c17321402b4f4d96721c6af111d"
+    }
+  ]
+}

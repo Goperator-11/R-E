@@ -1,0 +1,24 @@
+{
+ "measured_at": "2026-11-02T06:45:37+09:00",
+ "head": "d67717d9b21cee8067fc3d7e919bb3552bfedf0b",
+ "commits_on_HEAD": 122,
+ "rule": "a commit counts when some token matching (?<![0-9a-f])[0-9a-f]{7,40}(?![0-9a-f]) in the text is a prefix of its full hash",
+ "counts": {
+  "LOOP_STATE.json (current file)": 122,
+  "JOURNAL.md (current file)": 122,
+  "MORNING_REPORT.md (current file)": 108,
+  "LOOP_STATE.json or JOURNAL.md": 122,
+  "g3 tracked files at HEAD (all)": 121,
+  "g3 tracked files at HEAD outside g3/v33/validation": 3,
+  "docs/*.md at HEAD": 9,
+  "docs/*.md in working tree (tracked and untracked)": 14,
+  "g3 at HEAD, bundle D method (git grep -o chunks)": 73
+ },
+ "files": {
+  "g3 tracked files at HEAD (all)": 102320,
+  "g3 tracked files at HEAD outside g3/v33/validation": 682,
+  "docs/*.md at HEAD": 102,
+  "docs/*.md in working tree (tracked and untracked)": 111
+ },
+ "elapsed_s": 136.9
+}

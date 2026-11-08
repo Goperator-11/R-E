@@ -22,6 +22,8 @@ import (
 
 const p3NG = 26
 const p3NH = 5
+const defaultInitialPacketSize = 1280
+const p3G2ParityDelayMs = 0.3
 
 var p3G = [p3NG]float64{0.0, 0.002, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.065,
 	0.08, 0.1, 0.12, 0.135, 0.15, 0.1625, 0.175, 0.1875, 0.2, 0.2125, 0.225,
@@ -464,6 +466,17 @@ type p3State struct {
 	C1Seen        bool                 `json:"c1_seen"`
 	ArrivalStreak int                  `json:"arrival_streak"`
 	Stats         p3Stats              `json:"stats"`
+	XLedger       *float64             `json:"x_ledger,omitempty"`
+	XPending      *bool                `json:"x_pending,omitempty"`
+}
+
+var (
+	p3ExploreRateMs float64
+	p3ExploreCapMs  = 100.0
+)
+
+func p3Flag(v bool) *bool {
+	return &v
 }
 
 func (st *p3State) UnmarshalJSON(b []byte) error {
@@ -475,6 +488,11 @@ func (st *p3State) UnmarshalJSON(b []byte) error {
 		v, ok := fields[key]
 		if !ok || bytes.Equal(bytes.TrimSpace(v), []byte("null")) {
 			return fmt.Errorf("state field %s is missing or null", key)
+		}
+	}
+	for _, key := range []string{"x_ledger", "x_pending"} {
+		if v, ok := fields[key]; ok && bytes.Equal(bytes.TrimSpace(v), []byte("null")) {
+			return fmt.Errorf("state field %s is null", key)
 		}
 	}
 	type plain p3State
@@ -559,8 +577,6 @@ func p3ValidateMass(xs []float64, n int, name string) error {
 	return nil
 }
 
-// p3BinNeededChecked preserves binNeeded's floating-point comparisons while
-// keeping its integer byte products exact and limiting correction to one step.
 func p3BinNeededChecked(s float64, baseBin int, cPkt float64) (int, error) {
 	if !p3Finite(s) || s <= 0 || !p3Finite(cPkt) || cPkt < 0 || cPkt >= serverPacketSize {
 		return 0, errors.New("invalid server bytes or c_pkt for bin calculation")
@@ -602,8 +618,8 @@ func p3ValidateInputs(w int, u, rtt, cPkt float64, allowMissingRTT bool) error {
 	if !p3Finite(u) || u < 0 {
 		return fmt.Errorf("u must be finite and >= 0, got %v", u)
 	}
-	if !p3Finite(cPkt) || cPkt < 0 || cPkt >= 1280 {
-		return fmt.Errorf("c_pkt must be finite and in [0, 1280), got %v", cPkt)
+	if !p3Finite(cPkt) || cPkt < 0 || cPkt >= serverPacketSize {
+		return fmt.Errorf("c_pkt must be finite and in [0, %d), got %v", serverPacketSize, cPkt)
 	}
 	if !p3Finite(rtt) || rtt < 0 || (!allowMissingRTT && rtt == 0) {
 		if allowMissingRTT {
@@ -620,7 +636,7 @@ func p3ValidateInputs(w int, u, rtt, cPkt float64, allowMissingRTT bool) error {
 		serial = flight * 8 / den
 	}
 	costBound := (3*serial + (2+ptoSampledRttMult)*rtt +
-		tPTONoAckMs + tAckRetxBaseMs + 0.3) / math.Pow(1-p3G[p3NG-1], p3KMax)
+		tPTONoAckMs + tAckRetxBaseMs + p3G2ParityDelayMs) / math.Pow(1-p3G[p3NG-1], p3KMax)
 	if !p3Finite(costBound) {
 		return errors.New("model time arithmetic exceeds floating-point range")
 	}
@@ -744,6 +760,12 @@ func (st *p3State) validate() error {
 		if at < 0 || at > st.NDec {
 			return fmt.Errorf("alarm %s raised at decision %d of %d", k, at, st.NDec)
 		}
+	}
+	if st.XLedger != nil && !p3Finite(*st.XLedger) {
+		return errors.New("x_ledger must be finite")
+	}
+	if (st.XLedger == nil) != (st.XPending == nil) {
+		return errors.New("x_ledger and x_pending must appear together")
 	}
 	if st.ArrivalStreak < 0 || st.ArrivalStreak > p3ArrivalStreakCap {
 		return fmt.Errorf("arrival_streak %d outside 0..%d", st.ArrivalStreak, p3ArrivalStreakCap)
@@ -880,8 +902,6 @@ func p3Context(st *p3State, w int, u, rtt, cPkt float64) (*p3Ctx, bool) {
 	return &p3Ctx{K: k, S: s, NNeed: nNeed, W: w, U: u, RTT: rtt}, true
 }
 
-// p3PredictStep advances the channel prior without treating a skipped observation
-// as evidence for either loss outcome or for a particular hazard.
 func p3PredictStep(post [][]float64, w []float64) ([][]float64, []float64) {
 	inv := 1.0 / float64(p3NG)
 	newPost := make([][]float64, p3NH)
@@ -1094,6 +1114,9 @@ func p3GuardObserve(st *p3State, key string, resid, rtt float64) []string {
 
 func p3EnterC1(st *p3State) {
 	st.C1Seen = true
+	if st.XPending != nil {
+		st.XPending = p3Flag(false)
+	}
 	st.Stats.AlarmCleared += len(st.GAlarm)
 	st.GAlarm = map[string]int{}
 }
@@ -1259,6 +1282,16 @@ func p3ObserveNone(st *p3State, key string, a p3Action, hct float64, ok bool, rt
 	info, err := p3ObserveEvent(st, c, a, hct, ok, rtt)
 	if err != nil {
 		return info, err
+	}
+	if st.XPending != nil && *st.XPending {
+		st.XPending = p3Flag(false)
+		ledger := *st.XLedger
+		if !ok {
+			ledger -= float64(tPTONoAckMs) + rtt
+		} else if info.Y == 1 {
+			ledger -= math.Max(0, hct-info.Baseline)
+		}
+		st.XLedger = &ledger
 	}
 	info.Ctx, info.HasCtx, info.Evidence, info.ArrivalReject = c, hasCtx, evidence, "source_none"
 	if ok && jPred != nil {
@@ -1589,7 +1622,7 @@ func p3Pick(cands []p3Cand, idx []int) (int, float64, int) {
 }
 
 func p3DecideCore(post []float64, k, w int, s, u, rtt, cPkt float64, keep bool,
-	pen map[string]float64, reeval bool) (p3Decision, error) {
+	pen map[string]float64) (p3Decision, error) {
 	if err := p3ValidateInputs(w, u, rtt, cPkt, false); err != nil {
 		return p3Decision{}, err
 	}
@@ -1654,15 +1687,76 @@ func p3DecideCore(post []float64, k, w int, s, u, rtt, cPkt float64, keep bool,
 		}
 	}
 	d.ReevalCond = d.N2 && d.HasAlt
-	if reeval && d.ReevalCond {
-		d.take(d.Alt)
-		d.Why = "reeval"
-		d.Reeval = true
-	}
 	if keep {
 		d.Cands = cands
 	}
 	return d, nil
+}
+
+func p3ExplorePick(st *p3State, d *p3Decision, u, rtt float64) int {
+	if d.M == 0 || d.Action.Lead != 0 {
+		return -1
+	}
+	free := false
+	best := -1
+	for i := range d.Cands {
+		if d.Cands[i].M == 0 && !d.Cands[i].N2 {
+			free = true
+		}
+		if d.Cands[i].Action == d.Action {
+			best = i
+		}
+	}
+	if !free || best < 0 {
+		return -1
+	}
+	j0 := func(c *p3Cand) float64 {
+		return p3ModelPoint(d.K, c.WEff, u, rtt, d.NNeed, c.Action.Lead, c.M, 0).J
+	}
+	limit := j0(&d.Cands[best]) + jTieMs
+	pick := -1
+	for i := range d.Cands {
+		c := &d.Cands[i]
+		if c.Action.Lead != 0 || c.Added >= d.Added || j0(c) > limit {
+			continue
+		}
+		if math.Max(0, c.EJ-d.EJ) > *st.XLedger {
+			continue
+		}
+		if _, alarmed := st.GAlarm[c.Action.Key()]; alarmed {
+			continue
+		}
+		if pick < 0 || c.Added < d.Cands[pick].Added ||
+			(c.Added == d.Cands[pick].Added && c.EJ < d.Cands[pick].EJ) {
+			pick = i
+		}
+	}
+	return pick
+}
+
+func p3ExploreStep(st *p3State, d *p3Decision, u, rtt float64, keep, c1 bool) {
+	if p3ExploreRateMs <= 0 || !d.HasEJ {
+		return
+	}
+	if !c1 {
+		ledger := 0.0
+		if st.XLedger != nil {
+			ledger = *st.XLedger
+		}
+		ledger = math.Min(p3ExploreCapMs, ledger+p3ExploreRateMs)
+		st.XLedger = &ledger
+		st.XPending = p3Flag(false)
+		if !d.Reeval {
+			if i := p3ExplorePick(st, d, u, rtt); i >= 0 {
+				d.take(d.Cands[i])
+				d.Why = "explore"
+				st.XPending = p3Flag(true)
+			}
+		}
+	}
+	if !keep {
+		d.Cands = nil
+	}
 }
 
 func p3B0(why string, post []float64) p3Decision {
@@ -1709,7 +1803,7 @@ func p3Decide(st *p3State, w int, u, rtt, cPkt float64, keep bool) (p3Decision, 
 	default:
 		s, _ := st.sHat()
 		var err error
-		d, err = p3DecideCore(post, k, w, s, u, rtt, cPkt, keep, pen, false)
+		d, err = p3DecideCore(post, k, w, s, u, rtt, cPkt, keep || p3ExploreRateMs > 0, pen)
 		if err != nil {
 			return d, err
 		}
@@ -1730,6 +1824,7 @@ func p3Decide(st *p3State, w int, u, rtt, cPkt float64, keep bool) (p3Decision, 
 			st.Stats.Reeval++
 		}
 	}
+	p3ExploreStep(st, &d, u, rtt, keep, c1)
 	_, d.GuardAlarm = st.GAlarm[d.Action.Key()]
 	d.GuardCommon = b
 	d.GuardAlarmed = len(st.GAlarm)
@@ -1887,11 +1982,16 @@ func p3CloneState(st *p3State) *p3State {
 	}
 	next.GCommon = slices.Clone(st.GCommon)
 	next.GAlarm = maps.Clone(st.GAlarm)
+	if st.XLedger != nil {
+		ledger := *st.XLedger
+		next.XLedger = &ledger
+	}
+	if st.XPending != nil {
+		next.XPending = p3Flag(*st.XPending)
+	}
 	return &next
 }
 
-// candidate and commit are called with c.mu held. Failed policy calls never
-// publish their candidate, including destination creation and RTT metadata.
 func (c *destCache3) candidate(addr string) *cache3Entry {
 	e := c.Dests[addr]
 	if e == nil {
@@ -2007,6 +2107,29 @@ func (c *destCache3) observePred(addr string, a p3Action, jPred *float64, hct fl
 	return info, after, nil
 }
 
+func checkAuto3Uplink(explicit map[string]bool) error {
+	if !explicit["uplink-mbps"] {
+		return fmt.Errorf("-fec auto3 needs explicit -uplink-mbps")
+	}
+	return nil
+}
+
+func p3ParityCapW(k int) int {
+	return p3UDPMax - 39 - 6*k
+}
+
+func auto3ParityWarning(ips, expectK int) string {
+	if ips > p3ParityCapW(1) {
+		return fmt.Sprintf("auto3: no parity candidate above W %d", p3ParityCapW(1))
+	}
+	for k := 2; k <= p3KMax; k++ {
+		if ips > p3ParityCapW(k) && (expectK == 0 || expectK >= k) {
+			return fmt.Sprintf("auto3: no parity candidate for k>=%d above W %d", k, p3ParityCapW(k))
+		}
+	}
+	return ""
+}
+
 func checkAuto3Flags(layoutSet bool, layout string, lead, ips int) error {
 	if layoutSet && layout != "v3" {
 		return fmt.Errorf("-fec auto3 always uses -layout v3, got -layout %s", layout)
@@ -2016,7 +2139,7 @@ func checkAuto3Flags(layoutSet bool, layout string, lead, ips int) error {
 	}
 	w := ips
 	if w <= 0 {
-		w = 1280
+		w = defaultInitialPacketSize
 	}
 	if w < p3MinW || w > quicgoMaxIPS {
 		return fmt.Errorf("-fec auto3 needs %d <= InitialPacketSize <= %d, got %d", p3MinW, quicgoMaxIPS, w)
@@ -2059,6 +2182,13 @@ type trial3 struct {
 	ReevalHeld      bool     `json:"reeval_feedback_suppressed"`
 	ObsPolicyPath   *string  `json:"obs_policy_path"`
 	ObsUpdateKind   *string  `json:"obs_loss_update_kind"`
+
+	PolicyUplinkMbps     float64 `json:"policy_uplink_mbps"`
+	PolicyParityPossible *bool   `json:"policy_parity_possible"`
+
+	SrvBytesPreWait       *int64   `json:"server_bytes_pre_wait,omitempty"`
+	PathRTTAfterWaitMS    *float64 `json:"path_rtt_after_wait_ms,omitempty"`
+	PathRTTAfterWaitValid *bool    `json:"path_rtt_after_wait_valid,omitempty"`
 }
 
 func auto3Row(t trial, p auto3Plan, info p3ObsInfo, obsErr error, pAfter float64) trial3 {
@@ -2069,6 +2199,10 @@ func auto3Row(t trial, p auto3Plan, info p3ObsInfo, obsErr error, pAfter float64
 		ObsShielded: info.Shielded, PMeanAfter: pAfter, GuardAlarm: d.GuardAlarm,
 		GuardCommon: d.GuardCommon, GuardAlarmed: d.GuardAlarmed, Reeval: d.Reeval,
 		PolicyVersion: p3PolicyVersion, PolicyPath: d.PolicyPath, ReevalHeld: d.ReevalHeld}
+	if d.K > 0 {
+		possible := p.IPS-p.Action.Delta <= p3ParityCapW(d.K)
+		r.PolicyParityPossible = &possible
+	}
 	if info.Path != "" {
 		path, kind := info.Path, info.LossUpdateKind
 		r.ObsPolicyPath, r.ObsUpdateKind = &path, &kind
@@ -2416,7 +2550,7 @@ func policy3RefMain(in io.Reader, out io.Writer) int {
 			decs = append(decs, r)
 			continue
 		}
-		cd, err := p3DecideCore(post, d.K, d.W, d.S, d.U, d.RTT, cPktDefault, true, pen, false)
+		cd, err := p3DecideCore(post, d.K, d.W, d.S, d.U, d.RTT, cPktDefault, true, pen)
 		if err != nil {
 			r.Err = err.Error()
 			decs = append(decs, r)

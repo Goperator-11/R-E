@@ -126,6 +126,35 @@ def test_leading_datagrams_never_used_for_recovery():
             assert r["p_fail_ack"] == pytest.approx(base["p_fail_ack"], abs=1e-14)
 
 
+def test_policy_credit_matches_decoder_contract():
+    rows = ok = 0
+    w = 1200
+    for k in range(1, 5):
+        pz = layout.parity_bytes(w, k)
+        for m in range(1, 5):
+            for lead in range(m + 1):
+                patterns = set()
+                for rec in layout.outcomes(k, m, lead, w, 0.1, 0.0):
+                    pat = rec["pattern"]
+                    context = (k, m, lead, pat)
+                    assert pat not in patterns, context
+                    patterns.add(pat)
+                    rows += 1
+                    lead_arrived = sum(pat[:lead])
+                    miss = k - sum(pat[lead:lead + k])
+                    trail_arrived = sum(pat[lead + k:])
+                    assert (rec["kind"] == "ok") == (miss <= trail_arrived), context
+                    if rec["kind"] != "ok":
+                        continue
+                    ok += 1
+                    assert rec["base_credit"] == lead_arrived * pz + k * w, context
+                    assert len(rec["after_delays"]) == trail_arrived - miss, context
+                    assert rec["after_sizes"] == [pz] * (trail_arrived - miss), context
+                assert patterns == set(itertools.product((0, 1), repeat=k + m))
+    assert rows == 3840
+    assert ok == 1573
+
+
 def test_credit_only_failure_is_any_original_lost():
     for k in range(1, layout.K_MAX + 1):
         for lead in range(0, layout.M_MAX + 1):

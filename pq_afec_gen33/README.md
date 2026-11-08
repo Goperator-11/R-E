@@ -2,7 +2,13 @@
 
 이 폴더는 gen32 개발 사본에서 만든 v3.3 작업 저장소다. 세대 설정은 `genconfig.json`에 있다. 활성 정책 버전은 `v3.3.1-dev`, 저장 상태 버전은 11, Go 목적지 캐시 형식은 `padfec3.cache3/11`이다. 비교 기준선 v3.2-dev는 커밋 `90859b973`이다. v3.1의 측정 자료와 봉인 파일은 원본 폴더에 있고 S1 보존본은 `C:\dev\padfec_archive`에 있다. 저장소에는 보존 도구와 검증 기록을 남긴다.
 
+`genconfig.json`의 `gen_id`는 세대 이름이다. 개발 측정 러너는 정책 판본을 `padfec3.learn3.POLICY_VERSION`에서 읽는다.
+
+보고서와 세대별 문서의 다른 수치는 [수치 대조표](docs/REPORT_NUMBERS_CROSSWALK.md), 원자료 위치와 배포 범위는 [보고서 원자료 위치표](report_repro/SOURCES.md)에서 확인한다.
+
 ## 활성 정책 v3.3.1-dev
+
+고착과 관측 한계, 모형·wire 상한, 보고서에서 붙여야 할 조건은 [활성 정책의 알려진 한계](docs/FINAL_policy_limits.md)에 모았다.
 
 정책은 목적지마다 `c1_seen` 표지를 둔다. 그 목적지에서 C1 회신, 곧 출처가 `c1` 또는 `ack`인 `arrivals` 증거가 한 번이라도 들어오면 True가 되고 다시 False로 돌아가지 않는다.
 
@@ -12,9 +18,9 @@
 
 v3 패리티 데이터그램 크기 상한은 1452 B(`padfec/policy.py`의 `QUICGO_MAX_IPS`)다. 예전 상한 1472 B(UDP 최대)에서는 k=2·W=1406일 때 가장 작은 패리티도 1406+39+6×2 = 1457 B가 되어 quic-go 서버의 1452 B 수신 버퍼에서 잘렸다(감사 D-E4). gen-2 경로(`padfec/policy.py`의 `decide_v2`)는 바꾸지 않았다.
 
-이 상한 때문에 W와 k가 크면 패리티 후보가 하나도 남지 않는다. 패리티 데이터그램은 W+39+6k B이므로 패리티 후보는 k=1이면 W ≤ 1407, k=2이면 W ≤ 1401, k=3이면 W ≤ 1395, k=4이면 W ≤ 1389에서만 있다(`decide3.candidates3` 직접 계산, `docs/V33FIX_policy.md` 5절). 그래서 W 1406·k≥2와 W 1400·k≥3에서 v3.3.1-dev는 패리티를 쓰지 않고 B0이나 패딩만 고른다. 실측 문맥으로 기록된 W 1406·k=2(`docs/J6_preflight_budget.md`)가 여기에 든다. W1 개발 벤치 15셀은 모두 W 1280이라 이 효과가 벤치 결과에 나타나지 않는다.
+이 상한 때문에 W와 k가 크면 parity 후보가 하나도 남지 않는다. 모형의 parity datagram 크기는 W_eff+39+6k B(W_eff=W+δ)이므로 parity 후보는 k=1이면 W ≤ 1407, k=2이면 W ≤ 1401, k=3이면 W ≤ 1395, k=4이면 W ≤ 1389에서만 있다(`decide3.candidates3` 계산, `docs/V33FIX_policy.md` 5절). k=2·W=1406은 B0만, k=3·W=1400은 B0과 δ=23 padding만 남는다. 봉인 3단계의 base W는 1280이고 k=2인 그 조건에서는 m>0 후보가 14개 남는다. 선택 뒤 W_eff=1406이 된 행은 봉인 g2auto 53,600행 중 6행이다. 이 빈도는 새 gen33 개발 측정값이 아니다. W1 개발 벤치 15셀도 모두 W 1280이다. 수치와 출처는 [알려진 한계](docs/FINAL_policy_limits.md)에 구분했다.
 
-이 버전은 실측하지 않았다. 숫자가 있는 비교는 모두 독립 사건 세계(`experiments/v33/worldsim.py`)의 개발 시뮬레이션이다. C1은 비표준·비인증 평문 부채널이고(`docs/c1_threat_model.md`), 세계 모형은 회신의 바이트·처리 비용·대기 시간을 HCT에 넣지 않는다(`docs/L1_observation_contract.md`). 보고서에 쓸 수 있는 말과 쓰면 안 되는 말은 `docs/REPORT_CLAIMS_v33.md`에 있다.
+이 버전의 네트워크 측정은 개발 측정뿐이고 확증 측정은 없다. 위의 B1~B12 값과 아래 시나리오 비교는 독립 사건 세계(`experiments/v33/worldsim.py`)의 개발 시뮬레이션이며, 측정값은 [X1](docs/X1_result.md), [X9](docs/X9_result.md), [X6](docs/X6_result.md)에 따로 있다. X6에서 표준 경로(none)는 v3.1과 구별되지 않았고, C1 경로는 S_rtt200에서 none보다 10.71 ms [6.73, 14.69] 느려 시뮬레이션과 방향이 달랐다. C1은 비표준·비인증 평문 부채널이고(`docs/c1_threat_model.md`), 세계 모형은 회신의 바이트·처리 비용·대기 시간을 HCT에 넣지 않는다(`docs/L1_observation_contract.md`). 보고서에 쓸 수 있는 말과 쓰면 안 되는 말은 `docs/REPORT_CLAIMS_v33.md`에 있다.
 
 이번 수정의 내역과 확인 결과는 다음 문서에 있다.
 
@@ -55,7 +61,7 @@ wsl -d Ubuntu -- bash /mnt/c/dev/pq_afec_gen33/experiments/quicbed/build_gen33.s
 
 빌드 스크립트는 WSL의 `~/quicbed_gen33` 아래에 매번 새 작업 폴더를 만들고 vet, Go 검사와 빌드를 실행한다. 소스에서 삭제한 예전 검사 파일이 빌드에 남지 않도록 한 조치다. `--race`를 주면 같은 소스에서 race 검사도 실행한다. 지속 저장 바이너리는 `~/quicbed_gen33/bin/qamp`다. `/tmp/qamp_gen33/qamp`에도 설치하지만 WSL이 종료된 뒤에는 임시 파일이 사라질 수 있으므로 대조 검사에는 지속 저장 경로를 쓴다. 빌드는 `-trimpath -buildvcs=false`를 사용하고 `qamp.buildinfo`에 Go 빌드 정보를 남긴다.
 
-빌더 격리 검사는 임시 컴파일러를 사용해 과거 파일 혼입과 작업 폴더 정리를 확인한다. WSL에서 `python3 -I -B -m unittest discover -s tests -p test_gen32_build_staging.py -v`로 실행한다. 시험 파일의 gen32 이름은 기존 이름이며 실제 대상은 설정된 gen33 빌더다.
+빌더 격리 검사는 임시 컴파일러를 사용해 과거 파일 혼입과 작업 폴더 정리를 확인한다. WSL에서 `python3 -I -B -m unittest discover -s tests -p test_gen33_build_staging.py -v`로 실행한다.
 
 커밋 전 크기·개인키 검사 훅은 `tools/hooks/pre-commit`에 있다. 새로 clone한 사본에서는 `git config core.hooksPath tools/hooks`를 한 번 실행해야 작동한다. 자세한 내용은 `docs/S5_test_hygiene.md`의 마지막 절에 있다.
 
@@ -74,7 +80,7 @@ cd /mnt/c/dev/pq_afec_gen33
 python3 -I -B experiments/gate_v3_parity.py --out /mnt/c/dev/codex_handoff/v33/runs/manual_parity.json
 ```
 
-`--bin`을 주지 않으면 `genconfig.json`의 `~/quicbed_gen33/bin/qamp`를 쓴다. 2026-11-02 현재 그 설치본은 v3.3-dev 판이라, `build_gen33.sh`로 다시 설치하기 전에는 기본 참조(v3.3.1-dev)와 상수·srcsha가 맞지 않는다. 설치 전에는 임시로 빌드한 바이너리를 `--bin`으로 준다. 관문은 `--out` 폴더에 fresh 입력 파일도 남긴다. 2026-11-02에 임시 빌드로 돌린 결과(PASS)는 `docs/V33FIX_policy_go.md` 7절에 있다.
+`--bin`을 주지 않으면 `genconfig.json`의 `~/quicbed_gen33/bin/qamp`를 쓴다. 2026-11-02 현재 그 설치본은 v3.3-dev 판이라, `build_gen33.sh`로 다시 설치하기 전에는 기본 참조(v3.3.1-dev)와 상수·srcsha가 맞지 않는다. 설치 전에는 임시로 빌드한 바이너리를 `--bin`으로 준다. 관문은 `--out` 결과 파일의 부모 폴더에 fresh 입력 파일도 남긴다. 2026-11-02에 임시 빌드로 돌린 결과(PASS)는 `docs/V33FIX_policy_go.md` 7절에 있다.
 
 ## 과거 관측 재생
 
@@ -88,11 +94,11 @@ python -I -B experiments/replay_g3.py --recorded-v31 --journal C:\dev\pq_afec_ge
 
 ## 다음 측정
 
-v3.3.1-dev의 실제 성능은 아직 측정하지 않았다. 네트워크 측정은 0건이다. v3.1의 H1 통과, H2·H3 실패, H4 기여 미확인 판정은 원래 자료의 판정으로 남는다. 새 확증에는 새 프로토콜, 이미 개발에 쓴 셀을 제외한 보류 조건, 새 봉인과 격리된 측정 경로가 필요하다.
+v3.3.1-dev의 네트워크 측정은 개발 측정 6건(M0 final_m0_iter022_20261106, M1 final_m1_iter024_20261107, X1 final_x1_iter027_20261107, X9 final_x9_iter031_20261107, X6 final_x6_iter035_20261107, 계획 v2의 M0 smoke final_m0s_20261107), 확증 측정 0건이다. C1 대기창 datagram을 정책 S 입력에서 뺀 수정 뒤의 C1 재측정(final_x6s_20261107)은 이 문장을 쓸 때 진행 중이었다. v3.3.1-dev 정책 경로를 실제로 탄 행은 M0의 160행, X6의 v33none 9,700행과 v33c1 8,800행, M0 smoke의 240행이고, X1과 X9는 고정 설정 비교다. v3.1의 H1 통과, H2·H3 실패, H4 기여 미확인 판정은 원래 자료의 판정으로 남는다. 새 확증에는 새 프로토콜, 이미 개발에 쓴 셀을 제외한 보류 조건, 새 봉인과 격리된 측정 경로가 필요하다.
 
 과거 빌더와 자동 루프, `pipeline.py`, 단계별 봉인 러너의 CLI는 실행을 차단한다. 일회성 소스 패치 도구 두 개와 과거 race 탐침, `diag.sh`, `live_demo.sh`도 차단한다. 과거 자동 루프의 상태 조회도 차단한다. `padbed`를 불러올 때 결과·상태 폴더를 만들지 않으며, 바이너리 복사와 네트워크 설정·실행 진입점에서도 과거 실측을 거부한다. 기존 바이너리가 있어도 `--only-exact`로 과거 빌더를 건너뛰어 측정할 수 없다.
 
-이 사본은 위에 적힌 회귀검사, 격리된 빌드, Python·Go 대조와 개발 재생을 지원한다. 차단 여부는 `python -I -B -m pytest tests/test_gen32_runner_isolation.py -q -p no:cacheprovider`로 검사한다. 이 검사는 네트워크 측정과 빌드를 실행하지 않는다. 경로 설정과 역사 자료의 허용 범위는 `docs/generation_paths.md`에 있다.
+이 사본은 위에 적힌 회귀검사, 격리된 빌드, Python·Go 대조와 개발 재생을 지원한다. 차단 여부는 `python -I -B -m pytest tests/test_gen33_runner_isolation.py -q -p no:cacheprovider`로 검사한다. 이 검사는 네트워크 측정과 빌드를 실행하지 않는다. 경로 설정과 역사 자료의 허용 범위는 `docs/generation_paths.md`에 있다.
 
 GitHub 사본의 경로가 다르면 PowerShell의 `Set-Location`과 WSL의 `cd`를 체크아웃한 폴더로 바꾼다. 과거 저널은 저장소에 포함하지 않았으므로 재생 명령의 `--journal`에 보존한 외부 저널 경로를 지정한다. 테스트용 PKI 파일도 게시본과 배포 ZIP에서 제외한다. 이 저장소를 공개하거나 원격에 올리기 전에는 `docs/PUBLISH_PROCEDURE.md`를 따른다. 이력에 시험용 개인키 PEM 28개와 20 MB를 넘는 파일이 남아 있다.
 

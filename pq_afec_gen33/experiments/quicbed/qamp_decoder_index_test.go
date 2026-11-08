@@ -187,7 +187,7 @@ func TestDecoderHoldIndexBoundsAndDelayedExpiry(t *testing.T) {
 	for i := 0; i < decoderGroupFlightCap+1; i++ {
 		fb := *parseFecBlock(pars[0])
 		fb.flight = uint16(i)
-		s.holdReceiveLocked(pars[0], &fb, &net.UDPAddr{Port: 5555}, ca, now)
+		s.holdReceiveLocked(pars[0], len(pars[0]), &fb, &net.UDPAddr{Port: 5555}, ca, now)
 	}
 	if len(s.hold.flights) != decoderGroupFlightCap || len(s.hold.events) != 3*decoderGroupFlightCap || s.stats.DecoderFlightCap != 1 {
 		t.Fatal("hold flight bound", s.stats, len(s.hold.events))
@@ -285,7 +285,7 @@ func TestDecoderEvictedKnownOriginalCannotBeReinjected(t *testing.T) {
 		fb := parseFecBlock(par)
 		if hold {
 			s.hold.recent.add(group, src[0], now)
-			s.holdReceiveLocked(par, fb, nil, ca, now)
+			s.holdReceiveLocked(par, len(par), fb, nil, ca, now)
 			for i := 0; i < 64; i++ {
 				s.hold.recent.add(group, auditInitial(byte(100+i)), now)
 			}

@@ -1,0 +1,11 @@
+{
+ "T7": {"status": "measured", "results": ["g3/v33/results/v33_dev_M0_final_m0_iter022_20261106.json", "g3/v33/results/v33_dev_M1_final_m1_iter024_20261107.json"], "note": "F22~F27 러너, smoke(M0), 서버 등가와 A/A(M1)"},
+ "X1": {"status": "measured", "results": ["g3/v33/results/v33_dev_X1_final_x1_iter027_20261107.json", "g3/v33/results/derived_X1_medians_final_x1_iter027_20261107.json"], "note": "중앙값은 결과 JSON에 없어 report_repro/derive_x1_medians.py로 저널에서 냈다"},
+ "X9": {"status": "measured", "results": ["g3/v33/results/v33_dev_X9_final_x9_iter031_20261107.json", "g3/v33/results/v33_dev_X9_final_x9_iter031_20261107.paired.json"], "note": "paired.json은 사후 짝 대조(탐색)이며 계획 primary가 아니다"},
+ "X6": {"status": "measured", "results": ["g3/v33/results/v33_dev_X6_final_x6_iter035_20261107.json"], "note": "F30 닫힘. C1 대기창 수정 전 바이너리의 값이다. 재측정은 X6R"},
+ "X6R": {"status": "not_measured", "results": [], "plan": "g3/v33/plans/final_bundle_v2.json", "smoke": "g3/v33/results/v33_dev_M0_final_m0s_20261107.json", "note": "final_x6s_20261107 측정 중(2026-11-07 23:33 KST 시작). 결과 검증 전이라 확정하지 않는다. 끝나면 RP-06 문구 선택과 함께 고친다"},
+ "X10": {"status": "not_measured", "results": [], "note": "F31 미실행"},
+ "X2": {"status": "not_measured", "results": [], "note": "F31 미실행"},
+ "X3": {"status": "not_measured", "results": [], "note": "F31 미실행"},
+ "X4": {"status": "not_measured", "results": [], "note": "F31 미실행"}
+}

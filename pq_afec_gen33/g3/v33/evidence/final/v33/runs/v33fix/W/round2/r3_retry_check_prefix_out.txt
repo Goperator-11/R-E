@@ -1,0 +1,2 @@
+C:\Users/scien/AppData/Local/Temp/claude/C--Users-scien/98dad099-940c-4208-8359-61078035dc93/scratchpad/v33fix2/W-world/r3_prefix_pkg\experiments\v33\worldsim_m1.py
+{'rows': 1500, 'hct_diff': 0, 'if_diff': 1385, 'hold_if_true': 1500, 'off_if_true': 115, 'hold_failure_class': 1500, 'off_failure_class': 115}

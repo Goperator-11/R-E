@@ -143,7 +143,6 @@ class PosteriorTests(unittest.TestCase):
                  rtt, 2.0)
             ctx = learn3.context(st, 1280, 2.0, rtt, C_PKT)
             self.assertTrue(learn3.nominal_two_rtt(ctx, arm))
-            self.assertEqual(learn3.shielded(ctx, arm), expect_shield)
             post0 = [list(p) for p in st.post]
             w0 = list(st.w)
             want = "shield" if expect_shield else "nominal2"
@@ -162,7 +161,7 @@ class PosteriorTests(unittest.TestCase):
         arm1 = (0, 1, 2)
         feed(st, arm1, [205.0 + 0.1 * i for i in range(10)], 9000, 200.0, 2.0)
         ctx = learn3.context(st, 1280, 2.0, 200.0, C_PKT)
-        self.assertFalse(learn3.shielded(ctx, arm1))
+        self.assertIsNone(learn3.skip_reason(ctx, arm1))
         post0 = [list(p) for p in st.post]
         feed(st, arm1, [205.0 + 150.0], 9000, 200.0, 2.0)
         self.assertNotEqual(st.post, post0)
@@ -224,7 +223,6 @@ class C1MissingReplyTests(unittest.TestCase):
                  rtt, 2.0)
             ctx = learn3.context(st, 1280, 2.0, rtt, C_PKT)
             self.assertTrue(learn3.nominal_two_rtt(ctx, arm))
-            self.assertEqual(learn3.shielded(ctx, arm), expect_shield)
             post0 = [list(p) for p in st.post]
             w0 = list(st.w)
             want = "shield" if expect_shield else "nominal2"
@@ -246,7 +244,7 @@ class C1MissingReplyTests(unittest.TestCase):
         arm1 = (0, 1, 2)
         feed(st, arm1, [205.0 + 0.1 * i for i in range(10)], 9000, 200.0, 2.0)
         ctx = learn3.context(st, 1280, 2.0, 200.0, C_PKT)
-        self.assertFalse(learn3.shielded(ctx, arm1))
+        self.assertIsNone(learn3.skip_reason(ctx, arm1))
         post0 = [list(p) for p in st.post]
         feed(st, arm1, [205.0 + 150.0], 9000, 200.0, 2.0)
         self.assertNotEqual(st.post, post0)
@@ -284,7 +282,6 @@ class C1MissingReplyTests(unittest.TestCase):
         arm = (0, 0, 4)
         ctx = learn3.context(st, 1280, 2.0, 50.0, C_PKT)
         self.assertTrue(learn3.nominal_two_rtt(ctx, arm))
-        self.assertFalse(learn3.shielded(ctx, arm))
         self.assertEqual(learn3.skip_reason(ctx, arm), "nominal2")
         self.assertIsNone(learn3.skip_reason(ctx, (0, 3, 1)))
         post0 = [list(p) for p in st.post]
@@ -538,7 +535,6 @@ class NominalSkipTests(unittest.TestCase):
         arm = (0, 0, 4)
         ctx = learn3.context(st, 1280, 2.0, 50.0, C_PKT)
         self.assertTrue(learn3.nominal_two_rtt(ctx, arm))
-        self.assertFalse(learn3.shielded(ctx, arm))
         self.assertEqual(learn3.skip_reason(ctx, arm), "nominal2")
         self.assertIsNone(learn3.skip_reason(ctx, (0, 3, 1)))
         post0 = [list(p) for p in st.post]
@@ -673,7 +669,6 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(len(st.g_resid[learn3.arm_key(self.B)]), learn3.GUARD_ACTION_WIN)
         self.assertEqual(st.g_common, [float(i) for i in range(36, 100)])
         self.assertEqual(learn3.guard_common(st), (67.0 + 68.0) / 2.0)
-        self.assertEqual(learn3.mean_seq([1.0, 2.0, 4.0]), 7.0 / 3.0)
 
     def test_alarm_needs_eight_residuals_and_half_rtt_excess(self):
         st = self.warm()
@@ -711,7 +706,6 @@ class GuardTests(unittest.TestCase):
         n_common = len(st.g_common)
         b = learn3.guard_common(st)
         self.assertEqual(b, 2.0)
-        self.assertEqual(learn3.guard_penalties(st, b), {ka: 38.0})
         r = decide3.decide3(st, 1280, 2.0, 50.0, C_PKT, keep_cands=True)
         self.assertEqual(r["guard_alarmed_actions"], 1)
         self.assertEqual(r["guard_common_ms"], 2.0)
@@ -727,7 +721,6 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(st.post, predicted(post0, st.w, 2))
         self.assertEqual(len(st.g_common), n_common + 2)
         self.assertEqual(len(st.g_resid[ka]), 10)
-        self.assertEqual(learn3.guard_penalties(st, b), {ka: 38.0})
         for t in range(2, 65):
             r = decide3.decide3(st, 1280, 2.0, 50.0, C_PKT)
             self.assertEqual(r["guard_cleared"], [])
@@ -757,7 +750,6 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(b, 60.0)
         self.assertNotIn(kb, st.g_alarm)
         self.assertEqual(learn3.guard_penalty(st, ka, b), 0.0)
-        self.assertEqual(learn3.guard_penalties(st, b), {ka: 0.0})
 
     def test_other_actions_can_alarm_when_common_delay_falls(self):
         st = learn3.new_state()

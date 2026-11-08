@@ -8,6 +8,7 @@ T_ACK_SLOPE = policy.T_ACK_RETX_SLOPE
 T_ACK_BASE_MS = policy.T_ACK_RETX_BASE_MS
 PTO_SAMPLED_MULT = policy.PTO_SAMPLED_RTT_MULT
 G2_PARITY_DELAY_MS = 0.3
+ONE_RTT_CUTOFF_RTTS = 1.5
 K_MAX = 4
 M_MAX = 4
 LEGACY_LEAD = -1
@@ -62,11 +63,6 @@ def send_order(k, m, lead):
     lead = resolve_lead(m, lead)
     check_action(k, m, lead)
     return ["L"] * lead + ["O"] * k + ["P"] * (m - lead)
-
-
-def datagram_sizes(k, m, lead, w):
-    pz = parity_bytes(w, k)
-    return [w if t == "O" else pz for t in send_order(k, m, lead)]
 
 
 def client_bytes(k, m, w):
@@ -256,9 +252,5 @@ def j3(k, w, m, lead, p, rtt_ms, uplink_mbps, n_need, later="v3"):
     return evaluate(k, w, m, lead, p, rtt_ms, uplink_mbps, n_need, later)["J"]
 
 
-def event_probability(k, w, m, lead, p, rtt_ms, uplink_mbps, n_need, later="v3"):
-    return evaluate(k, w, m, lead, p, rtt_ms, uplink_mbps, n_need, later)["e"]
-
-
 def one_rtt_cutoff_ms(rtt_ms, k, m, lead, w, uplink_mbps):
-    return 1.5 * rtt_ms + tau(pre_decision_bytes(k, m, lead, w), uplink_mbps)
+    return ONE_RTT_CUTOFF_RTTS * rtt_ms + tau(pre_decision_bytes(k, m, lead, w), uplink_mbps)

@@ -1,0 +1,286 @@
+{
+  "schema": "report_sources/1",
+  "repository_candidates": [
+    "R-E-wt/final",
+    "R-E",
+    "."
+  ],
+  "archive_prefix": "padfec_archive",
+  "content_source": "report_content",
+  "original_content": "C:/hwp_work/rne_final/tools/content.py",
+  "directory_archives": {
+    "v30_journals": [
+      "v30_stage2/experiments/state"
+    ],
+    "v31_journals": [
+      "v31_stage3/experiments/state"
+    ]
+  },
+  "rows": [
+    {
+      "id": "table1",
+      "location": "Table 1, Ⅱ-5",
+      "group": "문헌: 선행연구 위치와 검색 범위",
+      "sources": {
+        "report_content": "BODY의 Table 1, REFS"
+      },
+      "recompute": "해당 없음(문헌 원문과 사람 대조)",
+      "scope": "인용 목록만 조회 가능. 문헌 원문과 검색 범위의 완전성은 미확인"
+    },
+    {
+      "id": "table2",
+      "location": "Table 2, Ⅲ-1",
+      "group": "측정 구성: 연산·TLS·경계·방법 비교·정책·봉인 표본",
+      "sources": {
+        "stage1_workbook": "2_연산시간",
+        "tls_raw": "model,rtt_ms,loss_pct,group,n",
+        "v4_workbook": "0_개요",
+        "p12_quantum": "n_probe,n_confirm",
+        "p14_dominance": "n,arms",
+        "p11_adaptive": "n,rows",
+        "p15_v2policy": "n,rows",
+        "p17_adaptive_value": "n_per_seg,rows",
+        "p18_mmax": "trial_coverage",
+        "v30_stage0": "plan,cells,finished",
+        "v30_m1confirm": "plan,cells,finished",
+        "v30_run1": "plan,conds,finished",
+        "v30_run2": "plan,conds,finished",
+        "v31_run1": "plan,conds,finished",
+        "v31_run2": "plan,conds,finished",
+        "tls_design_script": "ITERS,loss=0의 1/8,RTT 100·200의 1/2"
+      },
+      "recompute": "TLS 표본만: python -I -B report_repro/check_sources.py --recalculate table4; 나머지 실험은 plan·집계 필드 조회",
+      "scope": "원자료 조회와 TLS 설계 횟수 계산 가능. 모든 실험 표본의 통합 재계산은 미구현"
+    },
+    {
+      "id": "table3",
+      "location": "Table 3, Ⅲ-6",
+      "group": "봉인 규칙: H1~H4의 조건과 판정",
+      "sources": {
+        "v30_protocol": "H1~H4 규칙",
+        "v31_protocol": "H1~H4 규칙",
+        "v30_decisions": "H1,H2,H3,H4",
+        "v31_decisions": "H1,H2,H3,H4"
+      },
+      "recompute": "해당 없음(프로토콜의 규칙과 사람 대조)",
+      "scope": "규칙과 저장 판정 조회 가능"
+    },
+    {
+      "id": "table4",
+      "location": "Table 4, Ⅳ-1",
+      "group": "측정 재분석: TLS warm-up 제외 실패 수와 z",
+      "sources": {
+        "tls_raw": "model,rtt_ms,loss_pct,group,n,fail",
+        "tls_design_script": "ITERS,loss=0의 1/8,RTT 100·200의 1/2"
+      },
+      "recompute": "python -I -B report_repro/check_sources.py --recalculate table4",
+      "scope": "행별 설계 횟수로 실패 수·실패율·독립 비율 z 재계산 가능. QUIC 손실 판정을 대신하지 않음"
+    },
+    {
+      "id": "table5",
+      "location": "Table 5, Ⅳ-4",
+      "group": "측정·모형: gen-2 최초 판정 실패와 후속 해석",
+      "sources": {
+        "p8_stability": "checks",
+        "p8_units": "recorded_at",
+        "p10_completeness": "tests_passed,tests_total,results",
+        "p15_v2policy": "worst_ci95_half_ms,checks",
+        "p16_uplink": "checks",
+        "p17_adaptive_value": "gain[].adapt,rows,checks",
+        "legacy_fixloop": "이전 실행 기록",
+        "p18_mmax": "trial_coverage",
+        "p20_residual": "checks,diagnostics",
+        "legacy_loop_state": "history,stages"
+      },
+      "recompute": "python -I -B report_repro/build_report_numbers.py",
+      "scope": "저장 결과 조회와 등록된 수치 재계산 가능. 이전 실행 로그가 빠지면 이전 값은 재현 불가"
+    },
+    {
+      "id": "table6",
+      "location": "Table 6, Ⅳ-5",
+      "group": "봉인 측정: 세대별 B_h와 H1~H4 판정",
+      "sources": {
+        "v30_decisions": "harness,H1,H2,H3,H4",
+        "v31_decisions": "harness,H1,H2,H3,H4",
+        "v30_journals": "단위 기록 *.jsonl",
+        "v31_journals": "단위 기록 *.jsonl"
+      },
+      "recompute": "python -I -B report_repro/recompute_v3_verdicts.py --out report_repro/recomputed_v3",
+      "scope": "저장 판정 조회 가능. 저널과 봉인 모듈을 쓰는 재계산에는 로컬 보존 자료 필요 출력 디렉터리는 아직 존재하지 않는 새 경로여야 함"
+    },
+    {
+      "id": "fig1",
+      "location": "Fig. 1, Ⅲ-4",
+      "group": "모형 도식과 측정 캡션: handshake 시간축",
+      "sources": {
+        "fig1_generator": "A,S,NEED,RTT,PTO,BURST,PAR",
+        "p4_model": "s0,c_pkt",
+        "p14_dominance": "arms의 p50,ms"
+      },
+      "recompute": "python -I -B report_repro/tools/fig1.py --no-compile",
+      "scope": "코드 배포 후 도식 재생성 가능. 시간축의 배치와 측정 캡션을 구별하며 캡션 중앙값의 자동 대조는 미구현"
+    },
+    {
+      "id": "fig2",
+      "location": "Fig. 2, Ⅲ-4",
+      "group": "설계 도식: client와 서버의 관측·결정·전송 경로",
+      "sources": {
+        "fig2_generator": "GROUPS,labels,tex"
+      },
+      "recompute": "python -I -B report_repro/tools/fig2.py --no-compile",
+      "scope": "코드 배포 후 도식 재생성 가능. 성능 측정값 없음"
+    },
+    {
+      "id": "fig3",
+      "location": "Fig. 3, Ⅳ-2",
+      "group": "측정: 인증서 크기·RTT별 HCT",
+      "sources": {
+        "v4_workbook": "1_개괄스윕,2_임계정밀,3_RTT비례",
+        "p2_threshold": "thresholds"
+      },
+      "recompute": "python -I -B report_repro/check_report_numbers.py",
+      "scope": "저장값으로 그림 수치 대조 가능. RTT 50 행의 별도 실행 출처는 미확인"
+    },
+    {
+      "id": "fig4",
+      "location": "Fig. 4, Ⅳ-2·Ⅳ-3",
+      "group": "측정·fit 모형: padding·parity 경계와 1 B cliff",
+      "sources": {
+        "p12_quantum": "configs",
+        "p2_threshold": "thresholds,ips_sweep",
+        "p12_units": "fp,key,val.p50,val.two_rtt_rate",
+        "p4_model": "s0,c_pkt"
+      },
+      "recompute": "python -I -B report_repro/check_report_numbers.py",
+      "scope": "저널이 추적되어 그림 수치 대조 가능. fit 모형과 측정점을 구별"
+    },
+    {
+      "id": "fig5",
+      "location": "Fig. 5, Ⅳ-3",
+      "group": "측정: 네 방법의 HCT·tail·first flight 바이트",
+      "sources": {
+        "p14_dominance": "arms[loss=5].ms,ff_bytes_med"
+      },
+      "recompute": "python -I -B report_repro/check_report_numbers.py",
+      "scope": "연결별 ms에서 평균·반폭·tail 재계산 가능"
+    },
+    {
+      "id": "fig6",
+      "location": "Fig. 6, Ⅳ-5",
+      "group": "봉인 측정: run1 세대 차이와 보정 안 한 구간",
+      "sources": {
+        "v30_decisions": "H2.run1.tests",
+        "v31_decisions": "H2.run1.tests"
+      },
+      "recompute": "python -I -B report_repro/check_report_numbers.py",
+      "scope": "저장 판정에서 그림 수치 대조 가능. 저널 재계산은 Table 6의 별도 조건"
+    },
+    {
+      "id": "kem",
+      "location": "Ⅱ-1·Ⅳ-1",
+      "group": "측정·규격: ML-KEM 연산과 hybrid 크기",
+      "sources": {
+        "stage1_workbook": "1_크기,2_연산시간",
+        "p0_env": "info,results",
+        "report_content": "REFS의 fips203,rfc10024"
+      },
+      "recompute": "python -I -B report_repro/check_crosswalk.py",
+      "scope": "측정 workbook 조회 가능. hybrid shared secret 32 B와 64 B의 정의 차이는 수치 대조표 참조"
+    },
+    {
+      "id": "firstflight",
+      "location": "Ⅱ-2·Ⅳ-1·Ⅳ-3",
+      "group": "측정: first flight 구성·수신 바이트·용량 부등식",
+      "sources": {
+        "p1_flight": "runs,capacity_checks,k_model_matches",
+        "p1_units": "recorded_at",
+        "p13_beff": "beff"
+      },
+      "recompute": "python -I -B report_repro/check_crosswalk.py",
+      "scope": "원자료 조회와 대조표의 수치 재계산 가능"
+    },
+    {
+      "id": "netem",
+      "location": "Ⅲ-2",
+      "group": "개발 측정: netem 손실률과 burst 길이",
+      "sources": {
+        "e6_netem": "n,configs.ge_p5_L4,configs.corr_5_25"
+      },
+      "recompute": "python -I -B report_repro/check_crosswalk.py",
+      "scope": "저장 집계의 값 조회 가능. 새 네트워크 실행을 요구하지 않음"
+    },
+    {
+      "id": "recovery",
+      "location": "Ⅳ-3",
+      "group": "측정: 결정적 erasure 복구와 parity 도착 경주",
+      "sources": {
+        "p7_verify": "cases,checks",
+        "probe_race": "rates,arms,rows"
+      },
+      "recompute": "원자료의 cases·results 직접 조회(집계 재계산 명령 없음)",
+      "scope": "p7 결과와 probe 저장값 조회 가능. p7 저널은 원천 감사에서 잘못 적힌 항목"
+    },
+    {
+      "id": "mmax",
+      "location": "Ⅳ-3",
+      "group": "측정·모형: m2→m4 이득과 실패 포함 범위",
+      "sources": {
+        "p18_mmax": "rows,verdict,trial_coverage",
+        "p18_units": "key,val"
+      },
+      "recompute": "python -I -B report_repro/check_crosswalk.py",
+      "scope": "무손실 m2 평균 대조 가능. 나머지 효과는 저장 verdict 조회"
+    },
+    {
+      "id": "stage0",
+      "location": "Ⅳ-5",
+      "group": "봉인 측정: credit 몫과 복구 몫의 고정 arm 비교",
+      "sources": {
+        "v30_stage0": "cells,mechanism_checks.M1,mechanism_checks.M4",
+        "v30_m1confirm": "cells,m1_prime,supporting",
+        "seal_stage0": "sha256",
+        "seal_m1confirm": "sha256"
+      },
+      "recompute": "저장 결과와 seal 조회(봉인 실행 명령 없음)",
+      "scope": "결과·봉인 지문 조회 가능. 원자료 저널 재계산은 로컬 보존 자료 필요"
+    },
+    {
+      "id": "probe",
+      "location": "Ⅳ-5, 문제 해결 과정 (7)",
+      "group": "개발 probe: 서버 첫 송신 41 B와 여유 6 B",
+      "sources": {
+        "g31_probe": "cells[].arms.*.server.first_tx_size_hist 및 per_connection.joined",
+        "g31_probe_excerpt": "source.sha256,cells[].arms[].fields",
+        "v31_protocol": "0.3절"
+      },
+      "recompute": "python -I -B report_repro/extract_g31_probe.py --check",
+      "scope": "발췌 배포 후 41 B 근거 행 조회 가능. 전체 probe 원본·원본 SHA 재검증은 로컬 보존 자료 필요"
+    },
+    {
+      "id": "repro",
+      "location": "Ⅲ-7",
+      "group": "구현 대조: 정책 격자·provenance·봉인 재계산",
+      "sources": {
+        "gate_go_parity": "grid_points,mismatch,worst_j_diff_ms",
+        "p19_provenance": "items,mismatch_count",
+        "current_verdict_recompute": "item_count,max_abs_diff_ms",
+        "current_seal_rehash": "file_count,mismatch_count,checked_at"
+      },
+      "recompute": "python -I -B report_repro/recompute_v3_verdicts.py --out report_repro/recomputed_v3",
+      "scope": "저장 검사 결과 조회 가능. 저널 재계산에는 로컬 보존 자료 필요 출력 디렉터리는 아직 존재하지 않는 새 경로여야 함"
+    },
+    {
+      "id": "v331",
+      "location": "Ⅳ-6·Ⅴ-1",
+      "group": "세계 시뮬레이션·정책 재생: none 일치와 C1 조건부 기대 비용",
+      "sources": {
+        "current_benchmark": "results,b6_independent_repetition",
+        "current_replay": "summary.none.total",
+        "v331_evaluation_summary": "results",
+        "v331_evaluation_raw": "평가 원자료와 실행 로그"
+      },
+      "recompute": "python -I -B report_repro/build_report_numbers.py",
+      "scope": "배포된 요약 수치 조회 가능. 전체 평가 원자료는 로컬 보존이며 시뮬레이션을 네트워크 측정으로 쓰지 않음"
+    }
+  ]
+}

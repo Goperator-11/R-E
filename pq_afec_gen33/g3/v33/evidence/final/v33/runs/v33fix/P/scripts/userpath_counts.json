@@ -1,0 +1,66 @@
+{
+ "measured_at": "2026-11-02T06:54:22+09:00",
+ "head": "d67717d9b21cee8067fc3d7e919bb3552bfedf0b",
+ "pattern": "(?:[A-Za-z]:[\\\\/]+Users[\\\\/]+[^\\\\/\\s\\\"']+|/(?:Users|home)/[^/\\s\\\"']+)",
+ "scope": "files outside g3/v33/validation, suffixes in scrub_for_publish.BINARY skipped, line by line like scrub_for_publish.check",
+ "HEAD": {
+  "count": 20,
+  "files": [
+   "docs/O4_reference_result.md",
+   "docs/S5_test_hygiene.md",
+   "g3/gen33_parity_baseline.json",
+   "g3/v33/archive/INDEX.json",
+   "g3/v33/archive/S1_archive.md",
+   "g3/v33/archive/tools/archive_wsl.py",
+   "g3/v33/baseline/S0_baseline.md",
+   "g3/v33/baseline/S0_binary.txt",
+   "g3/v33/baseline/S0_gate.json",
+   "g3/v33/bench_overlays/J1_v1_execution_plan.json",
+   "g3/v33/bench_overlays/J6_v1_execution_plan.json",
+   "g3/v33/bench_overlays/L1_v1_execution_plan.json",
+   "g3/v33/bench_overlays/L1_v1_execution_plan_v2.json",
+   "g3/v33/bench_overlays/L2_v1_execution_plan.json",
+   "g3/v33/bench_overlays/L3_v1_execution_plan.json",
+   "g3/v33/bench_overlays/L5_v1_execution_plan.json",
+   "g3/v33/fixtures/S5_test_inputs_v1/j7/run.json",
+   "g3/v33/plans/M4_guard_v1/M4_guard_basic_v1.plan.json",
+   "g3/v33/plans/M4_guard_v1/M4_guard_oob_v1.plan.json",
+   "tests/test_v33_repro_tools.py"
+  ]
+ },
+ "worktree_tracked": {
+  "count": 20,
+  "files": [
+   "docs/O4_reference_result.md",
+   "docs/S5_test_hygiene.md",
+   "g3/gen33_parity_baseline.json",
+   "g3/v33/archive/INDEX.json",
+   "g3/v33/archive/S1_archive.md",
+   "g3/v33/archive/tools/archive_wsl.py",
+   "g3/v33/baseline/S0_baseline.md",
+   "g3/v33/baseline/S0_binary.txt",
+   "g3/v33/baseline/S0_gate.json",
+   "g3/v33/bench_overlays/J1_v1_execution_plan.json",
+   "g3/v33/bench_overlays/J6_v1_execution_plan.json",
+   "g3/v33/bench_overlays/L1_v1_execution_plan.json",
+   "g3/v33/bench_overlays/L1_v1_execution_plan_v2.json",
+   "g3/v33/bench_overlays/L2_v1_execution_plan.json",
+   "g3/v33/bench_overlays/L3_v1_execution_plan.json",
+   "g3/v33/bench_overlays/L5_v1_execution_plan.json",
+   "g3/v33/fixtures/S5_test_inputs_v1/j7/run.json",
+   "g3/v33/plans/M4_guard_v1/M4_guard_basic_v1.plan.json",
+   "g3/v33/plans/M4_guard_v1/M4_guard_oob_v1.plan.json",
+   "tests/test_v33_repro_tools.py"
+  ]
+ },
+ "worktree_untracked": {
+  "count": 1,
+  "files": [
+   "docs/V33FIX_testbed.md"
+  ]
+ },
+ "git_grep_P_HEAD": {
+  "rc": 0,
+  "count": 20
+ }
+}

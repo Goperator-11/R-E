@@ -1,9 +1,11 @@
 import argparse
 import collections
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 import threading
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,15 +16,50 @@ PATTERNS = {
 }
 BINARY = {".gz", ".png", ".jpg", ".jpeg", ".zip", ".pdf", ".xlsx", ".docx", ".pptx", ".exe", ".dll", ".pyc"}
 HISTORY_LIMIT = 20_000_000
-PRIVATE_KEY_BLOCK = re.compile(rb"-----BEGIN (?P<kind>(?:[A-Z0-9]+ )?PRIVATE KEY)-----\s+(?:[A-Za-z0-9+/=]+\s+)+-----END (?P=kind)-----")
+PRIVATE_KEY_BLOCK = re.compile(rb"-----BEGIN (?P<kind>(?:[A-Z0-9]+ )?PRIVATE KEY)-----\s+(?:[A-Za-z][A-Za-z0-9-]*:[^\r\n]*\s+)*(?:[A-Za-z0-9+/=]+\s+)+-----END (?P=kind)-----")
+
+
+def git_root(root):
+    try:
+        done = subprocess.run(["git", "-C", str(root), "rev-parse", "--show-toplevel"], capture_output=True)
+    except OSError as error:
+        return False, str(error)
+    top = done.stdout.decode("utf-8", "replace").strip()
+    if done.returncode or not top:
+        return False, done.stderr.decode("utf-8", "replace").strip() or "git rev-parse failed"
+    try:
+        same = os.path.samefile(top, root)
+    except OSError as error:
+        return False, str(error)
+    return same, "" if same else "inside the git work tree " + top
+
+
+def walk(root, unavailable):
+    def failed(error):
+        unavailable.append({"path": str(error.filename), "error": str(error)})
+
+    names = []
+    for current, directories, files in os.walk(root, onerror=failed):
+        directories[:] = sorted(name for name in directories if name != ".git")
+        base = Path(current).relative_to(root)
+        names.extend((base / name).as_posix() for name in sorted(files) if name != ".git")
+    return names
+
+
+def listed_files(root, unavailable):
+    if git_root(root)[0]:
+        return "git ls-files", subprocess.check_output(["git", "-C", str(root), "ls-files", "-z"]).decode("utf-8").split("\0")
+    return "os.walk", walk(root, unavailable)
 
 
 def check(root=ROOT):
     root = Path(root)
-    names = subprocess.check_output(["git", "-C", str(root), "ls-files", "-z"]).decode("utf-8").split("\0")
+    if not root.is_dir():
+        raise NotADirectoryError(f"--root is not a folder: {root}")
     counts = collections.Counter()
     examples_by_kind = {kind: [] for kind in PATTERNS}
     scanned, binary, unavailable = 0, 0, []
+    listing, names = listed_files(root, unavailable)
     for name in names:
         if not name:
             continue
@@ -44,7 +81,7 @@ def check(root=ROOT):
         except OSError as error:
             unavailable.append({"path": name, "error": str(error)})
     examples = [row for rows in examples_by_kind.values() for row in rows]
-    return {"mode": "check_only", "status": "FINDINGS" if counts or unavailable else "PASS",
+    return {"mode": "check_only", "file_listing": listing, "status": "FINDINGS" if counts or unavailable else "PASS",
             "text_files_scanned": scanned, "known_binary_files_not_decoded": binary,
             "affected_file_counts": dict(counts), "examples": examples,
             "examples_truncated": sum(counts.values()) > len(examples), "unavailable": unavailable}
@@ -148,11 +185,23 @@ def history(root=ROOT, limit=HISTORY_LIMIT):
 
 
 def main(argv=None):
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if reconfigure is not None:
+        reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true", required=True)
     parser.add_argument("--history", action="store_true")
     parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args(argv)
+    if not args.root.is_dir():
+        print(f"--root is not a folder: {args.root}", file=sys.stderr)
+        return 2
+    if args.history:
+        is_root, reason = git_root(args.root)
+        if not is_root:
+            print(f"--history reads git history and needs the top folder of a git repository; {args.root} is not one ({reason}). "
+                  "Use --check without --history for a plain folder.", file=sys.stderr)
+            return 2
     result = history(args.root) if args.history else check(args.root)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return int(result["status"] != "PASS")

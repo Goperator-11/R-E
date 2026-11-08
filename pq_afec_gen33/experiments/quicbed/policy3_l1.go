@@ -13,6 +13,7 @@ import (
 
 const p3ClassEps = 0.001
 const p3ClassCProcMs = 3.0
+const p3OneRTTCutoffRTTs = 1.5
 
 var p3ClassNames = []string{"one_rtt", "two_rtt", "late_or_failure"}
 
@@ -114,7 +115,7 @@ func p3GradeCutoffs(c *p3Ctx, a p3Action) (float64, float64, error) {
 		return 0, 0, errors.New("grade cutoff needs context and valid action")
 	}
 	w := c.W + a.Delta
-	first := float64(float64(1.5*c.RTT)+p3Tau(c.K*w+a.Lead*parityDatagramBytes(w, c.K), c.U)) + p3ClassCProcMs
+	first := float64(float64(p3OneRTTCutoffRTTs*c.RTT)+p3Tau(c.K*w+a.Lead*parityDatagramBytes(w, c.K), c.U)) + p3ClassCProcMs
 	second := float64(first+c.RTT) + p3Tau(w, c.U)
 	if !p3Finite(first) || !p3Finite(second) || first <= 0 || second <= 0 {
 		return 0, 0, errors.New("invalid grade cutoffs")

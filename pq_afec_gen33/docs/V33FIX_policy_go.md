@@ -137,7 +137,7 @@ Go 단위 시험 중 바꾼 것: L1이 none 경로를 범주 우도로 바꾸면
 
 출력 사본은 `C:\dev\codex_handoff\v33\runs\v33fix\P\gate_v3_2026-11-02\`(바이너리, `go_test.txt`, `vet.txt`, `qamp.buildinfo`, `qamp.sha256`, `qamp.srcsha`, stage 파일 목록, 관문 JSON·표준 출력, fresh 입력)에 있고 WSL 쪽 sha256과 대조했다.
 
-옵션은 코드로 확인했다. `--no-fresh`는 fresh 표본을 건너뛰지만 그러면 problems에 "fresh seeded sample skipped"가 올라 PASS가 나올 수 없다(`gate_v3_parity.py` 615~617행). 관문은 `--out` 폴더에 fresh 입력 `gate_v3_fresh_<pid>_<ns>.json`을 남기므로(599~602행), 기본값 `experiments/results/`를 쓰면 저장소 안에 파일이 생긴다. 그래서 `--out`을 임시 폴더로 줬다. `--bin`을 주지 않으면 `genconfig.json`의 `~/quicbed_gen33/bin/qamp`를 쓴다. 그 설치본은 2026-11-01 08:19 빌드이고 문자열에 `v3.3-dev`와 `padfec3.cache3/3`이 들어 있으며 srcsha가 `9798aa226a1a1246f425bfbe407e173e7d0b5b4324e22b92146bfdd8682b009a`다(읽기만 함). 그래서 다시 설치하기 전에는 기본 실행이 상수와 srcsha 검사에서 실패할 것이다. 이것은 코드와 파일로 판단한 것이고 실행하지 않았다. 설치(`build_gen33.sh` 실행)는 이 작업에서 하지 않았다.
+옵션은 코드로 확인했다. `--no-fresh`는 fresh 표본을 건너뛰지만 그러면 problems에 "fresh seeded sample skipped"가 올라 PASS가 나올 수 없다(`gate_v3_parity.py` 615~617행). 관문은 `--out` 결과 파일의 부모 폴더에 fresh 입력 `gate_v3_fresh_<pid>_<ns>.json`을 남기므로(599~602행), 기본값 `experiments/results/gate_v3_parity.json`을 쓰면 저장소 안에 파일이 생긴다. 그래서 `--out`에 임시 폴더 안의 결과 파일 경로를 줬다. `--bin`을 주지 않으면 `genconfig.json`의 `~/quicbed_gen33/bin/qamp`를 쓴다. 그 설치본은 2026-11-01 08:19 빌드이고 문자열에 `v3.3-dev`와 `padfec3.cache3/3`이 들어 있으며 srcsha가 `9798aa226a1a1246f425bfbe407e173e7d0b5b4324e22b92146bfdd8682b009a`다(읽기만 함). 그래서 다시 설치하기 전에는 기본 실행이 상수와 srcsha 검사에서 실패할 것이다. 이것은 코드와 파일로 판단한 것이고 실행하지 않았다. 설치(`build_gen33.sh` 실행)는 이 작업에서 하지 않았다.
 
 ## 8. 통합 확인 (2026-11-02 07:35~07:45)
 
@@ -151,7 +151,7 @@ Go 단위 시험 중 바꾼 것: L1이 none 경로를 범주 우도로 바꾸면
 | `gofmt -l` | `pfail_table.go` 하나. 생성 파일이고 HEAD와 바이트가 같다 |
 | M1 와이어 관문 2개(`M1_REFERENCE_GZIP`, 기준 sha256 `59b3434763af…0dbcf`) | PASS 2, 각 700,116사례·60설정(40.19 s, 42.94 s) |
 | 바이너리 | sha256 `06520d52c2f5ee50f0329548a9351030e54030e21ef7ec46b85c46d171c2e3fb`, srcsha `bb31e5904d2281ed6e4076067904750394a8724ac89fdb084e62bbaea2cc4dae` |
-| `gate_v3_parity.py --bin <위 바이너리> --out <임시 폴더>`(기본 `--ref`, fresh 포함) | PASS, problems 없음, 106초. primitive 2,800, 결정 6,720(정확 비교 9종 불일치 0, 실수 필드 6종 비트 일치 6,720), 후보 목록 35,943 비트 일치, 궤적 5개. fresh: primitive 2,600, 결정 5,000, 궤적 4개 |
+| `gate_v3_parity.py --bin <위 바이너리> --out <임시 폴더>/gate_v3_parity.json`(기본 `--ref`, fresh 포함) | PASS, problems 없음, 106초. primitive 2,800, 결정 6,720(정확 비교 9종 불일치 0, 실수 필드 6종 비트 일치 6,720), 후보 목록 35,943 비트 일치, 궤적 5개. fresh: primitive 2,600, 결정 5,000, 궤적 4개 |
 | `gate_l1_go.py --ref g3/v33/V33FIX_policy_reference_v1.json` | passed, problems 없음, bit_exact 738,663 |
 | `python -I -B g3/policy3_reference_gen.py --check` | identical, 165초, 쓰기 없음 |
 | 전체 pytest(Windows) | 1862 passed, 2 skipped, 32 deselected, 하위 17,656 passed, 169초. 실행 전후 `git status --short --ignored` 같음 |

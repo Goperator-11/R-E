@@ -8,6 +8,7 @@ from padfec3 import layout
 G = tuple(float(x) for x in table.P_VALS)
 H = (1.0 / 30, 1.0 / 100, 1.0 / 300, 1.0 / 1000, 1.0 / 3000)
 EPS = 0.01
+HIGH_LOSS_CUT = 0.10
 CLASS_EPS = 1e-3
 CLASS_C_PROC_MS = 3.0
 CLASS_NAMES = ("one_rtt", "two_rtt", "late_or_failure")
@@ -19,7 +20,7 @@ BASE_MIN = 8
 EVENT_RTT_FRAC = 0.5
 SHIELD_RTT_MS = 200.0
 SHIELD_E0 = 0.5
-P_SERVER = 1280
+P_SERVER = quantum.P_SERVER
 B0 = (0, 0, 0)
 LATER_DEFAULT = "v3"
 STATE_VERSION = 11
@@ -106,7 +107,6 @@ def check_transport(W, u_mbps, rtt_ms, c_pkt, *, missing_rtt=False):
 
 
 def check_model_arithmetic(w_eff, u_mbps, rtt_ms):
-    # Include every layout and the default padding steps before candidate filters.
     flight = ((layout.K_MAX + layout.M_MAX) * w_eff
               + layout.M_MAX * layout.parity_bytes(0, layout.K_MAX)
               + policy.MAX_STEPS_DEFAULT * P_SERVER)
@@ -328,10 +328,6 @@ def event_prob(ctx, action, g, later=LATER_DEFAULT):
     return e
 
 
-def shielded(ctx, action, later=LATER_DEFAULT):
-    return ctx["rtt"] >= SHIELD_RTT_MS and nominal_two_rtt(ctx, action, later)
-
-
 def skip_reason(ctx, action, later=LATER_DEFAULT):
     if not nominal_two_rtt(ctx, action, later):
         return None
@@ -351,16 +347,6 @@ def median(xs):
     a, b = float(s[h - 1]), float(s[h])
     total = a + b
     return total / 2.0 if math.isfinite(total) else a / 2.0 + b / 2.0
-
-
-def mean_seq(xs):
-    n = len(xs)
-    if n == 0:
-        raise ValueError("mean of empty list")
-    s = 0.0
-    for x in xs:
-        s += x
-    return s / n
 
 
 def mode_recent(xs):
@@ -393,6 +379,8 @@ class DestState3:
         self.g_alarm = {}
         self.c1_seen = False
         self.arrival_streak = 0
+        self.x_ledger = None
+        self.x_pending = False
         self.stats = {"obs": 0, "upd": 0, "predict": 0, "shield": 0, "nominal2": 0,
                       "guard": 0, "no_base": 0, "no_ctx": 0, "events": 0,
                       "fail": 0, "resid": 0, "reeval": 0, "alarm_raised": 0,
@@ -404,7 +392,9 @@ class DestState3:
                       "grade_late_or_failure": 0}
 
     def to_json(self):
-        return {"v": STATE_VERSION, "k_hist": list(self.k_hist),
+        extra = {} if self.x_ledger is None else {"x_ledger": self.x_ledger,
+                                                  "x_pending": self.x_pending}
+        return {**extra, "v": STATE_VERSION, "k_hist": list(self.k_hist),
                 "S_hist": list(self.S_hist),
                 "hct": {k: list(v) for k, v in sorted(self.hct.items())},
                 "hct_seq": dict(sorted(self.hct_seq.items())),
@@ -461,6 +451,13 @@ class DestState3:
             raise ValueError("arrival_streak needs c1_seen")
         if st.c1_seen and st.g_alarm:
             raise ValueError("c1_seen destinations carry no guard alarms")
+        if ("x_ledger" in d) != ("x_pending" in d):
+            raise ValueError("x_ledger and x_pending must appear together")
+        if "x_ledger" in d:
+            st.x_ledger = _finite("x_ledger", d["x_ledger"])
+            if type(d["x_pending"]) is not bool:
+                raise ValueError("x_pending must be a boolean: %r" % (d["x_pending"],))
+            st.x_pending = d["x_pending"]
         st.stats.update({k: _nonnegative_int("stats[%s]" % k, v)
                          for k, v in _mapping("stats", d.get("stats", {})).items()})
         b = guard_common(st)
@@ -506,7 +503,7 @@ def post_summary(post):
     mode_i = max(range(len(post)), key=lambda i: (post[i], -i))
     hi = 0.0
     for q, p in zip(post, G):
-        if p >= 0.10:
+        if p >= HIGH_LOSS_CUT:
             hi += q
     return {"p_mean": post_mean(post), "p_map": G[mode_i], "mass": s,
             "p_ge_010": hi}
@@ -527,8 +524,6 @@ def context(st, W, u_mbps, rtt_ms, c_pkt):
 
 
 def predict_step(post, w):
-    # One connection advances the hazard prior even when its outcome is censored.
-    # No observation is invented, so the hazard mixture weights stay unchanged.
     n = len(G)
     return [[(1.0 - h) * ph[i] + h * (1.0 / n) for i in range(n)]
             for ph, h in zip(post, H)], list(w)
@@ -619,10 +614,6 @@ def guard_penalty(st, key, b):
     return x
 
 
-def guard_penalties(st, b):
-    return {key: guard_penalty(st, key, b) for key in sorted(st.g_alarm)}
-
-
 def guard_refresh(st):
     cleared = []
     for key in sorted(st.g_alarm):
@@ -675,6 +666,7 @@ def guard_observe(st, key, resid, rtt_ms):
 
 def enter_c1(st):
     st.c1_seen = True
+    st.x_pending = False
     st.stats["alarm_cleared"] += len(st.g_alarm)
     st.g_alarm = {}
 
@@ -751,6 +743,12 @@ def _evidence_info(evidence):
 
 def _observe_none(st, key, action, hct_ms, ok, rtt_ms, ctx, later, j_pred, evidence):
     b, ref, y = _event(st, ctx, action, hct_ms, ok, rtt_ms, later)
+    if st.x_pending:
+        st.x_pending = False
+        if not ok:
+            st.x_ledger -= layout.T_PTO_MS + (float(rtt_ms) if rtt_ms else 0.0)
+        elif y == 1:
+            st.x_ledger -= max(0.0, float(hct_ms) - b)
     resid = None
     raised = []
     if ok and j_pred is not None:

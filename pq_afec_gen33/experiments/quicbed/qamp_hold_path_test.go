@@ -90,3 +90,77 @@ func (c *holdQUICPathConn) Close() error {
 	<-c.done
 	return err
 }
+
+type holdQUICArrivalClock struct {
+	mu       sync.Mutex
+	rateKbps int64
+	expected int
+	arrived  int
+	at       time.Time
+	reading  bool
+}
+
+func (c *holdQUICArrivalClock) now() time.Time {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	t := time.Now()
+	if c.arrived == 0 {
+		return t
+	}
+	if c.arrived < c.expected || !c.reading || t.Before(c.at) {
+		return c.at
+	}
+	return t
+}
+
+func (c *holdQUICArrivalClock) startRead() {
+	c.mu.Lock()
+	c.reading = true
+	c.mu.Unlock()
+}
+
+func (c *holdQUICArrivalClock) arrive(n int) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	t := time.Now()
+	switch {
+	case c.arrived == 0:
+		c.at = t
+	case c.arrived < c.expected:
+		if c.rateKbps > 0 {
+			numerator := int64(n) * 8000000
+			c.at = c.at.Add(time.Duration((numerator + c.rateKbps - 1) / c.rateKbps))
+		}
+	case t.After(c.at):
+		c.at = t
+	}
+	c.arrived++
+	c.reading = false
+}
+
+func (c *holdQUICArrivalClock) flightIncomplete() bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.arrived > 0 && c.arrived < c.expected
+}
+
+type holdQUICArrivalConn struct {
+	net.PacketConn
+	clock *holdQUICArrivalClock
+}
+
+func (c *holdQUICArrivalConn) ReadFrom(b []byte) (int, net.Addr, error) {
+	c.clock.startRead()
+	n, addr, err := c.PacketConn.ReadFrom(b)
+	if err == nil {
+		c.clock.arrive(n)
+	}
+	return n, addr, err
+}
+
+func (c *holdQUICArrivalConn) SetReadDeadline(t time.Time) error {
+	if c.clock.flightIncomplete() {
+		t = time.Time{}
+	}
+	return c.PacketConn.SetReadDeadline(t)
+}

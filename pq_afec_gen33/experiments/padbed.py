@@ -76,8 +76,8 @@ CPU_LIST = _cpu_list()
 TASKSET = ["taskset", "-c", CPU_LIST] if shutil.which("taskset") else []
 WORK = "/tmp/padfec"
 
-LEGACY_DISABLED = ("Legacy live measurements are disabled in gen32; use the isolated "
-                   "gen32 builder and a new measurement protocol.")
+LEGACY_DISABLED = ("Legacy live measurements are disabled in gen33; use the isolated "
+                   "gen33 builder and a new measurement protocol.")
 
 
 def refuse_legacy_live():

@@ -540,6 +540,8 @@ def main(argv=None):
     ap.add_argument("--fresh-seed", type=int, default=FRESH_SEED)
     ap.add_argument("--no-fresh", action="store_true")
     a = ap.parse_args(argv)
+    if os.path.isdir(a.out):
+        ap.error("--out must be a file path, not a directory")
     if not sys.platform.startswith("linux"):
         cmd = ["wsl", "-d", "Ubuntu", "--", "python3", "-I", "-B", to_wsl(__file__)] + list(
             argv if argv is not None else sys.argv[1:])
@@ -624,7 +626,7 @@ def main(argv=None):
     res["pass"] = bool(sections) and all(sections.values()) and not problems
     res["elapsed_s"] = time.time() - t0
     res["finished_utc"] = utc_now()
-    os.makedirs(os.path.dirname(a.out), exist_ok=True)
+    os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     tmp = a.out + ".tmp"
     with open(tmp, "w", encoding="utf-8", newline="\n") as f:
         json.dump(res, f, indent=1, ensure_ascii=False)

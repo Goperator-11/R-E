@@ -1,0 +1,57 @@
+# 개발 측정 결과 생성
+
+[devreport.py](../experiments/v33/devreport.py)는 완료 저널에서 결과 JSON, 결과 문서, SHA 목록을 만든다. [devbed.py](../experiments/v33/devbed.py)가 측정 종료 뒤 호출하며 결과·저널·원자료 로그의 SHA 검증까지 성공해야 잠금을 해제한다. F24의 검증 입력은 fixture다. 실제 QUIC smoke는 F26, 본측정 결과는 F27~F30에서 확인한다.
+
+## 입력과 재현
+
+WSL의 실행 Python에는 [requirements.txt](../requirements.txt)의 SciPy가 필요하다. 러너는 결과 생성기를 불러올 때 이 의존성을 확인하므로 누락된 환경에서 측정을 시작하지 않는다. F24에서 기본 WSL Python에 고정된 SciPy를 설치하고 같은 fixture를 대조했다. 설치와 검증 명령은 로컬 보존 폴더의 `F24_wsl_commands.json`에 남긴다.
+
+생성기는 실행 폴더의 manifest에 저장한 계획, 최초 metadata, 완료 저널을 읽는다. 입력 계획의 실제 파일 SHA와 저장된 계획을 대조하고 저널의 hash chain, 예정 단위, 행 수, 수집 검사, 원자료 SHA를 다시 확인한다. 누락된 단위나 파손 행을 실패 연결로 채우지 않는다. X1·X6·X9는 러너가 읽은 것과 같은 M1 결과 파일을 받아 바이트 SHA까지 대조한다.
+
+저장된 실행 ID, 환경, 계획 커밋, 정책 판본과 바이너리 식별값을 결과에 옮긴다. report-only 때 현재 시각이나 환경을 다시 조사하지 않는다. 같은 입력과 출력 인자에서는 결과 JSON, Markdown, SHA 목록의 바이트가 같다. 원자료와 계획은 읽기만 한다.
+
+M1 결과는 저장된 환경을 `meta.env`에도 보존한다. `a_vs_sealed.kernel`은 최초 환경의 `uname_r`, `sealed_kernel`은 계획의 봉인 커널이다. 봉인 기준 HCT와 현재 a 팔의 차이가 계획 기준을 넘으면 M1 문서 첫 문단에 환경 표류를 표시한다. 이 진단과 C/D의 A/A 판정은 별개다.
+
+기본 출력은 `g3/v33/results/v33_dev_<task>_<runid>.json`과 `docs/<task>_result.md`다. SHA 목록은 인자로 지정한 산출물 폴더의 `<task>_artifacts.sha256`이다. 목록의 상대 경로는 목록 파일의 부모 폴더를 기준으로 읽는다. PEM은 목록에 넣지 않는다. 원자료는 로컬 보존 경로 `~/v33_runs/<run-id>/`에 남긴다.
+
+```powershell
+python -I -B experiments/v33/devreport.py --report-only <journal> --plan g3/v33/plans/final_bundle_v1.json --artifacts-dir <artifacts>
+python -I -B experiments/v33/devreport.py --verify-artifacts <artifacts.sha256>
+```
+
+X1·X6·X9에는 `--m1-result` 뒤에 M1 결과 파일을 함께 준다. `--result-dir`과 `--docs-dir`은 fixture 등 별도 출력 위치를 받을 때 쓴다. 실제 측정의 결과 파일은 계획에 정한 저장소 경로를 사용한다. 이미 있는 SHA 목록으로 변조를 검사할 때는 재생성 명령보다 `--verify-artifacts`를 먼저 실행한다.
+
+## 통계와 비용
+
+[statistics.py](../experiments/v33/lib/statistics.py)는 M1·X1에서 같은 셀의 짝 블록 평균 차이에 Student t 구간을 적용한다. X6 주 분석은 각 궤적 안의 팔 평균 차이를 구한 뒤 독립 궤적을 표본으로 쓴다. RTT200의 추가 gap 대조는 별도 블록 진단이다. X9는 손실 방향별로 블록의 앞 워밍업을 제외하고 PTO 두 정의를 분리한다. 표본 수, 번인, 실패 HCT와 구간 수준은 [계획](../g3/v33/plans/final_bundle_v1.json)을 따른다.
+
+X6 결과에는 번인, 번인 뒤 주 분석, 번인을 포함한 전체, 손실 층, 번인 뒤 동일 가중 재계산이 따로 있다. 전체 평균은 실제 연결 비중을 유지한다. M1의 C/D 구간이 계획 범위를 벗어나면 통계 판정은 판정불능이다. 자료가 완전하면 후속 실행을 중단하는 실패로 바꾸지 않는다. A/A 자는 계획이 정한 bigcert 손실 층에만 적용한다.
+
+비용은 `server_delta.bytes_in`을 같은 분석 범위의 클라이언트 반환 행 수로 나눈 서버 수신량이다. 연결 일부만 고른 범위는 SCID로 귀속된 conn-log의 `rx_bytes`를 사용하며 귀속할 수 없으면 미확인이다. 서버 총계와 연결별 계수를 중복해서 더하지 않는다. 분모를 TLS Accept 수로 바꾸지 않는다. first flight 바이트와 클라이언트 parity 계수는 별도 진단이다. g2auto에는 `client_parity_count_unreliable`을 남긴다.
+
+## 검사와 관측 한계
+
+[report_checks.py](../experiments/v33/lib/report_checks.py)는 계획의 W·parity 상한, 공통 서버와 smoke 조건을 검사한다. 서버 종류가 다른 M1 대조는 공통 서버 조건의 계획된 예외다. gen33 auto 팔의 서버 `fec_parse_fail`이 양수면 checks 실패다. 제공하지 않는 동결 서버 계수를 정상 영으로 채우지 않는다.
+
+사후 검사 네 개는 측정한 계획 밖에서 M0 밖 과제까지 돈다. `netem_config`는 완료 attempt의 netem 요청, 설정한 qdisc, 단위 전후 tc 출력이 단위의 delay, rate, loss와 같은지 본다. `realized_loss`는 M0에서는 셀의 c2s 한 건이고, 다른 과제에서는 셀 안의 (방향, 명목 손실률) 층마다 tc drop 수가 정확 이항 예측구간 안인지 본다. 명목 0%의 구간은 [0, 0]이다. `success_rate`는 셀·팔마다 `ok` 비율이 `success_rate_min` 이상인지 본다. `policy_uplink`는 gen33 auto3 팔 행의 `policy_uplink_mbps` 값이 프로필의 `policy_uplink_mbps` 하나뿐인지 보고, 필드가 없거나 수가 아니면 missing이다. 합격선은 계획의 `smoke_checks.realized_loss.confidence`와 `smoke_checks.success_rate_min`을 쓰고 코드에 새 숫자를 두지 않는다. `plan_id`가 `final_bundle_v1`이면 `MEASURED_PLAN_IDS` 가드가 이 확장을 꺼서 결과 바이트가 측정 당시와 같다. 이때 M0는 예전처럼 `netem_config`, 셀 단위 `realized_loss`, `success_rate`만 돌고 `policy_uplink`는 돌지 않으며, M1·X1·X6·X9는 네 검사를 돌지 않는다. `summarize_checks(..., extended=True)`로 부르면 계획과 상관없이 확장 검사를 돈다. 완료 run 다섯 건(M0, M1, X1, X9, X6)에 확장 검사를 돌린 기록은 [recheck_execution.py](../experiments/v33/recheck_execution.py)가 저널 digest chain을 확인하고 만든 [재검사 기록](../g3/v33/results/v33_dev_execution_recheck_v1.json)에 따로 둔다. 다섯 건 모두 모든 검사가 pass였고 기존 `check_details`의 변경과 누락은 0건이다. 결과 JSON과 결과 문서는 다시 만들지 않는다.
+
+M1의 a·e 동결 서버는 conn-log 없이 최종 `stats.conns`를 제공한다. 실제 인증서 DER 크기는 보존된 `server.stderr`의 완전한 단일 크기 행에서 읽는다. 누락·중복·잘린 행은 크기를 추정하지 않고 미확인으로 남긴다. 결과의 `server_summary[].certificate_observation`과 문서는 확인한 단위 수, 전체 단위 수, 관측 크기를 함께 보고한다. 이 진단을 새 실패 기준으로 쓰지 않는다.
+
+parity 길이는 각 flight trace의 직렬화 바이트와 송신 수에서 계산한다. 같은 flight의 parity는 symbol 길이와 CID·k·m·lead가 같아 길이가 같다. trace 누락 여부와 행 전체 계수의 일치도 함께 검사한다. 이 값은 모형의 고정 오버헤드로 계산한 길이가 아니다.
+
+C1 수신률은 [observations.py](../experiments/v33/lib/observations.py)로 셀·팔 전체를 다시 집계한다. 단위별 제외 표지를 OR하지 않는다. M0의 셀 전체 수신 기준과 X6의 분류별 수신 기준은 별도다. 유효 RTT 비율은 경고로 남긴다.
+
+D79에 따라 실제 `mean_idle_ms`는 null·미확인이다. 동결 client 행에 절대 연결 시작·완료 시각이 없으므로 feedback 대기와 계획 gap의 합으로 실제 idle을 대신할 수 없다. 실제 idle 차이의 계획 기준은 미확인으로 남기며 M0 checks에 넣지 않는다.
+
+## 문서 대조
+
+[report_docs.py](../experiments/v33/lib/report_docs.py)는 결과 JSON의 값으로 표와 문장을 만든다. 첫 문단에는 development, 테스트베드, 합성 인증서, 손실 방향, initial congestion window와 정책 uplink 조건을 넣는다. X1·X6에는 공통 gen33 서버 조건을 붙이며 M1의 서버 대조, A/A 표류, 봉인 기준값과의 차이에 따른 문구는 각각 판단한다. 미측정 항목은 끝의 한계 절에 남긴다.
+
+```powershell
+python -I -B experiments/v33/devreport.py --check-doc docs/X1_result.md
+python -I -B experiments/v33/devreport.py --check-doc docs/REPORT_ERRATA.md --section <측정절제목>
+```
+
+생성 문서는 JSON에서 다시 만든 문서와 대조한다. 계획 SHA `74f58fbb6b0db5c30ef9abf0698ae13dd6bede861bef3215646e5ca3232154b6`의 결과는 측정 당시 바이트를 유지하려고 자(ms)와 자 표류의 빈 값을 `미확인`으로 그린다. 이 `미확인`은 값이 없다는 표시다. A/A 없음 행에는 자가 없고, A/A 적용 행은 M1 c_d 구간이 허용 범위 안이어서 표류 표지가 없다. 다른 계획의 결과는 같은 칸을 `해당 없음`으로 그린다. 정오표는 선택한 절에서 근거 키가 g3/v33/results/를 가리키는 행의 숫자만 검사한다. 검사하는 열은 `new`이고, `selected` 칸이 `측정 뒤 문구`(별칭 `measured`), `측정 못 한 경우 문구`(별칭 `측정 못 함`), `러너 구현 뒤 미측정 문구`(별칭 `구현하였으나`)를 가리키면 그 열이다. 근거는 g3/v33/results/<file>.json#<key>처럼 파일과 JSON 키를 함께 지정한다. old, 다른 절, 구조 식별자를 측정 수치로 검사하지 않는다. 지정한 키가 없거나 검사할 행이 없으면 성공으로 처리하지 않는다.
+
+fixture 검증 기록과 명령은 로컬 보존 폴더 `C:/dev/codex_handoff/final/runs/`의 `F24_accept.txt`, `F24_commands.json`, `F24_summary.json`에 둔다. 네트워크 측정, 실제 smoke SHA 목록과 결과 문서의 확인은 후속 카드에 남아 있다.

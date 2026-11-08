@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"math"
@@ -254,4 +256,132 @@ func TestFlightTraceSendFailure(t *testing.T) {
 			t.Fatal(fin)
 		}
 	})
+}
+
+func traceCIDInitial(scid []byte, seed byte) []byte {
+	d := leadTestInitial(leadTestDCID, scid, 1200, seed)
+	at := 7 + len(leadTestDCID) + len(scid)
+	d[at] = 0
+	copy(d[at+1:], appendVarint2(nil, uint64(len(d)-at-3)))
+	return d
+}
+
+func traceCheckSCIDRows(t *testing.T, row trial, want string) {
+	t.Helper()
+	for _, output := range []any{row, auto3Row(row, auto3Plan{}, p3ObsInfo{Y: -1}, nil, 0)} {
+		data, err := json.Marshal(output)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var fields map[string]json.RawMessage
+		if err := json.Unmarshal(data, &fields); err != nil {
+			t.Fatal(err)
+		}
+		var got string
+		if err := json.Unmarshal(fields["client_scid"], &got); err != nil || got != want {
+			t.Fatalf("client_scid = %q, want %q, error %v", got, want, err)
+		}
+	}
+}
+
+func TestFlightTraceClientSCIDRowsAndConnLog(t *testing.T) {
+	for _, mode := range []string{"off", "fec"} {
+		t.Run(mode, func(t *testing.T) {
+			synctest.Test(t, func(t *testing.T) {
+				gfInit()
+				c, wire, addr := finalStatsFixture(mode, 1, 1)
+				g := clientCIDGenerator{client: c}
+				id, err := g.GenerateConnectionID()
+				if err != nil || id.Len() != serverConnIDLength {
+					t.Fatal(id, err)
+				}
+				want := hex.EncodeToString(id.Bytes())
+				d := traceCIDInitial(id.Bytes(), 1)
+				if n, err := c.WriteTo(d, addr); err != nil || n != len(d) {
+					t.Fatal(n, err)
+				}
+				fin := c.finalSendStats()
+				if fin.ClientSCID != want {
+					t.Fatal(fin.ClientSCID, want)
+				}
+				var row trial
+				var agg clientStats
+				recordFinalSendStats(&row, &agg, fin)
+				traceCheckSCIDRows(t, row, want)
+				data, err := json.Marshal(agg)
+				if err != nil || agg.ClientSCID != "" || bytes.Contains(data, []byte(`"client_scid"`)) {
+					t.Fatal(string(data), err)
+				}
+				var out bytes.Buffer
+				s := &decodeConn{connLog: newConnLogger("", &out, nil)}
+				for _, write := range wire.writes {
+					if write.err == nil && parseFecBlock(write.data) == nil {
+						s.acctLocked(addr, write.data, false)
+					}
+				}
+				if err := s.finishConnLog(time.Now()); err != nil {
+					t.Fatal(err)
+				}
+				entry := connLogEntry{connAcct: &connAcct{}}
+				if err := json.Unmarshal(out.Bytes(), &entry); err != nil || entry.connAcct == nil || entry.ClientSCID != row.ClientSCID || entry.ClientSCID != want {
+					t.Fatalf("row %q, conn-log %s, error %v", row.ClientSCID, out.String(), err)
+				}
+			})
+		})
+	}
+}
+
+func TestFlightTraceClientSCIDSurvivesRotation(t *testing.T) {
+	synctest.Test(t, func(t *testing.T) {
+		c, _, addr := finalStatsFixture("off", 1, 1)
+		g := clientCIDGenerator{client: c}
+		id, err := g.GenerateConnectionID()
+		if err != nil {
+			t.Fatal(err)
+		}
+		want := hex.EncodeToString(id.Bytes())
+		if _, err := c.WriteTo(traceCIDInitial(id.Bytes(), 1), addr); err != nil {
+			t.Fatal(err)
+		}
+		old := c.snapshot()
+		rotated, err := g.GenerateConnectionID()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := c.WriteTo(traceCIDInitial(rotated.Bytes(), 2), addr); err != nil {
+			t.Fatal(err)
+		}
+		fin := c.finalSendStats()
+		if old.ClientSCID != want || fin.ClientSCID != want || fin.Flights != 2 {
+			t.Fatal(old, fin)
+		}
+		var row trial
+		var agg clientStats
+		recordFinalSendStats(&row, &agg, fin)
+		traceCheckSCIDRows(t, row, want)
+		other, _, otherAddr := finalStatsFixture("off", 1, 1)
+		if _, err := other.WriteTo(traceCIDInitial(rotated.Bytes(), 3), otherAddr); err != nil {
+			t.Fatal(err)
+		}
+		recordFinalSendStats(&row, &agg, other.finalSendStats())
+		traceCheckSCIDRows(t, row, hex.EncodeToString(rotated.Bytes()))
+		if agg.ClientSCID != "" || c.snapshot().ClientSCID != want {
+			t.Fatal("connection identity leaked")
+		}
+	})
+}
+
+func TestFlightTraceClientSCIDMissingInitial(t *testing.T) {
+	c, _, _ := finalStatsFixture("off", 1, 1)
+	if _, err := (clientCIDGenerator{client: c}).GenerateConnectionID(); err != nil {
+		t.Fatal(err)
+	}
+	fin := c.finalSendStats()
+	row := trial{ClientSCID: "stale", Err: "dial failed", OK: false}
+	var agg clientStats
+	recordFinalSendStats(&row, &agg, fin)
+	traceCheckSCIDRows(t, row, "")
+	if fin.ClientSCID != "" || agg.ClientSCID != "" || row.Err != "dial failed" || row.OK || row.Dgrams != 0 {
+		t.Fatal(fin, row, agg)
+	}
 }

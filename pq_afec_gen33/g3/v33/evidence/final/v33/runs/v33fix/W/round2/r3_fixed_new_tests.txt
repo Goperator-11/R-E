@@ -1,0 +1,9 @@
+worldsim_m1 from C:\dev\pq_afec_gen33\experiments\v33\worldsim_m1.py
+('test_lead_zero_hold_matches_off_across_loss_seeds_and_contexts', 'method_ok') 1
+('test_lead_zero_hold_matches_off_across_loss_seeds_and_contexts', 'pass') 6400
+('test_lead_zero_hold_matches_off_with_token_and_retry', 'method_ok') 1
+('test_lead_zero_hold_matches_off_with_token_and_retry', 'pass') 6400
+('test_lead_zero_regressions_from_audit', 'method_ok') 1
+('test_parity_after_ready_is_credit_not_recovery', 'method_ok') 1
+('test_retry_initial_failure_follows_first_flight_pattern', 'method_ok') 1
+('test_retry_initial_failure_follows_first_flight_pattern', 'pass') 320

@@ -1,0 +1,775 @@
+{
+  "schema": "padfec.final.glossary-state/1",
+  "captured_kst": "2026-11-07T03:21:50+09:00",
+  "source": "final/state/LOOP_STATE.json",
+  "source_sha256": "610fcb44c1b5cc36a5a9ee311cc781859a0e2c7cc67af04f04dcc6c1faeb98c3",
+  "scope": "F46 시작 뒤 상태. done은 해당 카드 범위의 완료이며 후보 채택이나 측정 전체 완료를 뜻하지 않는다.",
+  "tasks": [
+    {
+      "id": "F01",
+      "title": "R-E final worktree를 만들고 hygiene을 합치고 세대 태그를 단다",
+      "priority": "must",
+      "sources": [
+        "RP-01",
+        "RP-06"
+      ],
+      "absorbed": [
+        "BL-01",
+        "DC-19"
+      ],
+      "status": "done",
+      "commits": [
+        "4e280bc689d5c6b8b344bf1f2b07a5ab46183dd8"
+      ]
+    },
+    {
+      "id": "F02",
+      "title": "보고서 그림, 표, 수치 재현 묶음을 gen33에 넣는다",
+      "priority": "must",
+      "sources": [
+        "RT-06"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "ebd0e54e737d40df3404f99f3580082bcfe5835c"
+      ]
+    },
+    {
+      "id": "F03",
+      "title": "보고서 정오표, 검사기, 수치 대조표를 만든다",
+      "priority": "must",
+      "sources": [
+        "RT-09"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "ac6e7037b4586d3443c5c7ca1f86e023cede63cf"
+      ]
+    },
+    {
+      "id": "F04",
+      "title": "정오표 행을 채운다(1판)",
+      "priority": "must",
+      "sources": [
+        "RT-28",
+        "RT-14",
+        "RT-15",
+        "RT-16",
+        "RT-17",
+        "RT-18",
+        "RT-19",
+        "RT-20",
+        "RT-13",
+        "RT-29",
+        "RT-25",
+        "RT-26",
+        "RT-30"
+      ],
+      "absorbed": [
+        "BL-09"
+      ],
+      "status": "done",
+      "commits": [
+        "b0f69b0c2"
+      ]
+    },
+    {
+      "id": "F05",
+      "title": "봉인 판정을 보존 저널에서 읽기 전용으로 재계산한다",
+      "priority": "must",
+      "sources": [
+        "RT-05",
+        "BL-12"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "b37b41a55"
+      ]
+    },
+    {
+      "id": "F06",
+      "title": "측정 상태에 따라 낡는 보고서 진술 15줄의 문구를 준비한다",
+      "priority": "must",
+      "sources": [
+        "RT-04"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "8fd48de42"
+      ]
+    },
+    {
+      "id": "F40",
+      "title": "문서 점검 도구와 고정 문서 표를 만든다",
+      "priority": "must",
+      "sources": [
+        "DC-13",
+        "DC-18"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "dd4c959eb80a8b613197908ad1816ab32195b4b3"
+      ]
+    },
+    {
+      "id": "F10",
+      "title": "관문 도구의 작은 결함과 gen32 이름을 정리한다",
+      "priority": "should",
+      "sources": [
+        "CP-14",
+        "CP-15",
+        "CP-17"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "ecbfdb7b466498b58a83776867d406b5512a609c",
+        "60e19f53a9648e9fbe768b58b66b481e3c7525c3",
+        "b75977c0d18292609d2978db4656a37383fbab3c"
+      ]
+    },
+    {
+      "id": "F11",
+      "title": "auto3의 uplink 입력을 명시로 강제하고 행에 남긴다",
+      "priority": "should",
+      "sources": [
+        "CP-02"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "c8150c07164d0dbafddd08d8f0f42477b356fb75"
+      ]
+    },
+    {
+      "id": "F12",
+      "title": "wire 최악 크기를 계수와 시험과 문서 표로 드러낸다",
+      "priority": "should",
+      "sources": [
+        "CP-05",
+        "CP-06"
+      ],
+      "absorbed": [
+        "BL-21"
+      ],
+      "status": "done",
+      "commits": [
+        "7ba18812b51cdac84e800f355c4c8b23f6fb6dd0",
+        "eb55083f829638642748e4b02aaedd849f83396b"
+      ]
+    },
+    {
+      "id": "F13",
+      "title": "G2를 시험 하나로 끝낸다",
+      "priority": "should",
+      "sources": [
+        "CP-12"
+      ],
+      "absorbed": [
+        "MS-26",
+        "BL-06"
+      ],
+      "status": "done",
+      "commits": [
+        "bfb0faa8560f331111eb09345cb0bc56c8663445"
+      ]
+    },
+    {
+      "id": "F14",
+      "title": "클라이언트 행에 client_scid를 넣는다",
+      "priority": "could",
+      "sources": [
+        "MS-29"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "95eb348e13ca4a7627292c29127524975a586571"
+      ]
+    },
+    {
+      "id": "F15",
+      "title": "활성 정책의 틀린 수치, 죽은 함수, 이름 없는 숫자를 지우고 참조를 다시 만든다",
+      "priority": "must",
+      "sources": [
+        "BL-13",
+        "CP-16"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "13e2f4c94fbbc73e9ac8aed2851060851339c919"
+      ]
+    },
+    {
+      "id": "F16",
+      "title": "최종 소스로 빌드, 설치, 동결하고 한 명령 확인 도구를 만든다",
+      "priority": "must",
+      "sources": [
+        "CP-01",
+        "MS-05",
+        "RP-08"
+      ],
+      "absorbed": [
+        "BL-14"
+      ],
+      "status": "done",
+      "commits": [
+        "27da062aa77f249ebb2688ff9be48909c0529274",
+        "0e9cf302852e54631ed03894258925a4f0a8b265"
+      ]
+    },
+    {
+      "id": "F17",
+      "title": "T7 조건 문서를 지금 코드와 맞춘다",
+      "priority": "should",
+      "sources": [
+        "CP-11",
+        "MS-07"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "b46e9a8b88f962e09f5fffe56d1fac277a082103"
+      ]
+    },
+    {
+      "id": "F20",
+      "title": "측정 계획 파일을 gen33 안에 쓰고 커밋한다",
+      "priority": "must",
+      "sources": [
+        "MS-14",
+        "MS-02",
+        "MS-28"
+      ],
+      "absorbed": [
+        "MS-24"
+      ],
+      "status": "done",
+      "commits": [
+        "a8e9fdf63d173bcfcf8166f18da4ba57eb21f5c1"
+      ]
+    },
+    {
+      "id": "F21",
+      "title": "netem, netns 경로를 울타리 밖에 새로 만든다",
+      "priority": "must",
+      "sources": [
+        "MS-04"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "6d6a70b5783c15878de1534ac813d875137d7242"
+      ]
+    },
+    {
+      "id": "F22",
+      "title": "측정 러너 devbed.py 본체를 만든다",
+      "priority": "must",
+      "sources": [
+        "MS-03",
+        "MS-27",
+        "MS-30"
+      ],
+      "absorbed": [
+        "BL-07"
+      ],
+      "status": "done",
+      "commits": [
+        "68e4ecf3265dfd805c8cc651d31331bef7e7acd3"
+      ]
+    },
+    {
+      "id": "F23",
+      "title": "서버 연결별 기록, C1 회신 확인을 러너에 넣는다",
+      "priority": "must",
+      "sources": [
+        "MS-09",
+        "MS-11",
+        "MS-06"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "dc6a014116d639fae89dd5ece7cd9a58c316677f"
+      ]
+    },
+    {
+      "id": "F24",
+      "title": "결과 요약, 서버 계수 비용, sha 기록, 결과 문서 생성기를 만든다",
+      "priority": "must",
+      "sources": [
+        "MS-13",
+        "MS-10",
+        "MS-32"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "75f63cb6973a46fed7408129edf316d4bacf6718"
+      ]
+    },
+    {
+      "id": "F25",
+      "title": "WSL 수명을 붙잡는 launcher를 만든다",
+      "priority": "must",
+      "sources": [
+        "MS-15"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "fe00e6ede915cbe06cc343f2219f55995252427b"
+      ]
+    },
+    {
+      "id": "F26",
+      "title": "측정 M0: smoke와 기대 범위",
+      "priority": "must",
+      "sources": [
+        "MS-17",
+        "MS-08"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "d3607584a"
+      ]
+    },
+    {
+      "id": "F27",
+      "title": "측정 M1: 서버 등가와 A/A",
+      "priority": "must",
+      "sources": [
+        "MS-18",
+        "MS-33"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "098410ad882e82284cb095d00924b4eef1c69454"
+      ]
+    },
+    {
+      "id": "F28",
+      "title": "측정 X1 최소판: 같은 바이트 padding 대 parity",
+      "priority": "must",
+      "sources": [
+        "MS-19"
+      ],
+      "absorbed": [
+        "BL-08"
+      ],
+      "status": "done",
+      "commits": [
+        "ee071642ac0fa24b1d47f47cb7c9ba5ae9e1160f"
+      ]
+    },
+    {
+      "id": "F29",
+      "title": "측정 X9 최소판: PTO 비율 재측정",
+      "priority": "must",
+      "sources": [
+        "MS-20"
+      ],
+      "absorbed": [
+        "BL-17"
+      ],
+      "status": "done",
+      "commits": [
+        "61d2474664830f40a5054a2153749b800a80dcd9"
+      ]
+    },
+    {
+      "id": "F30",
+      "title": "측정 X6 최소판: v3.3.1-dev 대 v3.1 대 gen-2",
+      "priority": "must",
+      "sources": [
+        "MS-21"
+      ],
+      "absorbed": [
+        "BL-16"
+      ],
+      "status": "doing",
+      "commits": []
+    },
+    {
+      "id": "F32",
+      "title": "측정 결과를 문서와 정오표에 반영한다",
+      "priority": "must",
+      "sources": [
+        "MS-22",
+        "DC-25",
+        "RT-03"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F33",
+      "title": "측정 없이 끝내는 경우의 문장을 넣는다",
+      "priority": "must",
+      "sources": [
+        "MS-23"
+      ],
+      "absorbed": [],
+      "status": "skipped",
+      "commits": []
+    },
+    {
+      "id": "F31",
+      "title": "시간이 남을 때 더 재는 셀",
+      "priority": "could",
+      "sources": [
+        "RT-23",
+        "MS-31",
+        "BL-19",
+        "BL-18",
+        "BL-20"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F07",
+      "title": "저장소 문서와 보고서의 수치 대조표, 원자료 위치표를 만든다",
+      "priority": "should",
+      "sources": [
+        "RT-07",
+        "RT-22"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "d414be4d06523e10e34b66a894da84dab214935b",
+        "58dc78f1275b3949b6bffa813e3a7eaa6b5d4efd"
+      ]
+    },
+    {
+      "id": "F41",
+      "title": "정본이 인용할 증거와 루프 기록을 저장소로 복사한다",
+      "priority": "must",
+      "sources": [
+        "DC-12",
+        "DC-17"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "aff2dd6fb"
+      ]
+    },
+    {
+      "id": "F42",
+      "title": "후보 14개의 부정 결과 문서를 쓴다",
+      "priority": "must",
+      "sources": [
+        "BL-03"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "de2430467f5e03838909563575abeed28a08225b"
+      ]
+    },
+    {
+      "id": "F43",
+      "title": "후보 코드 흔적 색인과 활성 경로 분리 시험을 만든다",
+      "priority": "must",
+      "sources": [
+        "BL-04"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F44",
+      "title": "고치지 않고 끝내는 한계를 한 문서로 모으고 W 1406 문장을 바로잡는다",
+      "priority": "must",
+      "sources": [
+        "BL-05",
+        "CP-03",
+        "CP-04",
+        "CP-08",
+        "CP-09",
+        "CP-10",
+        "CP-22",
+        "MS-12"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "8aaa7c345"
+      ]
+    },
+    {
+      "id": "F45",
+      "title": "최종 코드에 필요 없는 과제를 근거와 함께 닫는다",
+      "priority": "should",
+      "sources": [
+        "CP-13"
+      ],
+      "absorbed": [],
+      "status": "done",
+      "commits": [
+        "9e44a93b99a47138604c15ed42d1991349a48d47"
+      ]
+    },
+    {
+      "id": "F46",
+      "title": "용어와 ID 풀이 GLOSSARY를 쓴다",
+      "priority": "must",
+      "sources": [
+        "DC-06"
+      ],
+      "absorbed": [],
+      "status": "doing",
+      "commits": []
+    },
+    {
+      "id": "F47",
+      "title": "알고리즘 명세 SPEC_v3.3.1을 쓴다",
+      "priority": "must",
+      "sources": [
+        "DC-02"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F48",
+      "title": "세대별 결과 RESULTS_by_generation을 쓴다",
+      "priority": "must",
+      "sources": [
+        "DC-03"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F49",
+      "title": "주장 범위 CLAIMS를 분리하고 금지 행을 더한다",
+      "priority": "must",
+      "sources": [
+        "DC-04"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F50",
+      "title": "동결 문서 정정표를 쓴다",
+      "priority": "must",
+      "sources": [
+        "DC-07",
+        "BL-02"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F51",
+      "title": "재현 절차 REPRODUCE를 쓴다",
+      "priority": "must",
+      "sources": [
+        "DC-05"
+      ],
+      "absorbed": [
+        "BL-10"
+      ],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F52",
+      "title": "코드 지도와 알고리즘 지도를 쓴다",
+      "priority": "should",
+      "sources": [
+        "CP-18",
+        "BL-15"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F64",
+      "title": "gen33 내보내기 도구와 규칙을 만든다",
+      "priority": "must",
+      "sources": [
+        "RP-04",
+        "RP-14"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F53",
+      "title": "내보내기 절차 문서를 다시 쓰고 scrub 결함을 고친다",
+      "priority": "must",
+      "sources": [
+        "RP-11",
+        "DC-11"
+      ],
+      "absorbed": [
+        "BL-11",
+        "BL-22"
+      ],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F54",
+      "title": "살아 있는 문서의 경로, 번역어, 대표어, 숫자 붙여쓰기를 고친다",
+      "priority": "should",
+      "sources": [
+        "DC-14",
+        "DC-15",
+        "DC-16",
+        "DC-20",
+        "DC-27"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F08",
+      "title": "선행 조사 검색 기록을 남긴다",
+      "priority": "should",
+      "sources": [
+        "RT-21"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F09",
+      "title": "참고문헌 내용 대조 기록을 남긴다",
+      "priority": "could",
+      "sources": [
+        "RT-27"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F55",
+      "title": "docs 색인과 gen33 README를 최종 상태로 쓴다",
+      "priority": "must",
+      "sources": [
+        "DC-01",
+        "DC-09",
+        "RP-12"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F60",
+      "title": "봉인 대조를 4개 봉인으로 넓힌다",
+      "priority": "must",
+      "sources": [
+        "RP-02"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F61",
+      "title": "팀 측정 폴더 문서의 표현을 바로잡는다",
+      "priority": "must",
+      "sources": [
+        "DC-10",
+        "DC-26",
+        "RP-18"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F62",
+      "title": "R-E 첫 화면 README와 GENERATIONS, DATA_AVAILABILITY를 쓴다",
+      "priority": "must",
+      "sources": [
+        "RP-03",
+        "DC-08",
+        "RP-10",
+        "RP-15",
+        "RP-16",
+        "RP-20",
+        "RP-21",
+        "RP-26"
+      ],
+      "absorbed": [
+        "RP-22"
+      ],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F63",
+      "title": "R-E용 pre-commit 훅을 넣는다",
+      "priority": "should",
+      "sources": [
+        "RP-13"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F65",
+      "title": "gen33을 마감한다: 장부 정리와 최종 수 재기",
+      "priority": "must",
+      "sources": [
+        "BL-23"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F66",
+      "title": "최종본을 R-E final 브랜치에 올리고 배포 검사를 통과시킨다",
+      "priority": "must",
+      "sources": [
+        "RP-05",
+        "DC-28"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    },
+    {
+      "id": "F67",
+      "title": "gen33 원자료와 루프 근거를 보존 폴더에 추가한다",
+      "priority": "must",
+      "sources": [
+        "RP-07"
+      ],
+      "absorbed": [],
+      "status": "todo",
+      "commits": []
+    }
+  ]
+}

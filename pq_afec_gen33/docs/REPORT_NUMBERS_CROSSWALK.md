@@ -1,0 +1,35 @@
+# 보고서와 보존 문서의 수치 대조
+
+보고서가 인용한 실행과 보존 문서의 실행을 구분한다. 아래 값은 기존 측정, 규격을 설명한 보고서 문장, 실행 기록을 각각 다시 읽은 결과다. 새 네트워크 측정은 없다. 동결 세대의 문서는 수정하지 않는다.
+
+`report_repro/source_paths.json`의 alias로 파일을 찾고, `report_repro/check_crosswalk.py`가 표의 보고서 값 열을 원자료의 지정 키에서 다시 만든 값과 비교한다. p18의 103.535 ms는 보고서에 적힌 차이를 계산한 m2 팔의 평균이며, 보고서 본문은 51.82 ± 0.11 ms를 인용한다. shared secret 행은 보고서 문장과 workbook의 정의를 대조하며 규격 원문을 독립 검증한 결과로 표시하지 않는다.
+
+| 항목 | 보고서 값 | 출처 파일과 키 | 다른 값과 위치 | 왜 다른가(실행 시점, 조건, 정의) | 인용할 값 |
+|---|---|---|---|---|---|
+| CW01 제자리 보호 용량의 최소 초과, Ⅳ-3 | 69.0 B (C=1457 B, capacity=1388.0 B) | 로컬 보존 p1_flight: pq_afec/experiments/results/p1_flight.json의 capacity_checks[group=X25519MLKEM768,ips=1450].C-capacity. p1_units의 recorded_at은 2026-09-29. | 로컬 보존 pq_afec/docs/PADFEC 실측 보고서.md의 용량 표는 60.0 B(C=1449, capacity=1389.0). pq_afec/README.md의 f=0 문장은 60.0 B지만 같은 보고서의 f=0 표는 44.0 B. | Initial 1450 B, k=2, f=16 B 조건의 서로 다른 실행이다. C와 h가 달라졌다. f=0과 f=16을 섞으면 실행 차이 외에 정의도 달라진다. 아래 Git 이력 표에 각 값을 분리했다. | 9월 29일 실행을 설명할 때 69.0 B. 옛 문서를 설명할 때 60.0 B와 그 실행을 함께 적는다. 두 값 모두 제자리 보호 용량을 넘는다. |
+| CW02 고정 m 비교, Ⅳ-3 | m2 103.535 ms; m2→m4 51.82 ± 0.11 ms | 로컬 보존 p18_mmax: pq_afec/experiments/results/p18_mmax.json의 rows[cert=16000,loss=0,uplink=0].arms[2].mean, verdict[동일 cond].obs_gain_m2_to_m4, ci_half_used. p18_units의 recorded_at은 2026-10-01. | 로컬 보존 pq_afec/docs/수정 대기 목록.md의 m_max 절은 m2 실측 106.71 ms, 모형 100.00 ms라고 적는다. | 보존된 옛 실행 설명과 10월 1일 결과가 다르다. 현재 결과는 성공한 연결의 HCT 평균이고 무손실 셀의 m2 팔은 500연결이다. 전체 p18에는 실패 연결이 있어 성공 조건부라는 범위를 유지한다. | 현재 보고서 근거는 m2 103.535 ms와 차이 51.82 ± 0.11 ms. 모형 100.00 ms를 측정 평균으로 바꾸어 쓰지 않는다. |
+| CW03 순차 측정의 regret 표류, 수정 경위 (5) | 0.026 ± 0.025 ms / 1.173 ± 0.049 ms | 로컬 보존 R-E Git 5ebc151·6182128의 pq_afec/experiments/results/p11_adaptive.json: regret[cert=2955,loss=0].regret_late_ms, ci95_half_ms. 두 판 모두 group=X25519MLKEM768, RTT 50 ms, arm당 n=4000. | 로컬 보존 pq_afec/README.md의 표는 0.629 ± 0.429 ms(임계위·손실 5%)와 1.173 ± 0.049 ms(임계아래·무손실)를 대조한다. 앞 값은 5ebc151의 regret[cert=9000,loss=5]. | README의 두 값은 조건이 다르다. 보고서는 두 판의 cert=2955,loss=0인 같은 셀을 골랐다. README에 적힌 실행 날짜는 2026-08-29와 2026-08-30이며 Git 보존 시각과 구분해야 한다. | 표류 사례에는 같은 셀의 0.026 ± 0.025와 1.173 ± 0.049 ms를 쓴다. 0.629 ± 0.429는 cert=9000,loss=5의 결과로만 인용한다. |
+| CW04 netem gemodel 검증, Ⅲ-2 | 손실 5.23%, 평균 burst 4.05 | 로컬 보존 e6_netem: pq_afec/experiments/results/e6_netem.json의 configs.ge_p5_L4.loss_rate×100, mean_burst. 저장값은 5.226%, 4.053676698727894이며 n=500000. | 로컬 보존 pq_afec/docs/실측 보고서.md의 gemodel 검증 표는 4.97%, 4.04다. | 같은 명목 손실 5%, 목표 burst 4인 다른 실행의 표다. e6 JSON에 실행 날짜 필드는 없으므로 이번 대조에서는 측정 시각을 미확인으로 둔다. | 보고서가 사용하는 e6 결과를 반올림한 5.23%, 4.05. 명목값 5%, 4와 측정값을 구분한다. |
+| CW05 first flight의 datagram 수, Ⅳ-1 | X25519 1개·1280 B; hybrid 2개·2560 B | 로컬 보존 p1_flight: runs[group=x25519,ips=0]와 runs[group=X25519MLKEM768,ips=0]의 first_flight_datagrams, first_flight_bytes. n=10, RTT 50 ms, 2026-09-29 실행. | 로컬 보존 V4 workbook의 5_이론대조!B6:C6은 2개·3개이고 B7:C7은 2560 B·3840 B다. | workbook의 qpkt 집계와 p1의 Initial first flight 복호 결과를 같은 관측으로 합치면 안 된다. workbook의 전체 handshake 수신량도 주소 검증 전 수신량과 구분한다. | 보고서의 first flight 정의에는 p1의 1개·2개를 쓴다. V4의 임계 측정값은 해당 시트와 별개로 읽는다. |
+| CW06 hybrid shared secret, Ⅱ-1 | 64 B | 보고서 보존 사본 `report_repro/content.py`의 결합된 shared secret 문장. 로컬 보존 stage1_workbook: ML-KEM_1단계_측정수치_v2.xlsx의 1_크기!E5,E7. | workbook은 ML-KEM-768과 X25519MLKEM768에 모두 32 B를 적는다. | ML-KEM 단독 secret과 hybrid 결합 secret의 구분이다. 보고서는 RFC 10024를 인용한 규격 설명으로 64 B를 쓴다. 이 checker는 64 B 문장과 workbook의 32 B를 읽으며 RFC의 타당성을 검증하지 않는다. | 보고서의 hybrid 결합 secret은 64 B, ML-KEM-768 단독은 32 B로 구분한다. |
+| CW07 실행 날짜, Ⅳ-3과 Table 5 | p1 9월 29일; Table 5 10-01 to 10-02 | 보고서 보존 사본 `report_repro/content.py`의 p1 문장과 Table 5 제목. 로컬 보존 pq_afec/experiments/state의 p1_units·p2_units·p3_units·p8_units·p9_units.jsonl의 recorded_at 날짜는 모두 2026-09-29. | 로컬 보존 R-E Git 70e7e08의 README.md에서 gen-2 측정 열은 2026-10-01~10-02 실행이라고 묶어 쓴다. 보고서 Table 5 제목에도 같은 날짜 범위가 남아 있다. | 단계별 측정일과 재집계·판정일을 구분해야 한다. p18_units의 날짜는 2026-10-01이지만 앞의 다섯 단계까지 그 날짜로 바꿀 근거는 없다. | 단계별 측정일은 각 저널의 recorded_at을 쓴다. Table 5의 날짜 범위는 각 단계의 실행일을 대신하지 않는다. |
+
+## p1의 실행별 용량 값
+
+아래 날짜는 R-E Git의 author date다. 실행일로 간주하지 않는다. 파일은 각 커밋의 p1_flight.json이며, 각 판에서 C-capacity가 최소인 행을 다시 골랐다. 모두 X25519MLKEM768, k=2, f=16 B다. 로컬 보존 위치와 추적 여부는 [원자료 위치표](../report_repro/SOURCES.md)에서 확인한다.
+
+| 커밋 | Git author date | group | W (B) | C (B) | capacity (B) | C-capacity (B) |
+|---|---|---|---|---|---|---|
+| 6dbf9e8 | 2026-08-20T15:20:00+09:00 | X25519MLKEM768 | 1450 | 1457 | 1381.0 | 76.0 |
+| 7420d16 | 2026-08-27T22:43:07+09:00 | X25519MLKEM768 | 1450 | 1449 | 1389.0 | 60.0 |
+| f3dcd4a | 2026-08-28T12:11:09+09:00 | X25519MLKEM768 | 1450 | 1451 | 1389.0 | 62.0 |
+| d96a56b | 2026-08-28T15:24:23+09:00 | X25519MLKEM768 | 1450 | 1457 | 1382.0 | 75.0 |
+| 4bab4a5 | 2026-10-29T14:37:39+09:00 | X25519MLKEM768 | 1450 | 1457 | 1388.0 | 69.0 |
+
+## 문서 갱신 시각의 범위
+
+로컬 보존 PADFEC 실측 보고서.md의 머리말은 results에서 직접 생성된다고 적지만, legacy_loop_state alias의 loop2.json에 남은 p6.finished는 2026-08-21 06:43이다. 이 상태를 뒤의 모든 재측정 결과까지 반영한 문서라는 근거로 쓰지 않는다. 보고서 수치는 각 행의 결과 JSON과 저널을 기준으로 인용한다.
+
+regret 자료의 Git 보존 시각은 5ebc151이 2026-08-29T14:25:16+09:00, 6182128이 2026-09-03T13:22:32+09:00이다. README의 8월 30일 실행 표기를 뒤 커밋의 날짜로 고쳐 쓰지 않는다.
+
+검증 명령은 `python -I -B report_repro/check_crosswalk.py`다. `REPORT_DATA_ROOT`로 자료 루트를 지정할 수 있고, R-E Git 이력의 위치는 `--repo`로 지정한다. JSON 원자료, workbook, 저널이나 필요한 Git 이력이 없으면 checker는 실패한다. Git 이력을 담지 않은 파일 묶음에서는 regret 두 판과 용량 이력의 검증이 불가능하다.

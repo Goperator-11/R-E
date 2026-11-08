@@ -1,0 +1,2116 @@
+{
+ "id": "report",
+ "summary": "27항목을 원자료와 코드에서 다시 확인해 전부 근거가 있었고 confirmed 11, partly 16이며 통째로 틀린 항목은 없다. 값이 틀린 것은 ±3.98 한 건이고 '0.21 ms 이하'는 상한 0.2020 ms라 참이어서 RT-13에서 뺐으며, 심사가 저장소를 보지 않고 범위가 안 바뀌는 RT-07과 RT-08은 should로 내렸다. fix와 acceptance에 결함이 많았다: RT-06은 기본 경로와 'C:' grep이 그대로는 실패하고, RT-05는 저널 수(33이 아니라 24)와 합격 기준이 틀렸고, RT-27은 인용 키가 26개이며, RT-04는 낡는 곳이 15줄이고, RT-20은 CP-05에 따라 숫자가 바뀐다. 놓친 항목은 셋이다: 한계 절의 '첫 접속만'이 재방문 조건부 결과와 어긋나고(must), 정책에 참 uplink를 준 사실이 한계에 없고, 요약문 큰 인증서 수치에 initial cwnd 단서가 없다. 정책, Go 관문, sealed31에 닿는 fix는 없고, 다른 갈래와 겹치거나 충돌하는 곳은 overlaps에 적었다.",
+ "assembly_note": "items의 변경분은 Write 도구로 verify_report/patch.json에 쓰고, 원본 항목과 deadline, trace는 report.json에서 스크립트로 병합했다. 병합 때 정오표 old 문자열이 content.py에 1회씩 있는지 다시 검사했다.",
+ "deadline": {
+  "source": "C:/Users/scien/OneDrive/문서/카카오톡 받은 파일/붙임 1. 2026년 과학영재 창의연구(R_E) 연구보고서 제출 안내문.pdf (한국과학창의재단, 2026-10-26)",
+  "due": "2026-11-16(월)까지, 기한 초과 시 평가하지 않음, 기한 뒤 수정본 접수 안 함",
+  "school_internal_due": "미확인",
+  "method": "학교별 압축파일 1개로 공문 제출. 공문 발송 지연이 예상되면 사전 연락 후 기한 내 메일 제출 인정",
+  "format": "PDF 1부. 파일명 소속학교_분야__과제명",
+  "required": "①표지 ②요약문 ③과제 수행 과정 ④과제 수행 결과물 ⑤연구 윤리(학생용)·R&E지도(지도교사용) 체크리스트. 지도교사용 서식은 양식에 없음(11-05 로그 25, 31행)",
+  "limits": "요약문 2쪽, 과제 수행 과정 2쪽, 연구 결과물 12쪽 이내(초과분 평가 안 함). A4, 여백 상하좌우 25, 머리말·꼬리말 0. 규격·PDF 위반은 평가 제외",
+  "after": "평가 ~11-23, 우수 110/796과제 통보 12월 1주, 포스터 발표 12-23(서울)",
+  "scoring": "혁신·도전 10, 설계 10, 수행 40(역할 협동, 교육 효과, 데이터 과정 누락 없음, 문헌 인용 포함), 결과 타당성 30, 기대효과 10"
+ },
+ "items": [
+  {
+   "id": "RT-01",
+   "kind": "decision",
+   "priority": "must",
+   "title": "AI 활용 칸이 지금 없는 PaperBanana 그림을 적고 있다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:57",
+    "C:/hwp_work/rne_final/tools/content.py:58",
+    "C:/hwp_work/rne_final/tools/content.py:61",
+    "C:/hwp_work/rne_final/figs2/fig1_timing.tex",
+    "C:/hwp_work/rne_final/figs2/fig2_system.tex",
+    "C:/dev/claude_brain/06 세션 로그/2026-11-05 R&E 보고서 그림 전면 재제작.md:36"
+   ],
+   "problem": "AI_DETAIL이 '[Fig. 1], [Fig. 2]는 PaperBanana로 생성한 뒤' 라고 적지만 지금 그림은 TikZ 코드로 그렸다. 안 고치면 연구 윤리 체크리스트에 서명하는 문서에 사실과 다른 문장이 남는다.",
+   "evidence": "Grep 'PaperBanana' content.py: 57행, 61행. 바탕화면 양식.hwp 본문 추출에서 2회. figs2/tools/fig1.py, fig2.py는 tikzpicture 문자열을 만든다. 11-05 그림 로그 36행 인용: 저거 AI 활용했다는 문구는 바꾸지마. 프로젝트 노트 22행도 도현님 판단 필요로 적었다.",
+   "fix": "도현님이 정한다. 기본값: 지시대로 문구를 바꾸지 않고 정오표에 '결정 대기'로 올린다. 바꾸기로 하면 AI_TOOLS는 'Claude Code, Codex', AI_PURPOSE 끝 '구조도 생성'은 '그림 코드 작성', AI_DETAIL 해당 문장은 '[Fig. 1]~[Fig. 6]은 AI가 작성한 TikZ·PGFPlots 코드로 그렸고 측정값은 원자료에서 읽었다.'로 한다.",
+   "acceptance": "state/DECISIONS_NEEDED.md에 결정이 적혀 있다. 바꾸기로 했으면 최종 PDF 텍스트에서 'PaperBanana' 0건.",
+   "depends": [],
+   "est_minutes": 5,
+   "codex_can_do": false,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "content.py 57, 58, 61행과 양식.hwp 본문에서 PaperBanana 2회를 다시 확인했다. figs2/fig1_timing.tex, fig2_system.tex는 TikZ 소스이고 그림 로그 22, 36행과 맞는다. 체크리스트 '자료조사/출처표기' 행에 '생성형 AI 활용 등도 검토 필요'가 있어 서명 전에 답이 필요하므로 must가 맞다."
+  },
+  {
+   "id": "RT-02",
+   "kind": "decision",
+   "priority": "must",
+   "title": "제출 기한 11-16 안에 정오표와 측정 반영을 닫을 마감을 정하고 한글에서 쪽수를 확인한다",
+   "where": [
+    "C:/Users/scien/OneDrive/문서/카카오톡 받은 파일/붙임 1. 2026년 과학영재 창의연구(R_E) 연구보고서 제출 안내문.pdf:1",
+    "C:/Users/scien/OneDrive/Desktop/양식.hwp",
+    "C:/dev/claude_brain/03 프로젝트/진행중/우리 학술 (연구공모전).md:22",
+    "C:/dev/claude_brain/06 세션 로그/2026-11-05 R&E 최종 보고서 초안 작성.md:16"
+   ],
+   "problem": "기한을 넘기면 평가하지 않고 기한 뒤 수정본도 받지 않는다. 쪽수 17쪽(결과물 5~16쪽)은 Polaris 기준이고 한글에서 연 적이 없어 제한 초과 여부가 미확인이다. 제한은 결과물 12쪽만이 아니라 요약문 2쪽, 과제 수행 과정 2쪽에도 있고 초과 분량은 평가하지 않는다. 루프가 끝나는 시점을 정하지 않으면 측정 결과가 보고서에 못 들어간다.",
+   "evidence": "PyMuPDF로 안내문 추출: 제출기한 2026. 11. 16.(월)까지, 연구 결과물(12쪽 이내) 초과 분량 평가 안 함, 여백 상하좌우 25, 머리말·꼬리말 0, 제출 형식 PDF. 학교 내부 취합일은 볼트·안내문에서 찾지 못함(미확인). 프로젝트 노트 22행: 한글에서 PDF로 저장 후 쪽수 재확인이 남음.",
+   "fix": "도현님 일: 학교 취합 마감 확인, 지도교사 체크리스트 서식 확보, 정오표 반영 뒤 한글에서 열어 PDF 저장, 구역별 쪽수 확인. 기본값: 루프의 보고서 반영 마감을 2026-11-12 23:59 KST로 두고 그 뒤 끝난 측정은 보고서에 넣지 않는다. 파일명 기본값: 강원과학고_AI·정보__ML-KEM 적용 시 전송 성능 개선을 위한 QUIC 기반 적응형 FEC 연구.pdf.",
+   "acceptance": "state/DECISIONS_NEEDED.md에 반영 마감과 학교 취합일이 적혀 있다. 최종 PDF에서 요약문 ≤ 2쪽, 과제 수행 과정 ≤ 2쪽, 연구 결과물 ≤ 12쪽(사람이 확인).",
+   "depends": [],
+   "est_minutes": 30,
+   "codex_can_do": false,
+   "source_ids": [],
+   "verdict": "partly",
+   "verify_note": "안내문 PDF를 다시 추출해 기한, 분량, 규격, 배점이 맞음을 확인했다. 양식.hwp PAGE_DEF는 59528×84188, 여백 7087(25 mm), 머리말·꼬리말 0이라 규격은 이미 맞다. 원본은 결과물 12쪽만 봤는데 안내문은 요약문 2쪽, 과제 수행 과정 2쪽도 제한하고 RT-03, RT-04, RT-14, RT-30이 이 두 구역 문장을 늘린다. 미확인: 두 구역의 현재 여유(한글에서 열어 보지 않았다)."
+  },
+  {
+   "id": "RT-03",
+   "kind": "report",
+   "priority": "must",
+   "title": "첫 측정 결과 X9, X1, X6를 넣을 절과 문장 규칙을 정오표에 고정한다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:11",
+    "C:/hwp_work/rne_final/tools/content.py:81",
+    "C:/hwp_work/rne_final/tools/content.py:152",
+    "C:/hwp_work/rne_final/tools/content.py:172",
+    "C:/hwp_work/rne_final/tools/content.py:202",
+    "C:/hwp_work/rne_final/tools/content.py:207",
+    "C:/hwp_work/rne_final/tools/content.py:208",
+    "C:/hwp_work/rne_final/tools/content.py:104",
+    "C:/hwp_work/rne_final/tools/content.py:215",
+    "C:/hwp_work/rne_final/tools/content.py:28",
+    "C:/hwp_work/rne_final/tools/content.py:31",
+    "C:/hwp_work/rne_final/tools/content.py:36"
+   ],
+   "problem": "보고서에 측정 결과 자리가 따로 없다. 정하지 않으면 결과를 어디에 어떤 표현으로 넣을지 그때 정하게 되고, 개발 측정이 봉인 판정처럼 읽히거나 12쪽을 넘긴다.",
+   "evidence": "HO/v33/state/LOOP_STATE.json 직접 읽음: T7, X1, X6, X9, G2 모두 todo. 분량: 프로젝트 노트 22행 마지막 쪽 여유 약 6 cm, 그림 로그 60행 Table 3 때문에 9쪽 아래 빈칸. 세 결과의 줄 수는 내 추정(합 14~18줄)이고 미확인이다. X1 카드 TASKS.md:422, X9 카드 TASKS.md:443, X6 카드 TASKS.md:417.",
+   "fix": "docs/REPORT_ERRATA.md에 측정 절을 만든다. 측정 문장에는 모두 '개발 측정'을 넣고 봉인 판정처럼 쓰지 않는다. (1) X9: Ⅳ-1 둘째 문단(152행) '따라서 둘째 전제는' 앞에 '측정기를 고친 뒤 FEC 없는 arm을 같은 block에서 교대로 다시 잰 개발 측정에서 PTO 비율 차이는 x%p(95% CI a~b, n=…)였다.'를 넣고 11, 28, 81, 215행을 맞춘다. 46행은 8월 자료의 과거 서술이라 두고 그 판단을 적는다. 비유의여도 136행 규칙대로 기각이나 동등이라 쓰지 않는다. (2) X1: Ⅳ-3 네 방법 문단(172행)과 Fig. 5 다음에 한 문단을 넣고, 207행 '같은 바이트의 padding과 비교한 값은 아직 없다', 104행 Table 1 대체 행, 212행, 215행 RQ3, 31, 36행을 맞춘다. parity 이득이 0이면 그대로 적는다. (3) X6: Ⅳ 6절(201~202행) 제목을 '6. 개발본의 첫 측정과 시뮬레이션'으로 바꾸고 '개발 측정이며 봉인 판정이 아니다'를 문장에 넣는다. Table 6에는 넣지 않는다. C1 on/off를 가르고 W를 적는다(D50). 208행 '현재 근거는 시뮬레이션뿐이다'를 맞추고, 36, 216행의 봉인 측정은 후속으로 둔다. (4) 분량: 요약문, 과정, 결과물 구역별 증감을 적고, 결과물이 넘치면 Table 3 쪽 나눔을 허용하고, 그래도 넘치면 X1, X9, X6 순서로 남긴다. 판정까지 끝나고 RT-02 마감 전에 나온 결과만 넣는다. MS-01이 '안 넣는다'이면 이 과제는 skipped로 닫는다.",
+   "acceptance": "report_repro/check_errata.py가 측정 절의 위치 문자열을 content.py에서 찾고 exit 0. X9, X1, X6 문장에 모두 '개발 측정' 포함. 각 수치에 results JSON 경로와 키가 붙어 있다.",
+   "depends": [
+    "MS-01",
+    "T7",
+    "X9",
+    "X1",
+    "X6",
+    "RT-09"
+   ],
+   "est_minutes": 60,
+   "codex_can_do": true,
+   "source_ids": [
+    "X1",
+    "X9",
+    "X6",
+    "D50"
+   ],
+   "verdict": "partly",
+   "verify_note": "TASKS.md 417, 422, 443행과 LOOP_STATE의 T7, X1, X6, X9 todo를 확인했다. TASKS X 절 머리가 모두 development인데 원본 문장 틀은 X6에만 '개발 측정'을 넣어 X9, X1이 봉인 판정처럼 읽힐 수 있고, 초록 11행도 빠졌다. MS-22의 REPORT_UPDATE_after_measure.md, BL-09와 같은 일이라 REPORT_ERRATA.md 하나로 합친다. MS-01이 '안 돌린다'이면 건너뛴다. 측정 코드와 sealed31에 닿지 않는 문서 과제다."
+  },
+  {
+   "id": "RT-04",
+   "kind": "report",
+   "priority": "must",
+   "title": "루프 결과에 따라 낡는 진술 15줄을 측정 상태별 문구로 준비한다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:11",
+    "C:/hwp_work/rne_final/tools/content.py:28",
+    "C:/hwp_work/rne_final/tools/content.py:36",
+    "C:/hwp_work/rne_final/tools/content.py:52",
+    "C:/hwp_work/rne_final/tools/content.py:71",
+    "C:/hwp_work/rne_final/tools/content.py:81",
+    "C:/hwp_work/rne_final/tools/content.py:104",
+    "C:/hwp_work/rne_final/tools/content.py:152",
+    "C:/hwp_work/rne_final/tools/content.py:201",
+    "C:/hwp_work/rne_final/tools/content.py:202",
+    "C:/hwp_work/rne_final/tools/content.py:207",
+    "C:/hwp_work/rne_final/tools/content.py:208",
+    "C:/hwp_work/rne_final/tools/content.py:212",
+    "C:/hwp_work/rne_final/tools/content.py:215",
+    "C:/hwp_work/rne_final/tools/content.py:216"
+   ],
+   "problem": "지금은 모두 참이지만 루프가 돌면 거짓이 된다. 특히 52행 '측정 러너가 아직 없으며'는 T7만 끝나도 틀리고, 201, 202행의 '실측 없는 개발본', '네트워크 측정이 없다'는 X6가 돌면 틀리고, 11행 초록과 215행 결론의 '판정을 보류하였다'는 X9가 돌면 낡는다.",
+   "evidence": "content.py 52행 인용: 11월 2일 의존을 풀었으나 측정 러너가 아직 없으며 향후 연구에서 수행한다. LOOP_STATE: G1 done, G2·T7·X1·X6·X9 todo(2026-11-06 읽음). 보고서가 지금 측정 0건을 말하는 곳은 36, 52, 202, 216행이고 정직하다.",
+   "fix": "docs/REPORT_ERRATA.md에 행마다 old 문자열, 근거 과제, 측정 뒤 문구, 측정 못 한 경우 문구를 적는다. old: (11) 'QUIC 손실 취약성은 측정기 결함으로 판정을 보류하였다.' (28) 'QUIC 손실 비교는 측정기 분모 결함이 드러나 판정을 보류하였다.' (36) '측정기를 고친 뒤 손실 취약성을 같은 블록 교대 설계로 재측정한다.', '같은 바이트의 padding과 parity를 직접 비교하여 parity의 고유 몫을 분리한다.', '실측이 없는 v3.2-dev와 v3.3.1-dev를 새 봉인 프로토콜로 측정한다.' (52) '11월 2일 의존을 풀었으나 측정 러너가 아직 없으며 향후 연구에서 수행한다' (71) '손실 통계 재측정, 다른 QUIC 구현 검증, 최신 개발본 실측은 끝내지 못하였다' (81) '둘째는 측정기 결함으로 판정하지 못하였으며' (104) '설계, 구현, 측정(같은 바이트 비교 없음)' (152) '따라서 둘째 전제는' (201) '6. 실측 없는 개발본' (202) 'v3.2-dev와 v3.3.1-dev는 네트워크 측정이 없다.' (207) '같은 바이트의 padding과 비교한 값은 아직 없다' (208) '현재 근거는 시뮬레이션뿐이다' (212) '(같은 바이트 비교는 후속 과제)' (215) 'QUIC 손실 취약성은 판정을 보류하였다.' (216) '후속 연구는 측정기를 고친 손실 취약성 재측정'. 52행은 세 상태로 적는다: T7 전이면 그대로, T7 끝나고 측정 못 했으면 '11월 2일 의존을 풀고 측정 러너를 구현하였으나 제출 전까지 측정을 마치지 못하여 향후 연구에서 수행한다', 측정했으면 측정 과제만 남긴다. 루프 마지막 반복에서 LOOP_STATE를 읽어 행마다 쓸 문구를 표시한다.",
+   "acceptance": "check_errata.py가 위 old 17개를 content.py에서 각각 1회 찾는다. 각 행에 selected 값이 있고 그 행 근거 과제(T7, X1, X6, X9)의 LOOP_STATE 상태와 맞는다.",
+   "depends": [
+    "MS-01",
+    "RT-09"
+   ],
+   "est_minutes": 40,
+   "codex_can_do": true,
+   "source_ids": [
+    "T7",
+    "G2"
+   ],
+   "verdict": "partly",
+   "verify_note": "원본 10곳은 모두 맞다. 더 찾으니 11행(초록), 28행(요약문), 201행(절 제목), 208행, 215행도 측정 뒤 낡는다. 아래 old 문자열은 content.py에서 각각 1회임을 직접 셌다. 두 판만으로는 T7은 끝났고 측정을 못 한 경우와 T7 전 상태를 못 가르므로 행마다 해당 과제 상태로 고른다. MS-22, MS-23의 별도 파일 대신 이 표를 쓴다. 46행 '판정을 보류하고'는 8월 자료 서술이라 그대로 둔다."
+  },
+  {
+   "id": "RT-05",
+   "kind": "repo",
+   "priority": "must",
+   "title": "v3 판정 재계산 '223항목, 4.4×10⁻¹² ms'의 산출물이 어디에도 없다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:147",
+    "C:/dev/pq_afec_gen31/g3/RESULT_stage3.md:5",
+    "C:/dev/codex_handoff/state/evo/v31/stage3_verify/recompute.json",
+    "C:/dev/codex_handoff/codex_out/X6.md"
+   ],
+   "problem": "11-05 워크플로 스크래치에서 나온 수로 보이는데 파일이 남지 않아 재현할 수 없다. 재현성 절의 핵심 문장이 근거 없는 수가 된다.",
+   "evidence": "Grep '223항목|223 항목|4\\.4e-12|4\\.4×10' C:/dev/codex_handoff, gen33 docs, 볼트 세션 로그: 관련 산출물 없음. recompute.json script_path는 사라진 세션 스크래치를 가리킨다. 남은 값은 RESULT_stage3 5행 760항목 최대 4.8e-12 ms(v3.1), X6.md(v3.0). 같은 문장의 봉인 71개는 직접 재해시함: 3+8+29+31=71, 누락 0, 불일치 0.",
+   "fix": "(1) 먼저 정오표에 147행 정정을 넣는다. old '봉인 파일 71개는 2026년 11월 5일 다시 해시하여 일치를 확인하였고, v3 네 회차의 판정 223항목을 저널에서 재계산하여 최대 4.4×10⁻¹² ms 차이를 확인하였다.' new '봉인 파일 71개를 [재해시 날짜] 다시 해시하여 일치를 확인하였고, v3.1 판정 760항목의 독립 재계산은 최대 4.8×10⁻¹² ms 차이였으며, v3.0은 판정과 범주가 모두 일치하였다(프로토콜 문구가 정하지 않은 H2 상한, H4 하한 표시값만 달랐다).' 근거 C:/dev/pq_afec_gen31/g3/RESULT_stage3.md:5, C:/dev/pq_afec_gen3/g3/RESULT_stage2.md:5. (2) BL-12와 합쳐 재계산 스크립트는 하나만 만들고 report_repro/recompute_v3_verdicts.py에 둔다. 입력은 C:/dev/pq_afec_gen3/experiments/state/p21_run*_units.jsonl 24개(22+2), C:/dev/pq_afec_gen31/experiments/state/p31_run[12]*_units.jsonl 25개 또는 C:/dev/padfec_archive의 사본이고 읽기만 한다. 출력은 report_repro/v3_verdict_recompute.json(items, max_abs_diff_ms, all_verdicts_match, known_display_diffs)과 seal_rehash.json(날짜, 파일 수, 불일치 수)이다. 값이 나오면 (1)의 문장을 그 값으로 바꾼다. gen31 함수를 import해 계산했으면 '독립'이라고 쓰지 않는다. 코드 주석 없음.",
+   "acceptance": "python -I -B report_repro/recompute_v3_verdicts.py exit 0, all_verdicts_match true, 비교 항목(est, se, df, lo95, hi95, lb_holm, reject, category, ratio)의 max_abs_diff_ms < 1e-6. known_display_diffs는 v3.0 H2 상한과 H4 하한뿐이다. seal_rehash.json 파일 수 71, 불일치 0. 동결 폴더 git 상태와 guard_check 위반 없음. check_errata.py가 147행 old 1회를 찾는다.",
+   "depends": [
+    "RT-06"
+   ],
+   "est_minutes": 90,
+   "codex_can_do": true,
+   "source_ids": [
+    "BL-12"
+   ],
+   "verdict": "partly",
+   "verify_note": "볼트, handoff, gen33 docs, 남은 세션 스크래치, 11-04 이후 세션 기록(3개)을 다시 뒤졌고 223항목과 4.4e-12의 출처는 없다. RESULT_stage3.md 5행 760항목, 4.8e-12는 있다. 봉인 합은 sha256 키 3+8+29+31=71, 불일치 0을 다시 쟀다. 틀린 곳: gen3 저널은 33개가 아니라 24개(22+2)다. X6.md 125~133행과 RESULT_stage2.md 5행대로 v3.0은 프로토콜 직역 시 H2 상한 16조건, H4 하한 2조건의 표시값이 러너와 달라 원본 합격 기준은 독립 계산이면 실패한다. BL-12와 같은 일이다. 근거 있는 문장으로 바꾸는 것은 5분이면 되므로 그것을 먼저 하고 스크립트는 그 뒤에 값을 바꾼다. 스크립트는 report_repro에 두어 experiments 지문에 닿지 않게 한다. 입력은 읽기만 하므로 정책과 관문에 영향 없다."
+  },
+  {
+   "id": "RT-06",
+   "kind": "repo",
+   "priority": "must",
+   "title": "보고서 그림·표·수치 재현 묶음을 저장소에 넣는다",
+   "where": [
+    "C:/hwp_work/rne_final/figs2/tools/export_data.py:6",
+    "C:/hwp_work/rne_final/figs2/tools/export_data.py:8",
+    "C:/hwp_work/rne_final/figs2/tools/final_check.py:49",
+    "C:/hwp_work/rne_final/figs2/tools/final_check.py:78",
+    "C:/hwp_work/rne_final/figs2/tools/final_check.py:97",
+    "C:/hwp_work/rne_final/figs2/tools/texbuild.py:26",
+    "C:/hwp_work/rne_final/tools/content.py",
+    "C:/dev/R-E/README.md"
+   ],
+   "problem": "보고서의 표·그림을 다시 만드는 도구가 C:/hwp_work에만 있고 절대 경로로 묶여 있다. 그 폴더가 지워지면 Fig. 3~6과 수치 대조를 재현할 수 없다.",
+   "evidence": "git -C C:/dev/R-E ls-files | grep -iE 'figs2|content\\.py|export_data|final_check|figstyle' 결과 0건(fig1_ 이름은 옛 그림 experiments/figures뿐). final_check.py를 UTF-8 출력으로 다시 돌린 결과: fig3 points 42 bad 0, fig4 arm points 14 bad 0, fig6 values 54 bad 0, fig5 bad 0.",
+   "fix": "gen33에 report_repro/를 만든다. figs2의 .tex, figstyle.tex, data/, 그림 PDF·PNG, tools의 fig1~6.py, texbuild.py, export_data.py, final_check.py와 content.py 사본을 넣는다. check_figs.py, sheet2.py, strip.py는 넣지 않는다. 경로는 환경변수 REPORT_DATA_ROOT로 받고 없으면 report_repro의 상위 두 단계로 두되, mlkem-quic-amplification은 <root>/mlkem-quic-amplification, <root>/R-E/mlkem-quic-amplification 순서로 찾는다. final_check.py에서 hwp 비교 부분(engine, olefile, paras)을 떼어 check_report_numbers.py로 만든다. 이 검사는 .tex 문자열과 원자료만 비교하므로 컴파일 옵션을 두지 않는다. export_data.py의 OUT도 같은 규칙으로 바꾸고 data/*.json의 source를 상대 경로로 다시 낸다. report_repro/requirements.txt에 openpyxl, PyMuPDF를 적는다. 원자료는 복사하지 않고 위치만 SOURCES.md에 적는다. trace 변환은 RT-09가 한다. 코드 주석 없음. hwp는 넣지 않는다.",
+   "acceptance": "gen33 작업 트리와 R-E 배치 사본 두 곳에서 python -I -B report_repro/check_report_numbers.py 출력에 fig3, fig4, fig6, fig5의 bad 0이 4줄이고 exit 0. git grep -nE '(^|[^A-Za-z])[A-Za-z]:[\\\\/]' -- 'report_repro/*.py' 0줄('C:' 단순 grep은 참고문헌 때문에 쓰지 않는다). python -I -B tools/scrub_for_publish.py --check에서 report_repro 아래 user_path 0.",
+   "depends": [],
+   "est_minutes": 60,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "partly",
+   "verify_note": "final_check.py를 다시 돌려 fig3 points 42 bad 0, fig4 arm points 14 bad 0, fig6 values 54 bad 0, fig5 bad 0을 확인했다. R-E에 보고서 도구가 없다는 것도 맞다(grep에 걸린 final_check는 gen33의 j1, j6 스크립트라 무관). fix는 그대로 하면 실패한다: (1) REPORT_DATA_ROOT 기본값 ../..는 gen33 자리에서 C:/dev인데 C:/dev/mlkem-quic-amplification이 없다. (2) content.py 사본의 참고문헌 4줄('QUIC: A UDP' 등)이 'C:' grep에 걸린다. (3) final_check.py는 texbuild를 부르지 않아 --no-compile이 뜻이 없다. (4) check_figs.py는 C:/Users 스크래치 경로가 있어 scrub user_path에 걸리고 sheet2.py는 지워진 shots2를 가리킨다. C:/dev/pq_afec와 R-E의 p14, p2, p12, p12_units, 두 decisions는 바이트가 같아 어느 배치든 값은 같다. pytest는 testpaths=tests라 새 폴더의 영향이 없다."
+  },
+  {
+   "id": "RT-09",
+   "kind": "report",
+   "priority": "must",
+   "title": "보고서 정오표와 검사기를 만든다(hwp는 고치지 않는다)",
+   "where": [
+    "C:/dev/pq_afec_gen33/docs/REPORT_ERRATA.md",
+    "C:/dev/pq_afec_gen33/docs/REPORT_TRACE.md",
+    "C:/dev/pq_afec_gen33/report_repro/check_errata.py",
+    "C:/hwp_work/rne_final/tools/content.py"
+   ],
+   "problem": "Codex는 hwp를 고치지 않으므로 도현님이 손으로 옮길 목록이 있어야 한다. 없으면 이 감사의 정정이 보고서에 안 들어간다.",
+   "evidence": "11-05 그림 로그 58~60행에 고치지 않은 ±3.98이 남아 있고 지금 content.py 172행도 그대로다. 그림 재제작 때 문단 수 436 동일, 바뀐 문단 8개뿐이라 손 정정 절차는 검증돼 있다.",
+   "fix": "docs/REPORT_ERRATA.md 열: id, 구역(요약문, 과정, 결과물), 절, content.py 줄, old 전체 문자열, new, 근거 키, 상태(must, should, could, 결정 대기), 분량 증감(줄). RT-01(결정 뒤), RT-03, 04, 05, 08, 13~21, 23, 25, 26, 28~30을 행으로 옮긴다. report_repro/build_report_numbers.py를 새로 써서 trace의 출처 키에서 값을 읽어 report_numbers.json을 만든다(천 단위 쉼표를 없앤 값으로 비교). check_errata.py는 old가 content.py 사본에서 정확히 1회 나오는지, new의 숫자가 report_numbers.json에 있거나 측정 대기로 표시됐는지 보고 구역별 증감 합을 출력한다. report.final.json의 trace를 docs/REPORT_TRACE.md 표로 변환한다. content.py와 양식.hwp는 읽기만 하고 새 hwp를 빌드하지 않는다.",
+   "acceptance": "python -I -B report_repro/check_errata.py exit 0, 구역별 증감 합 출력. 루프 시작 때 양식.hwp의 sha256을 state에 적고 루프가 이 파일을 쓰지 않았음을 확인한다. 값이 afc8b777ee171f7b와 달라도 도현님 수정이면 실패가 아니고, 그때는 old를 hwp 본문과 다시 대조하라는 경고를 낸다.",
+   "depends": [
+    "RT-06"
+   ],
+   "est_minutes": 90,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "partly",
+   "verify_note": "그림 로그 53, 59행, content.py 172행의 3.98을 확인했다. 부족한 점: (1) report_numbers.json을 만드는 과제가 어디에도 없다. (2) 행으로 옮길 목록에 RT-08 캡션, RT-21 날짜, RT-23 문장이 빠졌다. (3) 양식.hwp sha 조건은 도현님이 칸을 채우면 바로 실패한다. (4) BL-09는 content.py를 고치고 out에 새 hwp를 빌드하라고 하고 MS-22와 이 항목은 읽기만 하라고 한다. 읽기만 쪽으로 합친다. (5) 안내문의 구역별 쪽수 제한 때문에 구역 열이 필요하다. 원본 old 16개와 이번 추가분은 content.py에서 1회임을 확인했다."
+  },
+  {
+   "id": "RT-10",
+   "kind": "decision",
+   "priority": "must",
+   "title": "【입력 필요】 칸, 체크리스트 8행과 서명, 인적 사항, 팀원 번호를 도현님이 채운다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:41",
+    "C:/hwp_work/rne_final/tools/content.py:61",
+    "C:/hwp_work/rne_final/tools/content.py:67",
+    "C:/hwp_work/rne_final/tools/content.py:50",
+    "C:/dev/claude_brain/06 세션 로그/2026-11-05 R&E 최종 보고서 초안 작성.md:26",
+    "C:/dev/claude_brain/06 세션 로그/2026-11-05 R&E 최종 보고서 초안 작성.md:32"
+   ],
+   "problem": "전문가 피드백, 학생별 수행 범위, 팀원3 역할이 비어 있고 연구윤리 체크리스트 8행과 서명도 비어 있다. ①~⑤ 모두 필수이고 수행 우수성 평가에 역할 협동이 들어 있으며 지어낼 수 없다. 50행 '팀원1'의 실명 대응도 확인 대상이다.",
+   "evidence": "양식.hwp 본문 추출: 【입력 필요】 2건, 【확인 필요】 1건, 【별첨】 1건. 팀 초안 kakao_final_full.txt 108행도 팀원 번호 배정 확인을 남겼다. 50행 근거는 볼트 2026-08-28 신레오 보고 검증 로그.",
+   "fix": "기본값: Codex는 이 칸을 채우지 않는다. 도현님 또는 팀원이 쓴다. 전문가 피드백이 없으면 안내대로 X로 바꾼다. 팀원3은 계획 배정(padding-FEC 구현)만 기록돼 있다. 체크리스트는 RT-01, RT-11 답을 먼저 정한 뒤 표시하고, 최종 PDF 기준으로 날짜와 3인 서명을 받는다.",
+   "acceptance": "최종 PDF 텍스트에서 '【입력 필요', '【확인 필요' 0건, '000' 칸 0건. 체크리스트 8행 표시와 3인 서명은 사람이 확인.",
+   "depends": [],
+   "est_minutes": 30,
+   "codex_can_do": false,
+   "source_ids": [],
+   "verdict": "partly",
+   "verify_note": "양식.hwp 추출에서 【입력 필요 2건, 【확인 필요 1건을 확인했다. 【별첨】은 양식의 절 표시라 채울 칸이 아니다. 원본이 빠뜨린 것: 연구윤리 체크리스트 8행의 예·아니오가 모두 비어 있고 날짜와 '연구자 000 (인)' 서명칸, 표지 지도교사와 학생 칸이 000이다. 체크리스트에는 '모든 데이터는 연구노트에 직접 기록'과 '생성형 AI 활용 등도 검토' 문항이 있어 사람이 답해야 한다."
+  },
+  {
+   "id": "RT-11",
+   "kind": "decision",
+   "priority": "must",
+   "title": "체크리스트 '다른 기관 또는 대회에 제출하지 않았다' 문항을 우리 학술 공모전과 대조한다",
+   "where": [
+    "C:/hwp_work/rne_final/참고_팀초안/kakao_final_full.txt:368",
+    "C:/dev/claude_brain/06 세션 로그/2026-11-05 R&E 최종 보고서 초안 작성.md:24",
+    "C:/dev/claude_brain/03 프로젝트/진행중/우리 학술 (연구공모전).md:24"
+   ],
+   "problem": "같은 주제가 「우리 학술」 공모전에도 있다. 실제 제출 여부 근거가 없어 체크하면 사실과 다를 수 있다.",
+   "evidence": "11-05 로그 24행: 실제 제출 여부 근거가 없어 체크하지 않고 도현님께 넘긴다. 볼트에서 제출 사실을 찾지 못함(미확인).",
+   "fix": "도현님이 제출 사실을 확인한다. 기본값: 체크하지 않은 채로 두고 제출 전 지도교사와 상의한다.",
+   "acceptance": "state/DECISIONS_NEEDED.md에 답이 적혀 있다.",
+   "depends": [],
+   "est_minutes": 5,
+   "codex_can_do": false,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "kakao_final_full.txt 368행과 양식.hwp 체크리스트 '중복게재' 행에 같은 문장이 있고 표시는 비어 있다. 프로젝트 노트 24행이 이 연구를 「우리 학술」 제출용으로 적는다. 볼트에서 실제 제출 기록은 찾지 못했다(미확인)."
+  },
+  {
+   "id": "RT-12",
+   "kind": "decision",
+   "priority": "must",
+   "title": "제출 기준본과 과제명을 하나로 정한다(팀 서명본과 내용이 다르다)",
+   "where": [
+    "C:/Users/scien/OneDrive/Desktop/양식.hwp",
+    "C:/Users/scien/OneDrive/문서/카카오톡 받은 파일/2026 RE 최종보고서_ML-KEM 적용 QUIC 핸드셰이크_강원과학고_서명본.hwp",
+    "C:/hwp_work/rne_final/참고_팀초안/kakao_final_full.txt",
+    "C:/dev/claude_brain/03 프로젝트/진행중/우리 학술 (연구공모전).md:226"
+   ],
+   "problem": "팀원 쪽 서명본이 다른 제목과 다른 수치로 돌고 있다. 두 초안이 섞이면 틀린 수치가 제출될 수 있고 서명도 최종본 기준이어야 한다.",
+   "evidence": "팀 초안에만 있는 값: 연산 1/1,800(보고서 1/640이 합 78.2 µs 기준으로 맞음), 9월 14일 실행 118.6, 61.3, 59.3, 54.8 ms, quiche 0.29.3 비교, first flight를 '첫 비행'으로 번역. 제목은 09-03 재작성본. 프로젝트 노트 226행: 과제명 미결.",
+   "fix": "기본값: 바탕화면 양식.hwp를 제출본으로, 공식 과제명 유지, 서명은 최종 PDF 기준으로 다시 받는다. 팀 초안은 대조 자료로만 쓴다.",
+   "acceptance": "state/DECISIONS_NEEDED.md에 기준본과 과제명이 적혀 있다.",
+   "depends": [],
+   "est_minutes": 10,
+   "codex_can_do": false,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "서명본 파일이 있고(sha256 5836150d) kakao_final_full.txt에 1/1,800(238행), 9월 14일 실행 118.6, 61.3, 59.3, 54.8(287행), quiche 0.29.3(203행), '첫 비행' 10회가 있다. BL-33, DC-23의 과제명 결정과 같은 질문이므로 한 번만 묻는다."
+  },
+  {
+   "id": "RT-28",
+   "kind": "report",
+   "priority": "must",
+   "title": "한계 셋째 '첫 접속만 다루었다'가 재방문 조건부 결과를 첫 접속 결과로 읽게 한다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:210",
+    "C:/dev/pq_afec_gen31/g3/RESULT_stage3.md:16",
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:11",
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:38",
+    "C:/dev/codex_handoff/v33/findings/audit-prior-art.md:5",
+    "C:/dev/codex_handoff/v33/prompt/CONTEXT.md:147"
+   ],
+   "problem": "정책 비교의 이득은 목적지 기록이 쌓인 뒤 나온다. 완전한 첫 방문에서 gen-2와 v3.1은 둘 다 처리 없이 보낸다. 그런데 한계 절은 '첫 접속만 다루었다'고 적어 28.01 ms가 첫 접속 이득처럼 읽힌다. 실제 조건은 token과 ticket을 끈 재방문이고, 실제 재방문에서는 resumption이나 NEW_TOKEN이 이 왕복을 없앨 수 있다. CONTEXT 7절과 REPORT_CLAIMS 38행이 이 단서를 요구한다.",
+   "evidence": "content.py 210행 인용: 셋째, session ticket과 NEW_TOKEN을 쓰지 않는 첫 접속만 다루었다. RESULT_stage3.md 16행 H5: 콜드 첫 방문, 첫 방문은 둘 다 b0이고 첫 비행 업링크는 둘 다 2,560 B. REPORT_CLAIMS 38행: 첫 접속 또는 유효 token·ticket이 없는 재방문의 조건부 결과로 쓴다. audit-prior-art.md A7-01: v3는 목적지 이력이 있어야 행동하고 첫 방문에는 b0. 양식.hwp 본문에도 '첫 접속' 1회. 재방문 중 해당 비율은 미확인(REPORT_CLAIMS 245행).",
+   "fix": "'셋째, session ticket과 NEW_TOKEN을 쓰지 않는 첫 접속만 다루었다.' → '셋째, session ticket과 NEW_TOKEN을 끈 연결만 다루었다. auto 정책은 목적지 기록이 있어야 행동하므로 완전한 첫 방문에서는 gen-2와 v3.1이 모두 처리 없이 보내고(first flight 2,560 B), 세대 비교의 이득은 유효한 token이나 ticket이 없는 재방문의 조건부 결과이다. 실제 재방문에서는 resumption이나 NEW_TOKEN이 이 왕복을 없앨 수 있으며 해당 비율은 측정하지 않았다.' 정오표 must 행으로 넣는다.",
+   "acceptance": "check_errata.py old 1회 일치. new에 2,560이 있고 report_numbers.json이 RESULT_stage3 H5에서 읽은 값과 같다. 최종 PDF 텍스트에서 '첫 접속만' 0건.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 5,
+   "codex_can_do": true,
+   "source_ids": [
+    "A7-01",
+    "X4"
+   ],
+   "verdict": "added",
+   "verify_note": "report 갈래가 trace에 잡지 않은 문장이다. RESULT_stage3.md 16행과 gen33 padfec3/decide3.py 270~271행(S_hist나 k_hist가 비면 b0 'cold')으로 확인했다. X4가 돌면 문장에 값을 더한다."
+  },
+  {
+   "id": "RT-07",
+   "kind": "doc",
+   "priority": "should",
+   "title": "저장소 문서와 보고서가 다른 수치를 말하는 곳을 대조표 하나로 정리한다",
+   "where": [
+    "C:/dev/pq_afec/docs/PADFEC 실측 보고서.md:13",
+    "C:/dev/pq_afec/docs/PADFEC 실측 보고서.md:60",
+    "C:/dev/pq_afec/README.md:100",
+    "C:/dev/pq_afec/README.md:449",
+    "C:/dev/pq_afec/README.md:489",
+    "C:/dev/pq_afec/docs/PADFEC v2 명세.md:830",
+    "C:/dev/pq_afec/docs/수정 대기 목록.md:137",
+    "C:/dev/pq_afec/docs/수정 대기 목록.md:242",
+    "C:/dev/pq_afec/docs/수정 대기 목록.md:460",
+    "C:/dev/pq_afec/docs/실측 보고서.md:210",
+    "C:/dev/R-E/mlkem-quic-amplification/data/quic_amplification_v4.xlsx#5_이론대조",
+    "C:/dev/R-E/mlkem-quic-amplification/data/ML-KEM_1단계_측정수치_v2.xlsx#1_크기",
+    "C:/dev/R-E/README.md:25",
+    "C:/dev/pq_afec_gen33/README.md"
+   ],
+   "problem": "팀원이 저장소 문서와 보고서를 대조하면 숫자가 틀린 것처럼 보이고, 어느 값을 인용해야 하는지 적힌 곳이 없다. 같은 문서가 gen3·gen31 사본에도 있고 동결 세대라 원문을 고칠 수 없다. 보고서 수치 자체는 맞으므로 최종 수치가 틀려지는 일은 아니다.",
+   "evidence": "보고서 69.0 B(p1_flight.json capacity 1388, C 1457) 대 문서 60.0 B(C 1449). git 이력의 최소 초과 76, 60, 62, 75, 69로 실행마다 다름. 보고서 p18 m2 103.535 ms 대 수정 대기 목록 460행 106.71. 보고서 0.026±0.025 대 1.173±0.049(git 5ebc151, 6182128, 임계아래/무손실 regret_late) 대 README 449~453행 0.629±0.429 대 1.173±0.049(다른 조건인데 '같은 코드·같은 n'으로 씀). 보고서 5.23%, 4.05(e6_netem.json ge_p5_L4 5.226, 4.054) 대 실측 보고서 210행 4.97, 4.04. V4 5_이론대조 첫 비행 2개·3개 대 p1 1개·2개(정정안 67행이 이미 지적). xlsx hybrid 공유비밀 32 대 보고서 64. R-E README 'gen-2 10-01~10-02 실행' 대 p1·p2·p3·p8·p9 저널 recorded_at 09-29. PADFEC 실측 보고서 머리말은 results에서 직접 생성된다고 하지만 loop2.json p6 finished 2026-08-21이고 p6는 그 뒤 안 돌았다. gen33에는 이 문서들이 없다(git ls-files, grep 0).",
+   "fix": "gen33에 docs/REPORT_NUMBERS_CROSSWALK.md를 만든다. 열: 항목, 보고서 값, 출처 파일과 키, 다른 값과 위치, 왜 다른가(실행 시점, 조건, 정의), 인용할 값. evidence의 일곱 쌍을 넣고 실행별 값은 설정·시점과 함께 적는다. 동결 세대 문서는 고치지 않는다. DC-07의 ERRATA_frozen_generations.md와 gen33 README에 링크 한 줄을 더한다. R-E 최상위 README 링크는 배포 단계에서 넣는다.",
+   "acceptance": "report_repro/check_crosswalk.py가 표의 '보고서 값'을 지정 키에서 다시 읽어 일치를 확인하고 exit 0. Grep -c '69.0' 와 '60.0' 와 '0.629' docs/REPORT_NUMBERS_CROSSWALK.md 각 ≥ 1.",
+   "depends": [
+    "RT-06"
+   ],
+   "est_minutes": 45,
+   "codex_can_do": true,
+   "source_ids": [
+    "A1"
+   ],
+   "verdict": "partly",
+   "verify_note": "where의 값을 모두 다시 읽어 맞음을 확인했다(60.0 B, 106.71, 4.97, 0.629/1.173 표, 5_이론대조 2개·3개, 1_크기 32, p6 finished 08-21, p1·p2·p3·p8·p9 recorded_at 09-29). gen3, gen31 사본도 있다. 다만 보고서 값은 맞고, 제출물은 PDF이며 R-E는 비공개라 심사가 대조할 일이 없다. 다른 값은 대부분 다른 실행의 값이지 틀린 값이 아니다. 그래서 must가 아니라 should다. '60.0'을 한글 경로로 찾을 때 git ls-files는 경로를 인용하므로 -c core.quotepath=false가 필요하고, 그렇게 재도 gen33에는 이 문서들이 없다. DC-07, BL-02의 정정표와 겹치므로 표를 따로 쓰되 거기서 링크한다."
+  },
+  {
+   "id": "RT-08",
+   "kind": "decision",
+   "priority": "should",
+   "title": "V4 3_RTT비례 RTT 50 행의 출처를 팀원에게 확인하고 Fig. 3 캡션을 고친다",
+   "where": [
+    "C:/dev/R-E/mlkem-quic-amplification/data/quic_amplification_v4.xlsx#3_RTT비례:5",
+    "C:/dev/R-E/mlkem-quic-amplification/data/quic_amplification_v4.xlsx#1_개괄스윕:10",
+    "C:/dev/R-E/mlkem-quic-amplification/data/quic_amplification_v4.xlsx#1_개괄스윕:11",
+    "C:/hwp_work/rne_final/tools/content.py:163",
+    "C:/hwp_work/rne_final/tools/content.py:162",
+    "C:/dev/claude_brain/06 세션 로그/2026-11-05 R&E 최종 보고서 초안 작성.md:30"
+   ],
+   "problem": "초록의 95.0~99.3% 근거 표에서 RTT 50 행(104.8, 55.6, 49.2)이 개괄 표의 4,032 B 행(105, 55.4, 49.6)과 다르고 3,500 B 행과 같다. 복사인지 별도 실행인지 가릴 기록이 없는데 캡션은 'a separate run'이라 단정한다. 범위는 안 바뀌지만 캡션 문장은 근거가 없다.",
+   "evidence": "openpyxl로 v1, v2, v3 archive와 v4를 읽음: 네 판 모두 같은 값, D5는 수식 =B5-C5, B5·C5는 숫자 입력. 4_재현성 4,032 B는 105/55.6, 104.7/55.3으로 49.4 ms. 49.6/50=99.2%, 49.4/50=98.8%라 95.0~99.3 범위 안이다. 저장소 raw에 RTT 스윕 원본 없음.",
+   "fix": "도현님이 신레오에게 학교 서버 원본 로그를 묻는다. 기본값: 값은 두고 Fig. 3 캡션의 'a separate run, 49.2 ms against 49.6 ms in (a)'를 'its 50 ms row gives 49.2 ms against 49.6 ms in (a), and the run record is not available'로 바꾸는 행을 정오표에 넣는다. 복사 오류로 확인되면 162행 49.2, 98.4%를 49.6, 99.2%로, fig3 data와 Fig. 3(b)를 함께 고친다. RT-23이 끝나면 노트북 재측정을 함께 적는다.",
+   "acceptance": "state/DECISIONS_NEEDED.md에 답이 적혀 있다. 최종 본문에 'a separate run' 0건 또는 팀원이 확인한 실행 기록 경로가 있다.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 10,
+   "codex_can_do": false,
+   "source_ids": [
+    "11-05 로그 미해결"
+   ],
+   "verdict": "partly",
+   "verify_note": "openpyxl로 v1, v2, v3, v4를 읽어 RTT 50 행 104.8, 55.6과 3,500 B 행이 같고 수식이 =B5-C5임을 확인했다. 시트 제목은 '인증서 4,032B, n=30'이다. 그러나 복사라고도 별도 실행이라고도 증명되지 않는다. 값이 0.1 ms 단위이고 같은 표에서 X25519 2-RTT p50은 104.7~105.5, hybrid 1-RTT p50은 55.3~55.7에 몰려 있어(4,032 B 재현성 1차 105/55.6, 5,609 B 2차 104.8) 우연히 같을 수 있다. 원본의 새 캡션 'repeats the 3,500 B overview values'는 근거 없는 추정을 본문에 넣는다. 범위 95.0~99.3%는 어느 쪽이든 안 변하므로 must가 아니라 should다."
+  },
+  {
+   "id": "RT-13",
+   "kind": "report",
+   "priority": "should",
+   "title": "반올림 1건: padding 반폭 3.97",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:172"
+   ],
+   "problem": "원자료를 다시 계산하면 나오지 않는 값이 본문에 있다. 차이는 0.005 ms지만 정오표로 닫을 수 있다.",
+   "evidence": "p14_dominance.json pad loss 5: 1.96·s/√400 = 3.97498이라 3.97. 11-05 그림 로그 59행도 같은 지적을 남겼다.",
+   "fix": "172행 '60.27 ± 3.98(+1 B)' → '60.27 ± 3.97(+1 B)'. 176행 '0.21 ms 이하'는 그대로 둔다.",
+   "acceptance": "check_errata.py가 old를 찾고 new의 3.97이 report_numbers.json 계산값과 맞는다.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 3,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "partly",
+   "verify_note": "p14 pad loss 5의 1.96·s/√400 = 3.97498을 다시 계산했고 t 기준으로도 3.98은 안 나온다. 176행은 원본이 틀렸다. oracle 상한은 0.0415+0.1605=0.2020이라 '0.21 ms 이하'가 참이고, 원본이 제안한 '0.20 ms 이하'는 오히려 거짓이다. 그 부분은 rejected로 옮겼다."
+  },
+  {
+   "id": "RT-14",
+   "kind": "report",
+   "priority": "should",
+   "title": "요약의 '세대 비교 259,600연결'을 246,000연결과 구분한다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:27",
+    "C:/hwp_work/rne_final/tools/content.py:117"
+   ],
+   "problem": "259,600에는 고정 arm 기제 측정 13,600연결이 들어 있어 세대 비교 표본으로 읽으면 과장이다. Table 2 행은 고정 arm을 포함한다고 적어 맞고 요약 문장만 틀렸다.",
+   "evidence": "RESULT_stage0.md 3행 12,800, RESULT_m1confirm.md 16행 800, RESULT_stage2.md 3행 103,200+18,000, RESULT_stage3.md 3행 106,800+18,000. 합 259,600, 세대 비교 246,000.",
+   "fix": "27행 '세대 비교는 프로토콜과 바이너리를 측정 전에 봉인하고 arm을 교대하여 259,600연결을 측정하였다.' → '고정 arm 확인과 세대 비교는 프로토콜과 바이너리를 측정 전에 봉인하고 arm을 교대하여 모두 259,600연결(세대 비교 246,000연결)을 측정하였다.'",
+   "acceptance": "check_errata.py old 1회 일치. report_numbers.json에 246000과 259600이 RESULT 합으로 계산돼 있다.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 5,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "RESULT_stage0 3행 12,800, RESULT_m1confirm 16행 800, RESULT_stage2 3행 103,200+18,000, RESULT_stage3 3행 106,800+18,000을 다시 읽어 합 259,600, 세대 비교 246,000을 확인했다. 두 고정 arm 프로토콜도 봉인과 block 회전이 있어 새 문장이 맞다. old 1회. 요약문 구역 증가라 RT-02 쪽수 확인 대상이다."
+  },
+  {
+   "id": "RT-15",
+   "kind": "report",
+   "priority": "should",
+   "title": "Table 5 p17의 '중앙값 194.5'는 5구간 중 3구간 미적응을 가린다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:183"
+   ],
+   "problem": "중앙값이 적응한 2구간만으로 계산됐다. 그대로 두면 적응이 늦을 뿐 된다는 인상을 준다. '이전 실행'의 날짜도 없다.",
+   "evidence": "p17_adaptive_value.json gain[큰cert].adapt['2.0']: lags [76,null,null,313,null], lag_med 194.5, never_adapted 3, hit_rate 0.2196. checks 8 '끝까지 적응 못 한 구간 3'. 40.3%는 fixloop_detached.txt:575, 기록 2026-09-27 01:42.",
+   "fix": "'큰 인증서 적중(허용 arm 선택) 22.0%(이전 실행 40.3%), 적응까지 중앙값 194.5/450연결' → '큰 인증서 적중(허용 arm 선택) 22.0%(9월 27일 실행 40.3%), 저손실 5구간 중 3구간 미적응(나머지 76, 313/450연결)'.",
+   "acceptance": "check_errata.py old 1회 일치. 표 칸 한 줄 증가 이내.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 5,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "p17 gain 큰cert adapt['2.0']에서 lags [76,null,null,313,null], lag_med 194.5, never_adapted 3, hit_rate 0.21956을 다시 읽었다. fixloop_detached.txt:575의 40.3%와 기록 2026-09-27 01:42도 맞다. old 1회."
+  },
+  {
+   "id": "RT-16",
+   "kind": "report",
+   "priority": "should",
+   "title": "Table 5 p10 '11/12 완주'는 시험 통과 수다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:180"
+   ],
+   "problem": "'완주'는 연결이 끝까지 돌았다는 뜻으로 읽히는데 값은 시험 항목 통과 수다.",
+   "evidence": "p10_completeness.json tests_passed 11, tests_total 12. 실패 항목은 'C2 RTT 5 ms - 자에 분해능이 있는가' 하나이고 C1 360/360, C3 120/120 등 연결은 모두 성공.",
+   "fix": "'RTT 5 ms에서 분해능 부족. 11/12 완주' → 'RTT 5 ms에서 분해능 부족. 시험 11/12 통과'.",
+   "acceptance": "check_errata.py old 1회 일치.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 2,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "p10 results에서 kind 시험 12개 중 11개 통과, 실패는 'C2 RTT 5 ms - 자에 분해능이 있는가'이고 판정불능 1개는 분모 밖이다. C1 360/360, C3 120/120, C5 600/600으로 연결은 모두 성공했다. old 1회."
+  },
+  {
+   "id": "RT-17",
+   "kind": "report",
+   "priority": "should",
+   "title": "Table 5 p8의 0.024 ms 분모를 밝히고 자료 날짜를 바로잡는다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:179",
+    "C:/hwp_work/rne_final/tools/content.py:177",
+    "C:/dev/pq_afec/experiments/p8_stability.py:411",
+    "C:/dev/pq_afec/experiments/p8_stability.py:426"
+   ],
+   "problem": "'구간 평균 영향 상한 0.024 ms'는 출처 파일이 없고 분모가 없다. p8 자체는 n=120이라 같은 식이면 0.091 ms다. '잡음'도 검정한 말이 아니다. 캡션 '10-01 to 10-02'도 p8 원자료 날짜와 다르다.",
+   "evidence": "p8_stability.json check: 차이 1.09 ms(첫 10회 53.30, 나머지 52.21). p8_stability.py:411 journal_key order|off|n120. 1.09×10/450=0.0242, 1.09×10/120=0.0908. p8_units.jsonl 마지막 fp의 recorded_at 2026-09-29, loop2.json p8 finished 2026-10-01 14:40은 저널 재사용(20초).",
+   "fix": "179행 '기준 근처 잡음. 구간 평균 영향 상한 0.024 ms' → '기준 근처이며 검정은 하지 않음. 450연결 구간이면 평균 영향 약 0.024 ms(계산값)'. 177행 캡션 끝 '(10-01 to 10-02)' → '(10-01 to 10-02; p8 raw from 09-29)'.",
+   "acceptance": "check_errata.py old 2개 일치. report_numbers.json에 계산식이 있다.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 10,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "p8 check '차이 1.09 ms(첫 10회 53.30, 나머지 52.21)'와 p8_stability.py:411, 426을 확인했다. 1.09×10/450=0.0242이고 출처 파일은 없다. p8_units.jsonl 마지막 fp의 recorded_at은 09-29, loop2.json p8은 10-01 14:40, 20초다. Table 5의 다른 단계(p10, p15, p16, p17, p18, p20)는 10-01~10-02가 맞아 p8만 예외로 적으면 된다."
+  },
+  {
+   "id": "RT-18",
+   "kind": "report",
+   "priority": "should",
+   "title": "Table 5 p16 'block 표류 0.39~0.75 ms'의 0.75를 찾지 못했다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:182",
+    "C:/dev/pq_afec/experiments/results/p16_uplink.json"
+   ],
+   "problem": "지금 남은 자료로는 0.393 ms(최대 블록 차이)와 0.762 ms(신호)만 확인된다. 첫 판 4/6 실행의 결과 파일은 재측정이 덮었다.",
+   "evidence": "p16_uplink.json check 2b: 최대 |블록 차이| 0.393 ms, 신호 0.762 ms. log2_p16.txt 같은 값. 4/6은 C:/dev/codex_handoff/state/briefing_timeline.md:33으로 확인. Grep으로 0.75의 출처를 HO findings, state에서 찾지 못함(미확인).",
+   "fix": "'block 표류 0.39~0.75 ms와 같은 크기, 통과도 미확정' → '재측정의 block 차이 최대 0.39 ms가 신호 0.76 ms의 절반 크기라 통과도 미확정'.",
+   "acceptance": "check_errata.py old 1회 일치. 0.393, 0.762를 p16 detail에서 다시 읽어 확인.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 5,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "p16 check 2b는 0.393, 0.762다. R-E 이력의 p16(7420d16, 5ebc151, 6182128, 4bab4a5)과 state 로그(fixloop_detached 168행 0.694/0.630 포함)에서 0.75를 찾지 못했다. 첫 판 4/6 실행 결과는 남아 있지 않다. 0.393/0.762=0.52라 새 문장의 '절반 크기'가 맞다."
+  },
+  {
+   "id": "RT-19",
+   "kind": "report",
+   "priority": "should",
+   "title": "Ⅳ-6 시뮬레이션 문장에 비교 대상, 비표준 서버 단서, B6 미확정을 넣는다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:202",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_evaluation.md:68",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_evaluation.md:71",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_evaluation.md:81",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_evaluation.md:117",
+    "C:/dev/codex_handoff/v33/prompt/CONTEXT.md"
+   ],
+   "problem": "'넷은 낮았고 하나는 높았다'가 무엇과 비교인지 없고, 미확정이던 B6를 뺐다. CONTEXT 0절은 C1이 비표준 서버 회신이라는 단서를 보고서에서 빼지 말라고 적었다.",
+   "evidence": "V33FIX_evaluation.md 117행: c1 대 none B1 −1.788, B2 −2.322, B5 −1.142, B7 −3.642, B10 +0.164, 정밀 표 B12_c6000 +0.023, B6 미확정. 81행 새 seed B6 +0.164 pass, 89행 약 0.16 ms 느릴 가능성 배제 못 함. 411,000 재생은 V33FIX_policy.md:84에서 확인, 값 자체는 맞다.",
+   "fix": "'C1 비용을 0으로 가정한 개발용 사건 시뮬레이션 15개 시나리오 중 넷은 기대 비용이 1.14~3.64 ms/연결 낮았고 하나는 0.16 ms 높았다.' → 'C1은 표준 QUIC에 없는 서버 회신이어서 서버 수정을 전제로 한다. C1 비용을 0으로 가정한 개발용 사건 시뮬레이션 15개 시나리오에서 C1을 본 경로는 v3.2-dev보다 넷이 1.14~3.64 ms/연결 낮았고, burst 손실 시나리오 하나는 0.16 ms 높았다(더 정밀한 표에서는 한 시나리오가 0.02 ms 더 높았다). 분산이 큰 시나리오 하나는 설계 seed에서 미확정이었고 새 seed 200개에서도 약 0.16 ms 증가를 배제하지 못하였다.' X6가 돌면 RT-03 문장과 합친다.",
+   "acceptance": "check_errata.py old 1회 일치. V33FIX_benchmark_v1.json에서 값 다시 읽어 일치.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 10,
+   "codex_can_do": true,
+   "source_ids": [
+    "B-E1",
+    "B-E4",
+    "C-E7",
+    "D41"
+   ],
+   "verdict": "partly",
+   "verify_note": "V33FIX_evaluation.md 68~71, 81, 89, 117행과 CONTEXT 0절의 단서 규칙을 확인했고 벤치 시나리오는 15개다. 고칠 점: 원본 새 문장은 보고서 어디에도 정의되지 않은 B6, B10을 쓴다. 정밀 표에서 B12_c6000 +0.023도 0 위라 함께 적는 편이 맞다. REPORT_CLAIMS 8절의 금지 문장('B6에서 같거나 낫다', 'C1 회신이 공짜')과는 충돌하지 않는다."
+  },
+  {
+   "id": "RT-20",
+   "kind": "report",
+   "priority": "should",
+   "title": "한계 일곱째의 1,452 B 제한에 세대를 밝힌다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:210",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_policy.md:110",
+    "C:/dev/pq_afec_gen33/docs/V33FIX_policy.md:153"
+   ],
+   "problem": "주어가 없어 측정한 세대의 제한처럼 읽힌다. 이 상한은 측정 없는 v3.3.1-dev에만 있고 gen-2 decide_v2는 1,472 B 필터다.",
+   "evidence": "V33FIX_policy.md 153행 k=2에서 W ≤ 1401. quic-go internal/protocol/protocol.go MaxPacketBufferSize 1452. 측정 조건 parity는 p2 ff_parity 1,325~1,331 B. 볼트 11-05 로그: gen-2 decide_v2는 여전히 1457 B 후보를 만든다.",
+   "fix": "'일곱째, parity 크기를 1,452 B로 제한하면 k = 2에서 W ≥ 1,402 B일 때 parity 후보가 사라진다.' → '일곱째, v3.3.1-dev는 parity를 quic-go 수신 버퍼에 맞춰 1,452 B로 제한하므로 k = 2에서 W ≥ X B이면 parity 후보가 없다. W = 1,280 B, k = 2의 parity는 약 1,331 B로 이 제한 아래이다.' X는 최종 코드의 k = 2 상한 + 1이다(지금 1,402, CP-05 적용 시 1,395).",
+   "acceptance": "check_errata.py old 1회 일치. python -I -B -c \"import sys; sys.path[:0]=['.']; from padfec3 import decide3; print(max(W for W in range(1280,1453) if any(c['m']>0 for c in decide3.candidates3(2,W,9000.0,41.983))))\" 출력 + 1이 new의 X와 같다.",
+   "depends": [
+    "RT-09",
+    "CP-05"
+   ],
+   "est_minutes": 5,
+   "codex_can_do": true,
+   "source_ids": [
+    "D50",
+    "D49"
+   ],
+   "verdict": "partly",
+   "verify_note": "V33FIX_policy.md 153행과 quic-go protocol.go:111 MaxPacketBufferSize 1452를 확인했다. decide3.candidates3를 R-E 사본에서 돌리면 k=1~4 상한이 [1407, 1401, 1395, 1389]다. 놓친 것: CP-05를 적용하면 [1400, 1394, 1388, 1382]가 되어 'W ≥ 1,402'가 틀린다. CP-05와 BL-21이 이 상수를 두고 서로 반대이므로 코드 결정 뒤에 숫자를 쓴다. 또 MS-12 기록대로(직접 재지 않음) 봉인 g2auto에 W_eff 1406 행이 6개 있어 '측정 조건의 parity는 약 1,331 B'라는 일반화는 넓다."
+  },
+  {
+   "id": "RT-21",
+   "kind": "doc",
+   "priority": "should",
+   "title": "'2026년 11월 5일까지의 검색 범위'를 뒷받침할 검색 기록을 남긴다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:22",
+    "C:/hwp_work/rne_final/tools/content.py:85",
+    "C:/hwp_work/rne_final/tools/content.py:104",
+    "C:/dev/pq_afec/docs/선행연구 대조.md"
+   ],
+   "problem": "기여 주장의 핵심 문장의 날짜와 일부 문헌을 뒷받침할 기록이 없다. 08-30과 10-30 기록은 있으나 그 뒤 찾은 문헌과 11월 5일 검색은 남아 있지 않다. 평가 항목에 문헌 인용과 혁신성이 있어 질문받으면 답할 근거가 없다.",
+   "evidence": "선행연구 대조.md 수정 시각 08-30. 본문이 인용한 Herzinger(arXiv 2610.32356)를 Grep했을 때 그 문서, gen33 docs, v33 findings, 볼트 세션 로그 어디에도 없음. 11-05 워크플로 스크래치는 남지 않았다.",
+   "fix": "gen33 docs/NOVELTY_SEARCH_LOG.md를 쓴다. 열: 날짜, DB(Google Scholar, arXiv, IETF Datatracker, ACM DL 등), 검색어, 건수, 검토한 후보, 왜 같은 대체가 아닌가. 과거 기록(선행연구 대조.md A부, audit-prior-art.md)은 출처와 원래 날짜 그대로 옮기고, 새 검색은 실제 실행 날짜로만 적는다. 11월 5일 검색은 기록이 없으므로 재구성하지 않는다. 제출 직전에 한 번 다시 돌리고 22, 85행의 날짜를 그 날짜로 바꾸는 행을 정오표에 넣는다. 웹 접근이 없으면 검색어 표까지만 만들고 결과는 Claude나 도현님 몫으로 표시한다. 같은 대체 문헌이 나오면 Table 1과 22, 85행을 고친다.",
+   "acceptance": "파일에 검색어 ≥ 10줄과 실행 날짜가 있다. Grep -c '2610.32356' docs/NOVELTY_SEARCH_LOG.md ≥ 1. 정오표의 22, 85행 new 날짜가 로그의 마지막 검색 날짜와 같다.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 45,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "partly",
+   "verify_note": "11월 5일 검색 기록과 Herzinger 2610.32356의 근거 파일이 없다는 것은 맞다(handoff, 볼트, 선행연구 대조.md, gen33 어디에도 없음. arXiv abs에서 제목과 저자 6명은 REFS와 일치). 다만 '무엇을 어디서 찾았는지 파일이 없다'는 넘친다. 선행연구 대조.md A부(08-30, 표적 재검색 8회+)와 findings/audit-prior-art.md(10-30)가 있다. 원본 fix대로 새 로그만 쓰면 날짜 11월 5일은 여전히 근거가 없으므로 본문 날짜도 실제 검색일로 맞춰야 하고, 11월 5일 검색을 지어내서 적으면 안 된다. run_loop.ps1 기본 sandbox는 danger-full-access다. 그 안에서 웹 접근이 되는지는 미확인이다."
+  },
+  {
+   "id": "RT-22",
+   "kind": "repo",
+   "priority": "should",
+   "title": "보고서가 쓰는 원자료 중 배포본에 없는 것의 위치를 적고 probe 결과를 올린다",
+   "where": [
+    "C:/dev/pq_afec_gen31/experiments/results/g31_probe.json",
+    "C:/dev/R-E/README.md",
+    "C:/dev/padfec_archive/INDEX.json",
+    "C:/dev/codex_handoff/v33/runs/v33fix/A-eval"
+   ],
+   "problem": "Ⅳ-5의 41 B probe 원자료와 v3 저널, v3.3.1 평가 원자료가 R-E에 없어 배포본만으로는 보고서 일부를 확인할 수 없다. 보고서 자체는 저장소 경로를 인용하지 않으므로 끊어진 인용은 없다.",
+   "evidence": "git -C C:/dev/R-E ls-files | grep g31_probe: experiments/g31_probe.py, tests만 나오고 results/g31_probe.json 없음(로컬 19 MB). git ls-files pq_afec_gen3/experiments/state pq_afec_gen31/experiments/state | wc -l = 0. README가 저널 미업로드를 적었다. 나머지 근거 p1, p2, p7, p12 저널, p13, p14, p15, p17, p18, e6, probe_race, decisions, run JSON, RESULT, SEAL, V4, run2.csv, V33FIX_benchmark_v1.json은 추적 중으로 확인.",
+   "fix": "report_repro/SOURCES.md에 보고서 수치군별 파일과 키, R-E 추적 여부, 로컬 원본, C:/dev/padfec_archive 경로를 적는다. g31_probe.json은 통째로 올리지 않고 41 B 근거 행만 report_repro/g31_probe_excerpt.json으로 뽑아 sha256과 함께 넣는다. 저널은 기본값대로 올리지 않는다.",
+   "acceptance": "report_repro/check_sources.py가 SOURCES.md의 각 경로 존재와 git ls-files 상태를 확인하고 exit 0.",
+   "depends": [
+    "RT-06"
+   ],
+   "est_minutes": 25,
+   "codex_can_do": true,
+   "source_ids": [
+    "D42"
+   ],
+   "verdict": "partly",
+   "verify_note": "git ls-files로 g31_probe.json 미추적(코드와 시험만), 동결 state 0개를 확인했고 파일은 19,683,320 B로 tools/precommit_size.py 한도 20,000,000 B 안이다. padfec_archive/INDEX.json, v33fix/A-eval이 있다. 고칠 점: evidence의 'p7 저널'은 없다. p7은 p7_verify.json만 있고 그것이 추적 중이다. 41 B 문장 하나를 위해 19.7 MB를 올리는 것은 과하므로 발췌를 기본으로 한다. RT-06 SOURCES.md, DC-12, BL-35와 겹쳐 파일은 SOURCES.md 하나로 둔다."
+  },
+  {
+   "id": "RT-23",
+   "kind": "measure",
+   "priority": "should",
+   "title": "초록의 RTT 비례 수치를 동결 gen-2로 노트북에서 재측정한다",
+   "where": [
+    "C:/dev/R-E/mlkem-quic-amplification/data/quic_amplification_v4.xlsx#3_RTT비례",
+    "C:/hwp_work/rne_final/tools/content.py:162",
+    "C:/hwp_work/rne_final/tools/content.py:10"
+   ],
+   "problem": "초록 headline이 n=30 단일 실행이고 RTT 50 행의 실행 기록도 없다(RT-08). 팀원 답이 없어도 구간이 있는 값을 낼 수 있다. 새 알고리즘 탐색이 아니다.",
+   "evidence": "content.py 162행: 단일 실행(n = 30)이라 구간 추정은 없다. 재현성 자료 4,032 B는 RTT 50 하나뿐. p2·p12 노트북 재측정은 RTT 50만 있다.",
+   "fix": "과제 X10을 만든다. 동결 gen-2 ~/frozen/g2_d98b05d7/qamp(sha256 d98b05d7, 읽기 전용)를 서버와 클라이언트로 쓴다. 인증서 4,032 B, RTT 10·50·100·200, X25519와 X25519MLKEM768, FEC off, 무손실, -gap 8ms, 그룹별 -expect-k, 같은 block 교대, RTT당 block 5개 × n=40. MS-03의 러너로 돌리고 계획 파일을 먼저 커밋한다. 결과 g3/v33/results/v33_dev_X10_<runid>.json에 label development, gap_ms, half_ms(block 짝), gap_over_rtt, 실제 DER 크기. 판정은 없고 값만 쓴다. 162행 뒤에 '노트북 개발 측정 …' 한 문장을 정오표에 넣는다.",
+   "acceptance": "X10 결과 JSON의 네 RTT 모두 n_ok=계획, 실패 0, 바이너리 sha 기록, label development. check_errata.py가 새 문장의 숫자를 이 파일에서 찾는다.",
+   "depends": [
+    "MS-01",
+    "MS-03",
+    "MS-15",
+    "RT-09"
+   ],
+   "est_minutes": 60,
+   "codex_can_do": true,
+   "source_ids": [
+    "11-05 로그 미해결"
+   ],
+   "verdict": "partly",
+   "verify_note": "content.py 162행 '단일 실행(n = 30)'과 V4를 확인했고 ~/quicbed/bin/qamp, ~/frozen/g2_d98b05d7/qamp의 sha256이 모두 d98b05d7로 시작함을 재었다. qamp 플래그(-certsize, -fec off, -group, -gap, -expect-k)로 조건을 만들 수 있다. X10은 TASKS, EXTRA_TASKS, LOOP_STATE에 없는 새 ID다. 고칠 점: '유일한 길'은 넘친다(팀원 로그가 다른 길이다). 러너가 없으니 MS-03에 의존하고 WSL 수명(MS-15)도 같은 문제다. 측정이므로 development 표시가 필요하다. MS-01이 '안 넣는다'이면 건너뛴다. 동결 바이너리를 실행만 하므로 sealed31과 관문에 영향 없고, 4,032 B는 경계(3,400, 5,900 B)에서 멀어 MS-08의 인증서 흔들림도 문제 되지 않는다. 미확인: 실제 소요 시간."
+  },
+  {
+   "id": "RT-24",
+   "kind": "decision",
+   "priority": "should",
+   "title": "quiche 대조 원자료를 팀원에게 받을지 정한다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:167",
+    "C:/hwp_work/rne_final/tools/content.py:65",
+    "C:/hwp_work/rne_final/참고_팀초안/kakao_final_full.txt",
+    "C:/dev/claude_brain/03 프로젝트/진행중/우리 학술 (연구공모전).md:243"
+   ],
+   "problem": "보고서는 quiche를 소스 기준 설명으로만 두고 역할 칸에 '다른 구현 대조'를 적는다. 팀 초안은 quiche 0.29.3 비교를 측정처럼 적는다. 단일 구현 한계를 줄일 자료가 팀원에게 있을 수 있다.",
+   "evidence": "content.py 167행: 측정 원자료가 저장소에 없어 결과로 제시하지 않는다. Grep quiche R-E/mlkem-quic-amplification/data 원자료 없음. quiche lib.rs 동작은 볼트 인용으로만 확인(소스 직접 미확인).",
+   "fix": "기본값: 문장 유지, 원자료를 받으면 저장소에 넣고 Ⅳ-2에 한 문장 추가. 측정 조건을 모르면 넣지 않는다.",
+   "acceptance": "state/DECISIONS_NEEDED.md에 답이 적혀 있다.",
+   "depends": [],
+   "est_minutes": 5,
+   "codex_can_do": false,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "content.py 65, 167행과 kakao_final_full.txt 203행의 quiche 0.29.3을 확인했고 git ls-files에 quiche 원자료가 없다. 프로젝트 노트 243행은 quiche 소스 인용뿐이다(소스 직접 미확인)."
+  },
+  {
+   "id": "RT-29",
+   "kind": "report",
+   "priority": "should",
+   "title": "정책에 참 uplink를 입력한 사실이 한계 절에 없다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:210",
+    "C:/hwp_work/rne_final/tools/content.py:131",
+    "C:/dev/codex_handoff/v33/prompt/CONTEXT.md:72",
+    "C:/dev/codex_handoff/v33/prompt/CONTEXT.md:112",
+    "C:/dev/codex_handoff/v33/prompt/CONTEXT.md:145",
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:9"
+   ],
+   "problem": "CONTEXT 7절과 REPORT_CLAIMS 9행은 v3.1 주장의 조건에 참 uplink를 넣는다. 보고서는 Fig. 2 영문 캡션의 'the uplink rate is configured, not learned' 한 구절뿐이고 한계 일곱 항목에 없다. 2 Mbps 두 조건의 이득이 이 입력에 기대므로 안 적으면 정책이 uplink를 스스로 아는 것처럼 읽힌다.",
+   "evidence": "Grep 'uplink' content.py: 본문에 정책 입력이라는 문장 없음, 131행 캡션만 해당. CONTEXT 72행: 정책에 참 업링크 속도를 입력으로 준다(uplink_policy_mbps). 112행: 업링크 u는 오라클이다, 잘못 주면 후회 12~198 ms(model-world, 측정 아님). LOOP_STATE X2 todo: 오입력 실측 0건.",
+   "fix": "210행 일곱째 문장 뒤에 넣는다: '여덟째, 정책에는 설정한 uplink 속도를 참값으로 입력하였다. 속도를 모르거나 잘못 주는 경우는 측정하지 않았다.' 구현 AI 문장 앞에 둔다. X2가 돌면 뒤 문장을 결과로 바꾼다.",
+   "acceptance": "check_errata.py가 위치 문자열 '구현과 분석의 상당 부분에 생성형 AI를 사용하였으므로'를 1회 찾는다. 최종 PDF 텍스트에 '참값으로 입력' 1건.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 5,
+   "codex_can_do": true,
+   "source_ids": [
+    "X2",
+    "A5-08",
+    "A1-03",
+    "MS-32"
+   ],
+   "verdict": "added",
+   "verify_note": "CP-02는 qamp 쪽 묵시적 10 Mbps를 고치는 코드 과제이고 이 문장과 별개다. 시뮬레이션 값 12~198 ms는 보고서에 넣지 않는다."
+  },
+  {
+   "id": "RT-25",
+   "kind": "report",
+   "priority": "could",
+   "title": "'판정불능에 필요 표본을 함께 적었다'를 실제와 맞춘다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:136",
+    "C:/hwp_work/rne_final/tools/content.py:174",
+    "C:/hwp_work/rne_final/tools/content.py:176"
+   ],
+   "problem": "p18은 95,473을 적었지만 p11 3조건과 p17 큰 인증서 판정불능에는 필요 표본이 없다.",
+   "evidence": "p11 regret[]와 p17 gain[]에 n_needed 키 없음(직접 확인). 174행만 값이 있다.",
+   "fix": "136행 '필요 표본을 함께 적었다' → '필요 표본을 계산한 경우 함께 적었다'.",
+   "acceptance": "check_errata.py old 1회 일치.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 2,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "p11, p17 JSON에 n_needed와 '필요' 문자열이 없고 p18에 n_needed_per_arm, 95473이 있다. p16 check 3에 '필요 n=786' 등이 있으나 보고서에는 안 적었으므로 새 문장 '계산한 경우 함께 적었다'가 맞다. old 1회."
+  },
+  {
+   "id": "RT-26",
+   "kind": "report",
+   "priority": "could",
+   "title": "Table 2 v3 봉인 '조건 23개'를 세대별로 적는다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:117"
+   ],
+   "problem": "v3.0은 22조건, v3.1은 23조건이다.",
+   "evidence": "V30/g3/RESULT_stage2.md 3행 22조건, V31/g3/RESULT_stage3.md 3행 23조건.",
+   "fix": "'세대, 고정 arm, 조건 23개' → '세대, 고정 arm, 조건 22·23개'.",
+   "acceptance": "check_errata.py old 1회 일치.",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 2,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "confirmed",
+   "verify_note": "RESULT_stage2 3행 22조건, RESULT_stage3 3행 23조건을 읽었다. old 1회."
+  },
+  {
+   "id": "RT-27",
+   "kind": "doc",
+   "priority": "could",
+   "title": "참고문헌 내용 대조 기록을 남긴다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:80",
+    "C:/hwp_work/rne_final/tools/content.py:96",
+    "C:/hwp_work/rne_final/tools/content.py:219"
+   ],
+   "problem": "DOI 유효성은 확인했지만 Paquin, Montenegro, Sakk, Kempf, Langley, QUIC-FEC, rQUIC, Bolot, Boutremans, Kampanakis, McManus의 요지 문장은 이번에 원문과 대조하지 않았다. 11-05 대조 기록은 스크래치와 함께 사라졌다.",
+   "evidence": "doi.org 응답 21개 모두 302. rfc-editor에서 RFC 10024, 9846 제목 일치. arXiv 2211.02421 html에서 35%, 3·1357, 38%, 1362, 1200~1472 확인. arXiv 2610.32356 제목과 RaptorQ 확인. 나머지 미확인.",
+   "fix": "docs/REFERENCE_CHECK.md에 인용 문장, 원문 위치(쪽·절), 확인 날짜를 한 줄씩 적는다. 긴 원문 인용 없이 위치만 적는다. 어긋나면 정오표 행을 더한다.",
+   "acceptance": "REPORT 인용 키 26개가 표에 모두 있다(content.py REFS 키와 비교).",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 60,
+   "codex_can_do": true,
+   "source_ids": [],
+   "verdict": "partly",
+   "verify_note": "doi.org 9개를 표본으로 다시 찔러 모두 302, rfc-editor에서 RFC 10024, RFC 9846 제목 일치, arXiv 2610.32356 제목·저자 일치를 확인했다. 틀린 곳: REFS 키는 25개가 아니라 26개이고 본문 {c:} 인용 집합과 정확히 같다(빠짐, 남음 0). DOI 있는 항목 21개와 없는 5개(McManus, Cloudflare, Herzinger, quic-go, liboqs)의 합이다."
+  },
+  {
+   "id": "RT-30",
+   "kind": "report",
+   "priority": "could",
+   "title": "요약문의 큰 인증서 수치에 initial cwnd 단서를 붙인다",
+   "where": [
+    "C:/hwp_work/rne_final/tools/content.py:32",
+    "C:/hwp_work/rne_final/tools/content.py:210",
+    "C:/dev/pq_afec_gen33/docs/REPORT_CLAIMS_v33.md:49",
+    "C:/dev/codex_handoff/v33/prompt/CONTEXT.md:147"
+   ],
+   "problem": "CONTEXT 7절은 initial cwnd 단서 없는 큰 인증서 결과를 금지한다. 본문은 210행에서 단서를 달았지만 평가자가 먼저 읽는 요약문 32행에는 없다. 심각도는 낮다. 수치는 맞고 일반화 문장도 없다.",
+   "evidence": "content.py 32행 인용: v3.1은 큰 인증서 조건에서 gen-2보다 28.01 ms, RTT 200 ms 조건에서 12.38 ms 빨랐고. 210행: Initial congestion window가 32 packet이다. REPORT_CLAIMS 49행.",
+   "fix": "'v3.1은 큰 인증서 조건에서 gen-2보다 28.01 ms' → 'v3.1은 큰 인증서 조건(quic-go, Initial congestion window 32 packet)에서 gen-2보다 28.01 ms'. 요약문 쪽수 여유가 없으면 넣지 않는다.",
+   "acceptance": "check_errata.py old 1회 일치. 요약문 구역 증감이 RT-02 쪽수 안이다(사람이 확인).",
+   "depends": [
+    "RT-09"
+   ],
+   "est_minutes": 2,
+   "codex_can_do": true,
+   "source_ids": [
+    "A7-04"
+   ],
+   "verdict": "added",
+   "verify_note": "초록 12행은 '지정한 두 조건'이라 큰 인증서를 말하지 않아 고칠 필요가 없다."
+  }
+ ],
+ "rejected": [
+  {
+   "id": "RT-13의 176행 부분",
+   "why": "p17 oracle 상한은 0.0415+0.1605=0.2020 ms라 '나머지 세 조건이 0.21 ms 이하'는 참이다. 원본이 제안한 '0.20 ms 이하'가 오히려 거짓이어서 176행은 고치지 않는다. 항목의 172행 부분은 유지한다."
+  }
+ ],
+ "overlaps": [
+  {
+   "items": [
+    "RT-03",
+    "RT-04",
+    "MS-22",
+    "MS-23",
+    "BL-09",
+    "DC-25"
+   ],
+   "note": "보고서 문장 갱신은 docs/REPORT_ERRATA.md 하나로 한다. BL-09의 content.py 수정과 out 새 빌드는 RT-09, MS-22의 '읽기만'과 충돌하므로 뺀다. BL-09의 '후보 14개' 문장은 분량을 본 뒤 정오표 행으로 넣는다. 저장소 문서 문장은 DC-25가 맡는다."
+  },
+  {
+   "items": [
+    "RT-05",
+    "BL-12"
+   ],
+   "note": "봉인 판정 재계산 스크립트는 하나만 만든다."
+  },
+  {
+   "items": [
+    "RT-07",
+    "DC-07",
+    "BL-02"
+   ],
+   "note": "동결 문서 정정표는 DC-07과 BL-02가 파일 이름부터 갈린다(docs/ERRATA_frozen_generations.md, R-E docs/ERRATA.md). 합칠 때 RT-07 수치 대조표를 거기서 링크한다."
+  },
+  {
+   "items": [
+    "RT-10",
+    "BL-34",
+    "BL-42"
+   ],
+   "note": "사람 입력 칸은 한 카드로 묻는다."
+  },
+  {
+   "items": [
+    "RT-12",
+    "BL-33",
+    "DC-23"
+   ],
+   "note": "과제명 결정은 한 번만 묻는다."
+  },
+  {
+   "items": [
+    "RT-20",
+    "CP-05",
+    "BL-21",
+    "CP-07",
+    "MS-02",
+    "BL-36"
+   ],
+   "note": "CP-05는 parity 필터를 W+46+6k로 바꾸고 BL-21은 상수를 바꾸지 말라고 한다. 이 결정에 따라 content.py 210행의 숫자가 1,402 또는 1,395가 된다. CP-05를 택하면 참조를 다시 만들고 v33fix_replay none 411,000/411,000과 관문을 다시 확인해야 202행 문장이 유지된다."
+  },
+  {
+   "items": [
+    "RT-22",
+    "RT-06",
+    "DC-12",
+    "BL-35"
+   ],
+   "note": "원자료 위치 표는 report_repro/SOURCES.md 하나로 한다."
+  },
+  {
+   "items": [
+    "RT-23",
+    "MS-03",
+    "MS-15",
+    "MS-01"
+   ],
+   "note": "X10은 러너와 WSL 수명 해결 뒤에 돌고 MS-01이 '안 넣는다'이면 건너뛴다."
+  },
+  {
+   "items": [
+    "RT-29",
+    "CP-02",
+    "BL-19"
+   ],
+   "note": "RT-29는 보고서 문장, CP-02는 qamp 플래그, BL-19(X2)는 측정이다. X2가 돌면 RT-29 뒤 문장을 결과로 바꾼다."
+  }
+ ],
+ "trace_note": "harness가 report_trace.md 쓰기를 거부했다(Subagents should return findings as text, not write report files). 그래서 대조표를 이 JSON의 trace 배열에 넣었다. RT-09가 docs/REPORT_TRACE.md로 옮긴다. 위치는 content.py 줄 번호. 줄임말 G2=C:/dev/pq_afec/experiments/results, G2S=C:/dev/pq_afec/experiments/state, V30=C:/dev/pq_afec_gen3, V31=C:/dev/pq_afec_gen31, G33=C:/dev/pq_afec_gen33, TEAM=C:/dev/R-E/mlkem-quic-amplification, V4=TEAM/data/quic_amplification_v4.xlsx, VLT=C:/dev/claude_brain, HO=C:/dev/codex_handoff. 양식.hwp는 out/report.hwp와 SHA-256 afc8b777 동일, content.py 본문 문단 전부 hwp에서 발견. 금지 표현 대조: 프로젝트 노트의 쓰면 안 되는 말은 쓰이지 않았고 IW 32, NEW_TOKEN 단서가 들어 있다. 재계산 스크립트는 세션 스크래치 finalaudit/report/scripts. 검증자가 원자료에서 다시 계산한 행: p14, p17, p10, p8, p16, p11 이력, V4 RTT·개괄·재현성, 봉인 합 71, v3.0·v3.1 decisions, p18 m2→m4, p15, p7, doi 표본 9개. 나머지 행은 표본 대조를 안 했다.",
+ "trace_columns": [
+  "위치",
+  "문장 요지",
+  "값",
+  "출처 파일과 키",
+  "다시 계산한 값",
+  "일치 여부"
+ ],
+ "trace": [
+  [
+   "3",
+   "과제명",
+   "ML-KEM 적용 시 전송 성능 개선을 위한 QUIC 기반 적응형 FEC 연구",
+   "C:/dev/R-E/README.md 1행, VLT 프로젝트 노트 46행",
+   "같음, 팀 서명본은 다른 제목",
+   "일치, 팀 초안과 다름(RT-12)"
+  ],
+  [
+   "10",
+   "ML-KEM 연산 수십 µs",
+   "24.1~28.2",
+   "TEAM/data/ML-KEM_1단계_측정수치_v2.xlsx 2_연산시간 11행",
+   "24.1, 25.9, 28.2",
+   "일치"
+  ],
+  [
+   "10, 29, 162, 215",
+   "4,032 B에서 hybrid가 RTT의 95.0~99.3% 빠름",
+   "0.95, 0.984, 0.993, 0.989",
+   "V4 3_RTT비례 E4:E7",
+   "9.5/10, 49.2/50, 99.3/100, 197.8/200",
+   "일치, RTT 50 행 출처 미해결(RT-08)"
+  ],
+  [
+   "11, 31, 172, 215",
+   "X25519 손실 5% 처리 없음→결합",
+   "114.59→52.98",
+   "G2/p14_dominance.json arms[loss=5].ms",
+   "114.5896, 52.9809",
+   "일치"
+  ],
+  [
+   "12, 32",
+   "v3.1 두 조건",
+   "28.01, 12.38",
+   "V31/experiments/results/p31_gencompare_decisions.json H1.run1",
+   "28.009, 12.382",
+   "일치"
+  ],
+  [
+   "18, 79",
+   "key share 1,216 B, 38배",
+   "1,216/32",
+   "G2/p0_env.json 실측 {4588: 1216}",
+   "38.0",
+   "일치"
+  ],
+  [
+   "22, 85",
+   "11월 5일까지 검색에서 같은 대체 못 찾음",
+   "날짜",
+   "C:/dev/pq_afec/docs/선행연구 대조.md 수정 08-30, 이후 기록 없음",
+   "찾지 못함",
+   "출처 없음(RT-21)"
+  ],
+  [
+   "27, 117",
+   "봉인 측정 259,600연결",
+   "259,600",
+   "V30 RESULT_stage0 12,800, RESULT_m1confirm 800, RESULT_stage2 103,200+18,000, V31 RESULT_stage3 106,800+18,000",
+   "합 259,600, 세대 비교 246,000",
+   "합 일치, 27행 표현 불일치(RT-14)"
+  ],
+  [
+   "28, 151",
+   "first flight 1개 1,280 B, 2개 2,560 B",
+   "1/1,280, 2/2,560",
+   "G2/p1_flight.json runs[ips=0]",
+   "같음",
+   "일치"
+  ],
+  [
+   "29, 162",
+   "경계 3,300~3,400, 5,900~6,000",
+   "구간",
+   "V4 2_임계정밀 13~16, 41~44행",
+   "같음",
+   "일치"
+  ],
+  [
+   "30, 165",
+   "1 B로 왕복 제거 n=400",
+   "50.88±0.12, 50.876±0.119",
+   "G2/p14_dominance.json base·pad loss 0",
+   "50.8762±0.1189",
+   "일치"
+  ],
+  [
+   "31, 169, 215",
+   "12개 설정 위반, 8개 k=1",
+   "12, 8",
+   "G2/p1_flight.json capacity_checks",
+   "feasible False 12, k=1 8",
+   "일치"
+  ],
+  [
+   "31, 172",
+   "네 방법 평균",
+   "114.59, 60.27, 57.65, 52.98",
+   "G2/p14_dominance.json",
+   "114.5896, 60.2651, 57.6527, 52.9809",
+   "일치"
+  ],
+  [
+   "32",
+   "H2, H3, H4 미확인",
+   "판정",
+   "V31 decisions H2.run1, H3, H4",
+   "pass False, pass False, adaptation_contributed False",
+   "일치"
+  ],
+  [
+   "36, 216",
+   "v3.2-dev, v3.3.1-dev 봉인 측정 예정",
+   "계획",
+   "HO/v33/state/LOOP_STATE.json T7·X* todo",
+   "지금 참",
+   "낡을 위험(RT-04)"
+  ],
+  [
+   "45",
+   "8월 19일 방향 변경 보고",
+   "날짜",
+   "TEAM/docs/연구방향_변경보고.docx, VLT 노트 71행",
+   "같음",
+   "일치"
+  ],
+  [
+   "46",
+   "warm-up 실패가 분모에 섞임",
+   "330,046 대 330,000",
+   "TEAM/README.md, TEAM/data/raw/run2.csv",
+   "n+fail 330,046, 설계 330,000",
+   "일치"
+  ],
+  [
+   "47",
+   "8월 26일 정정 보고",
+   "날짜",
+   "VLT 노트 87행",
+   "같음",
+   "일치"
+  ],
+  [
+   "48",
+   "TLS 1차 120행 제외",
+   "120",
+   "TEAM/data/README.md",
+   "120행",
+   "일치"
+  ],
+  [
+   "48, 121",
+   "상관 옵션 5%→0.19%",
+   "0.19",
+   "G2/e6_netem.json configs.corr_5_25.loss_rate",
+   "0.185",
+   "일치(반올림), 볼트 옛 값 0.20"
+  ],
+  [
+   "49",
+   "두 실행 regret 구간 불겹침",
+   "0.026±0.025, 1.173±0.049",
+   "R-E git 5ebc151, 6182128 p11 regret[임계아래/무손실]",
+   "late 0.026 ci 0.025, late 1.173 ci 0.049",
+   "일치, README는 다른 쌍(RT-07)"
+  ],
+  [
+   "50",
+   "팀원1 보고로 다중 erasure 복구",
+   "사건",
+   "VLT 06 세션 로그/2026-08-28 신레오 보고 검증과 버스트 한계.md",
+   "같음",
+   "일치, 번호 배정 미확인(RT-10)"
+  ],
+  [
+   "51",
+   "v3.0 held-out 45.86 ms 느림",
+   "−45.86",
+   "V30 decisions H2.run1 H_h_c6000_r80_u10.est",
+   "−45.860",
+   "일치"
+  ],
+  [
+   "52",
+   "측정 교착, 러너 없음",
+   "상태",
+   "HO LOOP_STATE G1 done, G2·T7·X todo",
+   "지금 참",
+   "낡을 위험(RT-04)"
+  ],
+  [
+   "57~61",
+   "Fig. 1, 2 PaperBanana 생성",
+   "문구",
+   "figs2/fig1_timing.tex, fig2_system.tex, tools/fig1.py, fig2.py",
+   "TikZ 코드",
+   "불일치(RT-01)"
+  ],
+  [
+   "79",
+   "RFC 10024, RFC 9846",
+   "제목",
+   "rfc-editor info 페이지",
+   "제목 일치",
+   "일치"
+  ],
+  [
+   "80",
+   "Kempf RTT<0.1 ms",
+   "값",
+   "V4 7_선행연구_대조 18행",
+   "같음",
+   "부분 확인"
+  ],
+  [
+   "80",
+   "Paquin, Montenegro, Sakk 요지",
+   "문장",
+   "DOI 유효, 본문 미대조",
+   "없음",
+   "미대조(RT-27)"
+  ],
+  [
+   "89",
+   "ML-KEM 크기와 hybrid share",
+   "1,184, 1,088, 32, 1,216, 1,120",
+   "ML-KEM xlsx 1_크기 5, 7행",
+   "같음",
+   "일치"
+  ],
+  [
+   "89",
+   "결합 shared secret 64 B",
+   "64",
+   "ML-KEM xlsx 1_크기 7행은 32, 보고서는 RFC 10024 인용",
+   "32 대 64",
+   "저장소 자료와 불일치(RT-07), 규격 원문 미대조"
+  ],
+  [
+   "91",
+   "k, B 식",
+   "식",
+   "G2/p1_flight.json k_model_matches",
+   "True",
+   "일치"
+  ],
+  [
+   "91",
+   "quic-go 기본 W 1,280",
+   "1,280",
+   "quic-go v0.61.0 internal/protocol/params.go:12",
+   "1280",
+   "일치"
+  ],
+  [
+   "93",
+   "3배 제한",
+   "3",
+   "quic-go internal/ackhandler/sent_packet_handler.go:25,1038",
+   "3",
+   "일치"
+  ],
+  [
+   "93",
+   "Nawrocki 35%, 4,071, 38%, 1,362, 1,200~1,472",
+   "값",
+   "arXiv 2211.02421v1 html",
+   "3·1357=4071, 나머지 같음",
+   "일치, 약 1%는 부분 확인"
+  ],
+  [
+   "96",
+   "Langley, QUIC-FEC, rQUIC 등 요지",
+   "문장",
+   "DOI 유효, 본문 미대조",
+   "없음",
+   "미대조(RT-27)"
+  ],
+  [
+   "96",
+   "IKEv2 RaptorQ preprint",
+   "문장",
+   "arXiv 2610.32356v1 html",
+   "RaptorQ 있음, amplification은 DoS 문맥",
+   "부분 확인"
+  ],
+  [
+   "112",
+   "연산 N=10,000, 8월",
+   "값",
+   "TEAM/archive/ML-KEM_1단계_측정수치.xlsx '(2026-08)', 2_연산시간 1행",
+   "같음",
+   "일치"
+  ],
+  [
+   "113",
+   "TLS 250행, 설계 330,000, 8월 14일",
+   "값",
+   "TEAM/data/raw/run2.csv, sweep2_results.xlsx 0_개요",
+   "250행, 330,000",
+   "일치"
+  ],
+  [
+   "114",
+   "왕복 경계 조건과 표본",
+   "값",
+   "V4 0_개요, G2/p12_quantum.json n_probe, n_confirm",
+   "15, 40",
+   "일치"
+  ],
+  [
+   "115",
+   "방법 비교 10월 2일, 셀당 400",
+   "값",
+   "G2S/loop2.json p14 2026-10-02 03:33, p14 n",
+   "400",
+   "일치"
+  ],
+  [
+   "116",
+   "gen-2 4개 실험 418,400",
+   "418,400",
+   "p11 4000×5×6, p15 22,400×6, p17 4×5×4500, p18 74,000",
+   "120,000+134,400+90,000+74,000",
+   "일치"
+  ],
+  [
+   "117",
+   "v3 조건 23개",
+   "23",
+   "V31 RESULT_stage3 23, V30 RESULT_stage2 22",
+   "22, 23",
+   "부분 확인(RT-26)"
+  ],
+  [
+   "120",
+   "교내 서버 사양",
+   "5218R, 40코어, 125 GiB, 24.04.4, Go 1.26.5, OpenSSL 3.5.6",
+   "TEAM/docs/실험환경_명세서.docx",
+   "같음",
+   "일치"
+  ],
+  [
+   "120",
+   "노트북 Go, OpenSSL",
+   "1.26.6, 3.5.5",
+   "G2/p0_env.json",
+   "같음",
+   "일치"
+  ],
+  [
+   "120",
+   "CPU 4개 taskset",
+   "4",
+   "C:/dev/pq_afec/experiments/padbed.py:63,76",
+   "같음",
+   "일치"
+  ],
+  [
+   "120",
+   "ping 평균",
+   "50.068",
+   "TEAM/docs/종합기술문서.docx",
+   "같음",
+   "일치"
+  ],
+  [
+   "121",
+   "명목 5%, L=4 재현",
+   "5.23, 4.05, 500,000",
+   "G2/e6_netem.json ge_p5_L4, n",
+   "5.226, 4.054, 500000",
+   "일치, 실측 보고서 210행은 4.97(RT-07)"
+  ],
+  [
+   "123",
+   "PacketConn 기록",
+   "방법",
+   "experiments/quicbed/qamp.go:6,974",
+   "같음",
+   "일치"
+  ],
+  [
+   "123",
+   "session ticket, 0-RTT, PMTUD 끔",
+   "설정",
+   "qamp.go:2294,2300,2473,2478,2482",
+   "같음",
+   "일치"
+  ],
+  [
+   "123",
+   "1.5·RTT, 3·RTT 분류",
+   "값",
+   "p14 pto_rate, V30 g3_m1confirm.json one_rtt_rule",
+   "pad 4.25, combo 0.75, 같음",
+   "일치"
+  ],
+  [
+   "125",
+   "quic-go 송신 판정",
+   "코드",
+   "sent_packet_handler.go:1034-1038",
+   "bytesSent >= 3×bytesReceived",
+   "일치"
+  ],
+  [
+   "127",
+   "c, s0, 6구간",
+   "41.983, 382.45, 1,472.00",
+   "C:/dev/pq_afec/padfec/policy.py:114,121,126,127",
+   "같음",
+   "일치"
+  ],
+  [
+   "127, 169",
+   "f",
+   "16",
+   "p1 1450−46−1388",
+   "16",
+   "일치"
+  ],
+  [
+   "129",
+   "Fig. 1 중앙값",
+   "102.5, 51.7, 252.4, 51.2",
+   "p14 base·pad p50, pad·combo 5% 부류",
+   "102.465, 51.677, 252.408, 51.245",
+   "일치"
+  ],
+  [
+   "130",
+   "parity 크기",
+   "W+39+6k, 1,331",
+   "G33/docs/V33FIX_policy.md:110, G2/p2_threshold.json",
+   "1331",
+   "일치"
+  ],
+  [
+   "134",
+   "PTO, ACK 대기, 동점",
+   "200.86, 1.125, 1.424, 0.01",
+   "policy.py:215-217,336",
+   "같음",
+   "일치"
+  ],
+  [
+   "134",
+   "격자 26, hazard 5",
+   "26, 5",
+   "padfec/table.py P_VALS, V31/padfec3/learn3.py H",
+   "26, 5",
+   "일치"
+  ],
+  [
+   "134",
+   "A_pre, 재평가 16",
+   "41(k−1), 16",
+   "V31/padfec3/layout.py:89-93, learn3.py:22",
+   "같음",
+   "일치"
+  ],
+  [
+   "136",
+   "batch means",
+   "floor(√n), 최소 8",
+   "experiments/blockstat.py:77,83",
+   "같음",
+   "일치"
+  ],
+  [
+   "136",
+   "regret 2 ms, 왕복 0.9/0.7 RTT",
+   "값",
+   "p11 checks, p17 bought_hi, bought_lo",
+   "같음",
+   "일치"
+  ],
+  [
+   "136",
+   "판정불능에 필요 표본 함께 적음",
+   "문장",
+   "174행만 있음, p11·p17 키 없음",
+   "부분",
+   "부분 확인(RT-25)"
+  ],
+  [
+   "136",
+   "Bonferroni |z|>2.50",
+   "2.50",
+   "산술 0.05/4 양측",
+   "2.498",
+   "일치"
+  ],
+  [
+   "138",
+   "실패 10,000 ms",
+   "10,000",
+   "g3_m1confirm.json imputation",
+   "같음",
+   "일치"
+  ],
+  [
+   "141~144",
+   "Table 3 규칙",
+   "규칙",
+   "decisions rule, V30/g3/PROTOCOL_stage2.md:87,90",
+   "60셀, sha256 시드",
+   "일치"
+  ],
+  [
+   "147",
+   "25단계",
+   "25",
+   "G2S/loop2.json stages",
+   "25",
+   "일치"
+  ],
+  [
+   "147",
+   "196,020점, 386점, 0.0103, 0.095",
+   "값",
+   "G2/gate_go_parity.json",
+   "196020, 386, 0.01028, 0.09497",
+   "일치"
+  ],
+  [
+   "147",
+   "격자 밖 조건",
+   "2,955·9,000·16,000, RTT 200, 2 Mbps",
+   "experiments/quicbed/policy.go policyGrid",
+   "cert 11개, rtt {10,50,100}, up {0,10,100}",
+   "일치"
+  ],
+  [
+   "147",
+   "2,531항목",
+   "2531",
+   "G2/p19_provenance.json",
+   "2531, 0",
+   "일치"
+  ],
+  [
+   "147",
+   "봉인 파일 71개",
+   "71",
+   "V30 SEAL 3+8+29, V31 SEAL 31 sha256 키",
+   "11-06 재해시 71, 불일치 0",
+   "일치"
+  ],
+  [
+   "147",
+   "v3 판정 223항목, 4.4e-12",
+   "223, 4.4e-12",
+   "산출물 없음, RESULT_stage3 5행 760·4.8e-12, HO/codex_out/X6.md",
+   "찾지 못함",
+   "출처 없음(RT-05)"
+  ],
+  [
+   "151",
+   "연산 값, 합, 1/640",
+   "24.1, 25.9, 28.2, 78.2",
+   "ML-KEM xlsx, 산술",
+   "78.2, 639",
+   "일치"
+  ],
+  [
+   "151",
+   "CRYPTO, PADDING, n=10",
+   "261, 975, 1,447, 1,022",
+   "p1 runs decoded",
+   "같음",
+   "일치"
+  ],
+  [
+   "151",
+   "서버 수신 k·1,280, n=24",
+   "1,280, 2,560",
+   "G2/p13_beff.json beff[off]",
+   "같음",
+   "일치"
+  ],
+  [
+   "152~159",
+   "Table 4",
+   "232, 222, 248, 370, 265; −0.47, 0.73, 5.64, 1.48",
+   "TEAM/data/raw/run2.csv 설계−n",
+   "같음",
+   "일치"
+  ],
+  [
+   "152",
+   "hybrid +0.052%p CI",
+   "−0.017~0.120",
+   "같은 계산",
+   "0.0516, −0.017, 0.120",
+   "일치"
+  ],
+  [
+   "152",
+   "PTO 12.0, 10.4, z=0.79",
+   "값",
+   "TEAM/docs/연구방향_변경보고.docx",
+   "같음",
+   "일치"
+  ],
+  [
+   "152",
+   "n별 z",
+   "1.60, 4.54",
+   "산술",
+   "1.60, 4.54",
+   "일치"
+  ],
+  [
+   "162",
+   "약 55→약 105 ms",
+   "값",
+   "V4 2_임계정밀",
+   "54.2~56, 104.9~106.6",
+   "일치"
+  ],
+  [
+   "162",
+   "노트북 이분탐색",
+   "3,312~3,368, 5,917~5,974",
+   "G2/p2_threshold.json",
+   "같음",
+   "일치"
+  ],
+  [
+   "162",
+   "14점 49.0~49.7 평균 49.44",
+   "값",
+   "V4 2_임계정밀 쌍",
+   "14, 49.0, 49.7, 49.443",
+   "일치"
+  ],
+  [
+   "162",
+   "3,600~4,700 hybrid는 4,032뿐",
+   "문장",
+   "V4 2_임계정밀 빈 구간, 1_개괄",
+   "같음",
+   "일치"
+  ],
+  [
+   "162",
+   "5,609 B와 5,400 B 재현",
+   "105.7, 55.4, 300연결 0건, 1/100",
+   "V4 4_재현성 10, 14, 15행",
+   "같음",
+   "일치"
+  ],
+  [
+   "162",
+   "RTT별 격차",
+   "9.5, 49.2, 99.3, 197.8",
+   "V4 3_RTT비례 D열",
+   "같음, RTT 50이 3,500 B 행과 같음",
+   "일치(RT-08)"
+  ],
+  [
+   "163",
+   "Fig. 3 'a separate run'",
+   "문구",
+   "실행 기록 없음",
+   "확인 못 함",
+   "출처 없음(RT-08)"
+  ],
+  [
+   "162",
+   "구간 밖 차이",
+   "0.9~1.4, 0.1",
+   "V4 1_개괄스윕",
+   "같음",
+   "일치"
+  ],
+  [
+   "163",
+   "Fig. 3 좌표",
+   "42점",
+   "figs2/tools/final_check.py 재실행",
+   "bad 0",
+   "일치"
+  ],
+  [
+   "164",
+   "padding 경계 이동",
+   "4,557~4,614, 7,163~7,219",
+   "p2 ips_sweep",
+   "같음",
+   "일치"
+  ],
+  [
+   "165",
+   "1 B 절벽",
+   "104.829→53.699, 15/15→0/15, 105.718→54.774",
+   "G2S/p12_units.jsonl fp 66975e9fc2a0",
+   "같음",
+   "일치"
+  ],
+  [
+   "166",
+   "Fig. 4",
+   "51.1, 50.9, 14점",
+   "같은 저널, final_check",
+   "51.13, 50.94, bad 0",
+   "일치"
+  ],
+  [
+   "167",
+   "A(B)/B",
+   "3.79",
+   "산술",
+   "3.793",
+   "일치"
+  ],
+  [
+   "167",
+   "quiche 소스 동작",
+   "문장",
+   "VLT 노트 243행",
+   "소스 직접 미확인",
+   "부분 확인(RT-24)"
+  ],
+  [
+   "169",
+   "최소 초과 69.0, C=1,457",
+   "값",
+   "p1 capacity_checks",
+   "69.0",
+   "일치"
+  ],
+  [
+   "169",
+   "9월 29일 실행",
+   "날짜",
+   "G2S/p1_units.jsonl recorded_at",
+   "2026-09-29",
+   "일치"
+  ],
+  [
+   "169",
+   "실행 간 60~76",
+   "값",
+   "R-E git 6dbf9e8, 7420d16, f3dcd4a, d96a56b, 4bab4a5",
+   "76, 60, 62, 75, 69",
+   "일치"
+  ],
+  [
+   "169",
+   "직렬화 5.32",
+   "값",
+   "산술",
+   "5.324",
+   "일치"
+  ],
+  [
+   "170",
+   "parity 경계",
+   "8,239~8,296, 11,977~12,034, 10,901~10,958, 14,583~14,640",
+   "p2 thresholds",
+   "같음",
+   "일치"
+  ],
+  [
+   "170",
+   "수신 약 2,606, 3,892",
+   "값",
+   "p13 on1",
+   "2,605~2,606.5, 3,891~3,893",
+   "일치"
+  ],
+  [
+   "170",
+   "uplink별 1-RTT",
+   "0.996, 0.972, 0.640, 0.404, 0.212, 0.004",
+   "G2/probe_race.json m1",
+   "같음, 08-26",
+   "일치"
+  ],
+  [
+   "171",
+   "복구 주입",
+   "51.627, 110.182, 204.985, 51.887, 51.459, 110.663, 110.338, 40/40",
+   "G2/p7_verify.json V1~V7",
+   "같음",
+   "일치"
+  ],
+  [
+   "172",
+   "반폭",
+   "4.44, 3.98, 1.62, 1.70",
+   "p14 1.96·s/√n",
+   "4.4368, 3.9750, 1.6188, 1.7000",
+   "3.98만 불일치(RT-13)"
+  ],
+  [
+   "172",
+   "4.25%, 12.0%",
+   "값",
+   "p14",
+   "17/400, 48/400",
+   "일치"
+  ],
+  [
+   "172",
+   "차이",
+   "4.67±2.35, 7.28±4.32, 2.61±4.29",
+   "p14",
+   "4.6717±2.3475, 7.2842±4.3233, 2.6125±4.292",
+   "일치"
+  ],
+  [
+   "172",
+   "네 실행 순서 유지",
+   "4회",
+   "R-E git 7420d16, 5ebc151, 6182128, 4bab4a5",
+   "모두 combo<parity<pad<base",
+   "일치"
+  ],
+  [
+   "173",
+   "Fig. 5, Fisher",
+   "3/400, 0/400, 0.25",
+   "p14, 산술",
+   "0.249, bad 0",
+   "일치"
+  ],
+  [
+   "174",
+   "m2→m4 이득",
+   "51.82±0.11/50.00, 33.18±8.65/23.57, 11.19±4.56/11.23, 10.41±2.54/8.31, 0.19±1.07/0.15, 95,473",
+   "G2/p18_mmax.json verdict",
+   "같음, 16,000 B",
+   "일치"
+  ],
+  [
+   "176",
+   "통과 17, 실패 7, 미실행 1",
+   "값",
+   "C:/dev/R-E/README.md, HO/state/briefing_timeline.md",
+   "같음",
+   "일치"
+  ],
+  [
+   "176",
+   "regret 최대, 3조건 판정불능",
+   "+1.10±0.47",
+   "G2/p11_adaptive.json",
+   "1.0978, 0.4748, indeterminate 3",
+   "일치"
+  ],
+  [
+   "176",
+   "oracle",
+   "1.167±1.275, 0.21 이하",
+   "p17 gain",
+   "1.1675±1.2745, 0.2020",
+   "일치, 0.21 이하는 참(RT-13에서 제외)"
+  ],
+  [
+   "176",
+   "auto 3.75 느림",
+   "3.75",
+   "p17 gain[큰cert].gain_ms",
+   "−3.752",
+   "일치"
+  ],
+  [
+   "176",
+   "π 경계와 추정기 하한",
+   "4.98e-5, 4.95e-3",
+   "G2/p15_v2policy.json checks",
+   "같음",
+   "일치"
+  ],
+  [
+   "176",
+   "바이트와 평균",
+   "1,261.4, 1.0, 51.376",
+   "p15 checks, rows, regret",
+   "같음",
+   "일치"
+  ],
+  [
+   "179",
+   "p8 순서 효과",
+   "1.09",
+   "G2/p8_stability.json",
+   "1.09",
+   "일치"
+  ],
+  [
+   "179",
+   "구간 평균 영향 0.024",
+   "0.024",
+   "파일 없음",
+   "1.09×10/450=0.0242, n=120이면 0.091",
+   "출처 없음(RT-17)"
+  ],
+  [
+   "177",
+   "Table 5 날짜",
+   "10-01 to 10-02",
+   "G2S/p8_units.jsonl 09-29, loop2.json p8 10-01(재사용)",
+   "p8은 09-29",
+   "부분 불일치(RT-17)"
+  ],
+  [
+   "180",
+   "p10",
+   "2.34, 0.89",
+   "G2/p10_completeness.json",
+   "같음",
+   "일치"
+  ],
+  [
+   "180",
+   "11/12 완주",
+   "11/12",
+   "tests_passed, tests_total",
+   "시험 통과 수",
+   "문구 불일치(RT-16)"
+  ],
+  [
+   "181",
+   "p15 반폭",
+   "1.30",
+   "p15 worst_ci95_half_ms",
+   "1.3046",
+   "일치"
+  ],
+  [
+   "182",
+   "p16 4/6, 6/6",
+   "값",
+   "HO/state/briefing_timeline.md:33, G2/p16_uplink.json",
+   "같음",
+   "일치"
+  ],
+  [
+   "182",
+   "block 표류 0.39~0.75",
+   "값",
+   "p16 check 2b",
+   "0.393, 신호 0.762, 0.75 못 찾음",
+   "부분 확인(RT-18)"
+  ],
+  [
+   "183",
+   "p17 적중",
+   "22.0, 40.3",
+   "p17, G2S/fixloop_detached.txt:575",
+   "21.96, 40.3(09-27)",
+   "일치"
+  ],
+  [
+   "183",
+   "적응 중앙값",
+   "194.5/450",
+   "p17 adapt lags",
+   "[76,null,null,313,null]",
+   "일치, 3/5 미적응 누락(RT-15)"
+  ],
+  [
+   "183, 208",
+   "관측 수",
+   "4~6, 2~6",
+   "p17 rows auto m_used 0 개수",
+   "큰 인증서 첫 구간 19, 10 뒤 4~6, 나머지 2~6",
+   "일치"
+  ],
+  [
+   "184",
+   "p18 실패",
+   "74,000 중 5",
+   "p18 trial_coverage",
+   "같음",
+   "일치"
+  ],
+  [
+   "185",
+   "p20",
+   "108, 0, 19",
+   "G2/p20_residual.json",
+   "같음",
+   "일치"
+  ],
+  [
+   "188",
+   "고정 arm",
+   "119.61, 81.62, −38.00, −39.50~−36.49",
+   "V30/experiments/results/g3_m1confirm.json",
+   "−37.996, −39.498, −36.493",
+   "일치"
+  ],
+  [
+   "188",
+   "credit과 1-RTT",
+   "376, 101.2, 24",
+   "같은 파일 supporting",
+   "376/376, 101.212, 0/24",
+   "일치"
+  ],
+  [
+   "188",
+   "uplink 비용",
+   "3,892→7,888",
+   "V30/g3/RESULT_stage0.md 37행",
+   "같음",
+   "일치"
+  ],
+  [
+   "188",
+   "credit, 복구 몫",
+   "30.42, 16.23, 6.89, 41.04",
+   "RESULT_stage0 17, 37, 38행",
+   "119.60−89.18, 149.48−133.25, 같음",
+   "일치"
+  ],
+  [
+   "191~197",
+   "Table 6",
+   "B_h, H1, H2, H3, H4",
+   "V30, V31 decisions",
+   "3.577, 3.102, 28.178(22.881), 29.851, 11.355(9.244), 11.228, 28.009(24.331), 28.920, 12.382(10.762), 10.331, 1.154, 4.851, −3.986, −0.433, −3.801, +0.727",
+   "일치"
+  ],
+  [
+   "199",
+   "그린 조건과 하한",
+   "8, 10, −1 위",
+   "final_check",
+   "8, 10, −0.388, −0.349",
+   "일치"
+  ],
+  [
+   "199",
+   "RTT 200 2% 층",
+   "−0.19~−0.59",
+   "run JSON by_loss",
+   "−0.191, −0.228, −0.223, −0.590",
+   "일치"
+  ],
+  [
+   "199",
+   "v3.0 held-out",
+   "94.28, 140.14, −58.08~−33.64",
+   "V30 run1, decisions",
+   "94.284, 140.143, −58.076, −33.643",
+   "일치"
+  ],
+  [
+   "199",
+   "41 B, 여유 6 B",
+   "값",
+   "V31/experiments/results/g31_probe.json, PROTOCOL_stage3.md 0.3절",
+   "3×2562−7680=6, 41 B 문서 대조",
+   "일치, 배포본 누락(RT-22)"
+  ],
+  [
+   "199",
+   "v3.1 held-out",
+   "254.38/135.47, 253.61/136.59, 114.75, +19.74, −5.22~44.70",
+   "V31 run1, decisions H3",
+   "254.379, 135.474, 253.605, 136.591, 114.746, 19.742, −5.217, 44.700",
+   "일치"
+  ],
+  [
+   "199",
+   "서버 수신",
+   "6,717/9,807, 16,684/16,860",
+   "V31 run1 server_bytes_in_per_conn",
+   "6717.3, 9807.1, 16683.6, 16859.7",
+   "일치"
+  ],
+  [
+   "200",
+   "Fig. 6",
+   "54값",
+   "final_check",
+   "bad 0",
+   "일치"
+  ],
+  [
+   "202",
+   "측정 없음",
+   "상태",
+   "HO LOOP_STATE, G33/docs/V33FIX_evaluation.md 3행",
+   "같음",
+   "일치, 낡을 위험(RT-04)"
+  ],
+  [
+   "202",
+   "재생 411,000",
+   "값",
+   "G33/docs/V33FIX_policy.md:84",
+   "411,000/411,000",
+   "일치"
+  ],
+  [
+   "202",
+   "15개 중 넷 낮고 하나 높음",
+   "1.14~3.64, 0.16",
+   "G33/docs/V33FIX_evaluation.md:68,69,71,117",
+   "−1.788, −2.322, −1.142, −3.642, +0.164, B6 미확정",
+   "값 일치, 범위 누락(RT-19)"
+  ],
+  [
+   "206",
+   "3B와 padding 범위",
+   "3,840, 7,680, 4,557",
+   "산술, p2",
+   "같음",
+   "일치"
+  ],
+  [
+   "207",
+   "parity가 padding을 지배 안 함",
+   "2.61±4.29",
+   "p14",
+   "0 포함",
+   "일치"
+  ],
+  [
+   "207",
+   "같은 바이트 비교 없음",
+   "상태",
+   "X1 todo",
+   "지금 참",
+   "낡을 위험(RT-04)"
+  ],
+  [
+   "208",
+   "셋은 m=3, 큰 인증서만 갈림",
+   "판정",
+   "p17 checks 6",
+   "같음",
+   "일치"
+  ],
+  [
+   "208",
+   "99% 안팎 적중",
+   "98.8~99.3",
+   "p17 checks 7",
+   "같음",
+   "일치"
+  ],
+  [
+   "210",
+   "IW 32",
+   "32",
+   "quic-go internal/congestion/cubic_sender.go:20",
+   "32",
+   "일치"
+  ],
+  [
+   "210",
+   "burst 실제 손실",
+   "0.99~9.09",
+   "TEAM/README.md, L/(L+50)",
+   "0.99, 9.09",
+   "일치"
+  ],
+  [
+   "210",
+   "1,452 B, W≥1,402",
+   "값",
+   "G33/docs/V33FIX_policy.md:153",
+   "W≤1401",
+   "일치, 세대 표시 없음(RT-20)"
+  ],
+  [
+   "212, 216",
+   "후속 과제",
+   "계획",
+   "HO LOOP_STATE",
+   "지금 참",
+   "낡을 위험(RT-04)"
+  ],
+  [
+   "215",
+   "결론 RQ1~RQ4",
+   "요약",
+   "위 각 행",
+   "같음",
+   "일치"
+  ],
+  [
+   "219~246",
+   "참고문헌 DOI 21개",
+   "유효",
+   "doi.org",
+   "모두 302",
+   "일치"
+  ],
+  [
+   "210",
+   "셋째 '첫 접속만'",
+   "문구",
+   "V31/g3/RESULT_stage3.md 16행 H5, G33/docs/REPORT_CLAIMS_v33.md 38행",
+   "첫 방문은 둘 다 b0, 이득은 재방문 조건부",
+   "불일치(RT-28)"
+  ],
+  [
+   "131, 210",
+   "정책의 uplink 입력",
+   "문구",
+   "HO/v33/prompt/CONTEXT.md 72, 112행",
+   "131행 캡션에만 있고 한계 절에 없음",
+   "누락(RT-29)"
+  ],
+  [
+   "32",
+   "큰 인증서 수치와 initial cwnd 단서",
+   "문구",
+   "G33/docs/REPORT_CLAIMS_v33.md 49행",
+   "210행에만 단서",
+   "부분(RT-30)"
+  ]
+ ]
+}

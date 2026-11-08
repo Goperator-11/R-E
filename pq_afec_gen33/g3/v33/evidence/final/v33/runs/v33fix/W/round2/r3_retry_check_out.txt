@@ -1,0 +1,2 @@
+C:\dev\pq_afec_gen33\experiments\v33\worldsim_m1.py
+{'rows': 1500, 'hct_diff': 0, 'if_diff': 0, 'hold_if_true': 115, 'off_if_true': 115, 'hold_failure_class': 115, 'off_failure_class': 115}

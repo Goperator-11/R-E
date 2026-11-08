@@ -1,0 +1,1204 @@
+{
+  "copied_kst_date": "2026-11-07",
+  "files": [
+    {
+      "source": "C:\\dev\\codex_handoff\\codex_out\\X7.md",
+      "destination": "g3/v33/evidence/final/codex_out/X7.md",
+      "bytes": 23748,
+      "sha256": "36f62074e77cb441a25b06dd1cc416f5d61c6ad722a2e40c6ee003a1a6ca5e49"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\final\\runs\\F12_numbers.json",
+      "destination": "g3/v33/evidence/final/final/runs/F12_numbers.json",
+      "bytes": 2600,
+      "sha256": "268aa19b59d7e9a159d4d17092094edc113ad2f86789418dd64d04db201e1b47"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\final\\runs\\F12_numbers.py",
+      "destination": "g3/v33/evidence/final/final/runs/F12_numbers.py",
+      "bytes": 3224,
+      "sha256": "e7f8fb71c9608e229e3a506660b9875745ffa52f8f775cc4a65f98558758b56e"
+    },
+    {
+      "source": "C:\\dev\\pq_afec_gen31\\experiments\\results\\p31_gencompare_decisions.json",
+      "destination": "g3/v33/evidence/final/p31_gencompare_decisions.json",
+      "bytes": 92234,
+      "sha256": "d44fb24802a9c196d4c9504a61b1f7d28dc6439837762c1c4cb29631edae9e93"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\state\\evo\\design_learning.md",
+      "destination": "g3/v33/evidence/final/state/evo/design_learning.md",
+      "bytes": 22221,
+      "sha256": "f0d32e1de3e57b031f5eb3815435d96c9027b23b7e160a9d30b18459940d8563"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\A1_certificate_v1\\sizes.json",
+      "destination": "g3/v33/evidence/final/v33/runs/A1_certificate_v1/sizes.json",
+      "bytes": 10775,
+      "sha256": "1abe680a8f679447466fc0d82d2b14a16e47a8d8a8f33b6be4ea35d65a02b164"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\A1_context_checks_v1.json",
+      "destination": "g3/v33/evidence/final/v33/runs/A1_context_checks_v1.json",
+      "bytes": 50078,
+      "sha256": "c45392adbc93cbeef4828f91c168af695cdb708320371d1cf58f214fcce916d5"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\A1_numeric_audit_v1.json",
+      "destination": "g3/v33/evidence/final/v33/runs/A1_numeric_audit_v1.json",
+      "bytes": 48224,
+      "sha256": "9f58fe96c01baf33375006ad3b95bcb37ac7311ffed09feb71c9c13054b816fa"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\J8_coverage.md",
+      "destination": "g3/v33/evidence/final/v33/runs/J8_coverage.md",
+      "bytes": 2102,
+      "sha256": "c127495fa43c896cd6ab1519c218aaa659f3cabc316bc7d2373d6f8cc1def81b"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\L3_findings_v1.md",
+      "destination": "g3/v33/evidence/final/v33/runs/L3_findings_v1.md",
+      "bytes": 32182,
+      "sha256": "fff035016a1a59c1b787cbad089f2d85c819455ce8a17b06c7d3b0cadbc354ac"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\MORNING_REPORT.md",
+      "destination": "g3/v33/evidence/final/v33/runs/MORNING_REPORT.md",
+      "bytes": 78821,
+      "sha256": "715803648b61bfc88621e0365ce22ab04a26f6187e63c8c5e78fbc92eb64123a"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\a1_certificate_sizes_v1.py",
+      "destination": "g3/v33/evidence/final/v33/runs/a1_certificate_sizes_v1.py",
+      "bytes": 6504,
+      "sha256": "069f3f4682f97bc85e665a3880c0d290ae8944ce5ec1bb40d2a74fe0a8700a61"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\a1_context_checks_v1.py",
+      "destination": "g3/v33/evidence/final/v33/runs/a1_context_checks_v1.py",
+      "bytes": 2856,
+      "sha256": "6653b90f2dcb1e8843c73e41351cc870465dbce130d1beb74be48565be75360d"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\a1_numeric_audit_v1.py",
+      "destination": "g3/v33/evidence/final/v33/runs/a1_numeric_audit_v1.py",
+      "bytes": 6726,
+      "sha256": "1548ba78ea45d7a59c15b7e12a5eaf533b0dc68712bf46f1f0d102c89a21cdfe"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\preserved_test_files_v1\\removed\\020e15bb8c44465a819f6e71f7e35444\\experiments\\results\\g31_probe.json",
+      "destination": "g3/v33/evidence/final/v33/runs/preserved_test_files_v1/removed/020e15bb8c44465a819f6e71f7e35444/experiments/results/g31_probe.json",
+      "bytes": 2,
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\preserved_test_files_v1\\removed\\020e15bb8c44465a819f6e71f7e35444\\experiments\\state\\g31_probe_console.log",
+      "destination": "g3/v33/evidence/final/v33/runs/preserved_test_files_v1/removed/020e15bb8c44465a819f6e71f7e35444/experiments/state/g31_probe_console.log",
+      "bytes": 2,
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\preserved_test_files_v1\\removed\\10fb4744f4b94ef99a7e9c2b2170baf9\\g3\\replay_g3_dev.json",
+      "destination": "g3/v33/evidence/final/v33/runs/preserved_test_files_v1/removed/10fb4744f4b94ef99a7e9c2b2170baf9/g3/replay_g3_dev.json",
+      "bytes": 2,
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\s1_verify\\check-qkjquw1x\\dev_data\\C\\dev\\pq_afec_gen3\\experiments\\state\\g3_m1confirm_units.jsonl",
+      "destination": "g3/v33/evidence/final/v33/runs/s1_verify/check-qkjquw1x/dev_data/C/dev/pq_afec_gen3/experiments/state/g3_m1confirm_units.jsonl",
+      "bytes": 767782,
+      "sha256": "fd85ff42ce5687f4cc9aebead9b3eb7577ba3d3bd6243f32f908117be487620b"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\s1_verify\\check-qkjquw1x\\dev_data\\C\\dev\\pq_afec_gen3\\experiments\\state\\g3_stage0_units.jsonl",
+      "destination": "g3/v33/evidence/final/v33/runs/s1_verify/check-qkjquw1x/dev_data/C/dev/pq_afec_gen3/experiments/state/g3_stage0_units.jsonl",
+      "bytes": 12318575,
+      "sha256": "56b27776fb1179d02f83e1092657f7b966ace72ddfbc238abfd1429766c9118e"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\A-eval\\b6_repetition_plan_v1.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/b6_repetition_plan_v1.json",
+      "bytes": 5490,
+      "sha256": "c6d7c7e28752fa2bd573a5fedd68c52044841e930bd78b71559efa06cb5a8402"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\A-eval\\b6_repetition_v1.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/b6_repetition_v1.json",
+      "bytes": 75598,
+      "sha256": "b65840b2745c12b107170ebbd211703b30376daff2af4827eaf6490fc26c3d8f"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\A-eval\\b6_repetition_v2.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/b6_repetition_v2.json",
+      "bytes": 89759,
+      "sha256": "ddc096508126515ad159701d0bfa96fa3994b5bac671f1d7da1812622ace3848"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\A-eval\\compare_all.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/compare_all.json",
+      "bytes": 487203,
+      "sha256": "499acecbc09fe1b15e0358fb82efe391dabc9945b4a5fc3751551c7e3a5d80b0"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\A-eval\\compare_seeds31_34.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/compare_seeds31_34.json",
+      "bytes": 98448,
+      "sha256": "247bfcdab6a1617ef3d4ab62ea7f7bcb81a332b69af8c68392175cd9aa7fc622"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\SHA256SUMS.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/SHA256SUMS.txt",
+      "bytes": 50135,
+      "sha256": "d184cd9950324435e5ed13109a591a217c12af8fc3e8b007745f9ccb2e7eeaf6"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\comparison_fixture_original_first.patch",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/comparison_fixture_original_first.patch",
+      "bytes": 343,
+      "sha256": "90d94192d8cd5eb819a4410c82ccc11d0ce64d90b1b913de4a52d90971e7005d"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round1_B\\e2e.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/e2e.sh",
+      "bytes": 7007,
+      "sha256": "5c04b229612a43d695d7b5a83273e6a702960963a863521e79085683c8bba79b"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round1_B\\make_mutants.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/make_mutants.py",
+      "bytes": 1488,
+      "sha256": "ee1faecaeae9ac39837bad3ebce2724cc314b02b64f1d8864b2cd84216de2e91"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round1_B\\out\\e2e\\binaries.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/out/e2e/binaries.txt",
+      "bytes": 211,
+      "sha256": "68e458955902f8a6719a3db13d72126ca6438ef260570cf3d4e5e52548f0b792"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round1_B\\out\\e2e\\sealed.server.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/out/e2e/sealed.server.json",
+      "bytes": 6161,
+      "sha256": "bac976c4b5baa741ad96603940162d47a6926a76841c4b528caefdaec7314e5a"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round1_B\\run_mutants.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/run_mutants.sh",
+      "bytes": 1145,
+      "sha256": "a1f4524e078cdf457b35e7ecc9c7b66f699f82f90c757fbe35f671d25a5c4d3b"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round2\\attempt1\\out\\after1\\vet.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/attempt1/out/after1/vet.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round2\\attempt1\\out\\mutants_summary.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/attempt1/out/mutants_summary.txt",
+      "bytes": 969,
+      "sha256": "c3fdc5717b67f3c23ac211505fdf999e7cf4fd59ce15338ccd7093935f9fb797"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round2\\build_script_check.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/build_script_check.sh",
+      "bytes": 2775,
+      "sha256": "8ee98f1235056c0754f8533e3f7bb65ac022132d248de4dbacaa882c308fd01d"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round2\\e2e_g.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/e2e_g.sh",
+      "bytes": 4668,
+      "sha256": "19c32a584eafe879bf03187352b50f4fae5eebc7679e216ef759a380cb81f1aa"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round2\\oneline_check.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/oneline_check.sh",
+      "bytes": 817,
+      "sha256": "28d2bb2db295418f3cf81ba81fabb5d66be7de88625143b68d8ba85e0c2e76be"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\G\\round2\\reclone_verify_seals.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/reclone_verify_seals.json",
+      "bytes": 32881,
+      "sha256": "54889f37d1fb13c7215e7fb55a594ff8176f23e6bf0735e46478d0fb41341a1d"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\L\\first_round_E\\codex_handoff_v33_meta.tar",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/L/first_round_E/codex_handoff_v33_meta.tar",
+      "bytes": 829440,
+      "sha256": "8fb9df2380825bea61234ca58bd5a76ba9a14171c2a9701bf50ac3af49fc99c2"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\SHA256SUMS.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/SHA256SUMS.txt",
+      "bytes": 21233,
+      "sha256": "ded7f538042b50bf1c65c678b5145b51cd990465ea34921844dd1fca7a711be3"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\evidence\\CONTEXT_md_from_backup_0130.md",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/evidence/CONTEXT_md_from_backup_0130.md",
+      "bytes": 19032,
+      "sha256": "b07a88b55333c0700e15980857ef772973c3f6519c7b697969bd8f87685c6fa8"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\first_round\\A-go\\final2\\gate_l1_fresh.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/A-go/final2/gate_l1_fresh.json",
+      "bytes": 1324,
+      "sha256": "b0dad28b6007f374ab725ac8ab10ff79d32b3894b25d17bd16df053d0c8b4d7b"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\first_round\\A-go\\final2\\gate_l1_main.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/A-go/final2/gate_l1_main.json",
+      "bytes": 1225,
+      "sha256": "b95e429ee0c1ff04286190370eee1085a5f5529197c0661e82c357ede81e524e"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\first_round\\A-go\\final2\\gate_v3.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/A-go/final2/gate_v3.json",
+      "bytes": 42652,
+      "sha256": "10d66bf04082225a621c18fc0617aa24ddf4f4960fae1d78cec2b924a8f5931c"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\first_round\\A-go\\v32_vs_new.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/A-go/v32_vs_new.py",
+      "bytes": 3105,
+      "sha256": "a55bb769ff5f93c2b8612c3bd2829367caf5990f64b561780cb3907d6d686070"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\first_round\\D\\h1holm.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/h1holm.py",
+      "bytes": 451,
+      "sha256": "6307d4b6b1ade2d1386d583fb4d9f86be5c34f89ecb72506605426cef43ea4e4"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\first_round\\D\\hashref2.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/hashref2.py",
+      "bytes": 1219,
+      "sha256": "968e7dc0614fc0517a88a96aeaa90ab6a424bfb74cb2ca84e9bc59cc44e97bca"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\first_round\\D\\p1cap.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/p1cap.py",
+      "bytes": 846,
+      "sha256": "d2bfb409ef870bf213acedd4fe29d5bb2a686e44ee3ce7d2f745d36162f8a722"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\first_round\\D\\spacing_fix.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/spacing_fix.py",
+      "bytes": 3086,
+      "sha256": "2794371e30ece676c3144d6f92bec86a8f3cae1cc525b76da7e019926f6d4079"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\first_round\\D\\token_check.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/token_check.py",
+      "bytes": 1813,
+      "sha256": "51eca1f86d87f5ad451e283c6c068dd07b64b3300156a376a4992fd4166d5da6"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\cr_count.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/cr_count.json",
+      "bytes": 3949,
+      "sha256": "054f6046dcba3dd69b6b50f0dfec57e01f7eec1914245263e5dbeafee14d4b8e"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\hashrefs.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/hashrefs.json",
+      "bytes": 930,
+      "sha256": "8b5b085ce6e160c80884c84617ddeef77a236085228613d8be616c22d39b36e6"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\parity_w_limit.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/parity_w_limit.py",
+      "bytes": 2272,
+      "sha256": "b890bbe7e01d6b69f5536e3f8439b82cc2096b0dab629abf2eaef55068f496ae"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\parity_w_limit_old.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/parity_w_limit_old.json",
+      "bytes": 12866,
+      "sha256": "b5cd0d58eed344c5a1a63d2c22a165458c44fcc26436e5513c4d98f2bc5f1806"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\parity_w_limit_old.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/parity_w_limit_old.py",
+      "bytes": 2428,
+      "sha256": "15f363fd12425a2bea5defceb9c64ca5c46d06b54183e3e422815e626bad061a"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\parity_w_limit_v2.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/parity_w_limit_v2.json",
+      "bytes": 16250,
+      "sha256": "9334aa3591694f671c756901b31b2fbf0ee6dc58769b646676a21ab4d71d9ac3"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\run_old.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/run_old.py",
+      "bytes": 1735,
+      "sha256": "324f0bd90592b98f077975e06bdc0295949ae0f998beff0320c5305232ff67d6"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\run_old_out2.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/run_old_out2.txt",
+      "bytes": 511,
+      "sha256": "bd67a7dc291e75483eaf67d639d8604e8fa3f1c96e2379a53fae58717a0321f0"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\run_old_scrub.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/run_old_scrub.py",
+      "bytes": 711,
+      "sha256": "31297fa790b1261802b5f1774ab6548cbe9d1f2cfb0f21a27e18cfd4b98d5d3e"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\scrub_check.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/scrub_check.json",
+      "bytes": 31909,
+      "sha256": "a9901ff74f46663e47724a39383fc241b97d641bddc2186e77ed6851dc72d2d4"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\P\\scripts\\userpath_counts.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/userpath_counts.json",
+      "bytes": 2443,
+      "sha256": "9bca247f0a3ba3507465126d07f24fa7447de4b6385bb6bdac062553da80ad39"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\C_round1\\m1_cost_diag.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/C_round1/m1_cost_diag.py",
+      "bytes": 10427,
+      "sha256": "bd788a36377184e259b4231ebd30760d92f5b1ef9d7557dd854d63feda3d5bb4"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\C_round1\\power_out.jsonl",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/C_round1/power_out.jsonl",
+      "bytes": 50902,
+      "sha256": "42b0962068b7a667c27417e8de50e1182762042ce517f39a56e153f91a3a3941"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\C_verify\\power_verify_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/C_verify/power_verify_out.txt",
+      "bytes": 2455,
+      "sha256": "9246ec1f86a9f3c1023949f442cd87015b614c9630d534a6ff8bbaaf7c8469a2"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\V33FIX_world_diag_v1.round1.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/V33FIX_world_diag_v1.round1.json",
+      "bytes": 104373,
+      "sha256": "fd90e95508b2e0911b8e762e18a477afc1b48c7809a1cd661fcaf55aef370c0f"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\compare_diag_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/compare_diag_out.txt",
+      "bytes": 793,
+      "sha256": "a2d6e54e53cb106464d90e5230723099a9e587c2b8504a97bb5d2961abe70a65"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\frozen_check_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/frozen_check_out.txt",
+      "bytes": 3255,
+      "sha256": "a6b92789b9112b4b8732401efae099e548c84ca241f3ed9eb5cebca01ec6dc19"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\lead0_verify_after_N1000.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/lead0_verify_after_N1000.txt",
+      "bytes": 110,
+      "sha256": "00fdcf0a158d1a4886acd9c66316bb7e56b65817a38613b0e829dbbfa029f255"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\n4096_check_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/n4096_check_out.txt",
+      "bytes": 148,
+      "sha256": "3516719a26e840133fcf238d494cf4c3f0b611e152e06b37a2cd8d29d4fa16f9"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\pkt_probe_exact_l1_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/pkt_probe_exact_l1_out.txt",
+      "bytes": 427,
+      "sha256": "27b06caca2a643de2c50145200cf1a00ce27235e16a6c5f5627794d8dedf77ee"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\prefix_tests_summary.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/prefix_tests_summary.txt",
+      "bytes": 324,
+      "sha256": "1994a203ceecca797911d3b153f7224c6c8add53d3272a57dc8414bc96b21e9a"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_count_nobypass_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_count_nobypass_out.txt",
+      "bytes": 349,
+      "sha256": "51453e891c665344d97f720052e4816827063eed48ea45e641d83773c2ecdb27"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_diag\\diag_rerun.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_diag/diag_rerun.json",
+      "bytes": 104373,
+      "sha256": "876b1f6236443f1b6f63528ddbfbafde78cafa3f79e70fc6286de965e5509b1f"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_diag_compare_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_diag_compare_out.txt",
+      "bytes": 234,
+      "sha256": "00c9af62a54a583b5ea699c9ddf2cd4eb964a4fa89150d144c59191635e83124"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_fixed_new_tests.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_fixed_new_tests.txt",
+      "bytes": 652,
+      "sha256": "5fd45dc3edad9ef9d326e2b6e6f223ca17c91e4ef66775dc360f4aa07dde97cc"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_frozen_check_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_frozen_check_out.txt",
+      "bytes": 3255,
+      "sha256": "31cb8265564c2cc0dcefa6a7cf49522bcca484b7c7eeef4ff70f818658c3df6b"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_lead0_scan_nobypass_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_lead0_scan_nobypass_out.txt",
+      "bytes": 12512,
+      "sha256": "d4fb578f0624ecbf1c94188b3ee0a55cf4596f742d1fccdeac575e81e58a5c72"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_lead0_scan_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_lead0_scan_out.txt",
+      "bytes": 209,
+      "sha256": "de160d41ad1c3c3b6ca62246829f7b69e0f3c20d8f813d85e39ddbab93e1fdca"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_lead0_verify_N1000.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_lead0_verify_N1000.txt",
+      "bytes": 346,
+      "sha256": "18d5ed9a6d98b0956bc43d0b015a44ff4b5f96ff3a4b81c395036b98e6a48923"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_n4096_check_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_n4096_check_out.txt",
+      "bytes": 148,
+      "sha256": "3516719a26e840133fcf238d494cf4c3f0b611e152e06b37a2cd8d29d4fa16f9"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_pkt_probe_exact_l1_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_pkt_probe_exact_l1_out.txt",
+      "bytes": 427,
+      "sha256": "27b06caca2a643de2c50145200cf1a00ce27235e16a6c5f5627794d8dedf77ee"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_pkt_probe_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_pkt_probe_out.txt",
+      "bytes": 746,
+      "sha256": "90c3c725de98f4906ed104e6cb53fd988c607e3a5a2eed790851013db925b486"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_prefix_new_tests.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_prefix_new_tests.txt",
+      "bytes": 772,
+      "sha256": "c0b549c1753599a59fc96148be9877e2a1f0dafb843ec1db1c711c91449ceb98"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_related_tests.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_related_tests.txt",
+      "bytes": 275,
+      "sha256": "9081356d54159912014393319108d8208731087b0fe67e49810288c309e45f31"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_retry_check_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_retry_check_out.txt",
+      "bytes": 192,
+      "sha256": "3ac829bf4eae29e4900086a716e00d7d7cdb6170c3164efe9a7e9847047d56ae"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\r3_retry_check_prefix_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_retry_check_prefix_out.txt",
+      "bytes": 310,
+      "sha256": "ef960d048ae20d09c45e97db3187f3d7b4c4dbb12fa98fae07dbe3574e56195e"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\W\\round2\\related_tests.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/related_tests.txt",
+      "bytes": 275,
+      "sha256": "4fd117b3e6981f7ad05df91a741c640490e840759d48bb56334528ab6c56c32c"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\workflow_reports\\E-loop.md",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/workflow_reports/E-loop.md",
+      "bytes": 46292,
+      "sha256": "f8dad642068379d65a29b76fc1013e559158550b2402fd283c6b8047bb002c02"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\workflow_reports\\NOTDONE_ALL.md",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/workflow_reports/NOTDONE_ALL.md",
+      "bytes": 50244,
+      "sha256": "44d150f968b88c5acc1ff83a9cb7ced6acb2d640de00bdaead3508118495011c"
+    },
+    {
+      "source": "C:\\dev\\codex_handoff\\v33\\runs\\v33fix\\workflow_reports\\VERIFY_ALL.md",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/workflow_reports/VERIFY_ALL.md",
+      "bytes": 62206,
+      "sha256": "7e7929390a420457711b392dfdb9aa1561e7f07bbbc92fc01769b8d0ca918485"
+    }
+  ],
+  "inventory_references": [
+    {
+      "reference": "gen33 docs/M1_world_validity.md:17",
+      "citation": "W\\round2\\r3_lead0_scan_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_lead0_scan_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_lead0_scan_out.txt"
+    },
+    {
+      "reference": "gen33 docs/M1_world_validity.md:17",
+      "citation": "W\\round2\\r3_lead0_verify_N1000.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_lead0_verify_N1000.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_lead0_verify_N1000.txt"
+    },
+    {
+      "reference": "gen33 docs/PUBLISH_PROCEDURE.md:7",
+      "citation": "hashrefs.json",
+      "source": "v33/runs/v33fix/P/scripts/hashrefs.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/hashrefs.json"
+    },
+    {
+      "reference": "gen33 docs/PUBLISH_PROCEDURE.md:7",
+      "citation": "runs\\MORNING_REPORT.md",
+      "source": "v33/runs/MORNING_REPORT.md",
+      "destination": "g3/v33/evidence/final/v33/runs/MORNING_REPORT.md"
+    },
+    {
+      "reference": "gen33 docs/PUBLISH_PROCEDURE.md:40",
+      "citation": "userpath_counts.json",
+      "source": "v33/runs/v33fix/P/scripts/userpath_counts.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/userpath_counts.json"
+    },
+    {
+      "reference": "gen33 docs/PUBLISH_PROCEDURE.md:40",
+      "citation": "scripts\\scrub_check.json",
+      "source": "v33/runs/v33fix/P/scripts/scrub_check.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/scrub_check.json"
+    },
+    {
+      "reference": "gen33 docs/PUBLISH_PROCEDURE.md:40",
+      "citation": "scrub_check.json",
+      "source": "v33/runs/v33fix/P/scripts/scrub_check.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/scrub_check.json"
+    },
+    {
+      "reference": "gen33 docs/REPORT_CLAIMS_v33.md:5",
+      "citation": "codex_handoff_v33_meta.tar",
+      "source": "v33/runs/v33fix/L/first_round_E/codex_handoff_v33_meta.tar",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/L/first_round_E/codex_handoff_v33_meta.tar"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_bench_rules.md:45",
+      "citation": "power_out.jsonl",
+      "source": "v33/runs/v33fix/W/C_round1/power_out.jsonl",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/C_round1/power_out.jsonl"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_bench_rules.md:45",
+      "citation": "power_verify_out.txt",
+      "source": "v33/runs/v33fix/W/C_verify/power_verify_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/C_verify/power_verify_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:27",
+      "citation": "codex_handoff_v33_meta.tar",
+      "source": "v33/runs/v33fix/L/first_round_E/codex_handoff_v33_meta.tar",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/L/first_round_E/codex_handoff_v33_meta.tar"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:29",
+      "citation": "p1cap.py",
+      "source": "v33/runs/v33fix/P/first_round/D/p1cap.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/p1cap.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:33",
+      "citation": "h1holm.py",
+      "source": "v33/runs/v33fix/P/first_round/D/h1holm.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/h1holm.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:37",
+      "citation": "spacing_fix.py",
+      "source": "v33/runs/v33fix/P/first_round/D/spacing_fix.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/spacing_fix.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:37",
+      "citation": "token_check.py",
+      "source": "v33/runs/v33fix/P/first_round/D/token_check.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/token_check.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:88",
+      "citation": "MORNING_REPORT.md",
+      "source": "v33/runs/MORNING_REPORT.md",
+      "destination": "g3/v33/evidence/final/v33/runs/MORNING_REPORT.md"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:88",
+      "citation": "hashref2.py",
+      "source": "v33/runs/v33fix/P/first_round/D/hashref2.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/hashref2.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:88",
+      "citation": "hashrefs.json",
+      "source": "v33/runs/v33fix/P/scripts/hashrefs.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/hashrefs.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:88",
+      "citation": "MORNING_REPORT.md",
+      "source": "v33/runs/MORNING_REPORT.md",
+      "destination": "g3/v33/evidence/final/v33/runs/MORNING_REPORT.md"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:88",
+      "citation": "hashref2.py",
+      "source": "v33/runs/v33fix/P/first_round/D/hashref2.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/D/hashref2.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_docs_hygiene.md:121",
+      "citation": "cr_count.json",
+      "source": "v33/runs/v33fix/P/scripts/cr_count.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/cr_count.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_evaluation.md:7",
+      "citation": "compare_all.json",
+      "source": "v33/runs/v33fix/A-eval/compare_all.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/compare_all.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_evaluation.md:7",
+      "citation": "b6_repetition_plan_v1.json",
+      "source": "v33/runs/v33fix/A-eval/b6_repetition_plan_v1.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/b6_repetition_plan_v1.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_evaluation.md:7",
+      "citation": "b6_repetition_v2.json",
+      "source": "v33/runs/v33fix/A-eval/b6_repetition_v2.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/b6_repetition_v2.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_evaluation.md:9",
+      "citation": "b6_repetition_v2.json",
+      "source": "v33/runs/v33fix/A-eval/b6_repetition_v2.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/b6_repetition_v2.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_evaluation.md:31",
+      "citation": "compare_seeds31_34.json",
+      "source": "v33/runs/v33fix/A-eval/compare_seeds31_34.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/compare_seeds31_34.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_evaluation.md:189",
+      "citation": "compare_all.json",
+      "source": "v33/runs/v33fix/A-eval/compare_all.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/compare_all.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_evaluation.md:189",
+      "citation": "compare_seeds31_34.json",
+      "source": "v33/runs/v33fix/A-eval/compare_seeds31_34.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/compare_seeds31_34.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_evaluation.md:189",
+      "citation": "b6_repetition_v2.json",
+      "source": "v33/runs/v33fix/A-eval/b6_repetition_v2.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/b6_repetition_v2.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_evaluation.md:189",
+      "citation": "b6_repetition_v1.json",
+      "source": "v33/runs/v33fix/A-eval/b6_repetition_v1.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/b6_repetition_v1.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:72",
+      "citation": "runs\\v33fix\\P\\SHA256SUMS.txt",
+      "source": "v33/runs/v33fix/G/SHA256SUMS.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/SHA256SUMS.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:110",
+      "citation": "parity_w_limit_v2.json",
+      "source": "v33/runs/v33fix/P/scripts/parity_w_limit_v2.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/parity_w_limit_v2.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:110",
+      "citation": "parity_w_limit_old.py",
+      "source": "v33/runs/v33fix/P/scripts/parity_w_limit_old.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/parity_w_limit_old.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:110",
+      "citation": "parity_w_limit_old.json",
+      "source": "v33/runs/v33fix/P/scripts/parity_w_limit_old.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/parity_w_limit_old.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:136",
+      "citation": "NOTDONE_ALL.md",
+      "source": "v33/runs/v33fix/workflow_reports/NOTDONE_ALL.md",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/workflow_reports/NOTDONE_ALL.md"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:136",
+      "citation": "SHA256SUMS.txt",
+      "source": "v33/runs/v33fix/G/SHA256SUMS.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/SHA256SUMS.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:145",
+      "citation": "scripts\\run_old.py",
+      "source": "v33/runs/v33fix/P/scripts/run_old.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/run_old.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:145",
+      "citation": "run_old_out2.txt",
+      "source": "v33/runs/v33fix/P/scripts/run_old_out2.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/run_old_out2.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:157",
+      "citation": "compare_all.json",
+      "source": "v33/runs/v33fix/A-eval/compare_all.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/compare_all.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:157",
+      "citation": "b6_repetition_plan_v1.json",
+      "source": "v33/runs/v33fix/A-eval/b6_repetition_plan_v1.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/b6_repetition_plan_v1.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:157",
+      "citation": "b6_repetition_v2.json",
+      "source": "v33/runs/v33fix/A-eval/b6_repetition_v2.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/A-eval/b6_repetition_v2.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy.md:175",
+      "citation": "scripts\\run_old_scrub.py",
+      "source": "v33/runs/v33fix/P/scripts/run_old_scrub.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/scripts/run_old_scrub.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy_go.md:94",
+      "citation": "runs\\v33fix\\P\\SHA256SUMS.txt",
+      "source": "v33/runs/v33fix/G/SHA256SUMS.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/SHA256SUMS.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy_go.md:100",
+      "citation": "final2\\gate_l1_main.json",
+      "source": "v33/runs/v33fix/P/first_round/A-go/final2/gate_l1_main.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/A-go/final2/gate_l1_main.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy_go.md:101",
+      "citation": "final2\\gate_l1_fresh.json",
+      "source": "v33/runs/v33fix/P/first_round/A-go/final2/gate_l1_fresh.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/A-go/final2/gate_l1_fresh.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy_go.md:104",
+      "citation": "final2\\gate_v3.json",
+      "source": "v33/runs/v33fix/P/first_round/A-go/final2/gate_v3.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/A-go/final2/gate_v3.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy_go.md:105",
+      "citation": "v32_vs_new.py",
+      "source": "v33/runs/v33fix/P/first_round/A-go/v32_vs_new.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/P/first_round/A-go/v32_vs_new.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy_go.md:106",
+      "citation": "final2\\vet.txt",
+      "source": "v33/runs/v33fix/G/round2/attempt1/out/after1/vet.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/attempt1/out/after1/vet.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy_go.md:138",
+      "citation": "vet.txt",
+      "source": "v33/runs/v33fix/G/round2/attempt1/out/after1/vet.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/attempt1/out/after1/vet.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_policy_go.md:160",
+      "citation": "SHA256SUMS.txt",
+      "source": "v33/runs/v33fix/G/SHA256SUMS.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/SHA256SUMS.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:170",
+      "citation": "e2e.sh",
+      "source": "v33/runs/v33fix/G/round1_B/e2e.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/e2e.sh"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:170",
+      "citation": "binaries.txt",
+      "source": "v33/runs/v33fix/G/round1_B/out/e2e/binaries.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/out/e2e/binaries.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:170",
+      "citation": "sealed.server.json",
+      "source": "v33/runs/v33fix/G/round1_B/out/e2e/sealed.server.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/out/e2e/sealed.server.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:227",
+      "citation": "make_mutants.py",
+      "source": "v33/runs/v33fix/G/round1_B/make_mutants.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/make_mutants.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:227",
+      "citation": "run_mutants.sh",
+      "source": "v33/runs/v33fix/G/round1_B/run_mutants.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/run_mutants.sh"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:239",
+      "citation": "NOTDONE_ALL.md",
+      "source": "v33/runs/v33fix/workflow_reports/NOTDONE_ALL.md",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/workflow_reports/NOTDONE_ALL.md"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:255",
+      "citation": "round2\\oneline_check.sh",
+      "source": "v33/runs/v33fix/G/round2/oneline_check.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/oneline_check.sh"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:257",
+      "citation": "round2\\build_script_check.sh",
+      "source": "v33/runs/v33fix/G/round2/build_script_check.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/build_script_check.sh"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:276",
+      "citation": "round2\\make_mutants.py",
+      "source": "v33/runs/v33fix/G/round1_B/make_mutants.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/make_mutants.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:276",
+      "citation": "round2\\run_mutants.sh",
+      "source": "v33/runs/v33fix/G/round1_B/run_mutants.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round1_B/run_mutants.sh"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:276",
+      "citation": "round2\\out\\mutants_summary.txt",
+      "source": "v33/runs/v33fix/G/round2/attempt1/out/mutants_summary.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/attempt1/out/mutants_summary.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:294",
+      "citation": "round2\\attempt1\\out\\mutants_summary.txt",
+      "source": "v33/runs/v33fix/G/round2/attempt1/out/mutants_summary.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/attempt1/out/mutants_summary.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:318",
+      "citation": "workflow_reports\\E-loop.md",
+      "source": "v33/runs/v33fix/workflow_reports/E-loop.md",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/workflow_reports/E-loop.md"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:318",
+      "citation": "round2\\reclone_verify_seals.json",
+      "source": "v33/runs/v33fix/G/round2/reclone_verify_seals.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/reclone_verify_seals.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:337",
+      "citation": "round2\\e2e_g.sh",
+      "source": "v33/runs/v33fix/G/round2/e2e_g.sh",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/round2/e2e_g.sh"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:377",
+      "citation": "SHA256SUMS.txt",
+      "source": "v33/runs/v33fix/G/SHA256SUMS.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/SHA256SUMS.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:391",
+      "citation": "MORNING_REPORT.md",
+      "source": "v33/runs/MORNING_REPORT.md",
+      "destination": "g3/v33/evidence/final/v33/runs/MORNING_REPORT.md"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:401",
+      "citation": "runs\\v33fix\\G\\comparison_fixture_original_first.patch",
+      "source": "v33/runs/v33fix/G/comparison_fixture_original_first.patch",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/comparison_fixture_original_first.patch"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_testbed.md:411",
+      "citation": "SHA256SUMS.txt",
+      "source": "v33/runs/v33fix/G/SHA256SUMS.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/SHA256SUMS.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:35",
+      "citation": "W\\round2\\r3_lead0_scan_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_lead0_scan_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_lead0_scan_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:35",
+      "citation": "W\\round2\\r3_lead0_scan_nobypass_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_lead0_scan_nobypass_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_lead0_scan_nobypass_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:35",
+      "citation": "r3_count_nobypass_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_count_nobypass_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_count_nobypass_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:75",
+      "citation": "pkt_probe_exact_l1_out.txt",
+      "source": "v33/runs/v33fix/W/round2/pkt_probe_exact_l1_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/pkt_probe_exact_l1_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:84",
+      "citation": "round2\\n4096_check_out.txt",
+      "source": "v33/runs/v33fix/W/round2/n4096_check_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/n4096_check_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:113",
+      "citation": "W\\round2\\m1_cost_diag.py",
+      "source": "v33/runs/v33fix/W/C_round1/m1_cost_diag.py",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/C_round1/m1_cost_diag.py"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:129",
+      "citation": "W\\SHA256SUMS.txt",
+      "source": "v33/runs/v33fix/G/SHA256SUMS.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/G/SHA256SUMS.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:137",
+      "citation": "round2\\prefix_tests_summary.txt",
+      "source": "v33/runs/v33fix/W/round2/prefix_tests_summary.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/prefix_tests_summary.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:137",
+      "citation": "round2\\r3_prefix_new_tests.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_prefix_new_tests.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_prefix_new_tests.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:137",
+      "citation": "r3_fixed_new_tests.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_fixed_new_tests.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_fixed_new_tests.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:137",
+      "citation": "round2\\lead0_verify_after_N1000.txt",
+      "source": "v33/runs/v33fix/W/round2/lead0_verify_after_N1000.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/lead0_verify_after_N1000.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:137",
+      "citation": "r3_lead0_verify_N1000.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_lead0_verify_N1000.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_lead0_verify_N1000.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:137",
+      "citation": "r3_retry_check_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_retry_check_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_retry_check_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:137",
+      "citation": "r3_retry_check_prefix_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_retry_check_prefix_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_retry_check_prefix_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:139",
+      "citation": "r3_lead0_scan_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_lead0_scan_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_lead0_scan_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:139",
+      "citation": "r3_lead0_scan_nobypass_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_lead0_scan_nobypass_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_lead0_scan_nobypass_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:139",
+      "citation": "r3_count_nobypass_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_count_nobypass_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_count_nobypass_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:141",
+      "citation": "round2\\compare_diag_out.txt",
+      "source": "v33/runs/v33fix/W/round2/compare_diag_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/compare_diag_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:141",
+      "citation": "r3_diag_compare_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_diag_compare_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_diag_compare_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:141",
+      "citation": "r3_diag\\diag_rerun.json",
+      "source": "v33/runs/v33fix/W/round2/r3_diag/diag_rerun.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_diag/diag_rerun.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:141",
+      "citation": "round2\\V33FIX_world_diag_v1.round1.json",
+      "source": "v33/runs/v33fix/W/round2/V33FIX_world_diag_v1.round1.json",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/V33FIX_world_diag_v1.round1.json"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:143",
+      "citation": "r3_pkt_probe_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_pkt_probe_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_pkt_probe_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:143",
+      "citation": "r3_pkt_probe_exact_l1_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_pkt_probe_exact_l1_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_pkt_probe_exact_l1_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:143",
+      "citation": "r3_n4096_check_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_n4096_check_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_n4096_check_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:153",
+      "citation": "round2\\r3_related_tests.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_related_tests.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_related_tests.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:153",
+      "citation": "related_tests.txt",
+      "source": "v33/runs/v33fix/W/round2/related_tests.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/related_tests.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:153",
+      "citation": "round2\\r3_frozen_check_out.txt",
+      "source": "v33/runs/v33fix/W/round2/r3_frozen_check_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/r3_frozen_check_out.txt"
+    },
+    {
+      "reference": "gen33 docs/V33FIX_world.md:153",
+      "citation": "frozen_check_out.txt",
+      "source": "v33/runs/v33fix/W/round2/frozen_check_out.txt",
+      "destination": "g3/v33/evidence/final/v33/runs/v33fix/W/round2/frozen_check_out.txt"
+    },
+    {
+      "reference": "R-E/pq_afec_gen3/g3/PROTOCOL_m1confirm.md:43",
+      "citation": "g3_m1confirm_units.jsonl",
+      "source": "v33/runs/s1_verify/check-qkjquw1x/dev_data/C/dev/pq_afec_gen3/experiments/state/g3_m1confirm_units.jsonl",
+      "destination": "g3/v33/evidence/final/v33/runs/s1_verify/check-qkjquw1x/dev_data/C/dev/pq_afec_gen3/experiments/state/g3_m1confirm_units.jsonl"
+    },
+    {
+      "reference": "R-E/pq_afec_gen3/g3/PROTOCOL_stage2.md:182",
+      "citation": "g3/replay_g3_dev.json",
+      "source": "v33/runs/preserved_test_files_v1/removed/10fb4744f4b94ef99a7e9c2b2170baf9/g3/replay_g3_dev.json",
+      "destination": "g3/v33/evidence/final/v33/runs/preserved_test_files_v1/removed/10fb4744f4b94ef99a7e9c2b2170baf9/g3/replay_g3_dev.json"
+    },
+    {
+      "reference": "R-E/pq_afec_gen3/g3/PROTOCOL_stage2.md:258",
+      "citation": "design_learning.md",
+      "source": "state/evo/design_learning.md",
+      "destination": "g3/v33/evidence/final/state/evo/design_learning.md"
+    },
+    {
+      "reference": "R-E/pq_afec_gen3/g3/PROTOCOL_stage2.md:379",
+      "citation": "g3/replay_g3_dev.json",
+      "source": "v33/runs/preserved_test_files_v1/removed/10fb4744f4b94ef99a7e9c2b2170baf9/g3/replay_g3_dev.json",
+      "destination": "g3/v33/evidence/final/v33/runs/preserved_test_files_v1/removed/10fb4744f4b94ef99a7e9c2b2170baf9/g3/replay_g3_dev.json"
+    },
+    {
+      "reference": "R-E/pq_afec_gen3/g3/RESULT_stage0.md:3",
+      "citation": "experiments/state/g3_stage0_units.jsonl",
+      "source": "v33/runs/s1_verify/check-qkjquw1x/dev_data/C/dev/pq_afec_gen3/experiments/state/g3_stage0_units.jsonl",
+      "destination": "g3/v33/evidence/final/v33/runs/s1_verify/check-qkjquw1x/dev_data/C/dev/pq_afec_gen3/experiments/state/g3_stage0_units.jsonl"
+    },
+    {
+      "reference": "R-E/pq_afec_gen31/g3/PROTOCOL_m1confirm.md:43",
+      "citation": "g3_m1confirm_units.jsonl",
+      "source": "v33/runs/s1_verify/check-qkjquw1x/dev_data/C/dev/pq_afec_gen3/experiments/state/g3_m1confirm_units.jsonl",
+      "destination": "g3/v33/evidence/final/v33/runs/s1_verify/check-qkjquw1x/dev_data/C/dev/pq_afec_gen3/experiments/state/g3_m1confirm_units.jsonl"
+    },
+    {
+      "reference": "R-E/pq_afec_gen31/g3/PROTOCOL_stage2.md:182",
+      "citation": "g3/replay_g3_dev.json",
+      "source": "v33/runs/preserved_test_files_v1/removed/10fb4744f4b94ef99a7e9c2b2170baf9/g3/replay_g3_dev.json",
+      "destination": "g3/v33/evidence/final/v33/runs/preserved_test_files_v1/removed/10fb4744f4b94ef99a7e9c2b2170baf9/g3/replay_g3_dev.json"
+    },
+    {
+      "reference": "R-E/pq_afec_gen31/g3/PROTOCOL_stage2.md:258",
+      "citation": "design_learning.md",
+      "source": "state/evo/design_learning.md",
+      "destination": "g3/v33/evidence/final/state/evo/design_learning.md"
+    },
+    {
+      "reference": "R-E/pq_afec_gen31/g3/PROTOCOL_stage2.md:379",
+      "citation": "g3/replay_g3_dev.json",
+      "source": "v33/runs/preserved_test_files_v1/removed/10fb4744f4b94ef99a7e9c2b2170baf9/g3/replay_g3_dev.json",
+      "destination": "g3/v33/evidence/final/v33/runs/preserved_test_files_v1/removed/10fb4744f4b94ef99a7e9c2b2170baf9/g3/replay_g3_dev.json"
+    },
+    {
+      "reference": "R-E/pq_afec_gen31/g3/PROTOCOL_stage3.md:37",
+      "citation": "experiments/results/g31_probe.json",
+      "source": "v33/runs/preserved_test_files_v1/removed/020e15bb8c44465a819f6e71f7e35444/experiments/results/g31_probe.json",
+      "destination": "g3/v33/evidence/final/v33/runs/preserved_test_files_v1/removed/020e15bb8c44465a819f6e71f7e35444/experiments/results/g31_probe.json"
+    },
+    {
+      "reference": "R-E/pq_afec_gen31/g3/PROTOCOL_stage3.md:37",
+      "citation": "experiments/state/g31_probe_console.log",
+      "source": "v33/runs/preserved_test_files_v1/removed/020e15bb8c44465a819f6e71f7e35444/experiments/state/g31_probe_console.log",
+      "destination": "g3/v33/evidence/final/v33/runs/preserved_test_files_v1/removed/020e15bb8c44465a819f6e71f7e35444/experiments/state/g31_probe_console.log"
+    },
+    {
+      "reference": "R-E/pq_afec_gen31/g3/PROTOCOL_stage3.md:232",
+      "citation": "X7.md",
+      "source": "codex_out/X7.md",
+      "destination": "g3/v33/evidence/final/codex_out/X7.md"
+    },
+    {
+      "reference": "R-E/pq_afec_gen31/g3/RESULT_stage0.md:3",
+      "citation": "experiments/state/g3_stage0_units.jsonl",
+      "source": "v33/runs/s1_verify/check-qkjquw1x/dev_data/C/dev/pq_afec_gen3/experiments/state/g3_stage0_units.jsonl",
+      "destination": "g3/v33/evidence/final/v33/runs/s1_verify/check-qkjquw1x/dev_data/C/dev/pq_afec_gen3/experiments/state/g3_stage0_units.jsonl"
+    }
+  ],
+  "copied_files": 89,
+  "copied_bytes": 15792217,
+  "policy": "원본 바이트 보존, 비공개 유지, 원문 경로는 실행 당시 경로"
+}

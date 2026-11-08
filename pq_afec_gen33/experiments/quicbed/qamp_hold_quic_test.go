@@ -14,6 +14,8 @@ import (
 	"github.com/quic-go/quic-go/qlogwriter"
 )
 
+const holdQUICReferenceUplinkKbps = 2000
+
 type holdQUICTrace struct {
 	mu           sync.Mutex
 	dropped      int
@@ -45,6 +47,11 @@ func (c *holdQUICFirstFlightConn) WriteTo(b []byte, addr net.Addr) (int, error) 
 		if c.isolate && c.initials > 2 && !ready {
 			c.suppressed++
 			return len(b), nil
+		}
+		if c.initials > 2 {
+			c.fecConn.mu.Lock()
+			c.fecConn.parityDelay = time.Millisecond
+			c.fecConn.mu.Unlock()
 		}
 	}
 	return c.fecConn.WriteTo(b, addr)
@@ -137,8 +144,20 @@ func holdQUICRun(t *testing.T, isolate, referencePath bool) {
 				serverWire = link
 				defer link.Close()
 			}
+			hold := newHoldState(defaultHoldConfig())
+			if isolate || referencePath {
+				clock := &holdQUICArrivalClock{expected: 5}
+				if lost >= 0 {
+					clock.expected = 4
+				}
+				if referencePath {
+					clock.rateKbps = holdQUICReferenceUplinkKbps
+				}
+				hold.now = clock.now
+				serverWire = &holdQUICArrivalConn{PacketConn: serverWire, clock: clock}
+			}
 			server := &decodeConn{countConn: countConn{PacketConn: serverWire}, mode: "fec",
-				flights: map[string]*flightRec{}, hold: newHoldState(defaultHoldConfig())}
+				flights: map[string]*flightRec{}, hold: hold}
 			trace := &holdQUICTrace{}
 			serverTransport := &quic.Transport{Conn: server, ConnectionIDLength: serverConnIDLength}
 			defer serverTransport.Close()
@@ -161,12 +180,12 @@ func holdQUICRun(t *testing.T, isolate, referencePath bool) {
 			}
 			var clientWire net.PacketConn = clientUDP
 			if referencePath {
-				link := newHoldQUICPathConn(clientUDP, 25*time.Millisecond, 2000)
+				link := newHoldQUICPathConn(clientUDP, 25*time.Millisecond, holdQUICReferenceUplinkKbps)
 				clientWire = link
 				defer link.Close()
 			}
 			client := &fecConn{countConn: countConn{PacketConn: clientWire}, mode: "fec", m: 3,
-				expectK: 2, parityDelay: time.Millisecond, layout: "v3", lead: 3,
+				expectK: 2, parityDelay: 8 * time.Second, layout: "v3", lead: 3,
 				dropInitial: drops, dropParity: -1, corruptParity: -1}
 			gate := &holdQUICFirstFlightConn{fecConn: client, trace: trace, isolate: isolate}
 			clientTransport := &quic.Transport{Conn: gate}
@@ -198,14 +217,14 @@ func holdQUICRun(t *testing.T, isolate, referencePath bool) {
 			gate.mu.Lock()
 			suppressed := gate.suppressed
 			gate.mu.Unlock()
-			t.Logf("events=%v flights=%d dropped_original=%d suppressed_later_initial=%d", events, stats.Flights, stats.DroppedOrig, suppressed)
+			server.mu.Lock()
+			recovered, premature, expiries := server.stats.Recovered, server.stats.PrematureRecover, server.stats.DecoderExpiryEvents
+			physical, stack, pending := server.stats.BytesIn, server.stats.BytesToStack, server.pendingBytes
+			server.mu.Unlock()
+			t.Logf("events=%v flights=%d dropped_original=%d suppressed_later_initial=%d recovered=%d premature=%d expiries=%d", events, stats.Flights, stats.DroppedOrig, suppressed, recovered, premature, expiries)
 			if !seen || ((isolate || referencePath) && count != want) {
 				t.Fatalf("unused parity before first CRYPTO: observed=%v count=%d want=%d bytes=%d", seen, count, want, size)
 			}
-			server.mu.Lock()
-			recovered := server.stats.Recovered
-			physical, stack, pending := server.stats.BytesIn, server.stats.BytesToStack, server.pendingBytes
-			server.mu.Unlock()
 			wantRecovered := 0
 			if lost >= 0 {
 				wantRecovered = 1

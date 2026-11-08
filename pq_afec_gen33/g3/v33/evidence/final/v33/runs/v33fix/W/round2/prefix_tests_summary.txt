@@ -1,0 +1,5 @@
+pre-fix run of the two new tests against worldsim_m1.py sha256 36e619e00be3b9e4551e7c80d5ed2b5e3f0d716daced57777016055610cbfadc
+3369 failed, 2 passed, 11 deselected, 3351 subtests passed in 55.20s
+SUBFAILED token_and_retry variant=token: 0
+SUBFAILED token_and_retry variant=retry: 3084
+SUBFAILED retry_initial_failure: 285

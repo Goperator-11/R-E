@@ -1,0 +1,44 @@
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext,newtxmath}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning,decorations.pathreplacing,fit,backgrounds,patterns,shapes.misc,shapes.geometric}
+\usepgfplotslibrary{groupplots,fillbetween}
+\definecolor{ink}{HTML}{111111}
+\definecolor{accent}{HTML}{A8321F}
+\definecolor{steel}{HTML}{1F4A7A}
+\definecolor{midgray}{HTML}{6E6E6E}
+\definecolor{lightgray}{HTML}{D9D9D9}
+\newcommand{\figsize}{\fontsize{8}{9.6}\selectfont}
+\newcommand{\smallsize}{\fontsize{7}{8.4}\selectfont}
+\AtBeginDocument{\DeclareFontShape{OML}{ntxmi}{m}{it}{<-> ntxmi}{}\frenchspacing}
+\pgfplotsset{
+  every axis/.append style={
+    axis line style={line width=0.45pt,ink},
+    tick style={line width=0.4pt,ink},
+    major tick length=3pt,
+    minor tick length=1.6pt,
+    tick align=inside,
+    xtick pos=both,
+    ytick pos=both,
+    minor tick num=0,
+    grid=none,
+    label style={font=\figsize},
+    tick label style={font=\figsize},
+    legend style={font=\smallsize,draw=none,fill=none,inner sep=1pt,row sep=-0.5pt},
+    legend cell align=left,
+    xlabel near ticks,
+    ylabel near ticks,
+    /pgf/number format/1000 sep={\mbox{,}},
+    scaled ticks=false,
+    clip marker paths=true,
+  },
+  x25519/.style={ink,line width=0.5pt,solid,mark=*,mark size=1.0pt,mark options={solid,fill=ink,line width=0.2pt}},
+  hybrid/.style={accent,line width=0.5pt,solid,mark=square*,mark size=0.95pt,mark options={solid,fill=accent,line width=0.2pt}},
+  x25519open/.style={ink,only marks,mark=*,mark size=1.25pt,mark options={solid,fill=white,line width=0.45pt}},
+  hybridopen/.style={accent,only marks,mark=square*,mark size=1.15pt,mark options={solid,fill=white,line width=0.45pt}},
+}
+\newcommand{\panel}[1]{{\figsize(#1)}}

@@ -1,0 +1,191 @@
+{
+ "command": "git ls-files -z --others --exclude-standard -- g3/v33/validation (*.log)",
+ "n_logs": 24,
+ "with_cr": 10,
+ "with_crlf": 10,
+ "with_lone_cr": 0,
+ "by_folder": {
+  "g3/v33/validation/E12_v1": {
+   "logs": 7,
+   "with_cr": 3
+  },
+  "g3/v33/validation/J7_checkpoint_v1": {
+   "logs": 16,
+   "with_cr": 7
+  },
+  "g3/v33/validation/L2_unit": {
+   "logs": 1,
+   "with_cr": 0
+  }
+ },
+ "rows": [
+  {
+   "path": "g3/v33/validation/E12_v1/runs/E12_build_01.log",
+   "bytes": 348,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/E12_v1/runs/E12_checker_tests_01.log",
+   "bytes": 106,
+   "cr": 5,
+   "crlf": 5,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/E12_v1/runs/E12_gate_01.log",
+   "bytes": 2389,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/E12_v1/runs/E12_l1_gate_01.log",
+   "bytes": 974,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/E12_v1/runs/E12_l1_gate_02.log",
+   "bytes": 974,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/E12_v1/runs/E12_python_01.log",
+   "bytes": 468,
+   "cr": 4,
+   "crlf": 4,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/E12_v1/runs/J7_collection_v1.log",
+   "bytes": 10609,
+   "cr": 181,
+   "crlf": 181,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_baseline_build_01.log",
+   "bytes": 331,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_baseline_gate_01.log",
+   "bytes": 2525,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_build_01.log",
+   "bytes": 276,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_build_02.log",
+   "bytes": 2593,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_build_03.log",
+   "bytes": 330,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_capture_wire_01.log",
+   "bytes": 1151,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_capture_wire_02.log",
+   "bytes": 289,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_core_check_01.log",
+   "bytes": 4361,
+   "cr": 67,
+   "crlf": 67,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_core_check_02.log",
+   "bytes": 468,
+   "cr": 4,
+   "crlf": 4,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_eval_baselines_01.log",
+   "bytes": 36,
+   "cr": 1,
+   "crlf": 1,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_eval_dry_01.log",
+   "bytes": 57,
+   "cr": 1,
+   "crlf": 1,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_eval_smoke_01.log",
+   "bytes": 1480,
+   "cr": 25,
+   "crlf": 25,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_gate_01.log",
+   "bytes": 2445,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_reference_01.log",
+   "bytes": 2939,
+   "cr": 7,
+   "crlf": 7,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_restore_build_01.log",
+   "bytes": 348,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/J7_checkpoint_v1/runs/J7_restore_check_01.log",
+   "bytes": 468,
+   "cr": 4,
+   "crlf": 4,
+   "lone_cr": 0
+  },
+  {
+   "path": "g3/v33/validation/L2_unit/runs/L2_core_check_01.log",
+   "bytes": 337,
+   "cr": 0,
+   "crlf": 0,
+   "lone_cr": 0
+  }
+ ]
+}

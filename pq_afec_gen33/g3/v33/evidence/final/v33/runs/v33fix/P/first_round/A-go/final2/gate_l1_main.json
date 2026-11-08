@@ -1,0 +1,30 @@
+{
+  "counts": {
+    "leaves": 738663,
+    "bit_exact": 738663,
+    "relative": 0,
+    "absolute": 0,
+    "failures": 0
+  },
+  "first_failures": [],
+  "passed": true,
+  "schema": "padfec3.gate_l1_go/2",
+  "finished_utc": "2026-11-01T18:00:07.056564+00:00",
+  "reference": "/mnt/c/dev/pq_afec_gen33/g3/v33/V33FIX_policy_reference_v1.json",
+  "reference_schema": "padfec3.v33fix_policy_reference/1",
+  "reference_seed": 20261102,
+  "reference_sha256": "2adbd0fca999293b8079861bcc25aa22a7d12599a371fffbf037c6ccfc5a8bf7",
+  "input_sha256": "8e1f90907f93efbcb97ddbe599598f082e74bec6e506f916f6db6510774f5fa6",
+  "output_sha256": "226e4fddade3f468eb3ea82b6d33ce2436ceea1a0921908fd363b4672e426f98",
+  "binary": {
+    "path": "/home/scien/v33fix_tmp/A-go/bin/qamp",
+    "exists": true,
+    "sha256": "8be4c740b95376fb9dfa865b3bec3e139ae5a8296b8151f87446457200a1a5f4",
+    "sha256_file": "8be4c740b95376fb9dfa865b3bec3e139ae5a8296b8151f87446457200a1a5f4",
+    "srcsha": "bf6b75c31c2c818cffee7299b07d59479cf1b6ac1c3efad998b8654b70477324",
+    "source_fingerprint_now": "bf6b75c31c2c818cffee7299b07d59479cf1b6ac1c3efad998b8654b70477324"
+  },
+  "problems": [],
+  "go_seconds": 1.3677079677581787,
+  "elapsed_seconds": 4.5905890519999275
+}

@@ -153,7 +153,7 @@ func TestP3CoreRejectsInvalidDistributionAndPhysicalInputs(t *testing.T) {
 			x.post[0] = 1
 			tc.change(&x)
 			before := append([]float64(nil), x.post...)
-			if _, err := p3DecideCore(x.post, x.k, x.w, x.s, x.u, x.rtt, x.cPkt, false, nil, false); err == nil {
+			if _, err := p3DecideCore(x.post, x.k, x.w, x.s, x.u, x.rtt, x.cPkt, false, nil); err == nil {
 				t.Fatal("invalid core decision accepted")
 			}
 			for i, v := range before {
@@ -275,7 +275,7 @@ func TestP3ValidStateRoundTripAndMissingInputsRemainSupported(t *testing.T) {
 	}
 	post := make([]float64, p3NG)
 	post[0] = 1 + 5e-10
-	if _, err := p3DecideCore(post, 2, 1280, 18000, 0, 50, 0, false, nil, false); err != nil {
+	if _, err := p3DecideCore(post, 2, 1280, 18000, 0, 50, 0, false, nil); err != nil {
 		t.Fatalf("mass within tolerance rejected: %v", err)
 	}
 }
@@ -322,7 +322,7 @@ func TestP3FiniteExtremesAreRejectedBeforeStateChanges(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			post := make([]float64, p3NG)
 			post[0] = 1
-			if _, err := p3DecideCore(post, 2, tc.w, tc.s, tc.u, tc.rtt, tc.cPkt, false, nil, false); err == nil {
+			if _, err := p3DecideCore(post, 2, tc.w, tc.s, tc.u, tc.rtt, tc.cPkt, false, nil); err == nil {
 				t.Fatal("unrepresentable core input accepted")
 			}
 			st := p3ValidationState()

@@ -362,3 +362,49 @@ func (s *decodeConn) finalizeHoldFlightLocked(fr *holdFlight) {
 		}
 	}
 }
+
+func (m *memoryTrace) serverBytes() int64 {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.data.ServerBytes
+}
+
+type feedbackWindow struct {
+	Waited             bool
+	Received           bool
+	Elapsed            time.Duration
+	PreWaitServerBytes int64
+	PreWaitStats       quic.ConnectionStats
+	AfterWaitRTTMS     float64
+	AfterWaitRTTValid  bool
+}
+
+func collectFeedbackWindow(serverBytes func() int64, stats func() quic.ConnectionStats, wait func() bool) feedbackWindow {
+	w := feedbackWindow{Waited: true, PreWaitServerBytes: serverBytes(), PreWaitStats: stats()}
+	start := time.Now()
+	w.Received = wait()
+	w.Elapsed = time.Since(start)
+	return w
+}
+
+func (w feedbackWindow) policyServerBytes(total int64) int64 {
+	if w.Waited {
+		return w.PreWaitServerBytes
+	}
+	return total
+}
+
+func (w feedbackWindow) policyStats(current quic.ConnectionStats) quic.ConnectionStats {
+	if w.Waited {
+		return w.PreWaitStats
+	}
+	return current
+}
+
+func (w feedbackWindow) annotate(r *trial3) {
+	if !w.Waited {
+		return
+	}
+	bytes, rtt, valid := w.PreWaitServerBytes, w.AfterWaitRTTMS, w.AfterWaitRTTValid
+	r.SrvBytesPreWait, r.PathRTTAfterWaitMS, r.PathRTTAfterWaitValid = &bytes, &rtt, &valid
+}

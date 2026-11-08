@@ -15,3 +15,5 @@ T4는 피드백 판본을3으로 바꿨다. 실제 수신 CRC와 복원 CRC를 �
 unrecoverable_seen은 중간에 패리티가 부족했던 관측 수다. 새 unrecoverable_final은 알려진 FEC 비행이 수신기 TTL에 도달했을 때 원본과 복원본이 모두 없는 경우를 한 번 센다. flights_finalized와 flights_pending을 같이 보고, 비행 기록이 없는 전멸은 이 분모에 들어가지 않는다. 성공적인 복구 전의 일시적인 부족을 최종 실패라고 해석하지 않는다.
 
 시험과 와이어 형식은 `docs/T4_observation_contract.md`, 실행 결과는 `docs/T4_observation_result.md`에서 확인한다. 기능 시험은 HCT 성능 효과나 배포 안전성을 입증하지 않는다.
+
+X6 개발 측정(S_rtt200, cert 9000 B, RTT 200 ms, uplink 2 Mbps)에서 C1 경로는 none보다 primary HCT가 10.71 ms 길었다(95% 구간 [6.73, 14.69], [X6 결과](X6_result.md)). 같은 cert·RTT·uplink의 W0 셀 B11에서 v3.3.1-dev c1과 none의 차이는 -0.017 ms였다(`g3/v33/V33FIX_benchmark_v1.json`의 n131072 주 표). C1 대기창에 받은 비회신 datagram이 정책 S 추정에 들어간 것이 원인으로 보인다. C1W-1, C1W-2에서 정책 S와 RTT 입력을 대기 전 값으로 바꿨고, 수정 뒤 값은 재측정 X6S 결과가 나오면 따로 적는다. 그 전에는 B11 비열등을 실측 근거로 쓰지 않는다.

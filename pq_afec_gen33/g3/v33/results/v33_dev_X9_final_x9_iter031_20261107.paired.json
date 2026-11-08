@@ -1,0 +1,186 @@
+{
+ "schema": "x9_paired/1",
+ "label": "development",
+ "analysis": "사후 짝 대조(탐색). 계획 primary(PTO)가 아니며 결과를 본 뒤 계산했다.",
+ "run_id": "final_x9_iter031_20261107",
+ "task": "X9",
+ "effect_sign": "mlkem_off - x25519_off",
+ "journal": "units_final_x9_iter031_20261107.jsonl",
+ "journal_sha256": "29869e31267c3750859ba1137b2bd886903a2b4901e9601c833dd5925a51c140",
+ "plan_sha256": "74f58fbb6b0db5c30ef9abf0698ae13dd6bede861bef3215646e5ca3232154b6",
+ "result": "g3/v33/results/v33_dev_X9_final_x9_iter031_20261107.json",
+ "result_sha256": "364a49f6d8273ac50f6e351a1b0723c020b2e7b0734f89c9cccc7b4d00f3ff7e",
+ "inference": "block 평균의 짝 차이, Student t 95% 구간",
+ "rules": {
+  "warmup": "block마다 i < warmup_per_arm_block 행 제외",
+  "hct_ms": "측정 행 평균, 실패 행은 failure_hct_ms",
+  "one_rtt_rate": "ok이고 ms < 1.5 × RTT인 측정 행 비율. netem uplink 0이라 직렬화 항은 0",
+  "server_bytes_in_per_conn": "측정 행의 SCID 대응 conn_log rx_bytes 합 / 측정 행 수",
+  "extra_initial_rate": "initial_datagrams > first_flight_datagrams + 1 비율(계획 auxiliary)"
+ },
+ "failure_hct_ms": 10000,
+ "cells": [
+  {
+   "cell": "c2s",
+   "x": "mlkem_off",
+   "y": "x25519_off",
+   "arm_means": {
+    "mlkem_off": {
+     "hct_ms": 63.44464426229508,
+     "one_rtt_rate": 0.9036065573770491,
+     "server_bytes_in_per_conn": 3902.1206557377045
+    },
+    "x25519_off": {
+     "hct_ms": 62.503787213114755,
+     "one_rtt_rate": 0.9491803278688524,
+     "server_bytes_in_per_conn": 2621.9324590163933
+    }
+   },
+   "contrasts": {
+    "hct_ms": {
+     "n": 61,
+     "mean": 0.940857049180326,
+     "ci95": [
+      -0.6443428201109053,
+      2.526056918471557
+     ],
+     "df": 60,
+     "halfwidth": 1.5851998692912312,
+     "missing_pairs": 0
+    },
+    "one_rtt_rate": {
+     "n": 61,
+     "mean": -0.04557377049180325,
+     "ci95": [
+      -0.05539908735786595,
+      -0.03574845362574055
+     ],
+     "df": 60,
+     "halfwidth": 0.0098253168660627,
+     "missing_pairs": 0
+    },
+    "server_bytes_in_per_conn": {
+     "n": 61,
+     "mean": 1280.1881967213114,
+     "ci95": [
+      1267.4792329032493,
+      1292.8971605393735
+     ],
+     "df": 60,
+     "halfwidth": 12.708963818062069,
+     "missing_pairs": 0
+    },
+    "extra_initial_rate": {
+     "n": 61,
+     "mean": 0.04557377049180328,
+     "ci95": [
+      0.03574845362574058,
+      0.05539908735786598
+     ],
+     "df": 60,
+     "halfwidth": 0.0098253168660627,
+     "missing_pairs": 0
+    }
+   },
+   "check_against_result": {
+    "primary": {
+     "mean_abs_diff": 0.0,
+     "ci95_abs_diff": 1.214306433183765e-17,
+     "n_blocks": [
+      61,
+      61
+     ]
+    },
+    "auxiliary": {
+     "mean_abs_diff": 0.0,
+     "ci95_abs_diff": 1.3877787807814457e-17,
+     "n_blocks": [
+      61,
+      61
+     ]
+    }
+   }
+  },
+  {
+   "cell": "both",
+   "x": "mlkem_off",
+   "y": "x25519_off",
+   "arm_means": {
+    "mlkem_off": {
+     "hct_ms": 82.15768327868852,
+     "one_rtt_rate": 0.8149180327868852,
+     "server_bytes_in_per_conn": 4074.838360655738
+    },
+    "x25519_off": {
+     "hct_ms": 77.01574819672132,
+     "one_rtt_rate": 0.8960655737704919,
+     "server_bytes_in_per_conn": 2755.660491803279
+    }
+   },
+   "contrasts": {
+    "hct_ms": {
+     "n": 61,
+     "mean": 5.141935081967212,
+     "ci95": [
+      2.6605642827839495,
+      7.623305881150474
+     ],
+     "df": 60,
+     "halfwidth": 2.4813707991832623,
+     "missing_pairs": 0
+    },
+    "one_rtt_rate": {
+     "n": 61,
+     "mean": -0.08114754098360658,
+     "ci95": [
+      -0.09365162860856517,
+      -0.06864345335864798
+     ],
+     "df": 60,
+     "halfwidth": 0.012504087624958598,
+     "missing_pairs": 0
+    },
+    "server_bytes_in_per_conn": {
+     "n": 61,
+     "mean": 1319.1778688524591,
+     "ci95": [
+      1297.6875947833244,
+      1340.668142921594
+     ],
+     "df": 60,
+     "halfwidth": 21.490274069134696,
+     "missing_pairs": 0
+    },
+    "extra_initial_rate": {
+     "n": 61,
+     "mean": 0.06360655737704918,
+     "ci95": [
+      0.05117318634185468,
+      0.07603992841224368
+     ],
+     "df": 60,
+     "halfwidth": 0.012433371035194502,
+     "missing_pairs": 0
+    }
+   },
+   "check_against_result": {
+    "primary": {
+     "mean_abs_diff": 0.0,
+     "ci95_abs_diff": 1.3877787807814457e-17,
+     "n_blocks": [
+      61,
+      61
+     ]
+    },
+    "auxiliary": {
+     "mean_abs_diff": 0.0,
+     "ci95_abs_diff": 2.0816681711721685e-17,
+     "n_blocks": [
+      61,
+      61
+     ]
+    }
+   }
+  }
+ ]
+}
