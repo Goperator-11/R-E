@@ -1,4 +1,4 @@
-# J8 서버 프로파일 참조 결과
+# J8 서버 프로필 참조 결과
 
 반복58, 모형 계산이다. 실제 서버 성능이나 활성 정책 개선을 뜻하지 않는다. J8은 partial이며 전체 J3 비용과 하향 재전송 시간 연결이 남았다.
 
@@ -64,19 +64,19 @@ ServerProfile은 mode, P, iw_pkts, pto_initial_ms, lead_credited, trailing_race�
 | 1452 | 15 | 41 | 6790 | 7274 | 484 |
 
 
-산출 스크립트: runs/j8_profile_diagnostic_v1.py, runs/j8_profile_verify_v2.py, runs/j8_profile_report_v1.py. 원자료 J8_profile_full_v1.json의 SHA256은30c0f7400d429b457d23f30d36685f033322c21884c9bd6ee4f3cfc1f4df5e8b다.
+산출 스크립트: runs/j8_profile_diagnostic_v1.py, runs/j8_profile_verify_v2.py, runs/j8_profile_report_v1.py. 원자료 J8_profile_full_v1.json의 SHA-256은30c0f7400d429b457d23f30d36685f033322c21884c9bd6ee4f3cfc1f4df5e8b다.
 
-## 반복59 프로파일별 복구 비용
+## 반복59 프로필별 복구 비용
 
 하향 무손실 범위에서 ServerCost를 J3 복구 참조의 성공·첫 재전송·강제 종료에 연결했다. 활성 정책은 그대로다. p_d>0은 J=None·cost_complete=false이며 시간 비용을 행동 점수로 사용하지 않는다. 첫 서버 데이터그램이 손실 없는 주소 검증 응답을 가능하게 한다는 근사, 고정 IW, 첫 응답 W B와 이후 ACK41 B의 직렬화를 명시했다. 실제 혼잡 창 성장·후속 손실·타이머 소유권은 이 일치 결과의 범위 밖이다.
 
-152개 시험이 통과했다. 프로파일이 없는960조건의 결과 전체가 이전 커밋의 함수와 정확히 같았다. 같은200.86 ms·granular·P1280·IW32로 명시하면 기존 복구 비용도 유지된다. 명시적 quic-go 프로파일은 카드대로 초기 PTO200 ms이며 이전 실측 상수와 구분했다.
+152개 시험이 통과했다. 프로필이 없는960조건의 결과 전체가 이전 커밋의 함수와 정확히 같았다. 같은200.86 ms·granular·P1280·IW32로 명시하면 기존 복구 비용도 유지된다. 명시적 quic-go 프로필은 카드대로 초기 PTO200 ms이며 이전 실측 상수와 구분했다.
 
 동결 W0의 무손실1,620조건에서 HCT와 참조의 최대 절대 차이는2.27373675443232e-13 ms였다. P3개·회계3개·IW3개·k2개·S3개·u2개·고정 행동5개를 비교했고 처리 지연·경주 지연·재전송 타이머를 껐다. 이는 이 제한 조건의 산술 대조다. W0 파일과 기본값을 바꾸지 않았다.
 
-18문맥·8프로파일의144선택에서6,045후보를 평가했다. k는 고정이며 후보는0·1 B·크기 상한·프로파일의 첫 비행 신용 경계로 제한했다. 모든 정수 delta의 전역 최적이나 현재 ClientHello의 재패킷화를 확인한 것은 아니다. 동률창은 기존0.01 ms를 유지했다. quicgo 선택과 달라진 수는 다음과 같다.
+18문맥·8프로필의144선택에서6,045후보를 평가했다. k는 고정이며 후보는0·1 B·크기 상한·프로필의 첫 비행 신용 경계로 제한했다. 모든 정수 delta의 전역 최적이나 현재 ClientHello의 재패킷화를 확인한 것은 아니다. 동률창은 기존0.01 ms를 유지했다. quicgo 선택과 달라진 수는 다음과 같다.
 
-| 프로파일 | 달라진 선택 /18 |
+| 프로필 | 달라진 선택 /18 |
 |---|---:|
 | exact | 6 |
 | unlimited | 17 |
@@ -92,11 +92,11 @@ ServerProfile은 mode, P, iw_pkts, pto_initial_ms, lead_credited, trailing_race�
 
 전체 하향 재전송 시간과 주소 검증, 실제 P/모드 관측 연결, 전체 W1 활성 채택은 미완료다. 다음 반복에서 손실 패턴별 서버 송신·ACK·타이머 사건을 고정 입력으로 추적한다.
 
-### 프로파일별 선택
+### 프로필별 선택
 
 입력 S는 서버 데이터그램 합계 B, 비용은 ms다. RTT는 전부50 ms다. 괄호는(delta,lead,T)이며 별표는 같은 문맥 quicgo와 다른 선택이다.
 
-| k | S (B) | p | u (Mbps) | 프로파일 | 행동 | 비용 (ms) | 후보 수 |
+| k | S (B) | p | u (Mbps) | 프로필 | 행동 | 비용 (ms) | 후보 수 |
 |---:|---:|---:|---:|---|---|---:|---:|
 | 1 | 3841 | 0 | 0 | quicgo | (1, 0, 0) | 50.000000 | 45 |
 | 1 | 3841 | 0 | 0 | exact | (1, 0, 0) | 50.000000 | 45 |
@@ -243,4 +243,4 @@ ServerProfile은 mode, P, iw_pkts, pto_initial_ms, lead_credited, trailing_race�
 | 2 | 18231 | 0.15 | 2 | race_none | (0, 3, 1) | 105.610425 | 45 |
 | 2 | 18231 | 0.15 | 2 | P1452 | (0, 3, 1) | 105.610425 | 45 |
 
-전체 입력·후보와 결과는 J8_cost_full_final.json에 보존했다. SHA256:947ea5be53f633b215001dda9e5523dcc0083ac04543219b3093798d6d5beb54. 독립 선택 재집계는 j8_cost_verify_v2.py, 표 생성은 j8_cost_report_v1.py다.
+전체 입력·후보와 결과는 J8_cost_full_final.json에 보존했다. SHA-256:947ea5be53f633b215001dda9e5523dcc0083ac04543219b3093798d6d5beb54. 독립 선택 재집계는 j8_cost_verify_v2.py, 표 생성은 j8_cost_report_v1.py다.

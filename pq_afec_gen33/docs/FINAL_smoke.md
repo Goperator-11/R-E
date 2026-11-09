@@ -27,7 +27,7 @@ v33c1의 feedback_wait_received는 네 셀 각각 20/20이다. RTT200 대기 한
 
 최초 SHA 목록의 221파일을 검증한 뒤 결과 JSON·문서·SHA 목록을 로컬 보존 폴더에 복사했다. 같은 저널과 인자로 report-only를 두 번 실행했으며 세 파일 모두 최초 바이트와 같았다. 재생성 뒤에도 SHA 목록의 221파일이 통과했다. 저장소에 추적된 PEM은 기존 12개 그대로다. 이번 측정 PEM과 원자료는 로컬 보존 경로 `~/v33_runs/final_m0_iter022_20261106/`에 둔다.
 
-계획 JSON SHA256은 `74f58fbb6b0db5c30ef9abf0698ae13dd6bede861bef3215646e5ca3232154b6`, 계획 커밋은 `a8e9fdf63d173bcfcf8166f18da4ba57eb21f5c1`이다. 결과 JSON SHA256은 `d61a534375b6e9f24872c593360c2c34a35e28ebc7a8350ec6030f1271d2fb28`이다. 실행 전 동결 바이너리의 SHA·srcsha와 계획을 대조했고 실행 사본과 완료 자료의 식별값도 확인했다.
+계획 JSON SHA-256은 `74f58fbb6b0db5c30ef9abf0698ae13dd6bede861bef3215646e5ca3232154b6`, 계획 커밋은 `a8e9fdf63d173bcfcf8166f18da4ba57eb21f5c1`이다. 결과 JSON SHA-256은 `d61a534375b6e9f24872c593360c2c34a35e28ebc7a8350ec6030f1271d2fb28`이다. 실행 전 동결 바이너리의 SHA·srcsha와 계획을 대조했고 실행 사본과 완료 자료의 식별값도 확인했다.
 
 검증 스크립트와 출력은 로컬 보존 폴더 `C:/dev/codex_handoff/final/runs/`의 `F26_launch_monitor.py`, `F26_probe.py`, `F26_smoke_independent.py`, `F26_postcheck.py`, `F26_report_replay.py`, `F26_collect.py`, `F26_summary.json`, `F26_accept.txt`에 있다. 독립 원자료 검사의 2058개 항목과 추가 지문·tc·W·parity 검사의 628개 항목은 통과했다. 미확인 40개는 실제 idle 미관측 24개, 동결 SCID 미제공 8개, 동결 cache C1 검사 제외 8개다. 실행 생존과 SHA 재현은 별도로 확인했다.
 

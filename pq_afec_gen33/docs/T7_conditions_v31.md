@@ -75,7 +75,7 @@ v33none은 회신을 기다리지 않는다. v33c1의 HCT 뒤 대기는 연결 �
 
 측정 셀마다 gen33 동결 바이너리로 `qamp -mode certgen -certsize "$CERTSIZE" -cert-file "$CERT_PEM"`을 한 번 실행한다. `CERT_PEM`은 로컬 보존 측정 원자료 폴더 `~/v33_runs/<id>/certs/cert_N.pem` 안의 경로로 정한다. 팔마다 포트와 서버 프로세스를 나누되 같은 gen33 서버 바이너리와 같은 셀의 PEM을 쓴다. 서버에는 항상 `-certsize "$CERTSIZE" -cert-file "$CERT_PEM"`을 함께 준다. DER 목표가 기본값 2955 B와 다른데 `-certsize`를 생략하면 파일 길이 검사에서 종료 코드 2로 거부한다(`experiments/quicbed/certificate.go`).
 
-동결 클라이언트도 이 gen33 서버에 붙인다. 결과에는 "봉인 측정과 서버가 다르다"고 적는다. 각 세대의 자기 서버를 쓰는 MS-18 비교는 별도 조건이다. 결과의 `checks.server_uniform`은 셀마다 `certificate.der_sha256` 값 하나, `certificate.der_bytes == certsize`, `server_binary_sha256` 값 하나인지 확인한다(MS-18 제외). PEM에는 개인키가 있으므로 위 certs 폴더 밖으로 꺼내거나 저장소에 넣지 않는다. 공개 결과에는 크기와 SHA256 등 식별 정보만 남긴다. 공유 인증서로 CertificateVerify 길이 변동이나 서버 first flight의 모든 바이트·시간이 같아지는 것은 아니다(`docs/T1_certificate_result.md`).
+동결 클라이언트도 이 gen33 서버에 붙인다. 결과에는 "봉인 측정과 서버가 다르다"고 적는다. 각 세대의 자기 서버를 쓰는 MS-18 비교는 별도 조건이다. 결과의 `checks.server_uniform`은 셀마다 `certificate.der_sha256` 값 하나, `certificate.der_bytes == certsize`, `server_binary_sha256` 값 하나인지 확인한다(MS-18 제외). PEM에는 개인키가 있으므로 위 certs 폴더 밖으로 꺼내거나 저장소에 넣지 않는다. 공개 결과에는 크기와 SHA-256 등 식별 정보만 남긴다. 공유 인증서로 CertificateVerify 길이 변동이나 서버 first flight의 모든 바이트·시간이 같아지는 것은 아니다(`docs/T1_certificate_result.md`).
 
 ## retrans-layout 기본값을 repeat_first로 되돌린 이유
 

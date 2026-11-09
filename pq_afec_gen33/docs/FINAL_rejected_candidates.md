@@ -60,7 +60,7 @@
 
 ## J8
 
-개발 시뮬레이션에서 서버 프로파일과 하향 손실을 추적했다. 120조건 중 24조건에서 새 서버 송신 없이 서버 PTO 만료가 밀리는 사건 44개가 있었고 최대 이동은 192.184 ms였다. 이 값은 세계 타이머의 이동량이며 HCT 개선량이나 실제 전송 측정값이 아니다. 하향 손실 p_d>0의 비용 J는 None으로 남았고, 별도의 PTO 기준 진단에서도 W1 B7의 기존 판정은 바뀌지 않았다. 서버 관측 어댑터와 하향 손실 비용이 미검증이므로 후보는 미채택이며 활성 정책이나 동결 세계를 이 진단으로 바꾸지 않았다. 원자료는 로컬 보존 `g3/v33/validation/J8_downlink_v1/runs/J8_downlink_full_v1.json`의 `case_count`·`cases_with_no_send_postponement`·`no_send_postponement_count`·`max_postponement_ms`와 `g3/v33/V33FIX_world_diag_v1.json`의 `sections.j8_pto`이며, [하향 손실 결과](J8_downlink_result.md)와 [세계 기록 4절](V33FIX_world.md)에 범위를 적었다.
+개발 시뮬레이션에서 서버 프로필과 하향 손실을 추적했다. 120조건 중 24조건에서 새 서버 송신 없이 서버 PTO 만료가 밀리는 사건 44개가 있었고 최대 이동은 192.184 ms였다. 이 값은 세계 타이머의 이동량이며 HCT 개선량이나 실제 전송 측정값이 아니다. 하향 손실 p_d>0의 비용 J는 None으로 남았고, 별도의 PTO 기준 진단에서도 W1 B7의 기존 판정은 바뀌지 않았다. 서버 관측 어댑터와 하향 손실 비용이 미검증이므로 후보는 미채택이며 활성 정책이나 동결 세계를 이 진단으로 바꾸지 않았다. 원자료는 로컬 보존 `g3/v33/validation/J8_downlink_v1/runs/J8_downlink_full_v1.json`의 `case_count`·`cases_with_no_send_postponement`·`no_send_postponement_count`·`max_postponement_ms`와 `g3/v33/V33FIX_world_diag_v1.json`의 `sections.j8_pto`이며, [하향 손실 결과](J8_downlink_result.md)와 [세계 기록 4절](V33FIX_world.md)에 범위를 적었다.
 
 ## 루프 뒤 개발 평가
 

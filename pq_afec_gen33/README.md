@@ -16,7 +16,7 @@
 
 `c1_seen`이 True인 목적지는 L1 관측을 쓴다. 회신이 온 연결은 데이터그램 단위 우도로, 회신이 빠진 연결은 HCT 3등급 우도로 손실 사후분포를 갱신한다. 결정은 L3의 record_only 진단 팔(`g3/v33/policy_snapshots/L3_record_only_v1`)과 같다. 감시 가산 벌점을 쓰지 않고, `arrival_streak`가 0보다 큰 동안 16번째 재평가를 하지 않으며, β 반응도 없다.
 
-v3 패리티 데이터그램 크기 상한은 1452 B(`padfec/policy.py`의 `QUICGO_MAX_IPS`)다. 예전 상한 1472 B(UDP 최대)에서는 k=2·W=1406일 때 가장 작은 패리티도 1406+39+6×2 = 1457 B가 되어 quic-go 서버의 1452 B 수신 버퍼에서 잘렸다(감사 D-E4). gen-2 경로(`padfec/policy.py`의 `decide_v2`)는 바꾸지 않았다.
+v3 패리티 데이터그램 크기 상한은 1452 B(`padfec/policy.py`의 `QUICGO_MAX_IPS`)다. 예전 상한 1472 B(MTU 1500에서 IPv4 UDP payload 최대)에서는 k=2·W=1406일 때 가장 작은 패리티도 1406+39+6×2 = 1457 B가 되어 quic-go 서버의 1452 B 수신 버퍼에서 잘렸다(감사 D-E4). gen-2 경로(`padfec/policy.py`의 `decide_v2`)는 바꾸지 않았다.
 
 이 상한 때문에 W와 k가 크면 parity 후보가 하나도 남지 않는다. 모형의 parity datagram 크기는 W_eff+39+6k B(W_eff=W+δ)이므로 parity 후보는 k=1이면 W ≤ 1407, k=2이면 W ≤ 1401, k=3이면 W ≤ 1395, k=4이면 W ≤ 1389에서만 있다(`decide3.candidates3` 계산, `docs/V33FIX_policy.md` 5절). k=2·W=1406은 B0만, k=3·W=1400은 B0과 δ=23 padding만 남는다. 봉인 3단계의 base W는 1280이고 k=2인 그 조건에서는 m>0 후보가 14개 남는다. 선택 뒤 W_eff=1406이 된 행은 봉인 g2auto 53,600행 중 6행이다. 이 빈도는 새 gen33 개발 측정값이 아니다. W1 개발 벤치 15셀도 모두 W 1280이다. 수치와 출처는 [알려진 한계](docs/FINAL_policy_limits.md)에 구분했다.
 

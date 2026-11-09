@@ -2,7 +2,7 @@
 
 이 단계는 활성 정책과 분리된 Python 기준 구현이다. 입력은 이번 연결의 완성된 ClientHello CRYPTO 길이, 적용할 Initial 데이터그램 크기 W, 실제 DCID·SCID 길이, 실제 토큰 길이다. 과거 k 최빈값과 고정 오버헤드51 B로 대체하지 않는다. 정수 산술만 쓴다.
 
-범위는 고정 quic-go v0.61.0의 QUIC v1, 응답 전, ACK·재전송·0RTT 없이 연속으로 패킹하는 첫 ClientHello다. 모든 CRYPTO 바이트가 준비되어 있어야 한다. SNI·ECH scrambling이 켜졌거나, 이미 응답을 받았거나, 불완전한 ClientHello이면 이 참조는 계산을 거부한다. 길이만으로 SNI 위치·순서나 이후 ACK 크기를 알 수 없기 때문이다. NEW_TOKEN은 응답 전 Initial에 실리는 토큰 길이로 계산할 수 있지만 Retry 뒤의 비행을 같은 첫 비행으로 취급하지 않는다.
+범위는 고정 quic-go v0.61.0의 QUIC v1, 응답 전, ACK·재전송·0-RTT 없이 연속으로 패킹하는 첫 ClientHello다. 모든 CRYPTO 바이트가 준비되어 있어야 한다. SNI·ECH scrambling이 켜졌거나, 이미 응답을 받았거나, 불완전한 ClientHello이면 이 참조는 계산을 거부한다. 길이만으로 SNI 위치·순서나 이후 ACK 크기를 알 수 없기 때문이다. NEW_TOKEN은 응답 전 Initial에 실리는 토큰 길이로 계산할 수 있지만 Retry 뒤의 비행을 같은 첫 비행으로 취급하지 않는다.
 
 W의 허용 범위는1200~1452 B다. 플래그0은1280 B,1~1199는1200 B,1453~65535는1452 B로 별도 정규화한다. 헤더는 type·version·CID 길이 필드7 B에 두 CID, 토큰 길이 varint와 토큰, 고정2 B Length, 패킷 번호를 더한다. AEAD 태그는16 B다. 첫 비행의 패킷 번호 길이는 고정 소스의 미확인 패킷 수 규칙을 따른다. CRYPTO offset과 length의 varint 길이를 패킷마다 계산한다. MaxDataLen은 고정 소스처럼 길이1 B로 가정한 뒤 필요하면1 B를 뺀다. W 범위에서 이 규칙을 별도 완전 탐색과 비교한다.
 

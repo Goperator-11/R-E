@@ -19,7 +19,7 @@
 
 임시 build stage의 `decodeConn.readFrom`에서 복구 성공 분기의 `return m, addr, nil`을 `goto again`으로 바꿨다. 장부 갱신은 남기고 첫 복구 원본의 실제 반환만 막았다. 새 시험은 k=1, m=1, lead=0, mask=2에서 `originals complete false, miss 1 trail arrived 1`로 실패했고 종료 코드는 1이었다. 컴파일은 성공했다.
 
-변형 뒤 원본 파일을 바이트 단위로 복원하고 SHA256 일치를 확인했다. 복원한 stage에서 새 시험을 다시 실행해 3840행이 통과했다. 변형은 저장소나 설치본에 적용하지 않았다.
+변형 뒤 원본 파일을 바이트 단위로 복원하고 SHA-256 일치를 확인했다. 복원한 stage에서 새 시험을 다시 실행해 3840행이 통과했다. 변형은 저장소나 설치본에 적용하지 않았다.
 
 ## 실행 결과와 재현
 
@@ -34,7 +34,7 @@
 
 Python 시험과 Go 시험이 각각 하나 늘었다. 처음 Go vet은 새 시험이 embedded 필드를 구조체 literal에 지정해 컴파일 오류로 끝났다. 기존 시험과 같은 별도 대입으로 고친 뒤 위 검사를 통과했다. 정책 산술 파일은 변경하지 않아 정책 전용 관문과 replay 재실행 조건에는 해당하지 않는다.
 
-빌드 바이너리 SHA256은 `49785ea372101cfaa95312d63dfa5f94af9299472b6a08e1da912eca121068b0`으로 F12와 같고, 시험 파일을 포함한 소스 SHA256은 `a21e476f218f7bceac87559ec3055033e38bdd80eda7c016e7ad6b5f282004b2`다. F16은 그 시점의 소스 지문을 다시 산출한다.
+빌드 바이너리 SHA-256은 `49785ea372101cfaa95312d63dfa5f94af9299472b6a08e1da912eca121068b0`으로 F12와 같고, 시험 파일을 포함한 소스 SHA-256은 `a21e476f218f7bceac87559ec3055033e38bdd80eda7c016e7ad6b5f282004b2`다. F16은 그 시점의 소스 지문을 다시 산출한다.
 
 임시 HOME에서 `experiments/quicbed/build_gen33.sh --race`를 실행한 같은 WSL 호출 안에서 지정 시험, 변형, 복원 시험을 수행했다. 지정 Go 명령은 아래와 같다.
 
@@ -71,7 +71,7 @@ MS-29에 따라 공통 trial 행에 `client_scid`를 넣었다. 값은 `fecConn.
 go test -count=1 -run 'TestFlightTrace|TestClientCIDRotationIsTrackedAndBounded|TestFinalSendStats|TestAuto3RowAddsFieldsAndLeavesTrialAlone' -v ./cmd/qamp
 ```
 
-빌드 바이너리 SHA256은 `942df28cc16335d3973c40e1b09c1d57e5703c625e49f1eb1620ad6948e01a8d`, 시험 파일을 포함한 소스 SHA256은 `4cbfbe584f47e138c4a910bf65d16335e303b8646a63cad6bffdcbb5bf4ebbfa`다. F16은 그 시점의 소스 지문을 다시 산출한다.
+빌드 바이너리 SHA-256은 `942df28cc16335d3973c40e1b09c1d57e5703c625e49f1eb1620ad6948e01a8d`, 시험 파일을 포함한 소스 SHA-256은 `4cbfbe584f47e138c4a910bf65d16335e303b8646a63cad6bffdcbb5bf4ebbfa`다. F16은 그 시점의 소스 지문을 다시 산출한다.
 
 로컬 보존: `C:/dev/codex_handoff/final/runs/F14_go.sh`, `F14_collect.py`, `F14_summary.json`, `F14_targeted_go.log`, `F14_go_test.txt`, `F14_go_race.txt`, `F14_pytest.log`.
 
@@ -102,7 +102,7 @@ CP-16은 호출하지 않는 Python 함수와 Python의 `decide_core`, Go의 `p3
 
 임시 HOME에서 빌드와 두 관문, 참조 `--check`를 같은 WSL 호출 안에서 실행했다. 재생은 기존 v3.2 기록과 비교했으며 `experiments/v33/v33fix_replay.py --out`으로 별도 파일에 썼다. 원래 재생 결과는 덮지 않았다. 위 값은 구현 검사와 기록 재생 결과다. 실제 네트워크 측정은 수행하지 않았다. 설치본 교체와 동결본 검증은 F16에서 한다.
 
-빌드 바이너리 SHA256은 `63854e33ac2a33531f3463c72d31899a5f7df5642910497e8ac94ccec308c63a`, 소스 SHA256은 `8e3c09609184de9062072019736c90fd174d91092568e4532c94e1a3e236033d`다. L1 v2 참조 SHA256은 `1096c3a727a8702905b1ec1b4d95e6b50662c66da353f1ce68ff92d03e87eaa9`다.
+빌드 바이너리 SHA-256은 `63854e33ac2a33531f3463c72d31899a5f7df5642910497e8ac94ccec308c63a`, 소스 SHA-256은 `8e3c09609184de9062072019736c90fd174d91092568e4532c94e1a3e236033d`다. L1 v2 참조 SHA-256은 `1096c3a727a8702905b1ec1b4d95e6b50662c66da353f1ce68ff92d03e87eaa9`다.
 
 로컬 보존: `C:/dev/codex_handoff/final/runs/F15_static.py`, `F15_python_static.py`, `F15_go_static.py`, `F15_reference_compare.py`, `F15_go.sh`, `F15_collect.py`와 `F15_summary.json`. 재생 결과는 `C:/dev/codex_handoff/final/scratch/replay_F15.json`이다.
 
@@ -129,11 +129,11 @@ V3 관문은 두 실행 모두 `--bin` 없이 기본 경로를 확인했다. L1 
 
 새 Python 시험 26개는 잠금의 조기 거부, 환경 격리, M1 무실행·skip 거부, 재시도 한계, 실패 JSON과 로그를 확인한다. Windows에서 skip되는 staging 시험 두 개는 WSL에서 실제 실행했다.
 
-임시 검증 전후로 기존 설치본과 기본 출력 경로, 보존 stage가 같았다. 옛 설치본 5파일을 보관한 뒤 설치했고, 새 stage를 더해 53개에서 54개가 됐다. 기존 stage는 모두 남아 있다. 새 동결본에는 qamp와 SHA256·소스 지문·buildinfo 파일을 복사하고 파일과 디렉터리의 쓰기 권한을 제거했다. 설치본과 동결본의 네 파일 해시가 일치한다. 기존 동결 바이너리 5개의 해시와 archive의 INDEX·MANIFEST·도구 파일도 불변이다.
+임시 검증 전후로 기존 설치본과 기본 출력 경로, 보존 stage가 같았다. 옛 설치본 5파일을 보관한 뒤 설치했고, 새 stage를 더해 53개에서 54개가 됐다. 기존 stage는 모두 남아 있다. 새 동결본에는 qamp와 SHA-256·소스 지문·buildinfo 파일을 복사하고 파일과 디렉터리의 쓰기 권한을 제거했다. 설치본과 동결본의 네 파일 해시가 일치한다. 기존 동결 바이너리 5개의 해시와 archive의 INDEX·MANIFEST·도구 파일도 불변이다.
 
 | 최종 바이너리 식별 | 값 |
 |---|---|
-| SHA256 | `63854e33ac2a33531f3463c72d31899a5f7df5642910497e8ac94ccec308c63a` |
+| SHA-256 | `63854e33ac2a33531f3463c72d31899a5f7df5642910497e8ac94ccec308c63a` |
 | srcsha | `8e3c09609184de9062072019736c90fd174d91092568e4532c94e1a3e236033d` |
 | Go | go1.26.6 |
 | quic-go | v0.61.0 |
@@ -145,4 +145,4 @@ V3 관문은 두 실행 모두 `--bin` 없이 기본 경로를 확인했다. L1 
 
 로컬 보존: 실행 결과는 `C:/dev/codex_handoff/final/runs/F16_temporary.json`, `F16_install.json`, `F16_freeze.json`, `F16_frozen_v3.json`, `F16_frozen_l1.json`, `F16_summary.json`이다. 수치 집계와 보존 검사는 같은 폴더의 `F16_collect.py`, `F16_environment.py`, `F16_assets.py`, `F16_verify.sh`로 재현한다. 최초 실행은 WSL의 중복 Git 상태 조회가 지연돼 중단했고 `F16_temp.json`과 로그에 남겼다. 현재 도구는 Windows에서 상태를 기록하고 WSL에서는 HEAD만 확인한다.
 
-계획 JSON은 아직 없으므로 바이너리 SHA256·srcsha 입력은 F20이 맡는다. 세대 표 반영은 F62, 최종 archive 사본은 F67에서 한다. F16 뒤에는 Go 소스와 Go 시험을 변경하지 않으며, 변경이 필요하면 루프 결정 목록에 기록한다.
+계획 JSON은 아직 없으므로 바이너리 SHA-256·srcsha 입력은 F20이 맡는다. 세대 표 반영은 F62, 최종 archive 사본은 F67에서 한다. F16 뒤에는 Go 소스와 Go 시험을 변경하지 않으며, 변경이 필요하면 루프 결정 목록에 기록한다.

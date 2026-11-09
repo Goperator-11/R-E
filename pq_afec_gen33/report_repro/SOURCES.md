@@ -42,7 +42,7 @@ python -I -B report_repro/check_sources.py --write
 python -I -B report_repro/check_sources.py
 ```
 
-`sources_manifest.json`에는 표의 수치군과 필드 설명을 둔다. 검사기는 모든 입력의 존재와 R-E 추적 상태, archive 파일 존재를 검사하고 표 전체를 현재 상태에서 다시 만들어 대조한다. 보존한 `content.py`의 Table·Fig 토큰 집합이 표에 모두 있는지도 검사한다. 원본 content 파일이 있으면 두 파일의 Python AST와 토큰 집합을 비교하고 SHA256을 각각 기록한다. 사본은 coding 주석과 줄 끝 형식이 달라 원본과 바이트가 다르다. 원본이 없으면 사본으로 검사한 사실을 출력한다.
+`sources_manifest.json`에는 표의 수치군과 필드 설명을 둔다. 검사기는 모든 입력의 존재와 R-E 추적 상태, archive 파일 존재를 검사하고 표 전체를 현재 상태에서 다시 만들어 대조한다. 보존한 `content.py`의 Table·Fig 토큰 집합이 표에 모두 있는지도 검사한다. 원본 content 파일이 있으면 두 파일의 Python AST와 토큰 집합을 비교하고 SHA-256을 각각 기록한다. 사본은 coding 주석과 줄 끝 형식이 달라 원본과 바이트가 다르다. 원본이 없으면 사본으로 검사한 사실을 출력한다.
 
 ## 그림과 수치 재현
 
@@ -58,6 +58,6 @@ python -I -B report_repro/check_report_numbers.py
 
 ## 배포하지 않는 자료
 
-v3 저널과 v3.3.1 평가 원자료는 로컬 보존한다. probe는 원본 전체 대신 `g31_probe_excerpt.json`에 첫 송신 크기의 histogram과 직접 근거 행, 원본 SHA256을 담는다. `extract_g31_probe.py --check`는 원본 SHA256과 선택한 포인터·값을 대조한다. 41 B가 ACK 전용이라는 해석과 모든 실패 셀의 원인은 이 발췌로 확인하지 않는다.
+v3 저널과 v3.3.1 평가 원자료는 로컬 보존한다. probe는 원본 전체 대신 `g31_probe_excerpt.json`에 첫 송신 크기의 histogram과 직접 근거 행, 원본 SHA-256을 담는다. `extract_g31_probe.py --check`는 원본 SHA-256과 선택한 포인터·값을 대조한다. 41 B가 ACK 전용이라는 해석과 모든 실패 셀의 원인은 이 발췌로 확인하지 않는다.
 
 TLS 계산은 손실이 있는 행의 설계 횟수에서 성공 수 n을 빼 실패 수를 구하고, 두 비율의 pooled z를 계산한다. 설계 횟수는 보존 실행 스크립트의 loss=0 시 1/8, RTT 100·200 ms 시 1/2 규칙을 따른다. 연결별 시간열은 이 CSV에 없으므로 독립성 가정과 실제 netem 방향은 이 계산으로 검증되지 않는다.

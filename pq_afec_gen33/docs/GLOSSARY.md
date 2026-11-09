@@ -145,9 +145,9 @@ none·c1·ideal 정의의 근거는 [L1 관측 계약](L1_observation_contract.m
 | E30 | J3 실패 비용과 재시도 세계의 채택 검증 | todo | EXTRA_TASKS |
 | E31 | M4 실제 재방문 입력·캐시·토큰 거절 어댑터 | todo | EXTRA_TASKS |
 | E32 | M4 토큰·Retry·지원 상태의 HCT 비용과 채택 | todo | EXTRA_TASKS |
-| E33 | 서버 프로파일의 실제 관측 입력 | todo | EXTRA_TASKS |
+| E33 | 서버 프로필의 실제 관측 입력 | todo | EXTRA_TASKS |
 | E34 | 하향 손실의 타이머·재전송 독립 세계 | todo | EXTRA_TASKS |
-| E35 | 서버 프로파일·하향 손실 비용의 정책 채택 | todo | EXTRA_TASKS |
+| E35 | 서버 프로필·하향 손실 비용의 정책 채택 | todo | EXTRA_TASKS |
 | E36 | 과거 판정의 읽기 전용 재계산 | todo | EXTRA_TASKS |
 | E37 | 공개용 사본과 남은 저장소 위생 | todo | EXTRA_TASKS |
 | E38 | J7 남은 와이어 계약: parity 크기 고정과 파싱 실패 계수; F12에서 진단 계수·크기 검사 범위 완료 | todo | EXTRA_TASKS |
@@ -163,7 +163,7 @@ none·c1·ideal 정의의 근거는 [L1 관측 계약](L1_observation_contract.m
 | J5 | Gilbert-Elliott 버스트 | blocked | TASKS |
 | J6 | δ 후보에 A_pre와 여유 | blocked | TASKS |
 | J7 | parity 크기 고정과 상한 | blocked | TASKS |
-| J8 | 서버 프로파일 매개변수 | blocked | TASKS |
+| J8 | 서버 프로필 매개변수 | blocked | TASKS |
 | L1 | datagram 단위 손실 증거 | done | TASKS |
 | L2 | 3등급 라벨과 기준선 | done | TASKS |
 | L3 | 건너뛰기·재평가·감시층 정리 | blocked | TASKS |
@@ -721,7 +721,7 @@ D 번호는 결정의 식별자다. D1~D49는 v33 결정 기록, D50~D79는 최�
 | D36 | J3 복구 비용과 종료 근사 | 원본·선행 credit·보관 parity를 구분한 유한 근사. 비용 참조와 전송 세계를 분리. | v33 결정 |
 | D37 | M4 토큰·Retry와 추가 묶음 | 토큰 전달과 수락을 구분하고 연결당 추가 묶음 예약을 한 번으로 제한한 비활성 후보. | v33 결정 |
 | D38 | M4 관측 캐시와 TLS 분기 | 실제 관측으로 full·resumed·unknown을 구분하고 티켓 제안만으로 결과를 정하지 않음. | v33 결정 |
-| D39 | J8 서버 프로파일·하향 손실 | 알려진 설정과 미확인 서버를 구분. 하향 손실 비용 미지원과 활성 미채택을 유지. | v33 결정 |
+| D39 | J8 서버 프로필·하향 손실 | 알려진 설정과 미확인 서버를 구분. 하향 손실 비용 미지원과 활성 미채택을 유지. | v33 결정 |
 | D40 | T1 시험용 키가 남은 git 이력 | 현재 추적에서 제거한 키의 이력 공개는 별도 문제. D42·D62에 따라 이력 재작성·배포를 하지 않음. | v33 결정 |
 | D41 | 활성 v3.3.1-dev와 c1_seen 분기 | none은 v3.2-dev와 비트 일치, c1_seen 이후 L1 관측·L3 record_only 결정. 상태 판본 11. | v33 결정 |
 | D42 | gen33 git 이력 처리 | 이력을 다시 쓰지 않고 이력 없는 사본의 내보내기 절차를 사용. 현재 배포 경계는 D62. | v33 결정 |

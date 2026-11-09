@@ -22,11 +22,11 @@ CPU는 padbed의 `_cpu_list()` 규칙대로 허용 목록을 정렬한 앞 네 �
 
 필수 `journal` callback은 설정 뒤 양쪽 `tc qdisc show`의 명령, stdout, stderr, 종료 코드와 요청값을 받는다. 실제 root netem 응답이 없으면 실패한다. callback 실패도 caller로 전파한다. F22 러너는 이 callback으로 실행 저널에 기록을 저장한 뒤 측정 단위를 시작한다. callback을 메모리 목록에 연결한 단위시험과 영속 저널 저장은 구분한다. selftest는 같은 event를 stdout에 JSON으로 남긴다.
 
-`require_bin(path)`는 gen33 전용이다. [gate_v3_parity.py](../experiments/gate_v3_parity.py)의 `binary_report()`를 통해 실제 SHA256, sidecar SHA256, srcsha와 `quicbed_fingerprint()`를 비교한다. 파일을 복사하거나 빌드하지 않는다. 동결 gen-2·g3c 팔은 F22에서 계획에 등록한 세대별 해시를 검사해야 한다.
+`require_bin(path)`는 gen33 전용이다. [gate_v3_parity.py](../experiments/gate_v3_parity.py)의 `binary_report()`를 통해 실제 SHA-256, sidecar SHA-256, srcsha와 `quicbed_fingerprint()`를 비교한다. 파일을 복사하거나 빌드하지 않는다. 동결 gen-2·g3c 팔은 F22에서 계획에 등록한 세대별 해시를 검사해야 한다.
 
 ## 확인 범위
 
-2026-11-06의 selftest는 양방향 `delay 25ms loss 2% rate 2Mbit`를 출력하고 종료 코드 0으로 끝났다. CPU mask는 0·1·2·3, 실제 MTU는 양쪽 1500이었다. 설치 바이너리 SHA256은 `63854e33ac2a33531f3463c72d31899a5f7df5642910497e8ac94ccec308c63a`, srcsha는 `8e3c09609184de9062072019736c90fd174d91092568e4532c94e1a3e236033d`로 현재 소스 지문과 일치했다.
+2026-11-06의 selftest는 양방향 `delay 25ms loss 2% rate 2Mbit`를 출력하고 종료 코드 0으로 끝났다. CPU mask는 0·1·2·3, 실제 MTU는 양쪽 1500이었다. 설치 바이너리 SHA-256은 `63854e33ac2a33531f3463c72d31899a5f7df5642910497e8ac94ccec308c63a`, srcsha는 `8e3c09609184de9062072019736c90fd174d91092568e4532c94e1a3e236033d`로 현재 소스 지문과 일치했다.
 
 추가 WSL 검사는 일반 사용자 실행과 `-Ur`, `-Urn`, `-Urm` 실행을 모두 종료 코드 2로 거부했다. 정상 격리 안에서는 자식 CPU mask 상속, 양쪽 permanent ARP, c2s의 loss 2%·rate 2Mbit와 s2c의 loss 5%·rate 7Mbit를 확인했다. 검사 전후 host의 링크, qdisc, /run mount와 namespace 목록은 같았다.
 

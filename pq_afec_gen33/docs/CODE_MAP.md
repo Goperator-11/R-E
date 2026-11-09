@@ -56,7 +56,7 @@ gen33 작업 트리에서 활성 정책 v3.3.1-dev가 도는 경로와, 미채�
 | `-corrupt-parity` | `-1` | 검증용으로 N번째 parity의 한 바이트를 뒤집는다. | 검증 |
 | `-drop-parity` | `-1` | 검증용으로 N번째 parity를 보내지 않는다. | 검증 |
 | `-drop-initial` | `""` | 검증용으로 first flight의 지정 원본을 보내지 않는다. | 검증 |
-| `-feedback` | `false` | C1. 서버가 first flight 수신 심볼 수를 회신한다. | c1 경로 |
+| `-feedback` | `false` | C1. 서버가 first flight 수신 심벌 수를 회신한다. | c1 경로 |
 | `-p3-explore-rate-ms` | `0` | `-fec auto3` none 경로의 탐색 원장에 연결마다 이 값(ms)을 쌓는다. 0이면 탐색이 없다. | CX1, 보류 |
 | `-profile` | `""` | wide read에는 따로 플래그가 없고 프로필로 갈린다. 서버 wide read는 기본 on, sealed31 off다. 기본 프로필 서버는 1472 B까지 읽어 parity 전체로 복구하고 quic-go에는 앞 1452 B만 넘기며 `fec_oversize_read`를 센다. `-profile sealed31`이면 읽기 경로가 봉인 조건 그대로다. | wide read |
 
@@ -82,7 +82,7 @@ gen33 작업 트리에서 활성 정책 v3.3.1-dev가 도는 경로와, 미채�
 | `experiments/v33/oracle.py`, `experiments/v33/bench_oracles.py`, `experiments/v33/bench_action_pool.py` | 행동별 세계 평가 오라클과 행동 pool 표([행동 pool](v33_action_pool.md)). |
 | `experiments/v33/bench_learning.py`, `experiments/v33/bench_learning_report.py`, `experiments/v33/bench_learning_precision.py` | L1 학습 벤치와 보고, 정밀 반복([L1 보고](L1_benchmark_reporting.md)). |
 | `experiments/v33/policy_worker.py`, `experiments/v33/first_flight_observer.py` | 벤치가 활성 정책을 별도 프로세스로 부르는 worker와 first flight 관측 증거. |
-| `experiments/v33/validate_world.py`, `experiments/v33/validate_loss.py`, `experiments/v33/world_ack_profile.py`, `experiments/v33/initial_count_diag.py` | 세계 등가, 손실 모형, ACK 프로파일, Initial 수 진단([세계 기록](V33FIX_world.md)). |
+| `experiments/v33/validate_world.py`, `experiments/v33/validate_loss.py`, `experiments/v33/world_ack_profile.py`, `experiments/v33/initial_count_diag.py` | 세계 등가, 손실 모형, ACK 프로필, Initial 수 진단([세계 기록](V33FIX_world.md)). |
 | `experiments/v33/zero_variance.py` | 영분산 셀의 MC 경계를 독립 seed로 채운다([판정 규칙](V33FIX_bench_rules.md)). |
 | `experiments/v33/v33fix_rejudge.py` | 활성 판 재판정([평가 기록](V33FIX_evaluation.md)). v3.3-dev L1 보존본 `g3/v33/policy_snapshots/L1_v1`을 비교 기준으로 읽는다. |
 | `experiments/v33/v33fix_replay.py` | W1 기록(none은 v3.2 궤적, c1은 L3 record_only 궤적)을 재생해 결정을 대조한다([최종 검증](FINAL_verification.md)). |
@@ -106,7 +106,7 @@ gen33 작업 트리에서 활성 정책 v3.3.1-dev가 도는 경로와, 미채�
 | O4 | 미채택 | 현재 ClientHello로 k 계산 | `experiments/v33/natural_k_*.py`, `experiments/v33/current_k_*.py` | 없음. |
 | J3 | 미채택 | 실패 가지 두 단계 비용 | `experiments/v33/recovery_*.py`, `docs/J3_*` | 없음. 활성 비용은 7절의 한 단계 실패 가지다. |
 | M4 | 미채택 | token, Retry 인식 | `experiments/v33/revisit_*.py`, `experiments/quicbed/revisit_guard.go` | Go 경로는 빌드되지만 `-revisit-guard` 기본 false다. |
-| J8 | 미채택 | 서버 프로파일과 하향 손실 | `experiments/v33/server_*.py`, `experiments/v33/j8_pto_impact.py` | 없음. |
+| J8 | 미채택 | 서버 프로필과 하향 손실 | `experiments/v33/server_*.py`, `experiments/v33/j8_pto_impact.py` | 없음. |
 | AK1 | 미채택 | preflight ACK 틈을 손실 우도로 쓰는 none 경로 학습 | 저장소 흔적 없음. 개발 세계 진단만 했다. | 없음. |
 | CX1 | 보류 | none 경로 opt-in 탐색 원장 | `experiments/v33/cx1_eval.py`, `g3/v33/CX1_eval_v1.json`, `tests/test_padfec3_explore.py` | 코드는 활성 파일에 있으나 `explore=None`, `-p3-explore-rate-ms 0`이 기본이라 꺼져 있다. 평가는 W0 세계 시뮬레이션뿐이다. |
 
@@ -241,7 +241,7 @@ gen33 작업 트리에서 활성 정책 v3.3.1-dev가 도는 경로와, 미채�
 | `experiments/v33/rtt_reference_report.py` | O3 | RTT 참조 보고. |
 | `experiments/v33/rtt_trace_audit.py` | O3 | RTT trace 감사. |
 | `experiments/v33/server_cost_reference.py` | J8 | 서버 비용 참조. |
-| `experiments/v33/server_profile.py` | J8 | 서버 프로파일. |
+| `experiments/v33/server_profile.py` | J8 | 서버 프로필. |
 | `experiments/v33/server_response_observer.py` | L5 | 서버 응답 크기 관측. |
 | `experiments/v33/server_world_trace.py` | J8 | 서버 세계 trace. |
 | `experiments/v33/uplink_reference.py` | O2 | uplink 참조. |
@@ -257,7 +257,7 @@ gen33 작업 트리에서 활성 정책 v3.3.1-dev가 도는 경로와, 미채�
 | `experiments/v33/validate_m1_fixed.py` | M1 | M1 고정 세계 독립 검증. |
 | `experiments/v33/validate_m1_v2.py` | M1 | M1 검증 2판. |
 | `experiments/v33/validate_world.py` | 세계와 벤치 | 세계 등가와 보정 검증. |
-| `experiments/v33/world_ack_profile.py` | 세계와 벤치 | 세계 ACK 프로파일 진단. |
+| `experiments/v33/world_ack_profile.py` | 세계와 벤치 | 세계 ACK 프로필 진단. |
 | `experiments/v33/world_receiver_m1.py` | M1 | M1 세계 수신기. |
 | `experiments/v33/worldsim.py` | 세계와 벤치 | W0 세계 시뮬레이터. |
 | `experiments/v33/worldsim_m1.py` | M1 | M1 hold 세계. |

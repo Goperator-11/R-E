@@ -39,7 +39,7 @@ def sec_e1(w, e1):
           % (k, s["ek_bytes_raw"], s["ct_bytes"], s["ss_bytes"],
              "예" if s["ss_agree"] else "아니오"))
     w("")
-    w("| | 키생성 | 캡슐화 | 복호화 |")
+    w("| | 키생성 | 캡슐화 | 디캡슐화 |")
     w("|---|---|---|---|")
     for k in ("ML-KEM-512", "ML-KEM-768", "ML-KEM-1024", "X25519"):
         t = e1["timing"].get(k)
@@ -175,9 +175,9 @@ def sec_e8(w, e8):
     if not e8:
         return
     w("## 6. FEC 부호화 CPU (E8)\n")
-    w("%.0f Mbps 유지에 필요한 코어 점유율. 심볼 %d B.\n"
+    w("%.0f Mbps 유지에 필요한 코어 점유율. 심벌 %d B.\n"
       % (e8["rate_mbps"], e8["symbol_bytes"]))
-    w("| (K, r) | 파이썬 us/심볼 | C us/심볼 | C 배속 | C 기준 CPU |")
+    w("| (K, r) | 파이썬 us/심벌 | C us/심벌 | C 배속 | C 기준 CPU |")
     w("|---|---|---|---|---|")
     for k in sorted(e8["grid"], key=lambda s: (int(s.split("_")[0][1:]),
                                                int(s.split("_")[1][1:]))):

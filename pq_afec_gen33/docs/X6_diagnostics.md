@@ -1,7 +1,7 @@
 # X6 진단: p_mean 시계열, 유휴 근사, 실현 손실
 
 실행 ID는 final_x6_iter035_20261107다. development 측정의 사후 진단이며 확증이 아니다. 결과 JSON과 자동 결과 문서를 바꾸지 않는다.
-결과 JSON SHA256 `dfbfd5e1ae624622e451d997b43af809f31645086d17a2b1592a4150dc5527e5`, 저널 SHA256 `fe044ed43f7a1527a4170f025d671686d43e37a906956005840b72e6f7ee9a8b`, 시계열 SHA256 `424b3e73c4c8b14ce4f822d892dc2856d6e9f51b5fa44840b7105ca9ebd68457`.
+결과 JSON SHA-256 `dfbfd5e1ae624622e451d997b43af809f31645086d17a2b1592a4150dc5527e5`, 저널 SHA-256 `fe044ed43f7a1527a4170f025d671686d43e37a906956005840b72e6f7ee9a8b`, 시계열 SHA-256 `424b3e73c4c8b14ce4f822d892dc2856d6e9f51b5fa44840b7105ca9ebd68457`.
 
 ## p_mean 시계열
 

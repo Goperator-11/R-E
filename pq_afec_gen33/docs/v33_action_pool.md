@@ -2,7 +2,7 @@
 
 `experiments/v33/bench_action_pool.py`는 이미 선택된 oracle 행동을 기준으로 행동별 기대 HCT를 계산하는 실행기다. 계산은 기존 `oracle.evaluate_action`에 맡기고, 완료 판정은 기존 `bench_oracles.validate_oracle_result`를 호출한다. seed, 표본 수, 후보 집합, 구간 산술과 선택 oracle은 바꾸지 않는다. 새 oracle을 선택하는 기능은 없다.
 
-W1 생산 실행의 전체 집합은 `C:\dev\codex_handoff\v33\runs\W1_action_family_plan.json`에 기록되어 있다. 이 계획은 raw 네 폴더의 680개 seed 실행에서 나온 19문맥, 81개 `(context, action)` 작업을 담는다. 전달받은 계획 SHA256은 `792e7935a57f512baf5cf052bb4973f0ba40e1e282507ed367a04be1dae629ca`다. 이 값과 파일 내용이 다르면 실행하지 않는다. 모든 19문맥의 기준 oracle이 완료된 뒤 사용한다.
+W1 생산 실행의 전체 집합은 `C:\dev\codex_handoff\v33\runs\W1_action_family_plan.json`에 기록되어 있다. 이 계획은 raw 네 폴더의 680개 seed 실행에서 나온 19문맥, 81개 `(context, action)` 작업을 담는다. 전달받은 계획 SHA-256은 `792e7935a57f512baf5cf052bb4973f0ba40e1e282507ed367a04be1dae629ca`다. 이 값과 파일 내용이 다르면 실행하지 않는다. 모든 19문맥의 기준 oracle이 완료된 뒤 사용한다.
 
 ## 같은 통계 집합을 유지하는 방법
 

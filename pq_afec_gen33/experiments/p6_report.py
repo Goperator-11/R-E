@@ -1086,7 +1086,7 @@ def build_markdown(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
         A("cert %d B, RTT %.0f ms, 조건마다 n=%d."
           % (p3["cert"], p3["rtt_ms"], p3["n"]))
         A("")
-        A("| 그룹 | 손실 | 버스트 | 방향 | 팔 | p50 | p95 | p99 | PTO율 | 복구 |")
+        A("| 그룹 | 손실 | 버스트 | 방향 | 팔 | p50 | p95 | p99 | HCT>RTT+500 ms 비율 | 복구 |")
         A("|---|---|---|---|---|---|---|---|---|---|")
         for r in p3["runs"]:
             if not r.get("valid"):
@@ -1815,7 +1815,7 @@ def build_onepager(p1, p2, p3, p4, p5, p7=None, p8=None, p9=None,
     A('<h2>5. 손실 조건 효과 (c2s 손실, cert %s B, RTT %s ms)</h2>'
       % ((p3 or {}).get("cert", "?"), fmt((p3 or {}).get("rtt_ms"), 0)))
     A('<table><tr><th>그룹</th><th>손실</th><th>팔</th><th>p50</th>'
-      '<th>p95</th><th>p99</th><th>PTO율</th><th>복구</th></tr>')
+      '<th>p95</th><th>p99</th><th>HCT&gt;RTT+500 ms 비율</th><th>복구</th></tr>')
     for r in (p3 or {}).get("runs", []):
         if not r.get("valid") or r["dir"] != "c2s" or r["burst"] != 1.0:
             continue

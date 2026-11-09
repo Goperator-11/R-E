@@ -28,7 +28,7 @@ M0는 번인이 없다. X6는 팔·셀·궤적별 첫 300연결을 번인으로 
 
 ## 단위 실행과 저널
 
-[transport.py](../experiments/v33/lib/transport.py)는 F21의 [netbed.py](../experiments/v33/lib/netbed.py)와 연결된다. main 스레드에서 CPU를 고정하고 자식 qamp를 띄운다. 매 단위 전 바이너리 SHA256과 srcsha를 다시 읽고 gen33은 현재 quicbed 소스 지문도 대조한다. 동결 팔은 그 세대의 계획 지문을 쓴다.
+[transport.py](../experiments/v33/lib/transport.py)는 F21의 [netbed.py](../experiments/v33/lib/netbed.py)와 연결된다. main 스레드에서 CPU를 고정하고 자식 qamp를 띄운다. 매 단위 전 바이너리 SHA-256과 srcsha를 다시 읽고 gen33은 현재 quicbed 소스 지문도 대조한다. 동결 팔은 그 세대의 계획 지문을 쓴다.
 
 gen33 서버의 인증서는 셀마다 생성해 팔들이 공유한다. PEM은 로컬 보존 경로 `~/v33_runs/<run-id>/certs/` 안에만 둔다. 서버는 팔·블록마다 새 프로세스와 conn-log를 쓰고 READY를 확인한 뒤 클라이언트를 실행한다. settle 뒤 SIGTERM을 보내고 종료 코드를 확인한다. tc의 양방향 설정과 실행 전후 `tc -s` 응답, 클라이언트·서버 stdout·stderr·stats를 남긴다. 행에는 계획·클라이언트 바이너리·서버 바이너리 지문을 붙인다.
 

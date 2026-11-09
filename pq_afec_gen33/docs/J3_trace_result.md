@@ -27,7 +27,7 @@ T2·T3에서는 암호문을 인증 복호해 PN·CRYPTO 구간·패킷 길이�
 
 ## 고친 검산 오류와 검증
 
-첫 smoke에서 T2_revisit_basic_v1/retry_token_resume_rtt200의 두 번째 연결이 실패했다. PN4는 UDP 1280 B 안의 Initial 1099 B와 Handshake 181 B로 구성된다. qlog bytes는 Initial 길이이고 CRC는 UDP 전체 길이에 대응한다. qlog coalesced=false를 근거로 두 길이가 같다고 검사한 분석기를 고쳤다. 기존 Go 기록 코드는 변경하지 않았다. 실패 소스·계획·오류를 J3_trace_failed_v1에 보존하고 실제 입력 회귀 시험을 추가했다.
+첫 smoke에서 T2_revisit_basic_v1/retry_token_resume_rtt200의 두 번째 연결이 실패했다. PN4가 실린 UDP 1280 B datagram은 Initial 1099 B와 Handshake 181 B로 구성된다. qlog bytes는 Initial 길이이고 CRC는 UDP 전체 길이에 대응한다. qlog coalesced=false를 근거로 두 길이가 같다고 검사한 분석기를 고쳤다. 기존 Go 기록 코드는 변경하지 않았다. 실패 소스·계획·오류를 J3_trace_failed_v1에 보존하고 실제 입력 회귀 시험을 추가했다.
 
 최종 23시험은 구간 합집합, 부분 반복, ACK 공간과 시각, 중복 PN, CRC 충돌·결측, 인증 변조, 실제 coalesced 패킷을 검사한다. 수정 뒤 smoke와 전체 재생이 통과했다. 독립 검산은 바이트 집합으로 범위를 다시 계산하고 입력 SHA와 연결 목록을 대조했다. 기존 핵심 351시험·548하위 검사는 전체 관련 소스 해시 일치로 재사용했다.
 
