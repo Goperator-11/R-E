@@ -18,9 +18,9 @@
 ## errors
 
 ### B-E1 [high] 활성 정책의 기본 경로(none, C1 없음)가 v3.2-dev보다 나빠졌다 (repro=True)
-L1은 C1이 없으면 HCT 3등급 categorical 우도(EPS 1e-3 고정, 모형 절대 경계)로 갱신한다(learn3.py:748). 이 경로가 v3.2의 1비트 이진 우도보다 모형 오차에 훨씬 민감하다. none 대 v32(정밀화 JSON): B6 +6.372 [5.166, 7.579] 실패, B5 +0.360 [0.047, 0.672], B7 +0.260 [0.114, 0.406], B8_j20 +9.452 [0.263, 18.640]은 하한이 0보다 커서 증가 근거가 있다. 감소는 B2 −1.082, B12_c12000 −0.053 두 셀뿐이다. v31 대비로는 B6 +5.80, B7 +1.37이 실패다. 기전은 원자료로 확인했다. B6(로드밸런서 9000/16000)에서 16000 쪽 연결이 2-RTT 등급으로 관측될 때마다 categorical 우도가 p=0.30 쪽을 p=0.02보다 12~14배 지지한다(내 계산, lik_demo.py). 그 결과 꼬리 p 편향이 +0.271(v32 +0.145, 참값 0.02), 최종 p_mean이 0.29(격자 상한 0.3)까지 오른다. 실현 HCT 평균은 101.76 대 95.20 ms다. B8_j20 지터에서도 p 편향 +0.088 대 +0.030이다. Python observe3의 arrivals 기본값은 None이고, qamp는 서버와 클라이언트 모두 -feedback 기본값이 false다(qamp.go:3712, 3830, 3851). 따라서 C1을 구현하지 않은 서버에 대한 배포 기본 동작이 이 none 경로다.
+L1은 C1이 없으면 HCT 3등급 categorical 우도(EPS 1e-3 고정, 모형 절대 경계)로 갱신한다(learn3.py:748). 이 경로가 v3.2의 1비트 이진 우도보다 모형 오차에 훨씬 민감하다. none 대 v32(정밀화 JSON): B6 +6.372 [5.166, 7.579] 실패, B5 +0.360 [0.047, 0.672], B7 +0.260 [0.114, 0.406], B8_j20 +9.452 [0.263, 18.640]은 하한이 0보다 커서 증가 근거가 있다. 감소는 B2 −1.082, B12_c12000 −0.053 두 셀뿐이다. v31 대비로는 B6 +5.80, B7 +1.37이 실패다. 기전은 원자료로 확인했다. B6(로드밸런서 9000/16000)에서 16000 쪽 연결이 2-RTT 등급으로 관측될 때마다 categorical 우도가 p=0.30 쪽을 p=0.02보다 12~14배 지지한다(내 계산, lik_demo.py). 그 결과 꼬리 p 편향이 +0.271(v32 +0.145, 참값 0.02), 최종 p_mean이 0.29(격자 상한 0.3)까지 오른다. 실현 HCT 평균은 101.76 대 95.20 ms다. B8_j20 지터에서도 p 편향 +0.088 대 +0.030이다. Python observe3의 arrivals 기본값은 None이고, qamp는 서버와 클라이언트 모두 -feedback 기본값이 false다(qamp.go:3095, 3830, 3851). 따라서 C1을 구현하지 않은 서버에 대한 배포 기본 동작이 이 none 경로다.
 
-EVIDENCE: g3/v33/L1_benchmark_precision_v1.json comparisons(pre_post_vs_v32, current_none). 직접 재계산: recompute_seed.py로 none-v32 B6 seed 평균 6.372402(보고값과 2.6e-13 이내). 원자료 요약: L1_raw_v1_38/none/B6 HCT 101.761, p_bias 0.2711 / W1_raw_v32 B6 95.199, 0.1452. qamp.go:3712 flag.Bool("feedback", false, ...), observation.go:199-203 disabled이면 src none.
+EVIDENCE: g3/v33/L1_benchmark_precision_v1.json comparisons(pre_post_vs_v32, current_none). 직접 재계산: recompute_seed.py로 none-v32 B6 seed 평균 6.372402(보고값과 2.6e-13 이내). 원자료 요약: L1_raw_v1_38/none/B6 HCT 101.761, p_bias 0.2711 / W1_raw_v32 B6 95.199, 0.1452. qamp.go:3095 flag.Bool("feedback", false, ...), observation.go:199-203 disabled이면 src none.
 
 FIX: none 경로는 v3.2의 이진 우도(또는 기준선 상대 판정)로 되돌리고 categorical은 C1이 확인된 목적지에만 쓰거나, EPS를 크게 잡아 S 혼합·지터에 견디게 한 뒤 none 15셀을 v32 대비 관문으로 다시 평가한다. 보고서에는 'C1 없는 서버에서는 B6에서 약 6.4 ms 나빠진다'를 함께 적는다.
 
@@ -60,9 +60,9 @@ EVIDENCE: qamp_preserved_test.go:9-24 (filepath.Join(home, "quicbed_gen33", "tes
 FIX: t.TempDir()를 기본으로 쓰고 보존이 필요할 때만 환경변수로 켠다.
 
 ### B-E7 [low] 상태 판본이 3에서 4로 바뀌었는데 cache3 schema 표지는 그대로라 옛 캐시가 있으면 qamp가 종료한다 (repro=False)
-p3StateVersion=4지만 p3CacheSchema는 'padfec3.cache3/3' 그대로다. v3.2 시절 cache3 파일이 있으면 validate 오류로 loadDestCache3가 실패하고 qamp가 exit 2로 끝난다(qamp.go:2899-2901). 이전 상태 거부는 L1_learning.md에 의도로 적혀 있어 안전한 실패 방향이지만, 표지만 보고는 호환 여부를 알 수 없다.
+p3StateVersion=4지만 p3CacheSchema는 'padfec3.cache3/3' 그대로다. v3.2 시절 cache3 파일이 있으면 validate 오류로 loadDestCache3가 실패하고 qamp가 exit 2로 끝난다(qamp.go:2407-2407). 이전 상태 거부는 L1_learning.md에 의도로 적혀 있어 안전한 실패 방향이지만, 표지만 보고는 호환 여부를 알 수 없다.
 
-EVIDENCE: policy3.go:50, 618-619, 1620-1662; qamp.go:2899-2901.
+EVIDENCE: policy3.go:50, 618-619, 1620-1662; qamp.go:2407-2407.
 
 FIX: schema를 cache3/4로 올리거나, 판본 불일치 항목은 버리고 콜드스타트하는 명시 경로를 둔다.
 
@@ -85,7 +85,7 @@ FIX: schema를 cache3/4로 올리거나, 판본 불일치 항목은 버리고 �
 
 ## checked_but_ok
 - C1 데이터그램 우도 수식: 이항계수를 뺀 p^lost(1−p)^(sent−lost)는 격자 사이 상수 배 차이만 없애므로 사후분포에 영향이 없고 iid 모형(layout.outcomes)과 일관된다. Go도 같은 곱셈 순서다(policy3_l1.go p3ArrivalLikelihood).
-- 0 나누기·NaN: hazard 재주입으로 모든 격자에 사전 질량이 남아 z>0이 보장된다. 기본 EPS 1e-3에서 categorical 우도는 항상 양수이고 세 등급 합이 1이다. z=0은 EPS=1이고 q=1인 비현실 경계에서만 가능하다. gen-2 심볼 닫힌식은 nSym≤0을 미리 거른다(policy.go:1224).
+- 0 나누기·NaN: hazard 재주입으로 모든 격자에 사전 질량이 남아 z>0이 보장된다. 기본 EPS 1e-3에서 categorical 우도는 항상 양수이고 세 등급 합이 1이다. z=0은 EPS=1이고 q=1인 비현실 경계에서만 가능하다. gen-2 심볼 닫힌식은 nSym≤0을 미리 거른다(policy.go:749).
 - 105개 대조 전부: seed 추정값에서 Student t 구간과 MC·selection gap을 더한 조정 경계를 다시 계산했고 L1_benchmark.json과 정밀화 JSON 모두 일치했다(table.py).
 - 원자료 재계산: W1_raw_v32·L1_raw_v1_* trace와 L1_action_pool_precision_v2 MC 표로 C1-v32 B1(−0.656267), B6(−0.018921), B7(−3.669562), none-v32 B6(+6.372402)의 seed별 값을 오차 2.6e-13 이내로 재현했다. 원자료는 git이 아니라 codex_handoff\runs에 있고, git에는 SHA 목록만 있다.
 - 과제가 제시한 수치(B1 −0.6558, B2 −2.1187, B5 −0.6581, B7 −3.6422, B1 후회 1.226, none B6 +6.37, B4 2935 B)는 원래 보고서와 정밀화 보고서에서 그대로 나온다.
@@ -98,7 +98,7 @@ FIX: schema를 cache3/4로 올리거나, 판본 불일치 항목은 버리고 �
 
 ## VERIFY
 
-- B-E1 (error): **confirmed** sev= :: none 경로 회귀를 원자료에서 독립 재계산으로 그대로 재현했다. 기전(16000 인증서 연결이 2-RTT 등급으로 관측될 때 categorical 우도가 p=0.30을 p=0.02보다 약 14배 지지)도 실제 행으로 확인했다. 기본 입력이 none이라는 점도 HEAD 바이너리 실행으로 확인했다. 단서: none에 3등급 우도를 쓰라는 것은 TASKS.md:190(L1 5항)이 지시한 설계이고 Codex가 MORNING_REPORT:115와 L1_precision_acceptance_scope.md에 실패를 공개했다. 그래서 감사자의 처방 'v3.2 이진 우도로 되돌리기'는 카드 5항과 충돌하므로 사람이 결정할 사항이다. 그래도 활성 정책의 기본 경로가 v3.2보다 나쁘다는 사실은 '발전했나'의 핵심이라 high를 유지한다. || 직접 계산(recalc.py, seed 31~50, L1_raw_v1_*/none/B6 대 W1_raw_v32): none-v32 B6 평균 차이 6.372402 ms, c1-v32 -0.018921. 마지막 25% 행 p 편향 none 0.2716 / v32 0.1454 / c1 0.0005, 실현 HCT 101.761 / 95.199 / 95.088 ms, 최종 p 0.2917 / 0.1457 / 0.0206. B8_j20 none-v32 +9.451571, p 편향 0.0875 대 0.0302. B7 +0.260174. 정밀화 JSON(tab.py): none-v32 B5 +0.3598 adj[0.0471,0.6724], B6 +6.3724 adj[5.1659,7.5789] fail, B7 +0.2602 adj[0.1142,0.4062], B8_j20 +9.4516 adj[0.2630,18.6402], 감소는 B2 -1.0824, B12_c12000 -0.0526뿐(B11 -0.0253은 구간이 0 포함). v31 대비 B6 +5.8020, B7 +1.3719 fail. lik_rows.py(none B6 seed 31~33): cert 16000·grade 1 행 1,915개의 L(p=.30)/L(p=.02) 중앙값 14.208. 코드: learn3.py:11 CLASS_EPS=1e-3, :658 arrivals=None, :748 categorical. qamp.go:3712 feedback 기본 false. HEAD qamp를 WSL 임시 폴더에서 빌드해 실행한 출력에 "arrivals":{"src":"none"}, "c1":{..."reason":"disabled"}. Go policy3.go:1225-1243이 Python과 같은 none→categorical 분기.
+- B-E1 (error): **confirmed** sev= :: none 경로 회귀를 원자료에서 독립 재계산으로 그대로 재현했다. 기전(16000 인증서 연결이 2-RTT 등급으로 관측될 때 categorical 우도가 p=0.30을 p=0.02보다 약 14배 지지)도 실제 행으로 확인했다. 기본 입력이 none이라는 점도 HEAD 바이너리 실행으로 확인했다. 단서: none에 3등급 우도를 쓰라는 것은 TASKS.md:190(L1 5항)이 지시한 설계이고 Codex가 MORNING_REPORT:115와 L1_precision_acceptance_scope.md에 실패를 공개했다. 그래서 감사자의 처방 'v3.2 이진 우도로 되돌리기'는 카드 5항과 충돌하므로 사람이 결정할 사항이다. 그래도 활성 정책의 기본 경로가 v3.2보다 나쁘다는 사실은 '발전했나'의 핵심이라 high를 유지한다. || 직접 계산(recalc.py, seed 31~50, L1_raw_v1_*/none/B6 대 W1_raw_v32): none-v32 B6 평균 차이 6.372402 ms, c1-v32 -0.018921. 마지막 25% 행 p 편향 none 0.2716 / v32 0.1454 / c1 0.0005, 실현 HCT 101.761 / 95.199 / 95.088 ms, 최종 p 0.2917 / 0.1457 / 0.0206. B8_j20 none-v32 +9.451571, p 편향 0.0875 대 0.0302. B7 +0.260174. 정밀화 JSON(tab.py): none-v32 B5 +0.3598 adj[0.0471,0.6724], B6 +6.3724 adj[5.1659,7.5789] fail, B7 +0.2602 adj[0.1142,0.4062], B8_j20 +9.4516 adj[0.2630,18.6402], 감소는 B2 -1.0824, B12_c12000 -0.0526뿐(B11 -0.0253은 구간이 0 포함). v31 대비 B6 +5.8020, B7 +1.3719 fail. lik_rows.py(none B6 seed 31~33): cert 16000·grade 1 행 1,915개의 L(p=.30)/L(p=.02) 중앙값 14.208. 코드: learn3.py:11 CLASS_EPS=1e-3, :658 arrivals=None, :748 categorical. qamp.go:3095 feedback 기본 false. HEAD qamp를 WSL 임시 폴더에서 빌드해 실행한 출력에 "arrivals":{"src":"none"}, "c1":{..."reason":"disabled"}. Go policy3.go:1225-1243이 Python과 같은 none→categorical 분기.
 
 - B-E2 (error): **partly** sev=medium :: 비대칭 관문은 확인된다. L1 자신은 none을 진단으로만 두었는데 L2·J1은 none 대 L1을 채택 관문으로 썼고, J1은 none B6를 크게 줄이고도 none 3셀 미확정으로 미채택됐다. 그러나 '과제 규칙 우회'는 과장이다. TASKS.md L1 7항이 'W0 세계가 arrivals를 C1 방식으로 만들어 주게 한다'고 해 W1 판정을 C1 입력으로 하라는 카드 의도가 있고, L2 카드는 none 변형을 '결과 기록, 통과를 기대하지 않는다'로 다룬다. D14는 L1 수집 전에 고정됐다(L1_precision_acceptance_scope.md 1문단). B1<0.1도 카드가 L3와 공동 달성을 허용했다. 남는 결함은 '공동 목표를 맡은 L3가 미채택인데 L1을 done으로 둔 것'과 '후속 후보에만 none 관문을 건 비일관성'이다. B-E1과 같은 회귀를 절차 쪽에서 다시 센 것이라 high는 과하다. || TASKS.md:180(L 공통 0.5 ms 되돌림), :190(none은 3등급 우도), :193(완료 기준, L3와 공동 허용), L1 카드 7항, L2 카드 완료 기준. DECISIONS_NEEDED.md D14 행. runs/L1_precision_acceptance_scope.md('이 구분은 원래 L1 수집과 정밀화 계획에 이미 들어 있다'). runs/L2_disposition.md:5('채택 비교는 none과 c1 각각의 L1 대비 15셀'). runs/J1_disposition.md 표(J1 none 대 L1 none 통과12·미확정3), none B6 -5.753805(Codex 문서 수치). LOOP_STATE.json: L1 done, L2·L3·J1·L5 blocked. MORNING_REPORT.md:17('none 실패·공동 절대 목표는 L2/L3로 이관').
 

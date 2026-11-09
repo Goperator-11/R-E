@@ -295,7 +295,7 @@ FIX: 공개용 사본은 이력 없이 새로 만든다(E37).
 - E12: 0.35 h
 - 측정: 0 h
 - 10-29 처방 (1) 데이터그램 도착 증거 학습과 감시층 정리: 부분.
-- 완료: L1(Python), E12(Go 거울), T4(Go 관측 arrivalEvidence → qamp.go:3070)
+- 완료: L1(Python), E12(Go 거울), T4(Go 관측 arrivalEvidence → qamp.go:2569)
 - 시도했으나 기각: L3. C1 B1 절대 0.093952 [0.060876, 0.127028] 미확정, B8_j20 +0.867859 [0.569639, 1.166079] 악화(Codex 문서값)
 - W1에서 L1 단독 B1 후회는 1.226227 ms로, 감사 목표 0.053에 크게 못 미친다.
 - 10-29 처방 (2) M1 선행 패리티 보류 복호: 시도했으나 기각.
@@ -320,7 +320,7 @@ FIX: 공개용 사본은 이력 없이 새로 만든다(E37).
 
 ## improvements
 - [moderate] 데이터그램 단위 도착 증거 학습(L1)이 Python과 Go 양쪽에 들어갔다 :: - HEAD padfec3/learn3.py 226, 249, 294, 743, 748행
-- experiments/quicbed/policy3_l1.go, observation.go:196, qamp.go:3070
+- experiments/quicbed/policy3_l1.go, observation.go:196, qamp.go:2569
 - Codex 문서값: E12 Go·Python 대조 90,000결정 일치. W1에서 C1-v32 B1 -0.6558, B2 -2.1187, B7 -3.6422 ms/연결. B3·B4 사후 평균이 0.0002 이하로 수렴.
 - 한계: 세계 시뮬레이터 결과일 뿐이다. C1은 서버 shim이 필요하고, none 경로 B6는 +6.37 ms 악화했다.
 - [strong] X 측정에 필요한 테스트베드 기능이 대부분 갖춰졌다 :: - 결정적 인증서: certificate.go와 시험 3개
@@ -387,9 +387,9 @@ FIX: 공개용 사본은 이력 없이 새로 만든다(E37).
 
 - H-12 (error): **confirmed** sev= :: 3eef6a737에서 지운 .pem 28개 모두 3eef6a737^ 내용에 'PRIVATE KEY'가 있고, 이 파일들은 60a2f18f9(T1, 11-01 01:21:44, 반복 32)에서 추가됐다. HEAD의 .pem 12개에는 개인키가 없다. HEAD 안 다른 'PRIVATE KEY' 문자열은 코드 상수, 시험 더미, 감사 메모뿐이다. || git show --diff-filter=D --name-only 3eef6a737 | grep -c '\.pem$' = 28. 루프 검사 'with private key: 28'. git ls-tree HEAD .pem 12개, git grep -l 'PRIVATE KEY' HEAD -- '*.pem' 0건. DECISIONS_NEEDED.md 119행 D40.
 
-- 데이터그램 단위 도착 증거 학습(L1)이 Python과 Go 양쪽에 들어갔다 (improvement): **partly** sev= :: 코드는 확인했다. HEAD learn3.py 226행 normalize_arrivals, 249행 arrival_likelihood, 743행 사용, observation.go:196 arrivalEvidence, qamp.go:3070 연결, policy3_l1.go 존재. HEAD learn3.py는 L1 커밋 01c0de308과 diff가 비어 있다. 수치 하나가 틀렸다. 'B3·B4 사후 평균이 0.0002 이하'라고 했지만 B4는 0.0002122292다(B3 두 셀은 0.000129). B1·B2·B7 수치는 W1 자체가 아니라 반복 12 L1 평가(N 131072)의 값이다. || git show HEAD:padfec3/learn3.py 226, 249, 743, 748행. git diff 01c0de308 HEAD -- padfec3/learn3.py 출력 없음. runs/L1_precision_disposition.md 33행 'B3_u0, B3_u2, B4 ... 0.0001294771, 0.0001294694, 0.0002122292'. MORNING_REPORT.md:107.
+- 데이터그램 단위 도착 증거 학습(L1)이 Python과 Go 양쪽에 들어갔다 (improvement): **partly** sev= :: 코드는 확인했다. HEAD learn3.py 226행 normalize_arrivals, 249행 arrival_likelihood, 743행 사용, observation.go:196 arrivalEvidence, qamp.go:2569 연결, policy3_l1.go 존재. HEAD learn3.py는 L1 커밋 01c0de308과 diff가 비어 있다. 수치 하나가 틀렸다. 'B3·B4 사후 평균이 0.0002 이하'라고 했지만 B4는 0.0002122292다(B3 두 셀은 0.000129). B1·B2·B7 수치는 W1 자체가 아니라 반복 12 L1 평가(N 131072)의 값이다. || git show HEAD:padfec3/learn3.py 226, 249, 743, 748행. git diff 01c0de308 HEAD -- padfec3/learn3.py 출력 없음. runs/L1_precision_disposition.md 33행 'B3_u0, B3_u2, B4 ... 0.0001294771, 0.0001294694, 0.0002122292'. MORNING_REPORT.md:107.
 
-- X 측정에 필요한 테스트베드 기능이 대부분 갖춰졌다 (improvement): **confirmed** sev= :: 인용한 Go 파일이 HEAD에 모두 있고 qamp_decoder_index_test.go의 Test 함수는 12개, TestObservationRecoveredHandshakeFeedback와 unrecoverable_final 필드도 있다. 다만 측정 러너 T7의 experiments/v33/devbed.py는 없어서 '대부분'이라는 한정이 맞다. Go 시험 통과 수는 다시 돌리지 않았다(Codex 문서값). || git cat-file -e HEAD:experiments/quicbed/{certificate,comparison,revisit,decoder_index,boundary,flight_shape}.go 모두 yes. grep -c '^func Test' qamp_decoder_index_test.go = 12. qamp_observation_test.go:123, qamp.go:1746. HEAD:experiments/v33/devbed.py 없음.
+- X 측정에 필요한 테스트베드 기능이 대부분 갖춰졌다 (improvement): **confirmed** sev= :: 인용한 Go 파일이 HEAD에 모두 있고 qamp_decoder_index_test.go의 Test 함수는 12개, TestObservationRecoveredHandshakeFeedback와 unrecoverable_final 필드도 있다. 다만 측정 러너 T7의 experiments/v33/devbed.py는 없어서 '대부분'이라는 한정이 맞다. Go 시험 통과 수는 다시 돌리지 않았다(Codex 문서값). || git cat-file -e HEAD:experiments/quicbed/{certificate,comparison,revisit,decoder_index,boundary,flight_shape}.go 모두 yes. grep -c '^func Test' qamp_decoder_index_test.go = 12. qamp_observation_test.go:123, qamp.go:1487. HEAD:experiments/v33/devbed.py 없음.
 
 - 보존과 재현 가능성이 나아졌다 (improvement): **confirmed** sev= :: C:\dev\padfec_archive에 INDEX.json, MANIFEST.sha256, binaries, dev_data, gen2_build_origin이 있다. 378항목 해시, 45/45, 92/92는 Codex 문서값이며 다시 검증하지 않았다는 감사자 표기가 맞다. || ls /c/dev/padfec_archive: INDEX.json MANIFEST.sha256 binaries dev_data gen2_build_origin. LOOP_STATE tasks.S1/S3/A0/S2 note.
 

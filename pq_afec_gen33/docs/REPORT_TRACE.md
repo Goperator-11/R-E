@@ -53,18 +53,18 @@
 | T045 | 120 | CPU 4개 taskset | 4 | C:/dev/pq_afec/experiments/padbed.py:63,76 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
 | T046 | 120 | ping 평균 | 50.068 | TEAM/docs/종합기술문서.docx | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
 | T047 | 121 | 명목 5%, L=4 재현 | 5.23, 4.05, 500,000 | G2/e6_netem.json ge_p5_L4, n | 5.226, 4.054, 500000 | 일치, 실측 보고서 210행은 4.97(RT-07) | 미확인: 자동 수치 대조 없음 |
-| T048 | 123 | PacketConn 기록 | 방법 | experiments/quicbed/qamp.go:6,974 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
-| T049 | 123 | session ticket, 0-RTT, PMTUD 끔 | 설정 | qamp.go:2294,2300,2473,2478,2482 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
+| T048 | 123 | PacketConn 기록 | 방법 | experiments/quicbed/qamp.go:1,803 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
+| T049 | 123 | session ticket, 0-RTT, PMTUD 끔 | 설정 | qamp.go:1921,1927,2473,2478,2482 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
 | T050 | 123 | 1.5·RTT, 3·RTT 분류 | 값 | p14 pto_rate, V30 g3_m1confirm.json one_rtt_rule | pad 4.25, combo 0.75, 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
 | T051 | 125 | quic-go 송신 판정 | 코드 | sent_packet_handler.go:1034-1038 | bytesSent >= 3×bytesReceived | 일치 | 미확인: 자동 수치 대조 없음 |
 | T052 | 127 | c, s0, 6구간 | 41.983, 382.45, 1,472.00 | C:/dev/pq_afec/padfec/policy.py:114,121,126,127 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
 | T053 | 127, 169 | f | 16 | p1 1450−46−1388 | 16 | 일치 | 미확인: 자동 수치 대조 없음 |
 | T054 | 129 | Fig. 1 중앙값 | 102.5, 51.7, 252.4, 51.2 | p14 base·pad p50, pad·combo 5% 부류 | 102.465, 51.677, 252.408, 51.245 | 일치 | p14.base.loss0.metadata, p14.pad.loss0.metadata, p14.parity.loss0.metadata, p14.combo.loss0.metadata, p14.base.loss5.metadata, p14.pad.loss5.metadata, p14.parity.loss5.metadata, p14.combo.loss5.metadata |
 | T055 | 130 | parity 크기 | W+39+6k, 1,331 | G33/docs/V33FIX_policy.md:110, G2/p2_threshold.json | 1331 | 일치 | policy.parity_constants, protocol.$.scenarios[0].context.w, protocol.$.scenarios[1].context.w, protocol.$.scenarios[2].context.w, protocol.$.scenarios[3].context.w, protocol.$.scenarios[4].context.w, protocol.$.scenarios[5].context.w, protocol.$.scenarios[6].context.w, protocol.$.scenarios[7].context.w, protocol.$.scenarios[8].context.w, protocol.$.scenarios[9].context.w, protocol.$.scenarios[10].context.w, protocol.$.scenarios[11].context.w, protocol.$.scenarios[12].context.w, protocol.$.scenarios[13].context.w, protocol.$.scenarios[14].context.w |
-| T056 | 134 | PTO, ACK 대기, 동점 | 200.86, 1.125, 1.424, 0.01 | policy.py:215-217,336 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
+| T056 | 134 | PTO, ACK 대기, 동점 | 200.86, 1.125, 1.424, 0.01 | policy.py:28-30,336 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
 | T057 | 134 | 격자 26, hazard 5 | 26, 5 | padfec/table.py P_VALS, V31/padfec3/learn3.py H | 26, 5 | 일치 | 미확인: 자동 수치 대조 없음 |
 | T058 | 134 | A_pre, 재평가 16 | 41(k−1), 16 | V31/padfec3/layout.py:89-93, learn3.py:22 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
-| T059 | 136 | batch means | floor(√n), 최소 8 | experiments/blockstat.py:77,83 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
+| T059 | 136 | batch means | floor(√n), 최소 8 | experiments/blockstat.py:12,17 | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
 | T060 | 136 | regret 2 ms, 왕복 0.9/0.7 RTT | 값 | p11 checks, p17 bought_hi, bought_lo | 같음 | 일치 | 미확인: 자동 수치 대조 없음 |
 | T061 | 136 | 판정불능에 필요 표본 함께 적음 | 문장 | 174행만 있음, p11·p17 키 없음 | 부분 | 부분 확인(RT-25) | 미확인: 자동 수치 대조 없음 |
 | T062 | 136 | Bonferroni &#124;z&#124;>2.50 | 2.50 | 산술 0.05/4 양측 | 2.498 | 일치 | 미확인: 자동 수치 대조 없음 |

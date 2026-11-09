@@ -22,8 +22,8 @@ OUT_OF_SCOPE: "찾지 못했다. git status 87개 경로 가운데 A 목록(A-py
   evidence: g3/v33/V33FIX_benchmark_v1.json adoption_after_repetition.rule 문자열, docs/V33FIX_evaluation.md:151.
   fix: JSON 문구를 'planned before running seeds above 50, after seeing seeds 31..50' 같은 표현으로 바꾼다.
 * [low] A-go handoff의 genconfig.json gen_id 갱신은 레거시 파이프라인 차단을 풀 수 있다
-  detail: A-go는 gen_id가 아직 v3.3-dev라고 not_done에 적어 바꿔야 할 것처럼 넘겼다. 그런데 experiments/pipeline.py:375가 gen_id == "v3.3-dev"일 때만 레거시 파이프라인을 막는다. gen_id만 v3.3.1-dev로 바꾸면 이 차단이 풀린다.
-  evidence: experiments/pipeline.py:374-377, genconfig.json:2, grep 결과 gen_id를 읽는 곳은 generation.py:8과 pipeline.py:375뿐.
+  detail: A-go는 gen_id가 아직 v3.3-dev라고 not_done에 적어 바꿔야 할 것처럼 넘겼다. 그런데 experiments/pipeline.py:333가 gen_id == "v3.3-dev"일 때만 레거시 파이프라인을 막는다. gen_id만 v3.3.1-dev로 바꾸면 이 차단이 풀린다.
+  evidence: experiments/pipeline.py:332-335, genconfig.json:2, grep 결과 gen_id를 읽는 곳은 generation.py:8과 pipeline.py:333뿐.
   fix: gen_id는 세대 이름이라 그대로 두거나, 바꿀 때 pipeline.py의 차단 조건을 함께 고친다.
 * [low] decide3의 명시 actions 경로는 1452 B 상한을 적용하지 않는다 (기존 동작)
   detail: explicit_candidates는 UDP_MAX와 MAX_IPS를 거르지 않는다. v3.2부터 그랬고 replay_g3.py:240, :483의 오프라인 분석만 쓰므로 배포 경로 회귀는 아니다. 그래도 설계 4항(v3 패리티 상한)이 이 경로에는 걸리지 않는다.

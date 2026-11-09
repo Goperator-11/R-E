@@ -18,7 +18,7 @@ gen3 대비 이번 작업에서 바꾼 파일은 다음과 같다. 측정 자료
 
 개발 자료에서 H1~H4의 통과·개선 결론이 나오던 경로를 막았다. `development` 판정에는 "평가 불가"와 이유를 기록하고 기술통계를 남긴다. 종료와 `--report-only`는 전체 봉인과 현재 바이너리를 다시 확인하고 실행 시작 때의 해시와 대조한다. 프로토콜, H 추첨, H 예측표도 검사 대상이다. H3에는 봉인된 예측표 해시와 일치하는 바이트만 사용한다. 저장된 1·2회차 결과를 합칠 때도 두 회차의 시작·종료 증거를 재검사한다. 블록 앞에는 `g3bed.load_processes()` 검사를 추가해 빌드가 보이면 기존 incident 기록과 중단 경로를 따른다. 근거는 [X1.md](C:/dev/codex_handoff/codex_out/X1.md:5)이다.
 
-판정문에 적힌 기존 헤더 버전 `fecVer=2`는 `fecVer=1`로 정정한다. 원문은 [verdict_v3.md:121](C:/dev/codex_handoff/state/evo/verdict_v3.md:121)과 [221행](C:/dev/codex_handoff/state/evo/verdict_v3.md:221)이다. 실제 gen-2 상수는 [qamp.go:606](C:/dev/pq_afec/experiments/quicbed/qamp.go:606)의 `1`이고, gen3.1 파서는 [qamp.go:914](C:/dev/pq_afec_gen31/experiments/quicbed/qamp.go:914)에서 `1`과 `3`을 받는다. `layout v2`라는 이름과 와이어의 `fecVer=1`은 별개다. 기존 판정문과 사본의 `g3/SEAL_*`, `RESULT_*`, `PROTOCOL_*`, `*_predictions.json`은 역사 기록으로 보존한다.
+판정문에 적힌 기존 헤더 버전 `fecVer=2`는 `fecVer=1`로 정정한다. 원문은 [verdict_v3.md:121](C:/dev/codex_handoff/state/evo/verdict_v3.md:121)과 [221행](C:/dev/codex_handoff/state/evo/verdict_v3.md:221)이다. 실제 gen-2 상수는 [qamp.go:480](C:/dev/pq_afec/experiments/quicbed/qamp.go:606)의 `1`이고, gen3.1 파서는 [qamp.go:741](C:/dev/pq_afec_gen31/experiments/quicbed/qamp.go:914)에서 `1`과 `3`을 받는다. `layout v2`라는 이름과 와이어의 `fecVer=1`은 별개다. 기존 판정문과 사본의 `g3/SEAL_*`, `RESULT_*`, `PROTOCOL_*`, `*_predictions.json`은 역사 기록으로 보존한다.
 
 측정이 끝난 뒤 Windows에서 실행할 Python 검증 명령은 다음과 같다.
 

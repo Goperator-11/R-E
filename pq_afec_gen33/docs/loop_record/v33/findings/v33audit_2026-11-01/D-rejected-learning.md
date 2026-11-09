@@ -33,9 +33,9 @@ EVIDENCE: padfec3/decide3.py:246-270(guard_penalty를 score에 더함, REEVAL_EV
 FIX: β 반응을 뺀 record 팔(벌점 제거, arrivals가 있을 때 재평가 제거)을 새 후보로 사전등록한다. guard 팔의 B6 상한 0.5416은 MC 폭 0.1425에서 나온 것이므로 L1 때(E5)와 같은 MC 정밀화를 사전에 포함한다.
 
 ### D-E4 [high] 활성 정책이 1452 B를 넘는 패리티 후보를 계속 만든다 (J7 기각의 결과) (repro=True)
-활성 UDP_MAX는 1500-28=1472(Python decide3.py:9, Go policy3.go:51)이고 패리티 overhead는 39 B(policy.py:704, policy.go:62)다. 반면 세계와 quic-go 수신 상한은 1452 B다. 활성 candidates3를 k1~4, W1200~1440, S2000~30000으로 전수 탐색했더니 96446개 후보 중 8573개가 1452 B를 넘었다(예: k1 W1200 S21250 δ215 → 1460 B). 비용 모형은 이런 패리티로도 복구된다고 가정하지만 실제로는 잘려서 쓸모가 없다. L5의 c12000 +24.9 ms 실패(δ130 W1410 → 1461 B, 26980/27000 연결)가 바로 이 결함에서 나왔다. J7은 이 상한을 고치는 정정이었는데 성능 관문에서 통째로 기각됐고, 상한 상수만 따로 떼어 내지 않았다.
+활성 UDP_MAX는 1500-28=1472(Python decide3.py:9, Go policy3.go:51)이고 패리티 overhead는 39 B(policy.py:283, policy.go:26)다. 반면 세계와 quic-go 수신 상한은 1452 B다. 활성 candidates3를 k1~4, W1200~1440, S2000~30000으로 전수 탐색했더니 96446개 후보 중 8573개가 1452 B를 넘었다(예: k1 W1200 S21250 δ215 → 1460 B). 비용 모형은 이런 패리티로도 복구된다고 가정하지만 실제로는 잘려서 쓸모가 없다. L5의 c12000 +24.9 ms 실패(δ130 W1410 → 1461 B, 26980/27000 연결)가 바로 이 결함에서 나왔다. J7은 이 상한을 고치는 정정이었는데 성능 관문에서 통째로 기각됐고, 상한 상수만 따로 떼어 내지 않았다.
 
-EVIDENCE: padfec3/decide3.py:9,113; padfec/quantum.py:180 TYPICAL_MTU=1500; experiments/quicbed/policy3.go:51,1310; experiments/quicbed/policy.go:61-62(w+39+6k); experiments/v33/worldparams.json:30 decoder_max_datagram_bytes 1452; worldsim.py:776,794(잘림 뒤 복구 분기 건너뜀). 직접 실행: python -I -B로 decide3.candidates3 전수 탐색 → 'candidates 96446 parity>1452 8573'. runs/L5_c12000_diagnosis_v1.md.
+EVIDENCE: padfec3/decide3.py:9,113; padfec/quantum.py:17 TYPICAL_MTU=1500; experiments/quicbed/policy3.go:51,1310; experiments/quicbed/policy.go:25-26(w+39+6k); experiments/v33/worldparams.json:30 decoder_max_datagram_bytes 1452; worldsim.py:776,794(잘림 뒤 복구 분기 건너뜀). 직접 실행: python -I -B로 decide3.candidates3 전수 탐색 → 'candidates 96446 parity>1452 8573'. runs/L5_c12000_diagnosis_v1.md.
 
 FIX: 1452 B 상한(UDP_MAX와 p3UDPMax)을 성능 중립적인 와이어 계약 정정으로 분리해 먼저 적용한다. 그다음 L5 c12000을 같은 계획으로 다시 평가한다.
 

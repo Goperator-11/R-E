@@ -299,7 +299,7 @@
 | Q-09 | 보고서 「한계」에 아직 안 들어간 항목 | 반영 | FINAL-MUST | 상태 주석 미반영. BL-02 | findings/EXTRA_SOURCES.md:15 |
 | Q-10 | PTO_SAMPLED_RTT_MULT = 3.0은 RFC 유도값이고 실측이 아니다. 재는 법: _probe_trecover.py에 -drop-initial k-1을 여러 RTT로 | 넘김-진행가능 / open J3,T7,X3 | FINAL-SHOULD | X3 PTO 배수. 못 재면 RFC 유도값으로 표시. BL-18 | findings/EXTRA_SOURCES.md:16 |
 | Q-11 | 자체시험이 모두 자기 자신을 기준으로 잰다. DP 실패확률을 외부 문헌 닫힌형(Bolot Table 1, Boutremans 식 11)과 맞춰 본 적이 없다 | 반영 | DROP | 반영: 맡은 과제가 모두 done(W0) | findings/EXTRA_SOURCES.md:17 |
-| Q-12 | expected_rounds 독스트링의 모형/실측 비가 두 곳에서 다른 수(1.02~1.07 대 1.01~1.02), 212%는 산술도 틀림 | 기록 없음 / open R3 | FINAL-MUST | policy.py:1789에 212%가 남아 있다(직접). BL-13 | findings/EXTRA_SOURCES.md:18 |
+| Q-12 | expected_rounds 독스트링의 모형/실측 비가 두 곳에서 다른 수(1.02~1.07 대 1.01~1.02), 212%는 산술도 틀림 | 기록 없음 / open R3 | FINAL-MUST | policy.py:754에 212%가 남아 있다(직접). BL-13 | findings/EXTRA_SOURCES.md:18 |
 | Q-13 | 명세는 Go 1.26.5인데 08-20 이후 실측은 모두 1.26.6 | 반영 | FINAL-MUST | 실제 정정 미반영. BL-02 | findings/EXTRA_SOURCES.md:19 |
 | Q-14 | 팀 스크립트 run_v3.sh는 netem을 클라이언트 송신 쪽에만 건다(명세와 다름). 종합기술문서는 gemodel 5% 50%를 손실 5%로 적었는데 정상상태는 9.09% | 반영 | FINAL-MUST | 상태 주석 미반영. BL-02 | findings/EXTRA_SOURCES.md:20 |
 | Q-15 | 서버 통계 unrecoverable_seen이 나중에 복구되는 비행까지 센다(m3 팔: 복구 30사건인데 unrecoverable 30). 이름이 오해를 부른다 | 반영 | DROP | 반영: 맡은 과제가 모두 done(T4) | findings/EXTRA_SOURCES.md:21 |
