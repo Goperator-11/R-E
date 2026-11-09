@@ -64,8 +64,8 @@ def derive(sources):
     p18 = sources.read("p18_mmax")
     p18_row = select(p18["rows"], cert=16000, loss=0.0, uplink=0.0)
     p18_verdict = select(p18["verdict"], cond=p18_row["cond"])
-    regret_a, _ = sources.history("5ebc151", "p11_adaptive.json")
-    regret_b, _ = sources.history("6182128", "p11_adaptive.json")
+    regret_a, _ = sources.history("fd107ce", "p11_adaptive.json")
+    regret_b, _ = sources.history("1f76086", "p11_adaptive.json")
     below_a = select(regret_a["regret"], cert=2955, loss=0.0)
     below_b = select(regret_b["regret"], cert=2955, loss=0.0)
     above_a = select(regret_a["regret"], cert=9000, loss=5.0)
@@ -114,7 +114,7 @@ def derive(sources):
         "regret": [format(above_a["regret_late_ms"], ".3f"), format(above_a["ci95_half_ms"], ".3f")],
     }
     history = {}
-    for revision in ("6dbf9e8", "7420d16", "f3dcd4a", "d96a56b", "4bab4a5"):
+    for revision in ("5c148e7", "ba41e3c", "bb7b21d", "8317509", "e1e2b9e"):
         data, commit = sources.history(revision, "p1_flight.json")
         row = min(data["capacity_checks"], key=lambda value: value["C"] - value["capacity"])
         history[revision] = [revision, commit[1], row["group"], str(row["W"]), str(row["C"]), "%.1f" % row["capacity"], "%.1f" % (row["C"] - row["capacity"])]
@@ -125,7 +125,7 @@ def derive(sources):
     readme_regret = re.findall(r"\|\s*(2026-08-(?:29|30))\s*\([^)]*\)\s*\|\s*\*\*([\d.]+) ms\*\*\s*\|\s*±([\d.]+)\s*\|\s*([^|]+)\|", legacy_readme)
     if len(readme_regret) != 2:
         raise ValueError("Expected two dated README regret rows")
-    deployment_readme, deployment_commit = sources.history("70e7e08", "README.md", root_file=True)
+    deployment_readme, deployment_commit = sources.history("230dc7e", "README.md", root_file=True)
     deployment_date = capture(deployment_readme, r"\| gen-2 \([^|]+\| (2026-10-01~10-02) 실행 \|")
     detail = {
         "journal_dates": journals,
@@ -173,7 +173,7 @@ def check_source_cells(rows, metadata):
     source_tokens = {
         "CW01": [SOURCE_PATHS["p1_flight"][0], "p1_flight:", "capacity_checks[group=X25519MLKEM768,ips=1450].C-capacity", "p1_units", *metadata["journal_dates"]["p1_units"]],
         "CW02": [SOURCE_PATHS["p18_mmax"][0], "p18_mmax:", "rows[cert=16000,loss=0,uplink=0].arms[2].mean", "verdict[동일 cond].obs_gain_m2_to_m4", "ci_half_used", "p18_units", *metadata["journal_dates"]["p18_units"]],
-        "CW03": [p11_path, "5ebc151", "6182128", "regret[cert=2955,loss=0].regret_late_ms", "ci95_half_ms"],
+        "CW03": [p11_path, "fd107ce", "1f76086", "regret[cert=2955,loss=0].regret_late_ms", "ci95_half_ms"],
         "CW04": [SOURCE_PATHS["e6_netem"][0], "e6_netem:", "configs.ge_p5_L4.loss_rate×100", "mean_burst"],
         "CW05": ["p1_flight:", "runs[group=x25519,ips=0]", "runs[group=X25519MLKEM768,ips=0]", "first_flight_datagrams", "first_flight_bytes"],
         "CW06": ["report_repro/content.py", "결합된 shared secret", "stage1_workbook:", Path(SOURCE_PATHS["stage1_workbook"][0]).name, "1_크기!E5,E7"],
@@ -223,7 +223,7 @@ def main(argv=None):
         if len(cells) != 6 or cells[1] != value:
             failures.append(key + " report cell mismatch: " + value)
     failures.extend(check_source_cells(actual, metadata))
-    actual_history = table_rows(text, r"(?:6dbf9e8|7420d16|f3dcd4a|d96a56b|4bab4a5)\b")
+    actual_history = table_rows(text, r"(?:5c148e7|ba41e3c|bb7b21d|8317509|e1e2b9e)\b")
     if actual_history != history:
         failures.append("Capacity history table mismatch")
     required = [metadata["p6_finished"], "60.0", "0.629", "106.71", "4.97", "4.04"]

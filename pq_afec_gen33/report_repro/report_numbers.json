@@ -8998,7 +8998,7 @@
     },
     {
       "key": "trace.T021",
-      "source": "R-E git 5ebc151, 6182128 p11 regret[임계아래/무손실]",
+      "source": "R-E git fd107ce, 1f76086 p11 regret[임계아래/무손실]",
       "source_key": "trace[20]",
       "source_kind": "audit_reference",
       "trace_ids": [
@@ -9869,7 +9869,7 @@
     },
     {
       "key": "trace.T094",
-      "source": "R-E git 6dbf9e8, 7420d16, f3dcd4a, d96a56b, 4bab4a5",
+      "source": "R-E git 5c148e7, ba41e3c, bb7b21d, 8317509, e1e2b9e",
       "source_key": "trace[93]",
       "source_kind": "audit_reference",
       "trace_ids": [
@@ -9947,7 +9947,7 @@
     },
     {
       "key": "trace.T103",
-      "source": "R-E git 7420d16, 5ebc151, 6182128, 4bab4a5",
+      "source": "R-E git ba41e3c, fd107ce, 1f76086, e1e2b9e",
       "source_key": "trace[102]",
       "source_kind": "audit_reference",
       "trace_ids": [

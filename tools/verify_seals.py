@@ -7,7 +7,7 @@ import posixpath
 import subprocess
 from pathlib import Path
 
-SEALED_COMMIT="4f26a51676c8429d778f549c821c75bd7dd37d8f"
+SEALED_COMMIT="bcb3541a7529f74ad9e49a220988f529a4e98709"
 
 def reader(root,ref):
     if ref is None:
