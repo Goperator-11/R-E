@@ -15,7 +15,7 @@ _LIMITS = (
     ("E24", "시간 상관 손실(E24)"),
     ("dup", "중복 전송 기준선(dup)"),
     ("k-inflate", "first flight 부풀리기(k-inflate)"),
-    ("band_initial", "서버 first flight 7.7~9.0 KB 띠와 Initial 확대 팔"),
+    ("band_initial", "서버 first flight 7.7~9.0 kB 띠와 Initial 확대 팔"),
     ("H_c6000", "H c6000"),
     ("D_p15_4032", "D_p15_4032"),
     ("TTLB7800", "7.8 kB 응답 TTLB"),

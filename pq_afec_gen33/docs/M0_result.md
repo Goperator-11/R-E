@@ -367,4 +367,4 @@ g2auto의 클라이언트 parity 계수에는 client_parity_count_unreliable 표
 
 ## 한계
 
-토큰·resumption 기준선(X4), 업링크 오입력(X2), A_pre와 PTO 배수 탐침(X3), s2c 손실(X5), 다른 QUIC 스택(X7), initial congestion window 10(X8), 시간 상관 손실(E24), 중복 전송 기준선(dup), first flight 부풀리기(k-inflate), 서버 first flight 7.7~9.0 KB 띠와 Initial 확대 팔, H c6000, D_p15_4032, 7.8 kB 응답 TTLB는 재지 않았다.
+토큰·resumption 기준선(X4), 업링크 오입력(X2), A_pre와 PTO 배수 탐침(X3), s2c 손실(X5), 다른 QUIC 스택(X7), initial congestion window 10(X8), 시간 상관 손실(E24), 중복 전송 기준선(dup), first flight 부풀리기(k-inflate), 서버 first flight 7.7~9.0 kB 띠와 Initial 확대 팔, H c6000, D_p15_4032, 7.8 kB 응답 TTLB는 재지 않았다.

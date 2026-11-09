@@ -368,7 +368,7 @@ CP는 코드, MS는 측정, RT는 보고서, DC는 문서, RP는 배포 저장�
 | MS-28 | C1 대기로 달라지는 연결 간격을 계획에 적고 잰다 | F20:done | [measure.final.json](loop_record/final_audit_2026-11-06/measure.final.json) |
 | MS-29 | 클라이언트 행에 client_scid를 넣어 conn-log와 일대일로 잇는다 | F14:done | [measure.final.json](loop_record/final_audit_2026-11-06/measure.final.json) |
 | MS-30 | genconfig.json gen_id가 아직 v3.3-dev다 | F22:done | [measure.final.json](loop_record/final_audit_2026-11-06/measure.final.json) |
-| MS-31 | 시간이 남을 때 더할 셀: H c6000, D_p15_4032, 서버 first flight 7.7~9.0 KB 띠 | F31:todo | [measure.final.json](loop_record/final_audit_2026-11-06/measure.final.json) |
+| MS-31 | 시간이 남을 때 더할 셀: H c6000, D_p15_4032, 서버 first flight 7.7~9.0 kB 띠 | F31:todo | [measure.final.json](loop_record/final_audit_2026-11-06/measure.final.json) |
 | MS-32 | 결과 문서에 고정할 단서: c2s 손실만, IW 32, 1 byte 절벽, uplink 오라클 | F24:done | [measure.final.json](loop_record/final_audit_2026-11-06/measure.final.json) |
 | MS-33 | 봉인 측정과 지금의 WSL 커널이 다르다. 결과에 환경을 남기고 동결 팔로 표류를 본다 | F27:done | [measure.final.json](loop_record/final_audit_2026-11-06/measure.final.json) |
 | RP-01 | hygiene 브랜치가 main에 없어 Windows 기본 clone에서 봉인과 소스 지문이 깨진다 | F01:done | repo.json |
