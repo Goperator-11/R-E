@@ -48,9 +48,11 @@ quic-go v0.61.0에서 `InitialPacketSize`를 1280에서 1281로 올린 과거 �
 
 gen-2 최종 상태의 근거는 `pq_afec/experiments/state/fixloop_triage.json`과 `loop2.json`의 p16 history다. p6은 과거 done이지만 마지막 분류가 stale이므로 현재 통과 수에 넣지 않았다.
 
-## 주석 제거와 봉인 확인
+## 2026-11-08 정리
 
-2026-11-08에 모든 코드에서 주석과 docstring을 지웠다. 지우기 전 커밋은 `4f26a51`(태그 `pre-cleanup-2026-11-08`)이다. 지운 뒤에도 동작이 같은지는 언어별로 확인했다. 파이썬은 AST, Go는 토큰열, 셸은 bash가 다시 출력한 함수 본문, C는 gcc 전처리 결과, PowerShell은 파서 토큰열이 지우기 전과 같다.
+모든 코드에서 주석과 docstring을 지웠다. 지우기 전 커밋은 `4f26a51`(태그 `pre-cleanup-2026-11-08`)이다. 지운 뒤에도 동작이 같은지는 언어별로 확인했다. 파이썬은 AST, Go는 토큰열, 셸은 bash가 다시 출력한 함수 본문, C는 gcc 전처리 결과, PowerShell은 파서 토큰열이 지우기 전과 같다.
+
+연구 내용이 아닌 작업용 문서도 지웠다. AI 인계 프롬프트, 할 일 목록, 자동 루프의 과제 카드·결정 장부·일지, 저장소 게시 절차 같은 것들이다. 남은 문서가 이 파일들을 출처로 적은 곳은 링크 없이 이름만 남아 있고, 원문은 `4f26a51`에 있다.
 
 봉인(`SEAL_*.json`)과 측정 기록에 적힌 소스 해시는 주석이 있던 바이트의 해시다. 그래서 봉인은 `4f26a51`의 바이트로 확인한다. 아래 명령은 기본값으로 그 커밋을 읽는다. `--worktree`를 붙이면 현재 파일을 읽고, 이때는 주석을 지운 파일 39개가 불일치로 나온다.
 
@@ -58,6 +60,6 @@ gen-2 최종 상태의 근거는 `pq_afec/experiments/state/fixloop_triage.json`
 python -I -B tools/verify_seals.py
 ```
 
-같은 이유로 소스 해시를 직접 대조하는 시험 15개는 현재 커밋에서 실패한다. `pq_afec_gen3`과 `pq_afec_gen31`의 `tests/test_g3_m1confirm.py`에서 5개씩(봉인된 측정 실행기가 봉인과 다른 코드로는 시작하지 않는다), `pq_afec_gen33`의 `test_v33_j1_candidate.py`, `test_v33_j6_candidate.py`, `test_v33_l2_candidate.py`, `test_v33_l3_candidate.py`, `test_v33_l5_candidate.py`에서 하나씩이다. 나머지 시험 결과는 주석을 지우기 전과 같다. 봉인된 실행기를 다시 돌리거나 측정을 재현하려면 `4f26a51`을 체크아웃해서 쓴다.
+같은 이유로 소스 해시를 직접 대조하는 시험 15개는 현재 커밋에서 실패한다. `pq_afec_gen3`과 `pq_afec_gen31`의 `tests/test_g3_m1confirm.py`에서 5개씩(봉인된 측정 실행기가 봉인과 다른 코드로는 시작하지 않는다), `pq_afec_gen33`의 `test_v33_j1_candidate.py`, `test_v33_j6_candidate.py`, `test_v33_l2_candidate.py`, `test_v33_l3_candidate.py`, `test_v33_l5_candidate.py`에서 하나씩이다. 나머지 시험 결과는 주석을 지우기 전과 같다. 보고서 수치 검사 `pq_afec_gen33/report_repro/check_report_numbers.py`도 정책 소스의 해시가 바뀌어 6항목을 stale로 적는다. 이 검사는 저장소 밖 원자료를 읽어야 해서 원래도 이 저장소만으로는 끝까지 통과하지 않는다. 봉인된 실행기를 다시 돌리거나 측정을 재현하려면 `4f26a51`을 체크아웃해서 쓴다.
 
-문서에 적힌 `파일:줄` 위치는 주석을 지운 뒤의 줄 번호로 고쳤다.
+문서에 적힌 `파일:줄` 위치는 주석을 지운 뒤의 줄 번호로 고쳤다. 원문 그대로 보존한 감사 기록 사본(`pq_afec_gen33/docs/loop_record`, `pq_afec_gen33/g3/v33/evidence`)은 체크섬이 바이트 동일을 보증하므로 고치지 않았고, 그 안의 줄 번호는 작성 당시 코드 기준이다.
