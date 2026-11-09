@@ -9,15 +9,12 @@ def historical_patch():
     s = io.open(P, encoding="utf-8").read()
     n = 0
 
-    old = """	// dumpPath: 첫 비행의 원본 데이터그램을 그대로 떨궈 둔다."""
-    new = """	// 결정적 소거 주입 (검증 전용). -1 이면 아무것도 안 한다.
-	// 첫 비행에만 적용한다 - 뒤따르는 ACK 비행까지 건드리면 무엇 때문에
-	// 무엇이 벌어졌는지 알 수 없게 된다.
-	dropInitial   int
+    old = """	dumpPath string"""
+    new = """	dropInitial   int
 	dropParity    int
 	corruptParity int
 
-	// dumpPath: 첫 비행의 원본 데이터그램을 그대로 떨궈 둔다."""
+	dumpPath string"""
     if old in s:
         s = s.replace(old, new, 1)
         n += 1
@@ -41,15 +38,12 @@ def historical_patch():
         n += 1
 
     old = """	if sendMode == "buf" {
-		// 대조군 'buf': 패리티 없이 버퍼링만 한다. 버퍼링 자체의 비용을
-		// FEC 의 효과에서 떼어내기 위한 팔이다.
 		for _, d := range fl {
 			send(d)
 		}
 		return
 	}"""
-    new = """	// 결정적 소거: 이 원본을 보내지 않는다. 패리티 계산에는 이미 들어갔다.
-	sendOrig := func(i int, d []byte) {
+    new = """	sendOrig := func(i int, d []byte) {
 		if isFirstFlight && c.dropInitial == i {
 			c.mu.Lock()
 			c.stats.DroppedOrig++
@@ -60,8 +54,6 @@ def historical_patch():
 	}
 
 	if sendMode == "buf" {
-		// 대조군 'buf': 패리티 없이 버퍼링만 한다. 버퍼링 자체의 비용을
-		// FEC 의 효과에서 떼어내기 위한 팔이다.
 		for i, d := range fl {
 			sendOrig(i, d)
 		}
@@ -83,8 +75,6 @@ def historical_patch():
     new = """	var immediate int
 	var ierr error
 	if c.mode == "off" {
-		// off 모드도 결정적 소거를 받는다. 기준선이 실제로 아프다는 것을
-		// 보여야 FEC 팔의 개선이 의미를 갖는다.
 		c.mu.Lock()
 		idx := len(c.flight)
 		first := c.stats.Flights == 0
@@ -154,7 +144,6 @@ def historical_patch():
 			return
 		}
 		if isFirstFlight && c.corruptParity == j && len(pkt) > 8 {
-			// 심볼 한가운데 한 바이트를 뒤집는다. CRC 가 걸러 내야 한다.
 			pkt = append([]byte(nil), pkt...)
 			pkt[len(pkt)/2] ^= 0xFF
 			c.mu.Lock()

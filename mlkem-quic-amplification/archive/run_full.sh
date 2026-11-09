@@ -25,7 +25,7 @@ export OUT BIN CERT KEY PORT KEMS RTTS LOSSES MODELS ITERS WARMUP TMO
 unshare -Urn bash <<'INNER'
 set -u
 ip link set lo up
-ip link set lo mtu 1500          # ★ 핵심: 기본 65536 → 1500. 이게 없으면 KEM별 패킷 수가 동일해짐
+ip link set lo mtu 1500
 echo "loopback MTU: $(cat /sys/class/net/lo/mtu)"
 
 SUM="$OUT/summary.csv"

@@ -34,7 +34,6 @@ cleanup() {
   if [ -n "$SRV" ]; then kill "$SRV" 2>/dev/null || true; wait "$SRV" 2>/dev/null || true; fi
 }
 trap cleanup EXIT
-# --- veth 링크 구성 ---
 mount -t tmpfs none /run 2>/dev/null
 mkdir -p /run/netns
 ip netns add peer
@@ -57,8 +56,6 @@ cnt=0
 for model in $MODELS; do
  for rtt in $RTTS; do
   for loss in $LOSSES; do
-    # netem: NETEM_SIDES=one 이면 v0 송신측에만(단방향, delay = 목표 RTT),
-    # both 면 양쪽에 절반씩(명세 §4-2).
     tc qdisc del dev v0 root 2>/dev/null || true
     ip netns exec peer tc qdisc del dev v1 root 2>/dev/null || true
     spec=""
@@ -70,7 +67,6 @@ for model in $MODELS; do
     eff="$loss"
     if [ "$loss" != "0" ]; then
       if [ "$model" = "burst" ]; then
-        # gemodel p r: 정상상태 손실률 = p/(p+r). r=50% 고정, p 를 역산한다.
         pg=$(awk -v L="$loss" 'BEGIN{printf "%.4f", L*50/(100-L)}')
         spec="$spec loss gemodel ${pg}% 50%"
       else spec="$spec loss ${loss}%"; fi
@@ -87,7 +83,6 @@ for model in $MODELS; do
       case "$rtt" in 100|200) it=$((it/2));; esac
       printf "[%3d/%3d] %-7s RTT=%-4s loss=%-4s %-16s " "$cnt" "$tot" "$model" "$rtt" "$loss" "$group"
 
-      # 서버는 peer ns 안에서 기동
       ip netns exec peer openssl s_server -cert "$CERT" -key "$KEY" -tls1_3 \
         -groups "$group" -accept 10.9.0.2:$PORT -quiet >"$OUT/server_${model}_rtt${rtt}_loss${loss}_${group}.log" 2>&1 &
       SRV=$!; sleep 0.8

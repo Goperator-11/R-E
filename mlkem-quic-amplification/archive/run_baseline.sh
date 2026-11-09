@@ -45,16 +45,12 @@ for model in $MODELS; do
  for rtt in $RTTS; do
   for loss in $LOSSES; do
 
-    # ---- NetEm 적용 ----
-    # loopback은 편도 지연이 왕복에 두 번 반영되므로 delay = RTT/2
     tc qdisc del dev lo root 2>/dev/null
     delay=$(awk "BEGIN{printf \"%.3f\", $rtt/2}")
     spec=""
     [ "$rtt"  != "0" ] && spec="delay ${delay}ms"
     if [ "$loss" != "0" ]; then
       if [ "$model" = "burst" ]; then
-        # Gilbert-Elliott: p(good→bad) 를 손실률에 비례시키고
-        # r(bad→good)=50% 로 두어 평균 버스트 길이 2 프레임
         spec="$spec loss gemodel ${loss}% 50%"
       else
         spec="$spec loss ${loss}%"
@@ -67,7 +63,6 @@ for model in $MODELS; do
       printf "[%3d/%3d] %-8s RTT=%-4s loss=%-4s %-18s " \
              "$done_n" "$total" "$model" "$rtt" "$loss" "$group"
 
-      # 이 조건 전용 서버 기동 (KEM마다 -groups 를 따로 줘야 함)
       openssl s_server -cert "$CERT" -key "$KEY" -tls1_3 -groups "$group" \
         -accept 127.0.0.1:$PORT -quiet >/dev/null 2>&1 &
       SRV=$!
@@ -77,7 +72,6 @@ for model in $MODELS; do
       line=$("$BIN" 127.0.0.1 $PORT "$group" "$ITERS" "$WARMUP" "$csv" 2>/dev/null)
       echo "$line" | tail -1
 
-      # 요약 행 추출
       st=$(echo "$line" | grep -o 'n=[0-9]*  fail=[0-9]*  실패율=[0-9.]*%')
       n=$(echo   "$st" | sed -n 's/.*n=\([0-9]*\).*/\1/p')
       f=$(echo   "$st" | sed -n 's/.*fail=\([0-9]*\).*/\1/p')

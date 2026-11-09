@@ -48,8 +48,6 @@ import (
 	"strconv"
 )
 
-// 감사용 진입점. qamp.go 의 rsEncode / recoverOne 을 그대로 불러
-// 시험 벡터를 뽑는다. qamp.go 는 손대지 않는다.
 func main() {
 	gfInit()
 	k, _ := strconv.Atoi(os.Args[1])
@@ -77,7 +75,6 @@ func main() {
 	for _, d := range pars {
 		ps = append(ps, hex.EncodeToString(d))
 	}
-	// 각 소거를 각 패리티로 복원한 결과도 함께 낸다
 	rec := map[string]string{}
 	for miss := 0; miss < k; miss++ {
 		origs := map[int][]byte{}

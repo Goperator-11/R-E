@@ -33,11 +33,9 @@ ip link set lo up
 ip netns exec peer sh -c "ip addr add 10.9.0.2/24 dev v1; \
     ip link set v1 mtu 1500; ip link set v1 up; ip link set lo up"
 
-# 명세 4-2: 양방향에 절반씩 걸어야 대칭 지연이 된다.
 tc qdisc add dev v0 root netem delay ${HALF}ms $NETEM_LOSS
 ip netns exec peer tc qdisc add dev v1 root netem delay ${HALF}ms $NETEM_LOSS
 
-# ---- 명세 3-2 가 요구하는 적용 확인 -------------------------------------
 MTU0=$(ip -o link show v0 | grep -o "mtu [0-9]*" | cut -d" " -f2)
 MTU1=$(ip netns exec peer ip -o link show v1 | grep -o "mtu [0-9]*" | cut -d" " -f2)
 DEV=$(ip route get 10.9.0.2 | head -1 | grep -o "dev [a-z0-9]*" | cut -d" " -f2)

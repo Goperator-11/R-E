@@ -23,7 +23,6 @@ import base64
 raw = open("/tmp/mlkem/mkpub.pem").read()
 b = base64.b64decode("".join(l for l in raw.splitlines()
                              if not l.startswith("-----")))
-# SubjectPublicKeyInfo 안에 1184 B 캡슐화키가 들어 있어야 한다
 print("  OpenSSL ML-KEM-768 공개키 DER = %d B" % len(b))
 print("  기대: ASN.1 머리(약 20 B) + 캡슐화키 1184 B")
 print("  캡슐화키 1184 B 포함 여부: %s" % ("예" if len(b) >= 1184 else "아니오"))
