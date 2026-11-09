@@ -71,7 +71,7 @@
 \node[sml,anchor=south,fill=white,inner sep=0.4pt] at (75.528,33.750) {PTO wait, 200 ms};
 \draw[donetick] (143.924,31.000) -- (143.924,33.000);
 \node[sml,anchor=south east] at (143.924,33.200) {HCT $\approx$ PTO + RTT};
-\node[sml,anchor=west,align=left,text width=50.0mm,fill=white,inner sep=0.5pt] at (52.819,27.800) {\hyphenpenalty=10000\exhyphenpenalty=10000 The client learns of the loss only when PTO \mbox{expires}, then quic-go sends two probes.};
+\node[sml,anchor=west,align=left,text width=50.0mm,fill=white,inner sep=0.5pt] at (52.819,27.800) {\hyphenpenalty=10000\exhyphenpenalty=10000 No ACK arrives, so the client waits for PTO to \mbox{expire}, then quic-go sends two probes.};
 \node[lab,anchor=west,align=left] at (0,14.800) {(d) $\delta=1$ + parity,\\Initial lost};
 \draw[msgplain] (43.913,10.600) -- node[sml,text=ink,sloped,pos=0.42,above=0.2mm,inner sep=0.2mm] {4 packets} (55.045,19.000);
 \draw[msgplain] (44.448,10.600) -- (55.580,19.000);

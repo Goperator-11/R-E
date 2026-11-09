@@ -124,7 +124,7 @@ to_client(2, PTO + OW, NEED, '4 packets')
 out.append(r'\draw[brc] (%.3f,%.3f) -- (%.3f,%.3f);' % (X(0), yc(2) + 0.5, X(PTO), yc(2) + 0.5))
 out.append(r'\node[sml,anchor=south,fill=white,inner sep=0.4pt] at (%.3f,%.3f) {PTO wait, 200 ms};' % (X(PTO / 2), yc(2) + 1.75))
 done(2, end, r'HCT $\approx$ PTO + RTT', 'south east')
-note(2, 49, r'The client learns of the loss only when PTO \mbox{expires}, then quic-go sends two probes.', 50)
+note(2, 49, r'No ACK arrives, so the client waits for PTO to \mbox{expire}, then quic-go sends two probes.', 50)
 
 label(3, r'(d) $\delta=1$ + parity,' + '\\\\' + 'Initial lost')
 t_d = PAR + OW
