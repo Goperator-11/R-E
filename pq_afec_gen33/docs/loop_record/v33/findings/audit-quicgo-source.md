@@ -13,7 +13,7 @@ CLAIM: quic-go 서버는 핸드셰이크가 끝나면 조건 없이 NEW_TOKEN을
 - EV: quic-go/transport.go:98-103, 212-215 MaxTokenAge 기본 24h; 397-403 TokenGeneratorKey 미설정 시 무작위 키
 - EV: quic-go/interface.go:120-124 TokenStore 문서('Tokens are used to skip address validation on future connection attempts'); token_store.go:58-61 NewLRUTokenStore; connection.go:497-507 클라이언트가 TokenStore.Pop으로 토큰을 싣고 RTT 복원; 2088-2098 NEW_TOKEN 수신 시 Put
 - EV: C:/dev/pq_afec_gen32/experiments/quicbed/qamp.go:2663-2671 클라이언트 quic.Config에 TokenStore 없음; 2638 판마다 새 UDP 소켓; 2743, 2782-2783 Dial 직후 CloseWithError와 tr.Close
-- EV: qamp.go:2157, 2616, 2630, 2746, 2775 목적지(addr)별 캐시로 결정과 관측(반복 접속 전제)
+- EV: qamp.go:2586, 2616, 2630, 2746, 2775 목적지(addr)별 캐시로 결정과 관측(반복 접속 전제)
 - EV: quic-go/internal/congestion/pacer.go:64-69, cubic_sender.go:278-285: 토큰으로 RTT가 복원되면 서버 첫 비행에 pacing이 걸림(10데이터그램 버스트 뒤 데이터그램당 약 RTT/40)
 
 PROPOSAL: (1) 비교군에 token 팔을 추가한다: 클라이언트 Config.TokenStore = quic.NewLRUTokenStore(16, 4), 첫 연결 후 1 RTT 이상 유지해 NEW_TOKEN을 받고, 같은 서버 프로세스에 재접속해 첫 접속과 재접속을 따로 집계한다. (2) 연구 주장을 '토큰 없는 주소의 첫 비행'으로 한정해 적고, 정책에 토큰 보유 분기를 넣는다: 토큰이 있으면 신용용 바이트(lead, delta)는 0, 손실 복구용 뒤 패리티만 고른다(토큰 유무는 클라이언트가 안다). (3) 토큰 연결은 서버 pacing이 켜지므로 첫 비행 꼬리 지연을 별도 항으로 잰다.
@@ -29,10 +29,10 @@ EFFORT: 중간: 팔 1개, 클라이언트 연결 유지 로직, 집계 분리 | 
 CLAIM: qamp.go는 '패리티를 버릴지(복구) 넘길지(신용)는 도착 시점에 정해야 한다'는 전제로 선행 패리티를 신용 전용, 뒤 패리티를 복구용으로 나누고, layout.py도 복구에 뒤 패리티만 센다. 그러나 quic-go는 바이트를 데이터그램이 연결 큐에서 꺼내질 때 FIFO로 세고, 첫 비행 송신은 ClientHello를 완성하는 복호 가능 패킷을 처리한 직후에만 깨어난다. 따라서 decodeConn이 선행 패리티를 quic-go에 넘기지 않고 보관하다가, 마지막 원본이 도착한 순간 소거가 없으면 그 원본보다 먼저 pending에 넣고(신용, 경주 없음), 소거가 있으면 뒤 패리티를 먼저 쓰고 모자라는 만큼 선행 심볼로 복구하면(복원본만 넘김, '인계 <= 물리 도착' 불변식 유지) 모든 패리티가 신용과 복구를 겸한다. 송신 순서와 바이트는 그대로다. 모형 세계에서 이 변경은 4개 맥락의 모든 후보 행동에서 J3를 나쁘게 하지 않았고(악화 0개), 손실이 클수록 크게 줄였다.
 
 - EV: quic-go/connection.go:1051-1052 handleOnePacket 첫 줄 ReceivedBytes(큐에서 꺼낼 때 계상); 1013-1039 handlePackets가 큐를 순서대로 처리하고 핸드셰이크 전 CRYPTO 송신 데이터가 생기면 중단
-- EV: quic-go/connection.go:639-648 복호 성공 패킷이 있어야 즉시 송신 단계; 662-671 복호 실패뿐이면 'if !wasProcessed { continue }' (팀 인용: padfec/policy.py:604-604)
-- EV: qamp.go:1242-1258 주석 '두 이득은 하나의 패리티로 동시에 가질 수 없다 ... 버릴지 말지는 패리티가 도착한 시점에 정해야 하고'; 1453-1476 v3 송신 순서 lead, 원본, 뒤 패리티
-- EV: qamp.go:497-502 isCreditParity(index < lead); 1889-1902 creditLocked가 즉시 stackLocked하고 심볼 미보관; 2224-2236 '선행 패리티만 신용 전용이다'
-- EV: qamp.go:1725-1737 decodeConn.ReadFrom은 pending을 먼저 내주는 구조라 보류 후 방출을 넣을 자리가 이미 있음
+- EV: quic-go/connection.go:639-648 복호 성공 패킷이 있어야 즉시 송신 단계; 662-671 복호 실패뿐이면 'if !wasProcessed { continue }' (팀 인용: padfec/policy.py:1278-1281)
+- EV: qamp.go:1479-1495 주석 '두 이득은 하나의 패리티로 동시에 가질 수 없다 ... 버릴지 말지는 패리티가 도착한 시점에 정해야 하고'; 1453-1476 v3 송신 순서 lead, 원본, 뒤 패리티
+- EV: qamp.go:623-628 isCreditParity(index < lead); 1889-1902 creditLocked가 즉시 stackLocked하고 심볼 미보관; 2224-2236 '선행 패리티만 신용 전용이다'
+- EV: qamp.go:2081-2094 decodeConn.ReadFrom은 pending을 먼저 내주는 구조라 보류 후 방출을 넣을 자리가 이미 있음
 - EV: C:/dev/pq_afec_gen32/padfec3/layout.py:160-176 성공 조건 miss <= len(trail), 172 base_credit = la*pz + k*w
 - EV: 모형 세계 m03_combined.py(같은 순서, 같은 바이트): S_bigcert(S=18231, RTT 50, 2 Mbps) p=0.15 현행 최선 (0,3,1) J=103.42 ms, P_fail 0.0607 -> 보류 최선 (0,4,0) J=90.09 ms, P_fail 0.0004 (-13.33 ms); p=0.10 -7.93, p=0.05 -2.14, p=0.02 -0.09 ms
 - EV: m03_combined.py: H_c12000_u5(RTT 120, 5 Mbps) p=0.15 -15.03 ms, p=0.10 -6.32 ms; S_rtt200 p=0.15 -2.90 ms; H_c6000_u10 p=0.15 -3.52 ms; 모든 맥락에서 보류 변형이 더 나쁜 후보 0/16 또는 0/30
@@ -53,7 +53,7 @@ CLAIM: (a) 서버 연결에 귀속된 데이터그램은 파싱과 복호 전에
 - EV: quic-go/connection.go:64 Size()=len(data); 1051-1052 ReceivedBytes가 handleOnePacket 첫 줄; 1079-1090 DCID가 다른 코얼레스 꼬리 break; 1325-1339 예상 밖 SCID Initial 폐기; 1367-1384 중복 폐기; 1420-1436 ErrDecryptionFailed 폐기
 - EV: quic-go/packet_unpacker.go:127-140 예약 비트 오류가 있어도 복호를 먼저 하고 AEAD 실패를 반환
 - EV: quic-go/server.go:499-513 연결 전 Initial < 1200 B 폐기(internal/protocol/protocol.go:116-117); 515-543 Initial 아닌 롱헤더 폐기; 680-694 DCID < 8 B 폐기; 817-838 newConn 후 conn.handlePacket(p); 699-702 대기 중 도착분은 두 번째 맵 조회로 연결에 전달
-- EV: MinInitialPacketSize 사용처는 config.go:42, connection.go:2881, packet_packer.go:829-830, server.go:95뿐(연결 내부 검사 없음)
+- EV: MinInitialPacketSize 사용처는 config.go:42, connection.go:2881, packet_packer.go:829-830, server.go:499뿐(연결 내부 검사 없음)
 - EV: quic-go/sys_conn.go:96-100 net.UDPConn이 아니면 basicConn; 116-131 buffer.Data[:MaxPacketBufferSize]로 읽음; internal/protocol/protocol.go:107-111 MaxPacketBufferSize = 1452
 - EV: quic-go/internal/ackhandler/sent_packet_handler.go:981-993 한도면 SendNone; 1034-1039 bytesSent >= amplificationFactor*bytesReceived; connection.go:2450-2459, 2536-2552 핸드셰이크 중 sendPackets 1회 = 코얼레스 데이터그램 1개
 - EV: sent_packet_handler.go:252-264 SentPacket이 모든 패킷 크기를 bytesSent에 더함; connection.go:2788-2809 롱헤더 패킷마다 SentPacket
@@ -77,7 +77,7 @@ CLAIM: 서버 연결이 Handshake 읽기 키를 얻기 전에 같은 DCID의 Han
 - EV: quic-go/connection.go:1410-1414 ErrKeysNotYetAvailable이면 tryQueueingUndecryptablePacket; 2964-2994 큐 추가(internal/protocol/params.go:17-18 MaxUndecryptablePackets = 32)
 - EV: quic-go/connection.go:2030-2033 EventReceivedReadKeys에서 큐를 undecryptablePacketsToProcess로 이동; 616-631 run loop 맨 앞에서 각 패킷을 handleOnePacket으로 재처리(1052에서 재계상)
 - EV: quic-go/server.go:515-543 연결 전 Handshake형은 폐기되므로 연결 생성 후(첫 원본 또는 선행 패리티 이후) 도착분만 해당
-- EV: qamp.go:524 buildParity 첫 바이트 0xC3(Initial)이라 현행 패리티는 이 경로 밖
+- EV: qamp.go:653 buildParity 첫 바이트 0xC3(Initial)이라 현행 패리티는 이 경로 밖
 
 PROPOSAL: (1) decodeConn에 '클라이언트 첫 비행에 Initial이 아닌 롱헤더가 섞이면 경보' 불변식 카운터를 추가해 향후 변형이 우연히 이 경로를 타지 않게 한다. (2) 연구 노트에 '사용하지 않는 지렛대'로 근거와 함께 적는다. (3) 저장소 밖 스크래치 모듈에서 quic-go 서버에 Initial과 같은 DCID의 쓰레기 Handshake 패킷을 보내 첫 응답 바이트가 3·물리 수신을 넘는지 재현하고, 재현되면 quic-go에 보안 이슈로 보고한다.
 
@@ -92,13 +92,13 @@ EFFORT: 작음: 카운터 1개, 스크래치 재현 1회 | CONF: 0.7 | IMPACT: �
 CLAIM: decide3, policy3.go, policy.go는 패리티 데이터그램이 1500 - 28 = 1472 B 이하면 후보로 허용한다. 서버 decodeConn.ReadFrom은 quic-go가 넘긴 버퍼에 직접 읽는데, quic-go basicConn은 그 버퍼를 1452 B로 잘라 넘긴다. 그래서 W_eff + 39 + 6k > 1452인 패리티는 커널에서 1452 B로 잘리고, parseFecBlock 길이 검사에서 탈락해 원본으로 분류된 뒤 1452 B 신용만 남는다. 복구용으로 고른 패리티가 실제로는 복구를 못 한다. sealed 저널에서 gen-2 auto가 W=1406(k=2, 패리티 1457 B)을 6번 골랐다. v3는 이번 조건에서 delta 0과 1만 써서 해당이 없었지만 candidates3는 이 범위를 막지 않는다(k=2이면 W_eff 1402~1421).
 
 - EV: quic-go/sys_conn.go:116-131 basicConn.ReadPacket이 buffer.Data[:protocol.MaxPacketBufferSize]로 읽음(주석 'we only read a truncated packet'); internal/protocol/protocol.go:107-111 = 1452
-- EV: qamp.go:1740 decodeConn.ReadFrom이 s.PacketConn.ReadFrom(b)로 quic-go 버퍼에 읽음; 908-912 parseFecBlock이 i+blen > len(d)이면 nil; 2193-2218 원본 경로로 처리
-- EV: padfec3/decide3.py:9 UDP_MAX = quantum.TYPICAL_MTU - 28(padfec/quantum.py:17 = 1500); 113 parity_bytes(W_eff, k) > UDP_MAX만 제외
-- EV: experiments/quicbed/policy3.go:51 p3UDPMax = typicalMTU - 28; 1205-1210 필터; policy.go:279 typicalMTU = 1500; 792-798 2026-09-07 감사 주석은 MTU만 고려
-- EV: padfec/policy.py:282-286 패리티 크기 = W + 39 + 6k
+- EV: qamp.go:2097 decodeConn.ReadFrom이 s.PacketConn.ReadFrom(b)로 quic-go 버퍼에 읽음; 908-912 parseFecBlock이 i+blen > len(d)이면 nil; 2193-2218 원본 경로로 처리
+- EV: padfec3/decide3.py:9 UDP_MAX = quantum.TYPICAL_MTU - 28(padfec/quantum.py:180 = 1500); 113 parity_bytes(W_eff, k) > UDP_MAX만 제외
+- EV: experiments/quicbed/policy3.go:51 p3UDPMax = typicalMTU - 28; 1205-1210 필터; policy.go:520 typicalMTU = 1500; 792-798 2026-09-07 감사 주석은 MTU만 고려
+- EV: padfec/policy.py:703-710 패리티 크기 = W + 39 + 6k
 - EV: p02_scan.py: 124,800행 중 평균 패리티 > 1452 B 행 6개(전부 g2auto, ips_eff 1406: S_rtt200 run1 4, run2 1, D_p17_unlimited 1); 패리티 크기 분포 1320대 41,785행, 1330대 81,455행, 1450대 3, 1460대 3
 
-PROPOSAL: UDP_MAX를 1452(quic-go MaxPacketBufferSize)로 바꾸거나 같은 뜻으로 패리티 후보 조건에 W_eff <= 1413 - 6k를 넣는다(decide3.py:9·113, policy3.go:51·1209, policy.go:460). g3/policy3_reference_gen.py와 parity gate의 udp_max도 함께 갱신한다. decodeConn에 'parseFecBlock은 실패했지만 PFEC 매직이 들어 있는 데이터그램' 카운터를 추가해 잘림을 계측한다.
+PROPOSAL: UDP_MAX를 1452(quic-go MaxPacketBufferSize)로 바꾸거나 같은 뜻으로 패리티 후보 조건에 W_eff <= 1413 - 6k를 넣는다(decide3.py:9·113, policy3.go:51·1209, policy.go:796). g3/policy3_reference_gen.py와 parity gate의 udp_max도 함께 갱신한다. decodeConn에 'parseFecBlock은 실패했지만 PFEC 매직이 들어 있는 데이터그램' 카운터를 추가해 잘림을 계측한다.
 
 EFFECT: 복구 못 하는 패리티를 복구용으로 계산하는 오류가 사라진다. 영향 구간이 좁아 기존 결과 수치 변화는 작지만, delta가 큰 조건에서의 잠재 결함을 막는다.
 
@@ -113,9 +113,9 @@ CLAIM: quic-go 서버는 Initial의 ack-eliciting 패킷을 즉시 ACK하고, �
 - EV: quic-go/internal/ackhandler/received_packet_tracker.go:15-16 'Every received packet is acknowledged immediately', 44-48, 51-72
 - EV: quic-go/connection.go:645-648 처리된 패킷이 있으면 즉시 진행; 1013-1039 배치 처리
 - EV: quic-go/packet_packer.go:319-323 서버는 ack-eliciting Initial만 패딩; internal/wire/extended_header.go:119-125 헤더 길이; internal/protocol/packet_number.go:43-57 첫 PN 2 B
-- EV: qamp.go:1498 serverConnIDLength = 4; quic-go/transport.go:406-416 클라이언트 CID 길이 기본 4(internal/protocol/params.go:128-130)
+- EV: qamp.go:1758 serverConnIDLength = 4; quic-go/transport.go:406-416 클라이언트 CID 길이 기본 4(internal/protocol/params.go:128-130)
 - EV: padfec3/layout.py:16, 89-93; policy3.go:55, 162-167
-- EV: qamp.go:1005-1020 fecConn.ReadFrom이 C1 회신을 뺀 모든 수신을 countRx; 2698 srvBytes; padfec3/learn3.py:642-643 srv_bytes를 그대로 S_hist에 넣음
+- EV: qamp.go:1208-1223 fecConn.ReadFrom이 C1 회신을 뺀 모든 수신을 countRx; 2698 srvBytes; padfec3/learn3.py:642-643 srv_bytes를 그대로 S_hist에 넣음
 - EV: p04_srvbytes.py: D_p17_mbps2(cert 9007/9008) 중앙 10,991/10,993 B 대 D_p17_unlimited(9006) 10,949 B
 - EV: p06_hist.py: 'server_bytes - cert' 2 Mbps g2auto 1970~1990 B 3,996/4,027행, 1930~1950 B 31행; 무제한 g2auto 1930~1950 B 4,432/4,444행, 1970~1990 B 5행
 - EV: p09_checks.py (d): bin_needed_s(S) != bin_needed_s(S+41) 비율 0.0307(k=2, W=1280, c_pkt 41.983); S 18231, 10992, 7908, 9950, 14072, 16149, 4678 모두 동일
@@ -134,9 +134,9 @@ EFFORT: 작음 | CONF: 0.85 | IMPACT: 모형 입력 편향 제거, A_pre 근거 
 
 CLAIM: qamp는 Dial 직후 ConnectionStats를 읽고 곧 닫으므로 그 시점의 RTT 표본은 첫 비행 Initial에 대한 서버 ACK뿐이다. quic-go 송신 시각은 패킷을 만든 시각이고, fecConn이 원본을 모아 선행 패리티 뒤에 내보내며 netem rate가 직렬화하므로 표본에 τ(선행 패리티) + τ(O0)가 그대로 들어간다. 연결별 MinRTT - netem RTT 중앙값은 2 Mbps·RTT 50에서 lead 0/1/2/3 = +6.02/+11.27/+16.77/+22.35 ms, 무제한 +0.95 ms다. v3 캐시는 목적지별 최솟값을 정책 RTT로 쓰는데, +0.7 ms짜리 깨끗한 표본은 드문 손실 경로(A8-08의 Handshake PTO 탐침)에서만 생겨, 15% 층이 있는 RTT 50 조건은 +0.75 ms로 내려앉았지만 S_rtt200은 +11.31 ms로 남았다. 모형은 t_dec로 직렬화를 따로 더하므로 이 몫이 왕복마다 이중 계상된다(모형 세계: S_rtt200 맥락에서 RTT 211.31을 넣으면 고르는 행동은 같지만 J_pred가 +11.53 ms(p=0.02), +11.70 ms(p=0.15)). 반대로 이 부풂은 정보다: lead 하나(약 1,331 B)당 +5.44 ms라 업링크 약 1.96 Mbps(참값 2)로 역산되고, 5 Mbps 조건은 4.86 Mbps다. 정책이 참 업링크 대역을 입력으로 받는 전제를 quic-go가 주는 값으로 대체할 수 있다.
 
-- EV: qamp.go:2210-2212 Dial 시간, 2736 measuredPathRTT(conn.ConnectionStats()), 2743 즉시 CloseWithError; 2531-2536 MinRTT 사용
+- EV: qamp.go:2681-2683 Dial 시간, 2736 measuredPathRTT(conn.ConnectionStats()), 2743 즉시 CloseWithError; 2531-2536 MinRTT 사용
 - EV: quic-go/internal/utils/rtt_stats.go:81-94 minRTT는 ack delay 보정 없는 원 표본; connection.go:2798-2809 SentPacket 시각은 패킹 시각
-- EV: qamp.go:965-995 원본을 flight에 모았다가 flushFlight; 1453-1476 v3 순서 L..L O..O P..P
+- EV: qamp.go:1168-1198 원본을 flight에 모았다가 flushFlight; 1453-1476 v3 순서 L..L O..O P..P
 - EV: experiments/quicbed/policy3.go:1502-1507 policyRTT = e.MinRTT; 1710-1714 목적지별 min 갱신
 - EV: p02_scan.py: (RTT 50, 2 Mbps) lead0 n=2206 +6.02, lead1 n=2524 +11.27, lead2 n=1990 +16.77, lead3 n=12014 +22.35; (120, 5) lead2 +6.99, lead3 +9.18; 무제한 +0.95 ms
 - EV: p02_scan.py: policy_rtt - RTT 중앙 (50,2) +0.75(n=14,197), (200,2) +11.31(n=8,998), (120,5) +1.82, (120,10) +1.72, (80,10) +1.87 ms
@@ -159,7 +159,7 @@ CLAIM: g3fixL3 (0,3,1)의 관측 평균 110.26 ms 대 모형 J 103.42 ms(p=0.15,
 - EV: sent_packet_handler.go:646-657 핸드셰이크 미확인이고 전송 중 crypto가 없으며 peerCompletedAddressValidation false면 클라이언트 anti-deadlock PTO; 891-907 bytesInFlight 0이면 탐침 1개, Initial 키가 없으면 SendPTOHandshake; connection.go:2810-2817 첫 Handshake 송신 때 Initial 키 폐기
 - EV: sent_packet_handler.go:721-731 서버는 한도 중 손실 감지 알람 해제
 - EV: quic-go/server.go:755-759 토큰 없으면 rtt=0 -> connection.go:311 SetInitialRTT(0); rtt_stats.go:127-139; internal/congestion/cubic_sender.go:278-285 SRTT 0이면 1 ms로 대역 계산; pacer.go:64-69 maxBurstSize = max(bw·2 ms, 10·1280)
-- EV: padfec3/layout.py:209 2-RTT HCT = t_dec + 2·rtt + resp; 221-231 실패 비용; padfec/policy.py:28-32 상수 출처
+- EV: padfec3/layout.py:209 2-RTT HCT = t_dec + 2·rtt + resp; 221-231 실패 비용; padfec/policy.py:214-237 상수 출처
 - EV: p08_hctclusters.py: S_bigcert 15% g3fixL3 n=2250 fast 0.576(평균 79.9), 2rtt 0.375(130.9), slow 0.049(310.8), slow이면서 Initial 재전송 없음 0.008(303.7); 2% 같은 팔 fast 0.945(79.9)
 - EV: m02_timer_infl.py: (0,3,1) p=0.15 J=103.42, 실패 종류 pto 0.0225, ptoS 0.0191, ack 0.0191, 타이머 보정 dJ +1.88 ms(p=0.02 +0.04 ms)
 
@@ -178,7 +178,7 @@ CLAIM: v3는 연결당 1비트 y만 쓰고, 명목 2-RTT 행동(예 (0,0,4))에�
 - EV: quic-go/interface.go:185 Config.Tracer func(ctx, isClient, connID) qlogwriter.Trace; qlogwriter/writer.go:15-46 Trace.AddProducer와 Recorder.RecordEvent(Event)는 사용자 구현 가능
 - EV: quic-go/connection.go:1713-1739 롱헤더 수신마다 qlog.PacketReceived{Header(PN), Frames}; connection_logging.go:16-21, 49-58 AckFrame 변환; qlog/event.go:264-272, 438-446, 502-505
 - EV: quic-go/internal/ackhandler/sent_packet_handler.go:314-340 MetricsUpdated; 814, 830 PacketLost
-- EV: qamp.go:2192-2200 클라이언트 Config에 Tracer 없음; 2733-2736 ConnectionStats만 읽음
+- EV: qamp.go:2663-2671 클라이언트 Config에 Tracer 없음; 2733-2736 ConnectionStats만 읽음
 - EV: padfec3/learn3.py:596-600 y 정의(EVENT_RTT_FRAC 0.5); 244-251, 615-626 nominal2·shield·guard면 likelihood 생략
 - EV: C:/dev/pq_afec_gen31/g3/RESULT_stage3.md:84 15% 층 경보와 고착 서술
 - EV: m04_info.py 모형 세계 Fisher 정보(위 숫자), EPS 0.01 반영
@@ -198,7 +198,7 @@ CLAIM: quic-go 클라이언트는 RTT 표본이 없으면 PTO를 2·100 ms로 �
 - EV: quic-go/internal/utils/rtt_stats.go:17-18 DefaultInitialRTT 100 ms; 69-72 표본 없으면 PTO = 2·DefaultInitialRTT; 127-139 SetInitialRTT는 hasMeasurement를 바꾸지 않음
 - EV: quic-go/internal/ackhandler/sent_packet_handler.go:909-929 PTO 시 numProbesToSend += 2; connection.go:2696-2733 sendProbePacket; packet_packer.go:319-328 클라이언트 Initial 패딩
 - EV: p09_checks.py (a): 1-RTT 행의 initial_datagrams - first_flight_datagrams가 S_rtt200 2%·15% 전 팔에서 3(g3auto 4,480/4,481, g2auto 4,384/4,384, g3fixL2 2,248/2,248), S_bigcert 전 팔 1
-- EV: padfec/policy.py:28 T_PTO_NO_ACK_MS = 200.86(같은 200 ms PTO의 실측); padfec3/learn3.py:17 SHIELD_RTT_MS = 200.0
+- EV: padfec/policy.py:214 T_PTO_NO_ACK_MS = 200.86(같은 200 ms PTO의 실측); padfec3/learn3.py:17 SHIELD_RTT_MS = 200.0
 
 PROPOSAL: (1) 비용 보고에 탐침을 포함한 전체 클라이언트 업링크 바이트(fecConn TxBytes)를 함께 싣는다. (2) shield 조건을 'RTT + τ(pre_decision_bytes) + c_proc >= 200 ms'로 바꾸거나 모형에 탐침 2장의 업링크 점유와 신용을 넣는다. (3) 보고서에 이 헛재전송은 quic-go 설정으로 못 끈다는 점(PTO 규칙이 hasMeasurement 전 고정)을 적는다.
 
@@ -218,7 +218,7 @@ CLAIM: (a) 서버 첫 비행 데이터그램 크기는 서버 Config.InitialPack
 - EV: goroot/src/crypto/mlkem/mlkem.go:26-30; goroot/src/crypto/tls/key_schedule.go:240-249 서버 키 공유 = 암호문 1088 + X25519 32
 - EV: quic-go/internal/protocol/connection_id.go:60-69 원래 DCID 8~20 B 난수; internal/wire/extended_header.go:119-125; internal/handshake/token_protector.go:27-38 토큰 = salt 32 + GCM(nonce, 태그)
 - EV: quic-go/crypto_stream.go:114-157 scrambling은 SNI 또는 ECH가 있을 때만
-- EV: padfec/quantum.py:13 P_SERVER = 1280; experiments/quicbed/policy.go:13; padfec3/learn3.py:19; qamp.go:2049-2054 서버 Config에 InitialPacketSize 미설정
+- EV: padfec/quantum.py:172 P_SERVER = 1280; experiments/quicbed/policy.go:34; padfec3/learn3.py:19; qamp.go:2428-2433 서버 Config에 InitialPacketSize 미설정
 
 PROPOSAL: P를 목적지별 관측값(첫 서버 비행의 최대 데이터그램 길이, fecConn.ReadFrom에서 이미 보는 n)으로 학습하고 quantum, layout, policy3의 P_SERVER를 매개변수화한다. 검증 실험에 서버 InitialPacketSize = 1452 조건을 추가한다. 보고서 한계 절에 'SNI 없는 ClientHello, CID 4 B'를 적는다.
 
@@ -233,10 +233,10 @@ EFFORT: 중간 | CONF: 0.8 | IMPACT: 일반화 범위
 CLAIM: quic-go 서버는 Transport.VerifySourceAddress가 true일 때만 토큰 없는 Initial에 Retry를 보낸다(무상태). 클라이언트는 첫 Retry 하나만 받아 토큰을 싣고 Initial을 다시 보내고, 서버는 Retry 토큰(IP, ODCID, RSCID, 수명 2·HandshakeIdleTimeout)이 유효하면 그 연결을 처음부터 검증된 주소로 다룬다. Retry는 항상 1 RTT를 더 쓰는 대신 한도를 없앤다. 이때 PAD-FEC 첫 비행의 신용은 쓸모가 없고, Retry는 상태를 남기지 않으므로 같은 DCID의 패리티 데이터그램(Initial형, >=1200 B, 토큰 없음)이 닿을 때마다 새 연결 시도로 처리되어 Retry가 추가로 나간다(클라이언트는 무시). 재시도 비행에서도 fecConn은 1200 B 이상 서버 데이터그램을 아직 못 받아 srvBig이 false라 첫 비행과 같은 패리티 배치를 또 보낸다. qamp 서버는 VerifySourceAddress를 설정하지 않아 이 경로는 측정되지 않았다.
 
 - EV: quic-go/server.go:743-753 token == nil && verifySourceAddress(addr)이면 retryQueue; 901-958 sendRetryPacket; internal/handshake/token_generator.go:55-72 NewRetryToken
-- EV: quic-go/server.go:663-677 validateToken(673 Retry 토큰 수명); config.go:17-23 maxRetryTokenAge = 2·HandshakeIdleTimeout; server.go:95-95 유효한 Retry 토큰이면 clientAddrVerified
+- EV: quic-go/server.go:663-677 validateToken(673 Retry 토큰 수명); config.go:17-23 maxRetryTokenAge = 2·HandshakeIdleTimeout; server.go:710-741 유효한 Retry 토큰이면 clientAddrVerified
 - EV: quic-go/connection.go:1480-1518 클라이언트는 패킷을 받은 뒤의 Retry와 두 번째 Retry를 무시
 - EV: quic-go/transport.go:110-119 VerifySourceAddress 문서('adds one additional network roundtrip')
-- EV: qamp.go:2035 서버 Transport에 VerifySourceAddress 없음; 1214-1222 srvBig은 n >= 1200 서버 데이터그램 수신 시에만 true; 1170-1176 curLater 결정
+- EV: qamp.go:2414 서버 Transport에 VerifySourceAddress 없음; 1214-1222 srvBig은 n >= 1200 서버 데이터그램 수신 시에만 true; 1170-1176 curLater 결정
 
 PROPOSAL: fecConn.ReadFrom에서 Retry(롱헤더 type 3)를 감지하면 그 연결의 다음 비행을 복구 전용(lead 0, delta 0, 뒤 패리티만)으로 바꾼다. 실험 설계에 VerifySourceAddress가 켜진 서버 조건을 하나 넣어 PAD-FEC가 손해를 보지 않음을 확인한다.
 

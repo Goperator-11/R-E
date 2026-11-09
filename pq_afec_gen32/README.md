@@ -12,13 +12,13 @@
 
 ## 검사와 빌드
 
-PowerShell에서 Python 회귀검사를 실행한다.
+PowerShell에서 Python 회귀검사를 실행한다. 아래 명령은 모두 이 폴더에서 실행한다.
 
 ```powershell
-Set-Location C:\dev\pq_afec_gen32
+Set-Location pq_afec_gen32
 python -B -m pytest tests/test_core_regressions.py tests/test_padfec3_learn.py tests/test_padfec3_layout.py tests/test_padfec3_dev_regressions.py tests/test_padfec3_input_validation.py tests/test_padfec3_followup.py tests/test_replay_g3_dev.py tests/test_gen32_runner_isolation.py tests/test_adaptation_benchmark.py -q -p no:cacheprovider
 python -B g3/policy3_reference_gen.py
-wsl -d Ubuntu -- bash /mnt/c/dev/pq_afec_gen32/experiments/quicbed/build_gen32.sh --race
+wsl -d Ubuntu -- bash experiments/quicbed/build_gen32.sh --race
 ```
 
 빌드 스크립트는 WSL의 `~/quicbed_gen32` 아래에 매번 새 작업 폴더를 만들고 vet, Go 검사와 빌드를 실행한다. 소스에서 삭제한 예전 검사 파일이 빌드에 남지 않도록 한 조치다. `--race`를 주면 같은 소스에서 race 검사도 실행한다. 지속 저장 바이너리는 `~/quicbed_gen32/bin/qamp`다. `/tmp/qamp_gen32/qamp`에도 설치하지만 WSL이 종료된 뒤에는 임시 파일이 사라질 수 있으므로 대조 검사에는 지속 저장 경로를 쓴다.
@@ -36,8 +36,7 @@ wsl -d Ubuntu -- bash /mnt/c/dev/pq_afec_gen32/experiments/quicbed/build_gen32.s
 WSL에서 Go와 Python을 대조한다. 기준 벡터와 추가 난수 표본, 합성 학습 궤적을 검사하며 실제 네트워크 성능을 측정하지 않는다.
 
 ```bash
-cd /mnt/c/dev/pq_afec_gen32
-python3 -B experiments/gate_v3_parity.py --bin "$HOME/quicbed_gen32/bin/qamp" --out /mnt/c/dev/pq_afec_gen32/g3/gen32_parity.json
+python3 -B experiments/gate_v3_parity.py --bin "$HOME/quicbed_gen32/bin/qamp" --out g3/gen32_parity.json
 ```
 
 ## 과거 관측 재생

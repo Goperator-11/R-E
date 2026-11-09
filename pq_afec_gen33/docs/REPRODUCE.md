@@ -118,7 +118,7 @@ gen33의 `report_repro/recompute_v3_verdicts.py`는 보존 저널과 봉인 모�
 
 ## 8. R-E에 없는 것
 
-R-E의 pq_afec_gen33 사본은 R-E 루트 tools/gen33_export_rule.json 규칙으로 내보낸다. 빠지는 것과 그 영향은 다음과 같다.
+R-E의 pq_afec_gen33 사본에서 빠진 것과 그 영향은 다음과 같다.
 
 `g3/v33/validation`은 J1, J6, L1_precision, L2, L3, L5 최종 분석 묶음의 `.py` 파일과 M1_stage2_validation만 들어간다(로컬 보존). 그래서 M1 wire 기준 파일이 없고, `tools/final_check.py`는 M1 단계를 skip으로 적으며 두 M1 시험은 기본 Go 시험에서처럼 건너뛴다.
 

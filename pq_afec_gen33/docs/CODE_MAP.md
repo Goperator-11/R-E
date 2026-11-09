@@ -89,7 +89,7 @@ gen33 작업 트리에서 활성 정책 v3.3.1-dev가 도는 경로와, 미채�
 
 ## 5. 미채택 후보 보존
 
-후보별 snapshot, scripts, tests, docs, validation, Go 플래그와 비활성 사유는 `g3/v33/CANDIDATE_ARCHIVE.json`에 있고, 판정 수치와 원자료는 [미채택 후보 기록](FINAL_rejected_candidates.md)에 있다. 원천 목록은 [triage 8절](loop_record/final_audit_2026-11-06/backlog_triage.md)의 14개이고, 루프 뒤 개발 평가에서 나온 AK1과 CX1을 더했다. 보존물은 옮기면 validation manifest와 시험 경로가 깨지므로 그 자리에 둔다. snapshot 폴더는 `g3/v33/policy_snapshots`, `g3/v33/ablation_sources`, `g3/v33/candidates`, `g3/v33/candidate_sources`다. 그 가운데 `g3/v33/policy_snapshots/L1_v1`(v3.3-dev L1 보존본)과 `g3/v33/policy_snapshots/S4_v1`(2026-11-01 활성 패키지 보존본)은 후보가 아니라 색인에 없다.
+후보별 snapshot, scripts, tests, docs, validation, Go 플래그와 비활성 사유는 `g3/v33/CANDIDATE_ARCHIVE.json`에 있고, 판정 수치와 원자료는 [미채택 후보 기록](FINAL_rejected_candidates.md)에 있다. 원천 목록은 triage 8절의 14개이고, 루프 뒤 개발 평가에서 나온 AK1과 CX1을 더했다. 보존물은 옮기면 validation manifest와 시험 경로가 깨지므로 그 자리에 둔다. snapshot 폴더는 `g3/v33/policy_snapshots`, `g3/v33/ablation_sources`, `g3/v33/candidates`, `g3/v33/candidate_sources`다. 그 가운데 `g3/v33/policy_snapshots/L1_v1`(v3.3-dev L1 보존본)과 `g3/v33/policy_snapshots/S4_v1`(2026-11-01 활성 패키지 보존본)은 후보가 아니라 색인에 없다.
 
 | 후보 | 상태 | 시도한 것 | 대표 흔적 | 활성에 남은 것 |
 |---|---|---|---|---|

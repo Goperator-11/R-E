@@ -41,7 +41,7 @@ foreach ($script in Get-ChildItem "$evidenceRoot\0*.py") {
 }
 ```
 
-출처는 각 JSON의 source_scripts에 적었다. 원문 경로는 C:\dev\codex_handoff\v33\evidence 아래다. 전체 감사 처리 범위는 runs/A0_coverage.md에 기록한다.
+출처는 각 JSON의 source_scripts에 적었다.
 
 ## 모든 조건의 실행 전체 서버 계수
 

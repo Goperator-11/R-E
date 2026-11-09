@@ -1,6 +1,6 @@
 # PAD-FEC v3.3 development
 
-이 폴더는 gen32 개발 사본에서 만든 v3.3 작업 저장소다. 세대 설정은 `genconfig.json`에 있다. 활성 정책 버전은 `v3.3.1-dev`, 저장 상태 버전은 11, Go 목적지 캐시 형식은 `padfec3.cache3/11`이다. 비교 기준선 v3.2-dev는 커밋 `90859b973`이다. v3.1의 측정 자료와 봉인 파일은 원본 폴더에 있고 S1 보존본은 `C:\dev\padfec_archive`에 있다. 저장소에는 보존 도구와 검증 기록을 남긴다.
+이 폴더는 gen32 개발 사본에서 만든 v3.3 작업 저장소다. 세대 설정은 `genconfig.json`에 있다. 활성 정책 버전은 `v3.3.1-dev`, 저장 상태 버전은 11, Go 목적지 캐시 형식은 `padfec3.cache3/11`이다. 비교 기준선 v3.2-dev는 커밋 `90859b973`이다. v3.1의 봉인 파일과 판정 자료는 `../pq_afec_gen31`에 있다. 측정 원자료 보존본은 저장소에 없고, 보존 도구와 검증 기록만 `g3/v33/archive`에 있다.
 
 `genconfig.json`의 `gen_id`는 세대 이름이다. 개발 측정 러너는 정책 판본을 `padfec3.learn3.POLICY_VERSION`에서 읽는다.
 
@@ -31,8 +31,8 @@ v3 패리티 데이터그램 크기 상한은 1452 B(`padfec/policy.py`의 `QUIC
 - `docs/T7_conditions_v31.md`
 - `docs/V33FIX_world.md`
 - `docs/V33FIX_bench_rules.md`
-- `docs/V33FIX_docs_hygiene.md`
-- `docs/PUBLISH_PROCEDURE.md`
+
+자동 루프의 운영 기록(과제 카드, 결정 장부, 프롬프트, 일지, 아침 보고)과 저장소 위생·게시 절차 문서는 2026-11-08에 뺐다. 문서가 이 기록을 출처로 적은 곳은 커밋 `4f26a51`에서 확인한다.
 
 ## v3.2-dev에서 물려받은 기제
 
@@ -48,13 +48,13 @@ v3 패리티 데이터그램 크기 상한은 1452 B(`padfec/policy.py`의 `QUIC
 
 ## 검사와 빌드
 
-PowerShell에서 기본 Python 시험 전체를 실행한다. `pytest.ini`가 `tests` 폴더를 고르고 `historical` 표지가 붙은 시험(봉인된 옛 트리나 막아 둔 옛 실행기를 전제로 하는 시험)을 뺀다.
+PowerShell에서 기본 Python 시험 전체를 실행한다. `pytest.ini`가 `tests` 폴더를 고르고 `historical` 표지가 붙은 시험(봉인된 옛 트리나 막아 둔 옛 실행기를 전제로 하는 시험)을 뺀다. 아래 명령은 모두 이 폴더에서 실행한다.
 
 ```powershell
-Set-Location C:\dev\pq_afec_gen33
+Set-Location pq_afec_gen33
 $env:PYTHONDONTWRITEBYTECODE = "1"
 python -I -B -m pytest -q -p no:cacheprovider
-wsl -d Ubuntu -- bash /mnt/c/dev/pq_afec_gen33/experiments/quicbed/build_gen33.sh --race
+wsl -d Ubuntu -- bash experiments/quicbed/build_gen33.sh --race
 ```
 
 커밋 `d67717d9b`(v3.3-dev) 기준 Windows 결과는 1792 passed, 2 skipped, 32 deselected, 하위 검사 4513 passed였고(`docs/S5_test_hygiene.md`), Go는 PASS 231, SKIP 2, FAIL 0이었다(감사 A-E8, WSL `~/quicbed_gen33/bin/go_test.txt`). 건너뛴 Go 시험 두 개(`TestHoldPythonReadFromReference`, `TestUDPHoldPythonReadBatchReference`)는 환경변수 `M1_REFERENCE_GZIP`이 없으면 돌지 않는다(`experiments/quicbed/qamp_hold_test.go`). v3.3.1-dev 수정 뒤의 수는 위 `docs/V33FIX_*.md` 문서에 적는다. 보고할 때는 'PASS 231, SKIP 2'처럼 통과와 건너뜀을 함께 적는다.
@@ -76,18 +76,17 @@ wsl -d Ubuntu -- bash /mnt/c/dev/pq_afec_gen33/experiments/quicbed/build_gen33.s
 WSL에서 Go와 Python을 대조한다. 기준 벡터와 추가 난수 표본, 합성 학습 궤적을 검사하며 실제 네트워크 성능을 측정하지 않는다.
 
 ```bash
-cd /mnt/c/dev/pq_afec_gen33
-python3 -I -B experiments/gate_v3_parity.py --out /mnt/c/dev/codex_handoff/v33/runs/manual_parity.json
+python3 -I -B experiments/gate_v3_parity.py --out /tmp/manual_parity.json
 ```
 
-`--bin`을 주지 않으면 `genconfig.json`의 `~/quicbed_gen33/bin/qamp`를 쓴다. 2026-11-02 현재 그 설치본은 v3.3-dev 판이라, `build_gen33.sh`로 다시 설치하기 전에는 기본 참조(v3.3.1-dev)와 상수·srcsha가 맞지 않는다. 설치 전에는 임시로 빌드한 바이너리를 `--bin`으로 준다. 관문은 `--out` 결과 파일의 부모 폴더에 fresh 입력 파일도 남긴다. 2026-11-02에 임시 빌드로 돌린 결과(PASS)는 `docs/V33FIX_policy_go.md` 7절에 있다.
+`--bin`을 주지 않으면 `genconfig.json`의 `~/quicbed_gen33/bin/qamp`를 쓴다. 설치본이 현재 소스와 다르면 기본 참조(v3.3.1-dev)와 상수·srcsha가 맞지 않으므로, `build_gen33.sh`로 다시 설치하거나 임시로 빌드한 바이너리를 `--bin`으로 준다. 관문은 `--out` 결과 파일의 부모 폴더에 fresh 입력 파일도 남긴다. 2026-11-02에 임시 빌드로 돌린 결과(PASS)는 `docs/V33FIX_policy_go.md` 7절에 있다.
 
 ## 과거 관측 재생
 
 `replay_g3.py`는 결정 전 예측을 관측 함수에 전달해 감시층을 실행한다. 과거 v3.1 저널을 읽는 모드에서는 실제 기록 행동과 새 코드의 결정을 따로 출력한다. 새 결정으로 연결을 실행한 결과가 아니므로 성능 차이나 새 정책의 실제 학습 궤적으로 해석할 수 없다.
 
 ```powershell
-python -I -B experiments/replay_g3.py --recorded-v31 --journal C:\dev\pq_afec_gen31\experiments\state\p31_run1_S_bigcert_units.jsonl --out C:\dev\pq_afec_gen33\g3\development_replay.json --limit 1000
+python -I -B experiments/replay_g3.py --recorded-v31 --journal <p31_run1_S_bigcert_units.jsonl 경로> --out g3\development_replay.json --limit 1000
 ```
 
 입력 저널을 출력으로 지정하면 거부한다. 새 관측 진단, 사후분포 요약과 예측 횟수를 함께 저장한다.
@@ -100,14 +99,14 @@ v3.3.1-dev의 네트워크 측정은 개발 측정 6건(M0 final_m0_iter022_2026
 
 이 사본은 위에 적힌 회귀검사, 격리된 빌드, Python·Go 대조와 개발 재생을 지원한다. 차단 여부는 `python -I -B -m pytest tests/test_gen33_runner_isolation.py -q -p no:cacheprovider`로 검사한다. 이 검사는 네트워크 측정과 빌드를 실행하지 않는다. 경로 설정과 역사 자료의 허용 범위는 `docs/generation_paths.md`에 있다.
 
-GitHub 사본의 경로가 다르면 PowerShell의 `Set-Location`과 WSL의 `cd`를 체크아웃한 폴더로 바꾼다. 과거 저널은 저장소에 포함하지 않았으므로 재생 명령의 `--journal`에 보존한 외부 저널 경로를 지정한다. 테스트용 PKI 파일도 게시본과 배포 ZIP에서 제외한다. 이 저장소를 공개하거나 원격에 올리기 전에는 `docs/PUBLISH_PROCEDURE.md`를 따른다. 이력에 시험용 개인키 PEM 28개와 20 MB를 넘는 파일이 남아 있다.
+과거 저널은 저장소에 포함하지 않았으므로 재생 명령의 `--journal`에 보존한 외부 저널 경로를 지정한다. 테스트용 PKI 파일도 저장소에 없다.
 
 ## 합성 적응 벤치
 
 `experiments/adaptation_benchmark.py`는 정책의 비용 모형으로 연결 결과를 만드는 개발용 장난감 벤치다. 기본 프로토콜은 조건 3개에서 공통 준비 32단계 후 같은 상태를 복제하고, 각 비교군을 480단계씩 실행한다. 손실률의 상승과 회복, 일정한 손실률을 다룬다. `full`, 손실 사후분포를 고정한 `frozen_loss`, 관측을 건너뛴 단계의 hazard 전이만 막은 `skip_hazard_ablation`을 비교한다. 관측 이력과 감시층, 결정 횟수는 모든 비교군에서 계속 진행한다.
 
 ```powershell
-python -I -B experiments/adaptation_benchmark.py --out C:\dev\codex_handoff\v33\runs\manual_adaptation_benchmark.json
+python -I -B experiments/adaptation_benchmark.py --out $env:TEMP\manual_adaptation_benchmark.json
 python -I -B -m pytest tests/test_adaptation_benchmark.py -q -p no:cacheprovider
 ```
 

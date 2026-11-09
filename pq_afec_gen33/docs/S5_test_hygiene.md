@@ -48,7 +48,7 @@ gen33 작업 트리에는 2026-11-02에 이 설정을 저장소 로컬로 넣었
 
 `.gitattributes`의 `tools/hooks/* text eol=lf` 때문에 `core.autocrlf=true` clone에서도 셔뱅 줄이 CRLF로 바뀌지 않는다. Linux·WSL에서 실행 권한이 필요하므로 이 파일을 처음 커밋할 때 `git add --chmod=+x tools/hooks/pre-commit`으로 실행 비트를 기록한다. Windows용 Git은 셔뱅을 보고 실행한다.
 
-훅은 새로 올리는 파일만 본다. 이미 이력에 있는 20 MB 초과 blob 3개와 시험용 개인키 blob 28개는 남아 있고, `git commit --no-verify`로 훅을 건너뛸 수도 있다. 공개 전에는 `python -I -B tools/scrub_for_publish.py --check --history`로 이력 전체를 따로 검사하고 `docs/PUBLISH_PROCEDURE.md`를 따른다.
+훅은 새로 올리는 파일만 본다. 이미 이력에 있는 20 MB 초과 blob 3개와 시험용 개인키 blob 28개는 남아 있고, `git commit --no-verify`로 훅을 건너뛸 수도 있다. 공개 전에는 `python -I -B tools/scrub_for_publish.py --check --history`로 이력 전체를 따로 검사한다.
 
 같은 날 `tests/test_v33_policy_worker.py`의 읽기 전용 감사 시험도 고쳤다. 전에는 실행할 때마다 저장소 안 `experiments/state/v33_worker_test_artifacts/source-*`에 꾸러미 세 개를 만들고 지우지 않았다(감사 A-E5). 이제 저장소 밖 임시 폴더(`tempfile.TemporaryDirectory`)를 쓰고 시험이 끝나면 지운다. 이미 쌓인 `source-*` 폴더 61개는 gitignore 대상이며 지우지 않고 두었다.
 

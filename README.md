@@ -40,34 +40,24 @@ quic-go v0.61.0에서 `InitialPacketSize`를 1280에서 1281로 올린 과거 �
 
 팀 자료의 버스트 손실률 표기와 단방향·양방향 설정에는 이전 코드와 문서 사이의 불일치가 있다. 해당 README의 데이터 주의를 확인해야 한다. 유의한 차이를 찾지 못한 결과만으로 두 방식이 동등하거나 기존 연구 전제가 기각됐다고 단정할 수 없다.
 
-## 로컬 원본과 실행
+## 실행
 
-측정은 Windows와 WSL Ubuntu에서 실행한다. 이 저장소는 배포 사본이고, 측정을 돌리는 원본은 정도현 노트북의 다음 폴더다.
+측정은 Windows와 WSL Ubuntu에서 실행한다. 실험별 조건과 한계는 [PADFEC 명세](pq_afec/docs/PADFEC%20v2%20명세.md)와 [팀 측정 README](mlkem-quic-amplification/README.md)에 있다.
 
-| 저장소 폴더 | 로컬 원본 |
-|---|---|
-| `pq_afec` | `C:\dev\pq_afec` |
-| `pq_afec_gen3` | `C:\dev\pq_afec_gen3` |
-| `pq_afec_gen31` | `C:\dev\pq_afec_gen31` |
-| `pq_afec_gen32` | `C:\dev\pq_afec_gen32` |
-| `pq_afec_gen33` | `C:\dev\pq_afec_gen33` (git 브랜치 `v33`, 커밋 `feb0b1850`) |
+`pq_afec`에는 측정 원자료까지 들어 있다. `results/*.json`에 여러 날짜의 결과가 함께 있으므로 실행 기록과 소스 지문을 같이 봐야 한다. v3.0~v3.2 폴더에는 판정 파일과 봉인에 들어간 결과만 있고, 측정 원자료(`experiments/state/`의 저널)와 그림은 없다. `pq_afec_gen33`에는 검증 묶음 `g3/v33/validation` 가운데 기본 시험이 불러오는 분석 스크립트와 `M1_stage2_validation`만 있다. 그래서 M1 wire 관문은 이 저장소만으로는 돌지 않는다.
 
-`pq_afec_gen33`의 파일은 로컬 원본 `feb0b1850`의 같은 경로 파일과 바이트 단위로 같다. 검증 묶음 `g3/v33/validation`(파일 약 11만 개, 약 4.1 GB)은 올리지 않았고, 기본 시험이 불러오는 분석 스크립트(J1·J6·L1_precision·L2·L3·L5 분석 묶음의 `.py`)와 `M1_stage2_validation`만 넣었다. 이 폴더만으로 pytest 1862개가 통과한다. M1 wire 관문은 올리지 않은 `M1_stage1` 기준 자료를 읽는다. 시험용 개인키가 들어 있던 로컬 git 이력도 올리지 않았다.
+gen-2 최종 상태의 근거는 `pq_afec/experiments/state/fixloop_triage.json`과 `loop2.json`의 p16 history다. p6은 과거 done이지만 마지막 분류가 stale이므로 현재 통과 수에 넣지 않았다.
 
-v3.0~v3.2 세대 폴더에는 측정 원자료(`experiments/state/`의 저널)와 그림을 올리지 않았다. 판정 파일과 봉인에 들어간 결과만 있다. `pq_afec`는 원자료까지 올리며, `results/*.json`에 여러 날짜의 결과가 함께 있으므로 실행 기록과 소스 지문을 함께 확인해야 한다. `pq_afec/experiments/results/p17_adaptive_value.json`은 58.6 MB다.
+## 주석 제거와 봉인 확인
 
-```powershell
-python pq_afec/experiments/loop2.py --status
-```
+2026-11-08에 모든 코드에서 주석과 docstring을 지웠다. 지우기 전 커밋은 `4f26a51`(태그 `pre-cleanup-2026-11-08`)이다. 지운 뒤에도 동작이 같은지는 언어별로 확인했다. 파이썬은 AST, Go는 토큰열, 셸은 bash가 다시 출력한 함수 본문, C는 gcc 전처리 결과, PowerShell은 파서 토큰열이 지우기 전과 같다.
 
-실험별 조건과 한계는 [PADFEC 명세](pq_afec/docs/PADFEC%20v2%20명세.md)와 [팀 측정 README](mlkem-quic-amplification/README.md)에 기록한다.
-
-## 봉인 파일 확인
-
-새 clone의 줄바꿈은 루트 .gitattributes가 LF로 고정한다. 다음 명령은 추적된 상대경로의 봉인·추가 기록 파일을 원본 바이트로 확인한다. 외부 원자료·바이너리·절대경로 개발자료는 로컬 보존 manifest로 별도 확인해야 한다.
+봉인(`SEAL_*.json`)과 측정 기록에 적힌 소스 해시는 주석이 있던 바이트의 해시다. 그래서 봉인은 `4f26a51`의 바이트로 확인한다. 아래 명령은 기본값으로 그 커밋을 읽는다. `--worktree`를 붙이면 현재 파일을 읽고, 이때는 주석을 지운 파일 39개가 불일치로 나온다.
 
 ```powershell
 python -I -B tools/verify_seals.py
 ```
 
-gen-2 최종 상태의 근거는 pq_afec/experiments/state/fixloop_triage.json과 loop2.json의 p16 history다. p6은 과거 done이지만 마지막 분류가 stale이므로 현재 통과 수에 포함하지 않았다.
+같은 이유로 소스 해시를 직접 대조하는 시험 15개는 현재 커밋에서 실패한다. `pq_afec_gen3`과 `pq_afec_gen31`의 `tests/test_g3_m1confirm.py`에서 5개씩(봉인된 측정 실행기가 봉인과 다른 코드로는 시작하지 않는다), `pq_afec_gen33`의 `test_v33_j1_candidate.py`, `test_v33_j6_candidate.py`, `test_v33_l2_candidate.py`, `test_v33_l3_candidate.py`, `test_v33_l5_candidate.py`에서 하나씩이다. 나머지 시험 결과는 주석을 지우기 전과 같다. 봉인된 실행기를 다시 돌리거나 측정을 재현하려면 `4f26a51`을 체크아웃해서 쓴다.
+
+문서에 적힌 `파일:줄` 위치는 주석을 지운 뒤의 줄 번호로 고쳤다.
