@@ -10,13 +10,13 @@ W1 생산 실행의 전체 집합은 `C:\dev\codex_handoff\v33\runs\W1_action_fa
 
 기준 oracle 폴더마다 build manifest의 모든 결과가 있어야 한다. 같은 문맥을 두 폴더에 중복 제공하거나 일부 결과가 없으면 거부한다. 기준 결과에는 원래 validator를 적용한다. 전체 프로토콜 문맥과 기준 결과 문맥이 같아야 한다. `chosen_action`을 평가 결과로 다시 선택하지 않는다.
 
-`manifest.json`은 원래 순차 실행기의 actions manifest와 같은 형식이다. jobs는 전체 action 목록으로 만들고, `evaluation_family_size`는 항상 전체81이다. 모든 job의 평가 spec, checkpoint identity, 완료 result validator에 이 값을 전달한다. worker가2개이든3개이든, 이미80개를 완료했든 이 값은 줄지 않는다. 이 manifest와 `results/*.json`은 기존 보고서 입력으로 읽을 수 있다.
+`manifest.json`은 원래 순차 실행기의 actions manifest와 같은 형식이다. jobs는 전체 action 목록으로 만들고, `evaluation_family_size`는 항상 전체 81이다. 모든 job의 평가 spec, checkpoint identity, 완료 result validator에 이 값을 전달한다. worker가 2개이든 3개이든, 이미 80개를 완료했든 이 값은 줄지 않는다. 이 manifest와 `results/*.json`은 기존 보고서 입력으로 읽을 수 있다.
 
 ## 실행과 재개
 
 항상 독립 CLI로 실행한다. Windows spawn은 main 모듈을 다시 불러오므로, 보호 조건 없이 top-level에서 `pytest.main`을 호출하는 보조 실행기 안에서 직접 `run_pool`을 호출하지 않는다. 실제 spawn 시험도 `python -I -B bench_action_pool.py`를 별도 subprocess로 실행한다.
 
-필수 인자는 `--family-plan`, `--family-plan-sha256`, `--oracle-dirs`, `--out`이다. `--protocol` 기본값은 현재 저장소의 `g3/v33/bench_protocol.json`이다. `--oracle-dirs`에는 서로 겹치지 않는 완료 build 출력 폴더를 모두 전달한다. 입력 경로와 출력 경로는 분리한다. worker 수 기본값은2다.
+필수 인자는 `--family-plan`, `--family-plan-sha256`, `--oracle-dirs`, `--out`이다. `--protocol` 기본값은 현재 저장소의 `g3/v33/bench_protocol.json`이다. `--oracle-dirs`에는 서로 겹치지 않는 완료 build 출력 폴더를 모두 전달한다. 입력 경로와 출력 경로는 분리한다. worker 수 기본값은 2다.
 
 ```text
 python -I -B C:\dev\pq_afec_gen33\experiments\v33\bench_action_pool.py
@@ -30,7 +30,7 @@ python -I -B C:\dev\pq_afec_gen33\experiments\v33\bench_action_pool.py
 
 위 코드는 인자 배치를 보여준다. 실제 PowerShell에서는 한 줄로 입력하거나 인자를 배열로 전달한다. 이미 시작한 출력 폴더에는 같은 입력으로 `--resume`를 붙인다. `--loop`는 partial 작업을 다음 batch에서 다시 시작한다. 한 작업의 시간 예산은 연결 chunk 경계에서 확인하므로 정확한 벽시계 상한은 아니다. worker 수와 시간 예산은 다음 재개에서 바꿀 수 있고, 각 실행의 runtime 기록에 남는다. 원래 oracle의 chunk_size는 유지한다.
 
-종료 코드는 전체완료0, failed2, partial3이다. 오류 예외는 traceback과 함께 비정상 종료한다. 전체완료는 계산 작업이 끝났다는 뜻이다. 성능 문턱 PASS나 근접최적 판정을 뜻하지 않는다. 통계적 미확정 상태는 원래 result 필드 그대로 남는다.
+종료 코드는 전체완료 0, failed2, partial3이다. 오류 예외는 traceback과 함께 비정상 종료한다. 전체완료는 계산 작업이 끝났다는 뜻이다. 성능 문턱 PASS나 근접최적 판정을 뜻하지 않는다. 통계적 미확정 상태는 원래 result 필드 그대로 남는다.
 
 ## 출력과 잠금
 
@@ -45,7 +45,7 @@ python -I -B C:\dev\pq_afec_gen33\experiments\v33\bench_action_pool.py
 | `checkpoints/<job>.json` | 기존 oracle이 저장하는 독립 job별 재개 상태 |
 | `results/<job>.json` | 기존 validator를 통과한 완료 결과 |
 | `published/*.json` | 결과를 완성해 fsync한 뒤 공개할 때 쓴 원본 파일 |
-| `progress/*.json` | 첫 chunk, 최종 chunk, 그 사이5초 간격의 보조 진행률 |
+| `progress/*.json` | 첫 chunk, 최종 chunk, 그 사이 5초 간격의 보조 진행률 |
 | `failures/*.json` | worker 프로세스 예외 등 future 실패 기록 |
 
 pool 전체와 각 job에 OS 파일 잠금을 건다. 잠금 파일은 남겨 두고 프로세스가 가진 lock만 해제한다. 프로세스 종료 시 OS lock이 풀리므로 파일의 존재만으로 실행 중이라고 판단하지 않는다. 같은 job의 동시 실행은 거부한다. 검증된 완료 job은 재사용하고 새 attempt를 만들지 않는다.
@@ -66,6 +66,6 @@ pool 전체와 각 job에 OS 파일 잠금을 건다. 잠금 파일은 남겨 �
 
 ## 검증 범위
 
-`tests/test_v33_bench_action_pool.py`는 합성 raw manifest와 기준 oracle을 만든다. 생산 raw나 진행 중 oracle을 실행하지 않는다. 같은 전체81 family에서 일부만 완료해도 family가 줄지 않는 경우, 중복 lock, 기준 결과 중복·미완료, 내용/출처 오염, 실패 기록 보존, partial 재개, 사후 소스 검증 실패, 진행률 간격을 검사한다. 별도 CLI subprocess에서 structural zero-loss 두 작업을 실제 spawn으로 실행하고 재개한다. 일반 MC 검사는 두 행동과8개 검증 표본의 합성 문맥만 사용한다.
+`tests/test_v33_bench_action_pool.py`는 합성 raw manifest와 기준 oracle을 만든다. 생산 raw나 진행 중 oracle을 실행하지 않는다. 같은 전체 81 family에서 일부만 완료해도 family가 줄지 않는 경우, 중복 lock, 기준 결과 중복·미완료, 내용/출처 오염, 실패 기록 보존, partial 재개, 사후 소스 검증 실패, 진행률 간격을 검사한다. 별도 CLI subprocess에서 structural zero-loss 두 작업을 실제 spawn으로 실행하고 재개한다. 일반 MC 검사는 두 행동과 8개 검증 표본의 합성 문맥만 사용한다.
 
 시간 기반 진행률 제한은 기록 횟수만 줄인다. callback은 중단 신호를 반환하지 않고 원래 oracle의 누적 모멘트, checkpoint 주기, 연결 순서, seed와 표본 수를 바꾸지 않는다.

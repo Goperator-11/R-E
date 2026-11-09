@@ -1,8 +1,8 @@
 # O3 기존 RTT trace 진단 계획
 
-반복48의 집계 전에 범위를 고정한다. 대상은 반복42의 T2 관측 basic·oob, 재방문 basic·oob, 재방문 음성 대조 basic v2·oob v1의 stdout66개다. 실패한 basic v1 대신 기존 T2가 검증한 v2를 쓴다. 별도 측정이나 활성 정책 변경은 없다.
+집계 전에 범위를 고정한다. 대상은 T2 구현 검증에서 남긴 관측 basic·oob, 재방문 basic·oob, 재방문 음성 대조 basic v2·oob v1의 stdout66개다. 실패한 basic v1 대신 기존 T2가 검증한 v2를 쓴다. 별도 측정이나 활성 정책 변경은 없다.
 
-qlog RTT 갱신과 같은 패킷 번호 공간의 ACK가 가리키는 최대 패킷 번호를 대조한다. 송신 기록이 하나이고 수신보다 앞서야 후보가 된다. RTT callback과 수신 callback의 차이, `수신 callback - 송신 callback`과 LatestRTT의 차이가 모두1 ms 이하인 쌍을 수치상 후보로 센다. 이1 ms는 탐색하거나 맞추지 않는다. 후보가 여러 개면 모호함을 유지한다.
+qlog RTT 갱신과 같은 패킷 번호 공간의 ACK가 가리키는 최대 패킷 번호를 대조한다. 송신 기록이 하나이고 수신보다 앞서야 후보가 된다. RTT callback과 수신 callback의 차이, `수신 callback - 송신 callback`과 LatestRTT의 차이가 모두 1 ms 이하인 쌍을 수치상 후보로 센다. 이 1 ms는 탐색하거나 맞추지 않는다. 후보가 여러 개면 모호함을 유지한다.
 
 이 후보는 소유권의 증명이 아니다. callback 시각은 quic-go가 `SentPacket`에 저장한 monotime과 다르고, LatestRTT에는 적용 가능한 ACK delay가 이미 빠질 수 있다. 현재 trace에는 그 ACK delay와 실제 UDP 송신 datagram별 시각·크기·대기량이 없다. 해당 정보가 없는 기존 행은 O3의 보정 표본으로 승격하지 않는다.
 

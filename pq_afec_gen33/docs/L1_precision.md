@@ -20,7 +20,7 @@ plan은 원래 family, JSON 보고서, 그 경로에 .published.json을 붙인 �
 
 run/report는 저장된 plan 전체를 다시 만든 값과 대조한다. run은 frozen pool.run_pool을 호출하며 worker는 1개부터 8개까지 허용한다. 새 pool은 비어 있어야 하며 원래 pool과 겹칠 수 없다. N은 checkpoint identity에 들어가므로 원래 checkpoint를 복사하거나 identity를 바꿔서 이어 쓰지 않는다. 새 pool은 connection 0부터 고정 seed를 다시 계산한다.
 
-report는 frozen validate_pool_locked와 aggregate_learning을 재사용한다. 결과 검증·집계·발행 동안 새 pool의 잠금을 유지하고, 입력과 source의 SHA를 발행 전후에 대조한다. 100개 결과와 원래 84/16 job 분류가 모두 맞아야 한다. nonstructural 결과의 실제 n은 목표 N이어야 하며 n=0은 실제 구조 certificate로만 인정한다. 서로 다른 행동의 표본분산0에 따른 null, 동일 행동의 정확한 차이0, 원래 참조의 selection gap null 규칙을 유지한다.
+report는 frozen validate_pool_locked와 aggregate_learning을 재사용한다. 결과 검증·집계·발행 동안 새 pool의 잠금을 유지하고, 입력과 source의 SHA를 발행 전후에 대조한다. 100개 결과와 원래 84/16 job 분류가 모두 맞아야 한다. nonstructural 결과의 실제 n은 목표 N이어야 하며 n=0은 실제 구조 certificate로만 인정한다. 서로 다른 행동의 표본분산 0에 따른 null, 동일 행동의 정확한 차이 0, 원래 참조의 selection gap null 규칙을 유지한다.
 
 새 MC 평균으로 각 seed의 기대 차이와 구간을 전부 다시 계산한다. 기존 seed 구간에 새 MC 폭만 끼워 넣지 않는다. 원래 raw의 실현 HCT와 관측 궤적은 변하지 않는다. 직접 대조에서 원래 참조가 소거되는 규칙과 절대 후회에서 원래 선택 오차가 필요한 규칙을 모두 유지한다. 이 정밀화는 원래 선택 오차가 null인 문맥의 절대 최적성 상한을 새로 증명하지 않는다.
 

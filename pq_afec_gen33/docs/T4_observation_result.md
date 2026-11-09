@@ -1,8 +1,8 @@
 # T4 관측 장치 결과
 
-T4의 와이어 관측 구현을 완료했다. Go 159개·vet·race, 핵심 Python351개·하위548개, 실제 ReadFrom700116사례와 전체 v3 산술 관문이 통과했다. 실제 QUIC 기능 시험은33연결 중 의도적으로 c2s를 전멸시킨3개를 제외한30개가 성공했다. 성능 효과는 측정하지 않았다.
+T4의 와이어 관측 구현을 완료했다. Go 159개·vet·race, 핵심 Python351개·하위 548개, 실제 ReadFrom700116사례와 전체 v3 산술 관문이 통과했다. 실제 QUIC 기능 시험은 33연결 중 의도적으로 c2s를 전멸시킨 3개를 제외한 30개가 성공했다. 성능 효과는 측정하지 않았다.
 
-C1 판본3은 도착 CRC와 복원 CRC를 별도로 보낸다. 즉시·pending·늦은 복구·hold 경로의 복원 Handshake에서도 회신한다. 연결별 arrivals와 C1 대조 수, UDP 수신 목록과 qlog의 Initial ACK range·시각·CRYPTO·RTT 변경·PTO 만료를 남긴다. C1 사후 평균6개는 Python filter_step으로 재생한 값과 정확히 같았다. 활성 L1 상태4와 비용식은 그대로다.
+C1 판본 3은 도착 CRC와 복원 CRC를 별도로 보낸다. 즉시·pending·늦은 복구·hold 경로의 복원 Handshake에서도 회신한다. 연결별 arrivals와 C1 대조 수, UDP 수신 목록과 qlog의 Initial ACK range·시각·CRYPTO·RTT 변경·PTO 만료를 남긴다. C1 사후 평균 6개는 Python filter_step으로 재생한 값과 정확히 같았다. 활성 L1 상태 4와 비용식은 그대로다.
 
 | 기능 조건 | 성공 | 유효 RTT | Initial ACK 기록 | 연결별 기록된 PTO 수 |
 |---|---:|---:|---:|---|
@@ -18,18 +18,18 @@ C1 판본3은 도착 CRC와 복원 CRC를 별도로 보낸다. 즉시·pending·
 | feedback_loss | 3/3 | 3/3 | 3/3 | 0,0,0 |
 | all_c2s_loss | 0/3 | 0/3 | 0/3 | 1,1,1 |
 
-표는 T4_smoke_v4의 원자료에서 생성했다. delay_ms=100은 UDP 중계기의 방향별 지연이며, 패킷 처리와 Python 계측 시간을 포함한 실제 RTT가 정확히200ms라는 뜻은 아니다. datagram 바이트 합은 같은 관측 스냅숏의 server_bytes와 맞고, 수신 CRC32c·크기는 독립 중계 로그와 대조했다. 패킷의 CRYPTO 범위와 datagram을 혼동하지 않는다.
+표는 T4_smoke_v4의 원자료에서 생성했다. delay_ms=100은 UDP 중계기의 방향별 지연이며, 패킷 처리와 Python 계측 시간을 포함한 실제 RTT가 정확히 200ms라는 뜻은 아니다. datagram 바이트 합은 같은 관측 스냅숏의 server_bytes와 맞고, 수신 CRC32c·크기는 독립 중계 로그와 대조했다. 패킷의 CRYPTO 범위와 datagram을 혼동하지 않는다.
 
-RTT200의 세 조건9연결은 Initial ACK를 받았지만 유효한 quic-go RTT 표본이 없었다. 첫 진단판9연결의 사건 순서와 고정 소스는 T4_rtt200_diagnosis_v1.json과 T4_quic_source_v1에 있다. PTO가 먼저 발생하면 QueueProbePacket은 원래 송신 패킷을 DeclareLost로 기록에서 제거한다. ReceivedAck는 새로 확인한 송신 기록이 있어야 RTT를 갱신한다. 이 경로가 새 진단과 맞지만 과거 모든 RTT200 연결의 인과를 입증한 것은 아니다. 기존 MeanDeviation 검사를 없애 기본100ms를 실측값으로 바꾸지 않았다.
+RTT200의 세 조건 9연결은 Initial ACK를 받았지만 유효한 quic-go RTT 표본이 없었다. 첫 진단판 9연결의 사건 순서와 고정 소스는 T4_rtt200_diagnosis_v1.json과 T4_quic_source_v1에 있다. PTO가 먼저 발생하면 QueueProbePacket은 원래 송신 패킷을 DeclareLost로 기록에서 제거한다. ReceivedAck는 새로 확인한 송신 기록이 있어야 RTT를 갱신한다. 이 경로가 새 진단과 맞지만 과거 모든 RTT200 연결의 인과를 입증한 것은 아니다. 기존 MeanDeviation 검사를 없애 기본 100ms를 실측값으로 바꾸지 않았다.
 
 quic-go의 주소검증 미완료·bytesInFlight=0 분기에는 qlog 없는 PTO 증가가 있다. 따라서 pto_count는 모든 내부 PTO의 정확한 총수가 아니라 qlog_loss_timer_expired_lower_bound다. A8-09의 이 잔여는 T6·T7에 넘겼다. 유효 RTT90% 미만 경고와 셀·팔별 보고도 T7 요구에 연결했다.
 
-두 원본을 소거한 m3 기능 조건은 복원 원본6개·복구 사건3개, 중간 부족3회, TTL 최종 미복구0회였다. 비행 종료 계수는6개다. unrecoverable_seen을 최종 실패로 읽지 않아야 하는 이유를 새 자료에서 확인했다. TTL 뒤 늦은 도착이나 비행 기록 자체가 없는 전멸은 이 지표의 범위 밖이다.
+두 원본을 소거한 m3 기능 조건은 복원 원본 6개·복구 사건 3개, 중간 부족 3회, TTL 최종 미복구 0회였다. 비행 종료 계수는 6개다. unrecoverable_seen을 최종 실패로 읽지 않아야 하는 이유를 새 자료에서 확인했다. TTL 뒤 늦은 도착이나 비행 기록 자체가 없는 전멸은 이 지표의 범위 밖이다.
 
-수집 실패도 보존했다. T4_smoke_v2의 서버는 C1을3번 보냈고 중계기도3번 보았으나, 세 번째 클라이언트는 HCT219.213ms 뒤 202.599704ms까지 수집하고 회신 없이 닫았다. D23에 따라 feedback-wait를 설정으로 분리하고 기본1초로 바꿨다. HCT는 대기 전에 고정하고 한도·실제 대기·수신 여부를 행에 남긴다. 검사 기준과 소거 조건은 유지했다. T7에서 팔별 연결 간격을 맞춰야 한다.
+수집 실패도 보존했다. T4_smoke_v2의 서버는 C1을 3번 보냈고 중계기도 3번 보았으나, 세 번째 클라이언트는 HCT219.213ms 뒤 202.599704ms까지 수집하고 회신 없이 닫았다. D23에 따라 feedback-wait를 설정으로 분리하고 기본 1초로 바꿨다. HCT는 대기 전에 고정하고 한도·실제 대기·수신 여부를 행에 남긴다. 검사 기준과 소거 조건은 유지했다. T7에서 팔별 연결 간격을 맞춰야 한다.
 
 첫 빌드의 메타데이터 없는 시험 비행 처리, 행 필드 목록·빈 arrivals 직렬화 회귀를 고친 뒤 다시 검증했다. 복원된 원본이 다른 손상 비행에도 속할 때 모든 알려진 비행의 도착 기록을 갱신하도록 했다. 초기 편집 스크립트의 중복 문자열 가정 실패와 중간 검사판도 남겼다. 실패 자료를 통과 자료로 덮어쓰지 않았다.
 
-전체 v3 산술 관문은 constants·primitives·decisions·trajectories·fresh 모두 PASS다. 기준2800기초값·6720결정·50000궤적 단계와 fresh2600·5000·40000단계를 비교했다. 이후 변경은 수신 스냅숏·수집 대기·종료 계수였으며 정책 소스23개의 지문은 같았다. Python 정책을 바꾸지 않았으므로 W1을 재실행하지 않았다. 공유소스85파일의 선언 밖 차이는0개다.
+전체 v3 산술 관문은 constants·primitives·decisions·trajectories·fresh 모두 PASS다. 기준 2800기초값·6720결정·50000궤적 단계와 fresh2600·5000·40000단계를 비교했다. 이후 변경은 수신 스냅숏·수집 대기·종료 계수였으며 정책 소스 23개의 지문은 같았다. Python 정책을 바꾸지 않았으므로 W1을 재실행하지 않았다. 공유소스 85파일의 선언 밖 차이는 0개다.
 
 자료는 runs/T4_result_v2.json, T4_smoke_v1·v2·v3·v4, 각 빌드와 관문 영수증, T4_build_records_v1·v2, T4_coverage.md에 있다. 저장소에는 g3/v33/validation/T4_v1로 보존한다. 현재 C1은 평문이고 첫 Handshake 수신 prefix를 보고한다. 인증·peer·CID 검증은 T5, 재전송과 정확한 PTO 범위는 T6, 계측 비용 A/A와 비교팔 설정은 T7에서 이어간다.
