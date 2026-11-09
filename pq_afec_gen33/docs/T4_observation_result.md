@@ -18,7 +18,7 @@ C1 판본3은 도착 CRC와 복원 CRC를 별도로 보낸다. 즉시·pending·
 | feedback_loss | 3/3 | 3/3 | 3/3 | 0,0,0 |
 | all_c2s_loss | 0/3 | 0/3 | 0/3 | 1,1,1 |
 
-표는 T4_smoke_v4의 원자료에서 생성했다. delay_ms=100은 UDP 중계기의 방향별 지연이며, 패킷 처리와 Python 계측 시간을 포함한 실제 RTT가 정확히200ms라는 뜻은 아니다. 데이터그램 바이트 합은 같은 관측 스냅숏의 server_bytes와 맞고, 수신 CRC32c·크기는 독립 중계 로그와 대조했다. 패킷의 CRYPTO 범위와 데이터그램을 혼동하지 않는다.
+표는 T4_smoke_v4의 원자료에서 생성했다. delay_ms=100은 UDP 중계기의 방향별 지연이며, 패킷 처리와 Python 계측 시간을 포함한 실제 RTT가 정확히200ms라는 뜻은 아니다. datagram 바이트 합은 같은 관측 스냅숏의 server_bytes와 맞고, 수신 CRC32c·크기는 독립 중계 로그와 대조했다. 패킷의 CRYPTO 범위와 datagram을 혼동하지 않는다.
 
 RTT200의 세 조건9연결은 Initial ACK를 받았지만 유효한 quic-go RTT 표본이 없었다. 첫 진단판9연결의 사건 순서와 고정 소스는 T4_rtt200_diagnosis_v1.json과 T4_quic_source_v1에 있다. PTO가 먼저 발생하면 QueueProbePacket은 원래 송신 패킷을 DeclareLost로 기록에서 제거한다. ReceivedAck는 새로 확인한 송신 기록이 있어야 RTT를 갱신한다. 이 경로가 새 진단과 맞지만 과거 모든 RTT200 연결의 인과를 입증한 것은 아니다. 기존 MeanDeviation 검사를 없애 기본100ms를 실측값으로 바꾸지 않았다.
 

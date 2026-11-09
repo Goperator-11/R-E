@@ -2,7 +2,7 @@
 
 R-E 커밋73aa4203c52eebac1eb1ce073b0b32f149768a44의 gen-2 수정9파일을 gen33에 의미대로 옮긴다. 원본·수정 전 소스는 handoff의 S4_upstream_73aa420과 S4_before_v1에 보존한다. 기존 M1 수신기와 활성 policy3 L1은 유지한다.
 
-패리티만 수신하는 feedOne·ReadFrom에서도 기존 비행을 만료하고 heldBytes를 놓는다. 최초 수용한 비행의 k·m·symbol 길이·CRC·원본 길이를 유지하며 v3의 ver·lead도 비교한다. index는 서로 다른 심벌을 허용하므로 동일성 조건에 넣지 않는다. 충돌 패리티는 신용으로만 넘기고 복구 상태를 바꾸지 않는다. 선행 신용 전용 경로는 심벌을 저장하지 않는다. 실제 copy 길이로 계상하는 M1 수정은 유지한다.
+parity만 수신하는 feedOne·ReadFrom에서도 기존 비행을 만료하고 heldBytes를 놓는다. 최초 수용한 비행의 k·m·symbol 길이·CRC·원본 길이를 유지하며 v3의 ver·lead도 비교한다. index는 서로 다른 심벌을 허용하므로 동일성 조건에 넣지 않는다. 충돌 parity는 credit으로만 넘기고 복구 상태를 바꾸지 않는다. 선행 credit 전용 경로는 심벌을 저장하지 않는다. 실제 copy 길이로 계상하는 M1 수정은 유지한다.
 
 gen-2는 ACK RTT의 연결 간 EWMA, 최근 C1의 연결·결정 나이, 보호 콜드스타트 뒤 초기 무보호 관측, 알려지지 않은 심벌 도착 순서의 평균 감쇠를 사용한다. 임계값과 산술은 원본 이식을 따른다. v3 RTT 보정은 O3에 남는다. afec의 모수 사전은 for_prior를 쓰고 expected_rounds는 최대512개 입력의 결과를 캐시한다. 캐시는 계산식·반환값을 바꾸지 않는다.
 

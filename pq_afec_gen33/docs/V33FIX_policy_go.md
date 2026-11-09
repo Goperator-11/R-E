@@ -51,7 +51,7 @@
 
 - B-E7 ("상태 판본이 3에서 4로 바뀌었는데 cache3 schema 표지는 그대로"): 표지를 `padfec3.cache3/11`로 올렸고, 로더가 스키마를 먼저 본다. 옛 캐시(`cache3/3`)를 넣으면 qamp는 여전히 exit 2로 끝나지만, 메시지가 `schema "padfec3.cache3/3", want "padfec3.cache3/11"`로 바뀌어 표지만 보고 호환 여부를 안다. 콜드스타트로 넘어가는 다른 처방은 택하지 않았다. 옛 사후분포를 조용히 버리면 실측 기록에서 그 사실이 사라지기 때문이다.
 - B-E5 ("S4 뒤 E12 L1 보충 관문을 다시 돌리지 않아 출처 검사에서 실패"): 정책 자체가 바뀌어 E12 L1 참조(`g3/v33/E12_l1_reference_v1.json`, 상태 판본 4)는 더는 쓸 수 없다. 같은 방식의 관문을 새 정책으로 다시 만들었고(4절), 현재 소스 지문으로 생성한 참조를 영수증과 함께 두고 관문을 다시 돌렸다(5절). E12 L1 참조는 기록으로 남겨 두었고 고치지 않았다. 지금 Go로 그 참조를 돌리면 입력 상태에 `c1_seen`이 없어 읽는 단계에서 거부될 것이다(코드로 판단한 것이고 실행하지는 않았다).
-- D-E4 ("활성 정책이 1452 B를 넘는 패리티 후보를 계속 만든다"): A-py가 Python에 적용한 상한을 Go `p3UDPMax`에 적용했다.
+- D-E4 ("활성 정책이 1452 B를 넘는 parity 후보를 계속 만든다"): A-py가 Python에 적용한 상한을 Go `p3UDPMax`에 적용했다.
 - B-E1, D-E3, C-E7: Python 쪽 처방(none은 v3.2, c1은 L3 record_only 결정)을 Go에 그대로 옮겼다. none 경로가 v3.2 Go와 같다는 것은 기준선 Go 바이너리와 직접 비교해 확인했다(5절).
 
 ## 4. 새 참조 관문
@@ -66,7 +66,7 @@ seed 기본값 20261102, 생성 19.4초(영수증 `python_seconds`). 출력 파�
 
 | 구획 | 크기 | 내용 |
 |---|---:|---|
-| arrivals | 44 | sent 1~8 × lost 0~sent 데이터그램 우도 |
+| arrivals | 44 | sent 1~8 × lost 0~sent datagram 우도 |
 | classes | 1,080 | 등급 경계, 경계 바로 옆 HCT 등급, 등급 확률, 범주 우도 |
 | observations | 26 열 × 30행 = 780 | 초기 상태 6종(cold, hot, rtt200, nominal, no_rtt, guard) × 증거 4종(none만, 인덱스 1에서 c1 시작, 인덱스 25에서 전환, 잘린 회신으로 시작) + 이미 c1인 상태 2열. 매 행 상태 JSON 왕복 |
 | sequences | 13 열, 2,120행 | 결정+관측 열. 무작위 장면 9열(none 3, c1 3, 인덱스 100에서 전환 3, 각 200행, 그중 3열은 W=1406), 재평가 열 2개(64행, none과 c1), guard 열 2개(96행, none과 인덱스 30에서 전환) |
@@ -131,7 +131,7 @@ Go 단위 시험 중 바꾼 것: L1이 none 경로를 범주 우도로 바꾸면
 | 검사 | 결과 |
 |---|---|
 | `go vet ./cmd/qamp github.com/quic-go/quic-go/padfec-local-hook` | 출력 없음(rc 0) |
-| `go test -count=1 -v` 같은 범위 | 최상위 PASS 265, SKIP 2(5절과 같은 두 시험), FAIL 1. 실패는 `TestComparisonSameSlotsAndAccounting`(`qamp_comparison_test.go` 49행)이다. 이 시험이 보는 첫 비행 배치 코드(`flight_shape.go`, `qamp.go`)는 같은 시각 테스트베드 묶음이 고치던 파일이고 `policy3.go`와 관계없다. 통합 때 다시 본다 |
+| `go test -count=1 -v` 같은 범위 | 최상위 PASS 265, SKIP 2(5절과 같은 두 시험), FAIL 1. 실패는 `TestComparisonSameSlotsAndAccounting`(`qamp_comparison_test.go` 49행)이다. 이 시험이 보는 first flight 배치 코드(`flight_shape.go`, `qamp.go`)는 같은 시각 테스트베드 묶음이 고치던 파일이고 `policy3.go`와 관계없다. 통합 때 다시 본다 |
 | 바이너리 | sha256 `06520d52c2f5ee50f0329548a9351030e54030e21ef7ec46b85c46d171c2e3fb`, srcsha `efac25fe292d4c9a8a9961b8325a5e39470beac6255496b3dd9e5010c3db1127`(빌드 전후와 관문 시점의 `experiments/quicbed` 지문이 모두 같음) |
 | `python3 -I -B experiments/gate_v3_parity.py --bin <위 바이너리> --out <임시 폴더>/gate_v3_parity.json`(기본 `--ref`, fresh 포함) | PASS, problems 없음, 113.9초. 상수 일치. 참조: primitive 2,800, 결정 6,720(행동 122종, 동점 1,317, 벌점 있는 결정 1,344), ej 비트 일치 6,720/6,720, 정확 비교 필드 9종 모두 6,720/6,720, 궤적 5개 각 10,000단계 일치(사후분포와 guard 상태 비트 일치). fresh seed 20261005: primitive 2,600, 결정 5,000(벌점 1,000), 궤적 4개 각 10,000단계 일치 |
 

@@ -1,6 +1,6 @@
 # T5 비행 묶음 입력 계약
 
-E17은 auto3 결정의 k를 첫 송신 묶음의 예상 데이터그램 수로 연결한다. 정책 비용·행동·상태 직렬화는 바꾸지 않는다. k는 목적지 관측에서 계산한 기존 최빈값이며 ClientHello에서 직접 계산한 natural_k가 아니다. natural_k는 T2 범위다.
+E17은 auto3 결정의 k를 첫 송신 묶음의 예상 datagram 수로 연결한다. 정책 비용·행동·상태 직렬화는 바꾸지 않는다. k는 목적지 관측에서 계산한 기존 최빈값이며 ClientHello에서 직접 계산한 natural_k가 아니다. natural_k는 T2 범위다.
 
 명시 expect-k가 최우선이다. 명시0은 timer_only를 강제한다. 명시 양수는 기존처럼 모든 묶음에 적용하고 source=explicit·scope=all_flights로 표시한다. 옵션을 생략한 auto3에서 유효한 결정 k(1~4)가 있으면 cached_k로 첫 묶음에만 적용한다. cold·범위 밖·다른 모드는 timer_only다. 결정의 k가 없는 cold/no_rtt 상황에서 별도 값을 추측하지 않는다. CLI 음수와32 초과는 거부한다.
 

@@ -1,12 +1,12 @@
 # J8 하향 손실과 서버 타이머 진단
 
-반복60에서 동결 W0의 120조건을 추적했다. 세 회계 모드, u0·2 Mbps, S5000·18231 B, 행동(0,0,0)·(0,3,1), 첫 서버 비행의 무손실·첫 데이터그램·중간·마지막 송신·전체 소거를 조합했다. S는 지정한 모형 입력이며 인증서 크기나 실제 관측 첫 비행이 아니다. RTT50 ms·P1280 B·IW32·초기 PTO200 ms·seed31을 고정했다. 처리 지연만 끄고 decision_delay=0으로 했으며 재전송·pre-ACK는 기존 기본값을 썼다. 첫 비행 이전의 ACK는 소거하지 않았고 이후 데이터그램은 모두 도착시켰다.
+반복60에서 동결 W0의 120조건을 추적했다. 세 회계 모드, u0·2 Mbps, S5000·18231 B, 행동(0,0,0)·(0,3,1), 첫 서버 비행의 무손실·첫 datagram·중간·마지막 송신·전체 소거를 조합했다. S는 지정한 모형 입력이며 인증서 크기나 실제 관측 first flight가 아니다. RTT50 ms·P1280 B·IW32·초기 PTO200 ms·seed31을 고정했다. 처리 지연만 끄고 decision_delay=0으로 했으며 재전송·pre-ACK는 기존 기본값을 썼다. first flight 이전의 ACK는 소거하지 않았고 이후 datagram은 모두 도착시켰다.
 
 추적기는 sys.setprofile로 W0의 함수 입출력을 읽으며 사건 큐·상태·난수를 바꾸지 않는다. 기존 profiler가 있으면 거부하고 예외에도 복구한다. 추적기13개와 서버 비용42개, 합계55시험이 통과했다. 앞선 구현의 소유 frame 탐색 누락은 실패 로그와 함께 보존했다. 120조건에서 추적 유무의 모든 결과 필드가 같았고 서버 송신1487건의 누적 바이트·검증 전 예산을 대조했다. 모든 연결은 세계 안에서 완료됐다.
 
-24조건에서 새 서버 송신·미ACK 집합·RTT 상태·검증 상태·백오프 변화 없이 활성 PTO 만료 시각이 뒤로 밀린 사건44개가 있었다. 한 번의 최대 이동은192.184 ms였다. granular·u2·S5000·행동(0,0,0)의 첫 데이터그램 소거에서는 만료 시각235.24 ms가395.48 ms, 다시400.60 ms로 바뀌었고 세계 HCT는425.60 ms였다. 이 수치는 세계의 타이머 이동이며 교정 후 HCT 차이나 실제 전송 측정이 아니다.
+24조건에서 새 서버 송신·미ACK 집합·RTT 상태·검증 상태·백오프 변화 없이 활성 PTO 만료 시각이 뒤로 밀린 사건44개가 있었다. 한 번의 최대 이동은192.184 ms였다. granular·u2·S5000·행동(0,0,0)의 첫 datagram 소거에서는 만료 시각235.24 ms가395.48 ms, 다시400.60 ms로 바뀌었고 세계 HCT는425.60 ms였다. 이 수치는 세계의 타이머 이동이며 교정 후 HCT 차이나 실제 전송 측정이 아니다.
 
-W0 arm_server_pto는 재무장 시각+PTO로 계산한다. 반면 [RFC 9002 부록 A.8](https://www.rfc-editor.org/rfc/rfc9002.html#appendix-A.8)은 미ACK 패킷이 있을 때 해당 번호 공간의 마지막 ack-eliciting 송신 시각을 기준으로 한다. 고정 quic-go v0.61.0의 sent_packet_handler.go 646~687행도 같은 기준을 사용한다. 증폭 제한이 풀릴 때의 재무장과 이미 지난 타이머는 [부록 A.6](https://www.rfc-editor.org/rfc/rfc9002.html#appendix-A.6)에 따른다. 로컬 원본 경로·SHA와 읽은 부분은 J8_downlink_timer_source.json에 보존했다.
+W0 arm_server_pto는 재무장 시각+PTO로 계산한다. 반면 [RFC 9002 부록 A.8](https://www.rfc-editor.org/rfc/rfc9002.html#appendix-A.8)은 미ACK 패킷이 있을 때 해당 번호 공간의 마지막 ack-eliciting 송신 시각을 기준으로 한다. 고정 quic-go v0.61.0의 sent_packet_handler.go 646~687행도 같은 기준을 사용한다. amplification limit이 풀릴 때의 재무장과 이미 지난 타이머는 [부록 A.6](https://www.rfc-editor.org/rfc/rfc9002.html#appendix-A.6)에 따른다. 로컬 원본 경로·SHA와 읽은 부분은 J8_downlink_timer_source.json에 보존했다.
 
 진단의 single_space_reference_deadline은 W0의 모든 data를 한 공간으로 본 비교값이다. W0에는 실제 Initial·Handshake 번호 공간, 재전송 PN·CRYPTO 구간, 키 준비·폐기 구분이 없어 RFC 전체 구현으로 취급할 수 없다. server_retry의 ACK 뒤 초기화도 별도 확인이 필요하다. 가장 긴 세계 HCT는12353.501581054708 ms였다. 이 값에 맞춰 PTO·손실 일정·상수를 조정하지 않았다. 현재 증거는 무손실 W0 대조의 유효 범위를 유지하면서 하향 손실 시간의 신뢰성을 별도로 검증해야 한다는 뜻이다.
 

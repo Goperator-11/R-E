@@ -1,6 +1,6 @@
 # T3 ClientHello와 Initial 확대 계약
 
-k-inflate는 추가 transport parameter의 값 길이(B)다. 기본0은 추가하지 않는다. 범위0~8192 B, 양수는 client의 고정 fec off·buf에서만 허용한다. adaptive 정책과 패리티 추가를 함께 바꾸지 않는다. 이 값은 k 자체가 아니며 실제 첫 묶음 k·Initial 패킷 수·CRYPTO 범위를 별도로 검증한다.
+k-inflate는 추가 transport parameter의 값 길이(B)다. 기본0은 추가하지 않는다. 범위0~8192 B, 양수는 client의 고정 fec off·buf에서만 허용한다. adaptive 정책과 parity 추가를 함께 바꾸지 않는다. 이 값은 k 자체가 아니며 실제 첫 묶음 k·Initial 패킷 수·CRYPTO 범위를 별도로 검증한다.
 
 quic-go v0.61.0의 internal/wire.AdditionalTransportParametersClient 개발 훅을 작은 로컬 모듈 padfec-local-hook에서 연결한다. 모듈 경로는 Go internal 접근 규칙을 충족하는 github.com/quic-go/quic-go/padfec-local-hook이며 외부 배포물이 아니다. go.mod의 로컬 replace만 사용하고 빌드 stage에 소스·모듈 파일을 복사한다. 캐시 안 quic-go 소스는 수정하지 않고 다운로드도 하지 않는다. srcsha와 검증 영수증에 하위 모듈 소스를 포함한다.
 
@@ -8,4 +8,4 @@ quic-go v0.61.0의 internal/wire.AdditionalTransportParametersClient 개발 훅�
 
 ips는 uint16 입력 범위0~65535만 받는다.0은1280,1~1199는1200,1453 이상은1452로 적용되는 고정 quic-go 동작을 ips_eff에 정확히 기록한다. ips_used는 요청값을 보존한다. 명시1291·1341·1350·1452·1472의 실제 첫 Initial 길이를 대조하며1472가 그대로 전송됐다고 쓰지 않는다. MTU Discovery는 계속 끈다.
 
-검증은 훅의 직렬화·서버에 추가하지 않음·길이 경계·초기화 동결과 기존 관문, 확대·기본 팔 실제 연결의 AES-GCM 인증된 Initial 복호·ClientHello TP 길이·CRYPTO 범위 대조다. CRYPTO의 겹침은 내용 일치로 확인하고 qlog 관측과 맞춘다. 요청 padding이0인 팔에는9730이 없어야 한다. 실제 k는 타이머 분할과 구분한다. 기본300us를 유지한다. HCT·증폭 신용·MTC 효과는 이 기능 검사로 판정하지 않는다.
+검증은 훅의 직렬화·서버에 추가하지 않음·길이 경계·초기화 동결과 기존 관문, 확대·기본 팔 실제 연결의 AES-GCM 인증된 Initial 복호·ClientHello TP 길이·CRYPTO 범위 대조다. CRYPTO의 겹침은 내용 일치로 확인하고 qlog 관측과 맞춘다. 요청 padding이0인 팔에는9730이 없어야 한다. 실제 k는 타이머 분할과 구분한다. 기본300us를 유지한다. HCT·증폭 credit·MTC 효과는 이 기능 검사로 판정하지 않는다.

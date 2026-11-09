@@ -10,6 +10,6 @@
 
 dry-run과45실행·180연결 smoke가 통과했다. 첫 smoke의 실행기는 집합을 JSON으로 비교하다 첫 결정 전에 실패했다. 실패 소스·계획·로그를 보존하고 입력 키 목록 비교만 고쳤다. 후보·세계·seed·기준은 바꾸지 않았다. 행동·관측 등급·관측 k를 각각 변조한3개 자료는 검사기가 거부했다.
 
-O4는 실제 qamp 입력 훅·expectK 종료가 연결되지 않았고, 후보별 k가 바뀌는 입력을 처리하지 못해 blocked로 남긴다. E27은 후보별 natural_k 비용·관측과 별도 k 변화 세계 평가, E28은 고정 로컬 quic-go 사본의 송신 전 훅·Go 거울·첫 비행 종료를 맡는다. 두 과제는 O4 완료를 의존하지 않는다. 활성 정책 채택, 첫 연결300 us 제거, scrambling·Retry 뒤 패킷화와 실제 성능은 미확인이다.
+O4는 실제 qamp 입력 훅·expectK 종료가 연결되지 않았고, 후보별 k가 바뀌는 입력을 처리하지 못해 blocked로 남긴다. E27은 후보별 natural_k 비용·관측과 별도 k 변화 세계 평가, E28은 고정 로컬 quic-go 사본의 송신 전 훅·Go 거울·first flight 종료를 맡는다. 두 과제는 O4 완료를 의존하지 않는다. 활성 정책 채택, 첫 연결300 us 제거, scrambling·Retry 뒤 패킷화와 실제 성능은 미확인이다.
 
 근거: O4_current_k_contract.md, O4_current_replay_plan.md, runs/O4_current_replay_v2.plan.json, O4_current_verify_v1.json, O4_current_tests_01.json, O4_current_negative_v1/result.json. 앞선 T3·T2의 실제 패킷 검증은 O4_reference_result.md와 O4_token_result.md에 있다.

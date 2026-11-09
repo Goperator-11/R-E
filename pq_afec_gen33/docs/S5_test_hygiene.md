@@ -14,7 +14,7 @@
 
 시험 중 임시 파일 삭제는 보존 어댑터로 옮겨 저장했다. 초기 Windows 심벌릭 링크 처리와 Linux DrvFs capture 핸들 충돌은 수정 전 로그를 남기고 해결했다. Ubuntu에서 옛 전체 트리 순회가 오래 걸린 진단 실행 한 번은 중단했다. 현재 소스만 순회한 최종 실행은 153.56초, Windows는 125.75초였다. 성능 벤치 결과로 쓰지 않는다.
 
-`afec/rs.py`의 단일 패리티 계수를 XOR과 같게 했다. 독립 바이트 XOR과 k=1,2,3,16,255에서 복구 25경우를 확인했다. 비용·선택 정책, 활성 L1 상태 형식 4, Go 소스, W0 세계와 매개변수는 바꾸지 않았다. 따라서 W1 정책 벤치와 Python/Go 정책 일치 관문은 다시 실행하지 않았다. 형식 차이는 `docs/R3_codec_format.md`에 기록했다.
+`afec/rs.py`의 단일 parity 계수를 XOR과 같게 했다. 독립 바이트 XOR과 k=1,2,3,16,255에서 복구 25경우를 확인했다. 비용·선택 정책, 활성 L1 상태 형식 4, Go 소스, W0 세계와 매개변수는 바꾸지 않았다. 따라서 W1 정책 벤치와 Python/Go 정책 일치 관문은 다시 실행하지 않았다. 형식 차이는 `docs/R3_codec_format.md`에 기록했다.
 
 Go 1.26.6과 quic-go v0.61.0으로 실제 빌더의 vet, Go 시험(PASS 231, SKIP 2, 감사 시점. SKIP 2개는 `M1_REFERENCE_GZIP`이 있어야 도는 M1 와이어 관문이다), 별도 hook 시험과 빌드를 통과했다. 바이너리 SHA-256은 `41424293588fde08d02a8821b4945ac07f4d0016c61480e0ee2db78936323dae`, 소스 지문은 `9798aa226a1a1246f425bfbe407e173e7d0b5b4324e22b92146bfdd8682b009a`다. 보존 stage는 `/home/scien/quicbed_gen33/stage.mBIfxw`다. `/tmp` 경로의 다음 호출에서는 파일이 없어 영속 경로 `/home/scien/quicbed_gen33/bin/qamp`로 지문을 확인했다. 빌더 검사는 GOFLAGS=-mod=readonly, GOTOOLCHAIN=local, GOPROXY=off와 go.mod/go.sum 불변도 확인한다. `build_server.sh`는 이미 즉시 거부하므로 유지했다.
 

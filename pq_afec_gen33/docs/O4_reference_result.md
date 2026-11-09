@@ -15,10 +15,10 @@
 
 관측 ClientHello 길이는261~9646 B였다. 실제 첫 k 분포는1이6연결,2가78연결,3이12연결,4가6연결,7과8이각6연결이다. 정책의 k≤4 지원 범위는 늘리지 않았다. 토큰 길이63·64 B 경계와 패킷 번호 길이 변화는 합성 대조에 포함했다. 기존 T3의 실제 토큰은 모두0 B다.
 
-예를 들어 ClientHello2737 B, DCID12 B, SCID4 B, 토큰0 B인 연결은 W1280 B에서 k3이다. 참조 계산은 W1200~1416 B에서3,1417~1452 B에서2를 반환한다. `natural_k`를 한 번 계산하고 모든 패딩 후보에 그 값을 고정하면 이 경계에서 실제 재패킹과 다르다. 현재 qamp는 정책 계획을 만든 뒤 tr.Dial에서 ClientHello를 생성하므로, 아직 첫 연결의300 µs 대기를 없앴다고 볼 수 없다.
+예를 들어 ClientHello2737 B, DCID12 B, SCID4 B, 토큰0 B인 연결은 W1280 B에서 k3이다. 참조 계산은 W1200~1416 B에서3,1417~1452 B에서2를 반환한다. `natural_k`를 한 번 계산하고 모든 padding 후보에 그 값을 고정하면 이 경계에서 실제 재패킹과 다르다. 현재 qamp는 정책 계획을 만든 뒤 tr.Dial에서 ClientHello를 생성하므로, 아직 첫 연결의300 µs 대기를 없앴다고 볼 수 없다.
 
-최초 재생기는 후속 ACK Initial까지 같은 첫 비행으로 묶어 CID 일치 검사에서 실패했다. 실패 소스·계획·로그를 남기고 v2에서 인증된 CRYPTO를 포함하는 첫 비행과 후속 ACK를 분리했다. 모든 원시 Initial의 인증 검사는 유지했고, 첫 k와 CRYPTO 패킷 수가 같으며 각 송신 callback이 첫 수신 callback보다 빠른지도 확인했다. 기준이나 원시 자료는 바꾸지 않았다.
+최초 재생기는 후속 ACK Initial까지 같은 first flight로 묶어 CID 일치 검사에서 실패했다. 실패 소스·계획·로그를 남기고 v2에서 인증된 CRYPTO를 포함하는 first flight와 후속 ACK를 분리했다. 모든 원시 Initial의 인증 검사는 유지했고, 첫 k와 CRYPTO 패킷 수가 같으며 각 송신 callback이 첫 수신 callback보다 빠른지도 확인했다. 기준이나 원시 자료는 바꾸지 않았다.
 
 Go 대조의 첫 실행은 존재하지 않는 goroot1.26.6 경로 때문에 실행 전 실패했다. 설치된 경로는/home/scien/goroot이며 도구가 보고한 판본은go1.26.6이다. 실패 stage와 로그를 보존하고 별도 stage에서 vet·빌드·대조를 통과했다. 이는 정책 Go 거울이나 활성 qamp 빌드가 아니라 고정 의존 소스의 산술 검증이다. 보호된 모듈 소스8개의 해시가 검증 전후 일치했다.
 
-근거는 runs/O4_packet_replay_v2/result.json, O4_probe_v1/result.json, O4_reference_verify_v1.json이다. 참조·시험·재생기 해시와76개 입력 해시를 기록했다. 활성 L1 상태4, Go 정책, W1 세계와 seed는 그대로다. 정책 변경과 새 네트워크 측정이 없어서 W1 성능 관문은 실행하지 않았다. 실제 토큰 재방문, SNI·ECH scrambling, Retry·응답 후 패킷화, 이번 ClientHello를 쓰는 정책·첫 비행 종료 연결은 남아 있다.
+근거는 runs/O4_packet_replay_v2/result.json, O4_probe_v1/result.json, O4_reference_verify_v1.json이다. 참조·시험·재생기 해시와76개 입력 해시를 기록했다. 활성 L1 상태4, Go 정책, W1 세계와 seed는 그대로다. 정책 변경과 새 네트워크 측정이 없어서 W1 성능 관문은 실행하지 않았다. 실제 토큰 재방문, SNI·ECH scrambling, Retry·응답 후 패킷화, 이번 ClientHello를 쓰는 정책·first flight 종료 연결은 남아 있다.

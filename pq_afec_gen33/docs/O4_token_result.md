@@ -18,6 +18,6 @@
 
 후속 구현은 현재 연결의 입력과 과거 관측 이력을 구분한다. 먼저 Python 후보에서 현재 k를 결정에 쓰되 k_hist를 덮어쓰지 않고, 첫 방문에도 expectK를 별도로 산출한다. 후보 W_eff에서 k가 달라지는 범위는 별도 판정하며 고정 k 산술로 처리하지 않는다. S 사전·RTT 추정·손실 사후분포 변경을 같은 후보에 섞지 않는다.
 
-Go 연결은 완성된 CH·실제 CID·토큰을 첫 송신 예약 전에 전달하는 훅이 필요하다. IPS를 바꾸면 Config.InitialPacketSize뿐 아니라 sentPacketHandler의 최대 데이터그램 크기와 maxPayloadSizeEstimate도 맞아야 한다. cached_k와 달리 첫 비행의 명시 종료를 신뢰하려면 전송 취소·잘림·Retry·PTO·명시 expect-k와의 우선순위를 시험해야 한다. 보호 모듈 캐시는 수정하지 않는다. 필요하면 이미 설치된 고정 소스를 개발용 사본으로 보존하고 사용한다.
+Go 연결은 완성된 CH·실제 CID·토큰을 첫 송신 예약 전에 전달하는 훅이 필요하다. IPS를 바꾸면 Config.InitialPacketSize뿐 아니라 sentPacketHandler의 최대 datagram 크기와 maxPayloadSizeEstimate도 맞아야 한다. cached_k와 달리 first flight의 명시 종료를 신뢰하려면 전송 취소·잘림·Retry·PTO·명시 expect-k와의 우선순위를 시험해야 한다. 보호 모듈 캐시는 수정하지 않는다. 필요하면 이미 설치된 고정 소스를 개발용 사본으로 보존하고 사용한다.
 
 O4는 계속 partial이다. 이 반복은 토큰 길이를 포함한 참조 범위를 검증했으며 정책·fecConn 연결, 전체 W1 비열등, Go 정책 거울은 아직 남아 있다. 활성 L1 상태4와 타이머300 µs는 유지한다. 근거는 runs/O4_token_replay_v1/result.json과 O4_token_verify_v1.json이다.

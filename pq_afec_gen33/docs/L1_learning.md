@@ -1,8 +1,8 @@
 # L1 도착 증거와 손실 학습
 
-2026-11-02 정정: 이 문서는 L1(상태 4, v3.3-dev)의 설명이다. 지금 활성 정책 v3.3.1-dev(상태 11)는 C1 회신이 확인되기 전 목적지에 v3.2-dev와 같은 1비트 이진 우도와 결정(shield·nominal2·guard 건너뛰기, guard 벌점, 16번째 재평가)을 쓰고, 아래의 데이터그램 우도와 HCT 3등급(범주) 우도는 C1 회신을 본 목적지에서만 쓴다. 그 목적지의 결정에는 guard 벌점이 없고 `arrival_streak`가 0보다 크면 16번째 재평가를 미룬다. 근거 `docs/V33FIX_policy.md`.
+2026-11-02 정정: 이 문서는 L1(상태 4, v3.3-dev)의 설명이다. 지금 활성 정책 v3.3.1-dev(상태 11)는 C1 회신이 확인되기 전 목적지에 v3.2-dev와 같은 1비트 이진 우도와 결정(shield·nominal2·guard 건너뛰기, guard 벌점, 16번째 재평가)을 쓰고, 아래의 datagram 우도와 HCT 3등급(범주) 우도는 C1 회신을 본 목적지에서만 쓴다. 그 목적지의 결정에는 guard 벌점이 없고 `arrival_streak`가 0보다 크면 16번째 재평가를 미룬다. 근거 `docs/V33FIX_policy.md`.
 
-`padfec3.learn3.observe3`는 연결마다 데이터그램 우도, HCT 3등급 우도, 예측 전용 중 하나를 적용한다. 도착 증거가 완전하면 HCT와 관계없이 데이터그램 우도를 쓴다. 상태 버전은 4, 정책 버전은 `v3.3-dev`다. 결정 점수의 guard 벌점과 16번째 재평가 규칙은 유지한다.
+`padfec3.learn3.observe3`는 연결마다 datagram 우도, HCT 3등급 우도, 예측 전용 중 하나를 적용한다. 도착 증거가 완전하면 HCT와 관계없이 datagram 우도를 쓴다. 상태 버전은 4, 정책 버전은 `v3.3-dev`다. 결정 점수의 guard 벌점과 16번째 재평가 규칙은 유지한다.
 
 이 구현은 L1의 도착 우도와 최소 categorical fallback을 포함한다. 목적지별 EPS Beta 추정과 역사 자료의 등급 재생은 L2, 감시·벌점·재평가 변경은 L3, Go 이식은 G1의 범위다. Python 단위시험 통과를 W1 전체 성능이나 실측 검증 완료로 해석하지 않는다.
 
@@ -13,16 +13,16 @@
 | 필드 | 의미와 검증 |
 |---|---|
 | `src` | `c1`, `ack`, `none` 중 하나다. |
-| `sent` | 첫 비행에서 전송한 원본과 패리티의 데이터그램 수다. bool을 제외한 정수 0..8이다. 상한은 현재 k≤4, m≤4 지원 범위다. |
-| `lost` | 그 첫 비행에서 서버에 도착하지 않은 수다. bool을 제외한 정수이며 0≤lost≤sent다. |
+| `sent` | first flight에서 전송한 원본과 parity의 datagram 수다. bool을 제외한 정수 0..8이다. 상한은 현재 k≤4, m≤4 지원 범위다. |
+| `lost` | 그 first flight에서 서버에 도착하지 않은 수다. bool을 제외한 정수이며 0≤lost≤sent다. |
 | `bitmap` | null 또는 정수 0/1 목록이다. 1은 물리 도착, 0은 확인된 미도착이며 복구 성공 표식이 아니다. 완전 자료는 길이가 sent이고 0의 수가 lost여야 한다. |
 | `trunc` | bool이다. true인 자료는 censored로 처리한다. 부분 bitmap은 길이≤sent만 검사하고 그 계수나 빠진 위치를 손실 학습에 쓰지 않는다. |
 
-`src=none`에 남아 있는 0이 아닌 계수도 진단에 보존하지만 데이터그램 우도에 넣지 않는다. `sent=0`, `trunc=true` 역시 유효한 완전 증거가 아니다. 잘못된 필드나 범위는 ValueError로 거부한다. `observe3`는 사본에서 검증·갱신한 뒤 성공한 경우에만 원래 상태에 반영하므로 오류가 나면 원래 상태 전체가 유지된다.
+`src=none`에 남아 있는 0이 아닌 계수도 진단에 보존하지만 datagram 우도에 넣지 않는다. `sent=0`, `trunc=true` 역시 유효한 완전 증거가 아니다. 잘못된 필드나 범위는 ValueError로 거부한다. `observe3`는 사본에서 검증·갱신한 뒤 성공한 경우에만 원래 상태에 반영하므로 오류가 나면 원래 상태 전체가 유지된다.
 
-count-only의 `bitmap=null`도 c1 또는 ack가 전체 첫 비행의 완전한 계수를 보증하면 사용할 수 있다. API는 ACK가 실제 물리 도착을 보증하는지 판정하지 않는다. 호출자는 복구 원본의 ACK, ACK 유실, 미확인 패리티, 늦은 도착을 포함한 불완전 자료를 none 또는 censored로 내려야 한다. C1과 ACK를 같은 연결에 두 번 호출해 합치면 안 된다.
+count-only의 `bitmap=null`도 c1 또는 ack가 전체 first flight의 완전한 계수를 보증하면 사용할 수 있다. API는 ACK가 실제 물리 도착을 보증하는지 판정하지 않는다. 호출자는 복구 원본의 ACK, ACK 유실, 미확인 parity, 늦은 도착을 포함한 불완전 자료를 none 또는 censored로 내려야 한다. C1과 ACK를 같은 연결에 두 번 호출해 합치면 안 된다.
 
-실제 C1 입력은 첫 비행 CRC 목록과 맞춘 계수여야 한다. 원시 `RxOrigN`에는 재전송이 섞일 수 있다. `FbRxRetx`는 클라이언트→서버의 첫 비행 목록 밖 CRC 개수이며 서버 응답의 재전송 바이트가 아니다. 전멸 증거는 lost=sent로 받을 수 있지만 학습기는 PTO, 실패, 회신 부재만 보고 그 값을 만들지 않는다. C2와 회신 관측의 자격 판정은 별도 관측 어댑터의 책임이다.
+실제 C1 입력은 first flight CRC 목록과 맞춘 계수여야 한다. 원시 `RxOrigN`에는 재전송이 섞일 수 있다. `FbRxRetx`는 클라이언트→서버의 first flight 목록 밖 CRC 개수이며 서버 응답의 재전송 바이트가 아니다. 전멸 증거는 lost=sent로 받을 수 있지만 학습기는 PTO, 실패, 회신 부재만 보고 그 값을 만들지 않는다. C2와 회신 관측의 자격 판정은 별도 관측 어댑터의 책임이다.
 
 ## 우도와 연결 시계
 
@@ -40,7 +40,7 @@ count-only의 `bitmap=null`도 c1 또는 ack가 전체 첫 비행의 완전한 �
 
 각 격자의 등급 확률은 `layout.evaluate`의 p_one_rtt, p_two_rtt, p_fail이다. `model_point`의 기존 4원소 반환값은 유지하고 같은 캐시 항목에 등급 확률을 함께 보관한다. EPS는 0.001로 고정하고, 확률 q에 `(1-EPS)*q + EPS*(1-q)/2`를 적용한다. EPS는 다른 두 등급으로 잘못 라벨될 총확률이다. 세 등급 전체의 균등 오염식과 구별한다. 목적지별 EPS 갱신은 아직 없다.
 
-현재 p_fail은 첫 비행 복구 실패 질량이다. 시간 경계보다 늦은 모든 HCT의 확률과 같지는 않다. 역방향 손실, 지터, RTT200 탐침, 둘째 왕복 꼬리는 등급 모형 오차를 만들 수 있다. J1 이후 꼬리 질량, J2 처리 시간, O3 RTT 보정과 연결해야 한다. 감사의 내부 정답 등급을 이용한 model-world 성능 수치와 동일한 분류기라고 주장하지 않는다.
+현재 p_fail은 first flight 복구 실패 질량이다. 시간 경계보다 늦은 모든 HCT의 확률과 같지는 않다. 역방향 손실, 지터, RTT200 탐침, 둘째 왕복 꼬리는 등급 모형 오차를 만들 수 있다. J1 이후 꼬리 질량, J2 처리 시간, O3 RTT 보정과 연결해야 한다. 감사의 내부 정답 등급을 이용한 model-world 성능 수치와 동일한 분류기라고 주장하지 않는다.
 
 ## 진단과 상태
 
@@ -48,7 +48,7 @@ count-only의 `bitmap=null`도 c1 또는 ack가 전체 첫 비행의 완전한 �
 
 `legacy_y`, `legacy_skip_reason`, `legacy_shielded`는 이전 1비트 라벨과 skip 조건을 진단용으로 보존한다. 1비트 y는 손실 우도에 사용하지 않는다. 기존 `likelihood` 함수와 EPS=0.01은 역사적 이진 모형 검산용으로 남아 있지만 `observe3`가 호출하지 않는다. HCT/S 창과 guard 잔차는 기존 규칙을 유지한다. 특히 S_hist의 y 기반 표본 선택은 L5 전까지 남으므로 도착 우도를 넣었다고 S 추정까지 교정된 것은 아니다.
 
-상태 카운터 `predict`는 모든 연결의 hazard 전이 횟수라는 기존 의미다. `datagram`, `categorical`, `predict_only`는 실제 경로별 연결 수이고 앞의 두 수의 합이 `upd`다. `arr_c1`, `arr_ack`, `arr_none`은 받은 증거원별 연결 수, `arr_trunc`와 `arr_empty`는 불완전·빈 계수 표식 수다. `arr_sent`, `arr_lost`에는 실제 도착 우도에 사용한 데이터그램만 합산한다. `grade_*`는 판정 가능한 시간 등급 수이며 문맥 없는 실패의 2등급도 포함한다.
+상태 카운터 `predict`는 모든 연결의 hazard 전이 횟수라는 기존 의미다. `datagram`, `categorical`, `predict_only`는 실제 경로별 연결 수이고 앞의 두 수의 합이 `upd`다. `arr_c1`, `arr_ack`, `arr_none`은 받은 증거원별 연결 수, `arr_trunc`와 `arr_empty`는 불완전·빈 계수 표식 수다. `arr_sent`, `arr_lost`에는 실제 도착 우도에 사용한 datagram만 합산한다. `grade_*`는 판정 가능한 시간 등급 수이며 문맥 없는 실패의 2등급도 포함한다.
 
 `no_base`, `no_ctx`, `nominal2`, `shield`, `guard`는 legacy 라우팅의 진단 수다. 이전 우선순위를 유지하므로 baseline이 없으면 no_ctx보다 no_base가 먼저 잡힌다. 실제 학습 누락 수는 `predict_only`와 반환 진단을 봐야 한다. `events`는 실제 우도 경로와 무관하게 y=1인 연결 수다.
 

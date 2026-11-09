@@ -64,7 +64,7 @@ export CGO_ENABLED=0 GOFLAGS=-mod=readonly GOTOOLCHAIN=local GOPROXY=off GOSUMDB
 go test -count=1 -run 'TestPolicyCreditMatchesDecoder|TestParityWireSize' -v ./cmd/qamp
 ```
 
-`TestHoldQUICReferencePathUnusedParityBeforeFirstCrypto`는 부하가 있을 때 간헐로 `count=2 want=3`으로 실패했다. 시험이 실제 타이머와 실제 UDP로 경로를 흉내 내서, 스케줄링 지터가 hold margin 1 ms를 넘으면 deadline이 마지막 original보다 먼저 터졌기 때문이다. FLK-01(커밋 `948dafe85`)은 첫 flight 동안 시험의 hold 시계를 도착 datagram의 serialization 시간으로만 진행시켜 이 원인을 고쳤다. FLK-02(커밋 `5e870f1b7`)는 같은 시험 묶음에서 첫 flight가 1 ms flush 타이머 때문에 k=1로 나가던 경합을 고쳤다. 두 커밋은 시험 파일만 바꿨다.
+`TestHoldQUICReferencePathUnusedParityBeforeFirstCrypto`는 부하가 있을 때 간헐로 `count=2 want=3`으로 실패했다. 시험이 실제 타이머와 실제 UDP로 경로를 흉내 내서, 스케줄링 지터가 hold margin 1 ms를 넘으면 deadline이 마지막 original보다 먼저 터졌기 때문이다. FLK-01(커밋 `948dafe85`)은 first flight 동안 시험의 hold 시계를 도착 datagram의 serialization 시간으로만 진행시켜 이 원인을 고쳤다. FLK-02(커밋 `5e870f1b7`)는 같은 시험 묶음에서 first flight가 1 ms flush 타이머 때문에 k=1로 나가던 경합을 고쳤다. 두 커밋은 시험 파일만 바꿨다.
 
 재시도 규칙은 `tools/final_check.py`에 그대로 남아 있다. 첫 빌드가 rc 4이고, 실패한 시험이 이 시험 하나뿐이고, 출력에 `count=2 want=3`이 있고, race, panic, fatal error, 빌드 실패, timeout, 공간 부족, kill, undefined 같은 다른 오류가 없을 때만 Go 빌드 전체를 한 번 다시 돈다. 두 번째도 실패하면 검증 실패다. FLK-01 뒤 2026-11-07에 돌린 `tools/final_check.py` 전체 실행 세 번(HEAD `086ee5e32` 한 번, `ed71b1780` 두 번)에서는 재시도가 없었다. 세 번의 통과는 간헐 실패가 사라졌다는 확증이 아니므로 재시도 규칙을 지우지 않았다.
 

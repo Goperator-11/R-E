@@ -1,8 +1,8 @@
 # E12 L1 Go 구현과 비교 계약
 
-2026-11-02 정정: 활성 정책은 이제 v3.3.1-dev(상태 11)이고 Go에도 그 판이 옮겨졌다. C1 회신이 확인되기 전 목적지는 v3.2-dev와 같은 1비트 이진 우도·결정을 쓰고, 아래의 데이터그램 우도와 HCT 3등급 우도는 C1 회신을 본 목적지(c1 경로)에서만 쓴다. 이 계약의 E12 L1 참조(`g3/v33/E12_l1_reference_v1.json`)와 생성기(`g3/l1_go_reference_gen.py`)는 새 정책에 맞지 않고, 지금 관문 참조는 `g3/v33/V33FIX_policy_reference_v1.json`이다. 근거 `docs/V33FIX_policy.md`, `docs/V33FIX_policy_go.md`.
+2026-11-02 정정: 활성 정책은 이제 v3.3.1-dev(상태 11)이고 Go에도 그 판이 옮겨졌다. C1 회신이 확인되기 전 목적지는 v3.2-dev와 같은 1비트 이진 우도·결정을 쓰고, 아래의 datagram 우도와 HCT 3등급 우도는 C1 회신을 본 목적지(c1 경로)에서만 쓴다. 이 계약의 E12 L1 참조(`g3/v33/E12_l1_reference_v1.json`)와 생성기(`g3/l1_go_reference_gen.py`)는 새 정책에 맞지 않고, 지금 관문 참조는 `g3/v33/V33FIX_policy_reference_v1.json`이다. 근거 `docs/V33FIX_policy.md`, `docs/V33FIX_policy_go.md`.
 
-활성 Python L1의 상태4와 정책 v3.3-dev를 Go에 옮긴다. J7의 46 B 후보는 보존 사본에 두고 이번 비교는 현재 39 B 기하를 쓴다. 도착 자료가 완전하면 데이터그램 우도를 쓰고, 그렇지 않으면 관측 전 문맥의 HCT 3등급 우도를 쓴다. 문맥도 없으면 hazard 예측만 한다. 기존 shield·nominal2·guard 분류는 진단 계수로 남긴다.
+활성 Python L1의 상태4와 정책 v3.3-dev를 Go에 옮긴다. J7의 46 B 후보는 보존 사본에 두고 이번 비교는 현재 39 B 기하를 쓴다. 도착 자료가 완전하면 datagram 우도를 쓰고, 그렇지 않으면 관측 전 문맥의 HCT 3등급 우도를 쓴다. 문맥도 없으면 hazard 예측만 한다. 기존 shield·nominal2·guard 분류는 진단 계수로 남긴다.
 
 Python 입력과 기대값을 Go 구현 실행 전에 생성해 SHA-256으로 고정한다. 보충 자료는 sent 1..8의 모든 lost 값, k 1·2·4, W 1280, u 0·2 Mbps, RTT 50·200 ms, 필요 패킷 1·7·20, delta 0·16, m 0..4의 모든 lead를 포함한다. 등급 경계는 두 cutoff 각각의 바로 아래·동일·바로 위 IEEE 754 값을 검사한다. 관측 자료는 완전·잘림·빈 도착·출처 none·실패·문맥 없음·기존 guard를 포함한다. 잘못된 자료는 예외와 상태 불변을 검사한다.
 

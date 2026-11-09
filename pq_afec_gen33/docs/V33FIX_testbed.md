@@ -75,7 +75,7 @@ T7 러너(Python)는 아직 없다. `g3bed.new_conns`류 코드는 이 JSONL을 
 
 ## F5: pad/dup 팔의 drop-parity 장부
 
-문제. `emit`의 drop-parity 분기가 슬롯 종류와 상관없이 `ffParCRC`에 CRC를 넣었다. 실제로 보낸 pad·dup 슬롯은 넣지 않으므로, pad_junk는 버린 쓰레기 슬롯만 "보냈으나 잃은 패리티"로 세고 dup은 원본과 CRC가 겹쳐 검열됐다(감사 F5, 문서).
+문제. `emit`의 drop-parity 분기가 슬롯 종류와 상관없이 `ffParCRC`에 CRC를 넣었다. 실제로 보낸 pad·dup 슬롯은 넣지 않으므로, pad_junk는 버린 쓰레기 슬롯만 "보냈으나 잃은 parity"로 세고 dup은 원본과 CRC가 겹쳐 검열됐다(감사 F5, 문서).
 
 바꾼 것. `qamp.go` `emit`: 슬롯 종류가 parity일 때만 버린 슬롯의 CRC를 장부에 넣는다. `DroppedPar` 계수는 그대로 센다. pad·dup 슬롯은 보냈든 버렸든 C1 장부에 들어가지 않는다.
 
@@ -113,15 +113,15 @@ T7 러너(Python)는 아직 없다. `g3bed.new_conns`류 코드는 이 JSONL을 
 
 GitHub에서 실제로 돌린 결과는 아니다. 원격 저장소가 없어서 돌리지 않았다.
 
-## F3: lead-hold의 신용 성질(동작 유지)
+## F3: lead-hold의 credit 성질(동작 유지)
 
-hold 경로는 결정이 열린 뒤에도 남은 심벌이 누락 수보다 적으면 선행 패리티를 계속 보류하고(`hold.go` 152~155행), TTL 1 s에 도달하면 `tickHoldIndexLocked`의 case 0에서 `expired`로 버린다(`decoder_index.go` 339~342행). 버린 패리티는 스택에 넘어가지 않으므로 증폭 신용이 되지 않는다. 복구에 쓴 선행 패리티도 스택에 넘어가지 않는다. 이것은 `docs/M1_hold_contract.md` "회계와 수명" 절이 정한 설계이고, Python 참조(`hold_wire_reference.py`)와 700116사례 와이어 관문이 이 동작에 묶여 있다. 그래서 동작은 바꾸지 않았다.
+hold 경로는 결정이 열린 뒤에도 남은 심벌이 누락 수보다 적으면 선행 parity를 계속 보류하고(`hold.go` 152~155행), TTL 1 s에 도달하면 `tickHoldIndexLocked`의 case 0에서 `expired`로 버린다(`decoder_index.go` 339~342행). 버린 parity는 스택에 넘어가지 않으므로 증폭 credit이 되지 않는다. 복구에 쓴 선행 parity도 스택에 넘어가지 않는다. 이것은 `docs/M1_hold_contract.md` "회계와 수명" 절이 정한 설계이고, Python 참조(`hold_wire_reference.py`)와 700116사례 와이어 관문이 이 동작에 묶여 있다. 그래서 동작은 바꾸지 않았다.
 
-해석 주의. 감사 F3 검증자가 lead1·m2·k2로 잰 값(문서)은 다음과 같다. L0만 도착하고 복구가 불가능한 비행에서 hold는 BytesToStack 2350 B, HoldExpired 1246 B, 신용 패리티 0이고, hold를 끈 경로는 BytesToStack 3596 B, 신용 패리티 1이다. 복구가 되는 L0+O0에서는 legacy가 2446 B·신용 1·복구 0, hold가 2350 B·신용 0·복구 1이다. 따라서 X1의 "m4L3 대 m4L3+보류 복호"와 X6의 "v33auto 보류 복호 켬" 팔에서는 "같은 바이트, 같은 신용"이라는 전제가 성립하지 않는다. hold 팔의 결과로 "같은 바이트가 신용과 복구를 함께 산다"고 쓰면 안 된다. 두 팔의 차이에는 복구 이득과 신용 손실이 함께 들어 있다.
+해석 주의. 감사 F3 검증자가 lead1·m2·k2로 잰 값(문서)은 다음과 같다. L0만 도착하고 복구가 불가능한 비행에서 hold는 BytesToStack 2350 B, HoldExpired 1246 B, credit parity 0이고, hold를 끈 경로는 BytesToStack 3596 B, credit parity 1이다. 복구가 되는 L0+O0에서는 legacy가 2446 B·credit 1·복구 0, hold가 2350 B·credit 0·복구 1이다. 따라서 X1의 "m4L3 대 m4L3+보류 복호"와 X6의 "v33auto 보류 복호 켬" 팔에서는 "같은 바이트, 같은 credit"이라는 전제가 성립하지 않는다. hold 팔의 결과로 "같은 바이트가 credit과 복구를 함께 산다"고 쓰면 안 된다. 두 팔의 차이에는 복구 이득과 credit 손실이 함께 들어 있다.
 
 ## F6: cached_k 과소 추정에 의한 첫 묶음 분할(문서)
 
-cached_k가 실제 k보다 작으면 첫 묶음이 일찍 끝나고, 남은 원본은 다음 묶음(`pre_response_followup`)으로 나간다. `split_suspected`는 실제 크기가 예상보다 작을 때만 켜지고(`flight_trace.go` 83행), 첫 묶음 뒤에는 예상 k가 0이 된다(`flight_input.go` 22~27행). 그래서 이 분할은 표시되지 않는다. C1 첫 비행 장부도 앞 묶음만 덮으므로, 그 연결의 학습 입력은 실제 첫 비행의 일부만 본 관측이다. `docs/T5_timing_contract.md`와 D26이 이 한계를 이미 적었다. 이번에 코드는 바꾸지 않았다. 분석할 때는 `flight_expectation.source`가 cached_k이고 `flight_trace`에 첫 묶음 직후 parity-delay 안에 시작한 후속 묶음이 있는 연결을 따로 떼어 본다. `-profile sealed31`은 expect-k를 0으로 두므로 이 경로를 타지 않는다.
+cached_k가 실제 k보다 작으면 첫 묶음이 일찍 끝나고, 남은 원본은 다음 묶음(`pre_response_followup`)으로 나간다. `split_suspected`는 실제 크기가 예상보다 작을 때만 켜지고(`flight_trace.go` 83행), 첫 묶음 뒤에는 예상 k가 0이 된다(`flight_input.go` 22~27행). 그래서 이 분할은 표시되지 않는다. C1 first flight 장부도 앞 묶음만 덮으므로, 그 연결의 학습 입력은 실제 first flight의 일부만 본 관측이다. `docs/T5_timing_contract.md`와 D26이 이 한계를 이미 적었다. 이번에 코드는 바꾸지 않았다. 분석할 때는 `flight_expectation.source`가 cached_k이고 `flight_trace`에 첫 묶음 직후 parity-delay 안에 시작한 후속 묶음이 있는 연결을 따로 떼어 본다. `-profile sealed31`은 expect-k를 0으로 두므로 이 경로를 타지 않는다.
 
 ## F8: Go 시험 수 보고와 와이어 관문
 
@@ -303,7 +303,7 @@ G3h는 지금 받아들여지는 모든 플래그 조합에서 결과가 같은 
 
 ### 6. retrans-layout 기본값을 적은 문서 (새 문제 2, handoff 4)
 
-`T6_retrans_contract.md`, `T6_result.md`, `M4_revisit_policy_contract.md`, `T3_comparison_contract.md`, `J3_reference_result.md`, `J3_diagnostic_plan.md`, `O2_world_result.md`, `J5_world_diagnostic_plan.md` 맨 위에 "2026-11-02 정정:" 줄을 넣고 본문은 그대로 두었다. 각 줄은 그 문서가 original_first를 기본값으로 적은 자리를 가리키고, 지금 기본값 repeat_first와 명시 옵션 original_first, 근거(이 문서와 루프 결정 D43)를 적는다. M4 계약과 T3 계약에는 "활성 L1 상태4"가 지금은 v3.3.1-dev(상태 판본 11)라는 점, O2 결과에는 1457 B 패리티 후보가 v3 후보의 1452 B 상한(`policy.QUICGO_MAX_IPS`, `docs/V33FIX_policy.md`)으로 빠진다는 점, J3 결과에는 지금 기본 와이어의 후속 묶음이 그 문서의 "과거 repeat_first 와이어"와 같은 규칙이라는 점을 더했다. D28 본문은 루프 묶음의 파일이라 고치지 않았다. `DECISIONS_NEEDED.md` 67행 D28 제목에 "2026-11-02 D43으로 대체됨"이 이미 붙어 있음을 읽어서 확인했다.
+`T6_retrans_contract.md`, `T6_result.md`, `M4_revisit_policy_contract.md`, `T3_comparison_contract.md`, `J3_reference_result.md`, `J3_diagnostic_plan.md`, `O2_world_result.md`, `J5_world_diagnostic_plan.md` 맨 위에 "2026-11-02 정정:" 줄을 넣고 본문은 그대로 두었다. 각 줄은 그 문서가 original_first를 기본값으로 적은 자리를 가리키고, 지금 기본값 repeat_first와 명시 옵션 original_first, 근거(이 문서와 루프 결정 D43)를 적는다. M4 계약과 T3 계약에는 "활성 L1 상태4"가 지금은 v3.3.1-dev(상태 판본 11)라는 점, O2 결과에는 1457 B parity 후보가 v3 후보의 1452 B 상한(`policy.QUICGO_MAX_IPS`, `docs/V33FIX_policy.md`)으로 빠진다는 점, J3 결과에는 지금 기본 와이어의 후속 묶음이 그 문서의 "과거 repeat_first 와이어"와 같은 규칙이라는 점을 더했다. D28 본문은 루프 묶음의 파일이라 고치지 않았다. `DECISIONS_NEEDED.md` 67행 D28 제목에 "2026-11-02 D43으로 대체됨"이 이미 붙어 있음을 읽어서 확인했다.
 
 ### 7. c1_status.md
 
@@ -334,7 +334,7 @@ M1 기준 gzip은 `g3/v33/validation/M1_stage1/runs/M1_wire_reference_02.tsv.gz`
 
 ### loopback (직접)
 
-`round2\e2e_g.sh`. 지금 트리의 바이너리(`qamp_cur`, 위 sha)와, 같은 트리에서 `qamp.go`와 `flight_shape.go`만 첫 시도 전 상태(1차 B 결과, `round2\orig`)로 되돌린 바이너리(`qamp_preG`, sha256 `8be4c740b95376fb9dfa865b3bec3e139ae5a8296b8151f87446457200a1a5f4`)를 같은 순서로 돌렸다. 다섯 경우의 출력 줄(행 수, 프로필, 재전송 모양, 대기, tracer, 첫 묶음 기대, arrivals, 패리티 수, 서버 stats, conn-log)이 두 바이너리에서 한 줄도 다르지 않았다. 아래는 `qamp_cur` 쪽 출력에서 `client_rc=0` 줄(10번 모두 0)만 뺀 것이다. 각 경우의 명령은 다음과 같다. 봉인 재현은 서버 `-profile sealed31 -fec on -conn-log`, 클라이언트 `-profile sealed31 -fec on -layout v3 -m 4 -lead 3 -expect-k 2 -gap 50ms -timeout 10s -n 4`다. v33auto는 서버 `-profile sealed31 -fec on -feedback`, 클라이언트 `-profile sealed31 -fec auto3 -cache3 … -feedback -n 4`다. 기본 행은 서버 `-fec on`, 클라이언트 `-fec on -layout v3 -m 2 -lead 1 -n 4`다. 후속 묶음 강제는 서버 `-fec on`, 클라이언트 `-fec on -layout v3 -m 2 -lead 1 -expect-k 2 -drop-initial 0,1 -drop-parity 0 -n 3`이고 둘째 줄만 `-retrans-layout original_first`를 더했다. n=3~4 기능 확인이고 효과 크기가 아니다.
+`round2\e2e_g.sh`. 지금 트리의 바이너리(`qamp_cur`, 위 sha)와, 같은 트리에서 `qamp.go`와 `flight_shape.go`만 첫 시도 전 상태(1차 B 결과, `round2\orig`)로 되돌린 바이너리(`qamp_preG`, sha256 `8be4c740b95376fb9dfa865b3bec3e139ae5a8296b8151f87446457200a1a5f4`)를 같은 순서로 돌렸다. 다섯 경우의 출력 줄(행 수, 프로필, 재전송 모양, 대기, tracer, 첫 묶음 기대, arrivals, parity 수, 서버 stats, conn-log)이 두 바이너리에서 한 줄도 다르지 않았다. 아래는 `qamp_cur` 쪽 출력에서 `client_rc=0` 줄(10번 모두 0)만 뺀 것이다. 각 경우의 명령은 다음과 같다. 봉인 재현은 서버 `-profile sealed31 -fec on -conn-log`, 클라이언트 `-profile sealed31 -fec on -layout v3 -m 4 -lead 3 -expect-k 2 -gap 50ms -timeout 10s -n 4`다. v33auto는 서버 `-profile sealed31 -fec on -feedback`, 클라이언트 `-profile sealed31 -fec auto3 -cache3 … -feedback -n 4`다. 기본 행은 서버 `-fec on`, 클라이언트 `-fec on -layout v3 -m 2 -lead 1 -n 4`다. 후속 묶음 강제는 서버 `-fec on`, 클라이언트 `-fec on -layout v3 -m 2 -lead 1 -expect-k 2 -drop-initial 0,1 -drop-parity 0 -n 3`이고 둘째 줄만 `-retrans-layout original_first`를 더했다. n=3~4 기능 확인이고 효과 크기가 아니다.
 
 ```
 == cur sealed31 both sides, no -feedback (sealed v3.1 reproduction, m4L3)

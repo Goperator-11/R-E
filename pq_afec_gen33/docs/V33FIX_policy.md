@@ -8,11 +8,11 @@
 
 `c1_seen`이 False인 목적지(C1 회신이 없는 표준 서버, 기본 배포 경로)는 관측과 결정이 v3.2-dev(기준선 90859b973의 `padfec3`)와 같다. 1비트 이진 우도(`likelihood`, EPS 0.01), 명목 2-RTT·shield·guard 건너뛰기, guard 가산 벌점, 16번째 재평가, 64결정 뒤 경보 해제가 모두 그대로다.
 
-`c1_seen`이 True인 목적지는 관측이 L1과 같다. 완전한 회신은 데이터그램 우도, 회신이 빠지거나 잘린 연결은 HCT 3등급 우도(CLASS_EPS 1e-3), 문맥이 없으면 예측만 한다. 결정은 L3 record_only 진단 팔(`g3/v33/policy_snapshots/L3_record_only_v1`)과 같다. guard 가산 벌점이 없고, `arrival_streak > 0`인 동안 16번째 재평가를 하지 않으며, β 반응이 없다. guard 잔차 창(`g_resid`, `g_common`)은 기록만 하고 경보는 세우지 않는다.
+`c1_seen`이 True인 목적지는 관측이 L1과 같다. 완전한 회신은 datagram 우도, 회신이 빠지거나 잘린 연결은 HCT 3등급 우도(CLASS_EPS 1e-3), 문맥이 없으면 예측만 한다. 결정은 L3 record_only 진단 팔(`g3/v33/policy_snapshots/L3_record_only_v1`)과 같다. guard 가산 벌점이 없고, `arrival_streak > 0`인 동안 16번째 재평가를 하지 않으며, β 반응이 없다. guard 잔차 창(`g_resid`, `g_common`)은 기록만 하고 경보는 세우지 않는다.
 
 `c1_seen`이 켜지는 관측에서 그때까지의 guard 경보(`g_alarm`)를 모두 지우고 `stats.alarm_cleared`에 그 수를 더한다. 그 관측 자체는 c1 규칙으로 처리한다. 그래서 c1 목적지에는 경보가 남지 않는다.
 
-v3 후보의 패리티 데이터그램 상한을 1452 B(`policy.QUICGO_MAX_IPS`)로 내렸다. `decide3.UDP_MAX`의 값을 `quantum.TYPICAL_MTU - 28`(1472)에서 `policy.QUICGO_MAX_IPS`(1452)로 바꿨다. 이 상수를 쓰는 곳은 `candidates3`의 m>0 후보 거르기, `experiments/v33/uplink_reference.py:114`의 후보 크기 검사, `g3/policy3_reference_gen.py:342`가 Go 참조에 쓰는 `udp_max` 상수 셋이다. 셋 다 "패리티 데이터그램이 넘으면 안 되는 크기"라는 뜻이라 새 상수를 따로 만들지 않고 값을 바꿨다. gen-2 경로(`padfec/policy.py decide_v2`)는 그대로라 1457 B 패리티 후보를 계속 만든다.
+v3 후보의 parity datagram 상한을 1452 B(`policy.QUICGO_MAX_IPS`)로 내렸다. `decide3.UDP_MAX`의 값을 `quantum.TYPICAL_MTU - 28`(1472)에서 `policy.QUICGO_MAX_IPS`(1452)로 바꿨다. 이 상수를 쓰는 곳은 `candidates3`의 m>0 후보 거르기, `experiments/v33/uplink_reference.py:114`의 후보 크기 검사, `g3/policy3_reference_gen.py:342`가 Go 참조에 쓰는 `udp_max` 상수 셋이다. 셋 다 "parity datagram이 넘으면 안 되는 크기"라는 뜻이라 새 상수를 따로 만들지 않고 값을 바꿨다. gen-2 경로(`padfec/policy.py decide_v2`)는 그대로라 1457 B parity 후보를 계속 만든다.
 
 ### 상태와 결정 규칙의 순서
 
@@ -24,7 +24,7 @@ v3 후보의 패리티 데이터그램 상한을 1452 B(`policy.QUICGO_MAX_IPS`)
 2. `src`가 c1/ack이고 `c1_seen`이 False면 `enter_c1`: `c1_seen=True`, `alarm_cleared += len(g_alarm)`, `g_alarm={}`.
 3. `c1_seen`이면 `_observe_c1`, 아니면 `_observe_none`.
    - `_observe_none`은 v3.2 `_observe3` 본문 그대로다. 기준선과 y, 잔차, `obs`/`fail`, `guard_observe`(기록 뒤 경보 검사), skip(shield/nominal2, 그다음 경보면 guard), y 없음이면 `no_base`, 문맥 없음이면 `no_ctx`, skip이면 그 사유, 아니면 `likelihood(ctx, action, y)`로 갱신하고 `upd`, `events`(y=1일 때)를 센다. 갱신이 없으면 `predict_step`. 종류는 `binary` 또는 `predict_only`, `arr_none`을 센다.
-   - `_observe_c1`은 L3 record 팔의 관측과 같다. 등급과 경계, 기준선과 y, 잔차, `obs`/`fail`, `guard_record`(경보 검사 없음), legacy skip 진단, `events`(y=1이면 항상), `arr_<src>`, `arr_trunc`, `arr_empty`, 등급 수, 사유(`source_none`/`truncated`/`empty`/없음)에 따라 데이터그램, 범주, 예측만. 끝에 `arrival_streak = min(8, arrival_streak+1)`(쓸 수 있는 회신) 또는 0.
+   - `_observe_c1`은 L3 record 팔의 관측과 같다. 등급과 경계, 기준선과 y, 잔차, `obs`/`fail`, `guard_record`(경보 검사 없음), legacy skip 진단, `events`(y=1이면 항상), `arr_<src>`, `arr_trunc`, `arr_empty`, 등급 수, 사유(`source_none`/`truncated`/`empty`/없음)에 따라 datagram, 범주, 예측만. 끝에 `arrival_streak = min(8, arrival_streak+1)`(쓸 수 있는 회신) 또는 0.
 4. 공통 끝: `stats[kind] += 1`, `predict += 1`, 성공이면 `k_hist`, `hct`, `hct_seq`, `seq`, (y≠1이면) `S_hist`.
 
 `decide3` 순서:
@@ -48,7 +48,7 @@ v3 후보의 패리티 데이터그램 상한을 1452 B(`policy.QUICGO_MAX_IPS`)
 - C-E7(C-world-and-stats.md): FIX의 "L1을 'C1 서버 전용 조건부 채택'으로 표기하고 기본 경로에는 v32 동작을 유지한다"를 구현했다.
 - B-E2(B-active-algorithm.md)와 H-05(H-coverage.md): 같은 none 경로를 L1에서는 진단으로, 후속 후보에서는 관문으로 다룬 비대칭이다. none 경로가 v3.2와 비트 단위로 같아졌으므로 none 대 v32 비교는 구성상 차이 0이다(아래 재생 결과). 후속 후보의 none 기준선을 v32로 둘지는 판정 규칙 문제라 이 묶음에서 바꾸지 않았다.
 - D-E3(D-rejected-learning.md): "10-29 처방 (1)의 감시층 가산 벌점과 16번째 재평가가 여전히 활성이다". FIX는 "β 반응을 뺀 record 팔(벌점 제거, arrivals가 있을 때 재평가 제거)"이다. c1 목적지에서 이것을 적용했다. none 목적지에는 v3.2와 같게 두라는 설계라 벌점과 재평가가 남는다.
-- D-E4(D-rejected-learning.md): "활성 정책이 1452 B를 넘는 패리티 후보를 계속 만든다". FIX의 "1452 B 상한(UDP_MAX와 p3UDPMax)을 성능 중립적인 와이어 계약 정정으로 분리해 먼저 적용"을 Python 쪽에 적용했다. Go `p3UDPMax`는 다음 묶음 몫이다.
+- D-E4(D-rejected-learning.md): "활성 정책이 1452 B를 넘는 parity 후보를 계속 만든다". FIX의 "1452 B 상한(UDP_MAX와 p3UDPMax)을 성능 중립적인 와이어 계약 정정으로 분리해 먼저 적용"을 Python 쪽에 적용했다. Go `p3UDPMax`는 다음 묶음 몫이다.
 - B-E3(B-active-algorithm.md): C1 B6 비열등 통과가 사후 정밀화에 기댄다는 지적이다. 이 수정으로 고쳐지지 않는다. c1 경로의 B6는 아래처럼 L1_c1 대비로도 미확정이다.
 
 c1 경로를 L3 record 팔로 고른 근거(문서에서 읽은 값, `C:\dev\codex_handoff\v33\runs\L3_findings_v1.md`): guard_c1 대 l1_c1 B1 −1.133353 [−1.448570, −0.818136], B5 −0.484054 [−0.583110, −0.384998], B6 +0.023892(MC 폭 0.142519, 조정 경계 [−0.493825, 0.541609], 미확정), 나머지 12셀 0. record_c1 대 guard_c1 B1 +0.000955, B2 −0.202831 [−0.252068, −0.153593], 나머지 13셀 0. 두 행의 평균을 더하면 record_c1 대 l1_c1은 B1 −1.132398, B2 −0.202831, B5 −0.484054, B6 +0.023892 ms다(같은 seed의 기대 비용 차이라 평균은 더할 수 있다. 구간은 더할 수 없어 적지 않는다). record_c1의 B1 절대 기대 후회는 0.093952 [0.060876, 0.127028]로 0.1 목표 미확정이다.
@@ -65,11 +65,11 @@ c1 경로를 L3 record 팔로 고른 근거(문서에서 읽은 값, `C:\dev\cod
 |---|---:|---:|---|
 | none 대 v3.2, seed 1001 | 10,000 | 0 | reeval 36, no_rtt 421, skip nominal2 1020·shield 311·guard 208, 경보 34, 양의 벌점 116, 실패 492 |
 | none 대 v3.2, seed 1002 | 10,000 | 0 | reeval 55, skip nominal2 1707·shield 193·guard 143, 경보 46 |
-| c1 대 L3 record, seed 2001 | 10,000 | 0 | reeval 27, 재평가 보류 534, 데이터그램 6029·범주 3810·예측만 161, streak 최대 8 |
-| c1 대 L3 record, seed 2002 | 10,000 | 0 | reeval 14, 재평가 보류 471, 데이터그램 6654·범주 3278·예측만 68 |
+| c1 대 L3 record, seed 2001 | 10,000 | 0 | reeval 27, 재평가 보류 534, datagram 6029·범주 3810·예측만 161, streak 최대 8 |
+| c1 대 L3 record, seed 2002 | 10,000 | 0 | reeval 14, 재평가 보류 471, datagram 6654·범주 3278·예측만 68 |
 | none→c1 전환, seed 1~40 | 전환 전 260 + 전환 뒤 300씩 | 0 | 16 seed가 전환 순간 경보 보유(합 28개), 전환 뒤 12,000단계 reeval 9 |
 
-전환 검사는 전환 전에는 v3.2와 비교하고, 전환 관측에서 `c1_seen`, 경보 삭제, `alarm_cleared`, 데이터그램 우도 갱신을 확인한 뒤, 그 순간의 새 상태로 L3 record 상태를 만들어 같이 진행시키며 비교한다. 출력은 `C:\dev\codex_handoff\v33\runs\v33fix\P\first_round\A-py\eq_out\`에 있다(묶음 A-py가 세션 스크래치에 남긴 폴더를 sha256 대조 뒤 옮긴 사본, 목록은 `runs\v33fix\P\SHA256SUMS.txt`). pytest에는 같은 함수의 축약판(none 800단계, c1 800단계, 전환 seed 10)이 들어 있다. 재현 예:
+전환 검사는 전환 전에는 v3.2와 비교하고, 전환 관측에서 `c1_seen`, 경보 삭제, `alarm_cleared`, datagram 우도 갱신을 확인한 뒤, 그 순간의 새 상태로 L3 record 상태를 만들어 같이 진행시키며 비교한다. 출력은 `C:\dev\codex_handoff\v33\runs\v33fix\P\first_round\A-py\eq_out\`에 있다(묶음 A-py가 세션 스크래치에 남긴 폴더를 sha256 대조 뒤 옮긴 사본, 목록은 `runs\v33fix\P\SHA256SUMS.txt`). pytest에는 같은 함수의 축약판(none 800단계, c1 800단계, 전환 seed 10)이 들어 있다. 재현 예:
 
 ```
 python -I -B -c "import sys; sys.dont_write_bytecode=True; sys.path[:0]=['.', 'tests']; import test_v33fix_policy as T; c=T.run_none_equivalence(T.load_reference(T.V32_ROOT), 10000, 1001); print(len(c['mismatch']), c['why'])"
@@ -95,7 +95,7 @@ c1 불일치 3건은 모두 B11(RTT 200 ms)이다. seed 42와 50은 첫 c1 회�
 기존 시험에서 바꾼 곳과 이유:
 
 - `tests/test_padfec3_learn.py`, `tests/test_padfec3_dev_regressions.py`: L1이 "회신 없는 관측 = 범주 우도"로 바꿔 놓은 none 경로 기대를 v3.2 판(90859b973의 같은 시험 본문)으로 되돌렸다. 새 설계에서 회신 없는 목적지는 v3.2와 같아야 하기 때문이다. L1의 범주 우도 기대는 버리지 않고 `C1MissingReplyTests` 클래스로 옮겨 `c1_seen=True` 목적지에서 회신이 빠진 경우의 시험으로 남겼다(learn 3개, dev_regressions 3개, guard 경우는 c1 목적지에 경보가 없으므로 "기록만 하고 경보 없음" 시험으로 바꿨다). 판본 기대는 3/4에서 11로, 거부 판본은 이전 판본 전부로, 정책 이름은 v3.3.1-dev로 바꿨다.
-- `tests/test_padfec3_learn.py::test_candidates_contain_gen2_legacy_actions`: gen-2 후보 중 패리티가 1452 B를 넘는 (126,1,2) 같은 행동은 v3 후보에 없어야 한다로 바꿨다. 나머지 gen-2 행동은 여전히 v3 후보에 있어야 한다.
+- `tests/test_padfec3_learn.py::test_candidates_contain_gen2_legacy_actions`: gen-2 후보 중 parity가 1452 B를 넘는 (126,1,2) 같은 행동은 v3 후보에 없어야 한다로 바꿨다. 나머지 gen-2 행동은 여전히 v3 후보에 있어야 한다.
 - `tests/test_padfec3_arrivals.py`: guard 경보가 있던 목적지에 완전한 c1 회신이 오면 경보가 지워지므로 legacy skip 기대를 None으로 바꾸고 `alarm_cleared`를 확인한다. 회신 없음/잘림 범주 우도 시험은 `c1_seen=True` 목적지로 한정했다. C1을 본 적 없는 목적지는 v3.2 이진 우도와 skip을 쓴다는 시험 8개를 더했다. 판본 시험은 11로 바꿨다.
 - `tests/test_padfec3_followup.py`: 늦은 오류 원자성 시험을 none 경로(`likelihood` 실패)와 c1 경로(`class_likelihood` 실패) 둘 다에서 돌리게 했다.
 
@@ -104,7 +104,7 @@ pytest(`PYTHONDONTWRITEBYTECODE=1 python -I -B -m pytest -p no:cacheprovider`, g
 ## 5. 남은 한계
 
 - c1 경로의 이득은 비표준이고 인증되지 않은 C1 회신에 기댄다. W1 원자료의 c1 관측 모형은 회신 비용을 HCT, 증폭 예산, 다음 연결 간격에 넣지 않는 수동 관측이다(감사 B 놓친 점 3, D14). 실측(T7)은 없다.
-- B10 버스트 손실에서 c1의 p 과소추정(B-E4, 꼬리 p 편향 −0.0204, v32 대비 +0.170 [0.136, 0.204] ms, 감사 B 값)은 그대로다. 데이터그램 우도가 iid라서다.
+- B10 버스트 손실에서 c1의 p 과소추정(B-E4, 꼬리 p 편향 −0.0204, v32 대비 +0.170 [0.136, 0.204] ms, 감사 B 값)은 그대로다. datagram 우도가 iid라서다.
 - B1 절대 목표 0.1 ms는 record_c1 0.093952 [0.060876, 0.127028]로 미확정이라 달성했다고 말할 수 없다. B6는 L1_c1 대비 미확정(조정 상한 0.541609)이다.
 - none 경로는 v3.2와 같으므로 v3.2의 결함(무손실 B3_u0·B4에서 보호 행동 고착, 감사 B 놓친 점 1)도 그대로다. W1 15셀 재생에서 none 경로 결정은 v3.2와 모두 같았으므로, C1이 없는 서버에서 v3.3.1-dev는 이 세계에서 v3.2-dev와 같은 결과를 낸다. W1 밖 문맥(W 1406처럼 기본 W가 큰 문맥이나 W=1280의 위 S 띠)에서는 1452 B 상한 때문에 v3.2와 후보가 다르다. 그 차이의 크기는 바로 아래 항목에 적었다.
 - 1452 B 상한 때문에 W와 k가 크면 parity 후보가 하나도 남지 않는다. 모형의 parity datagram 크기는 W_eff+39+6k B(`padfec/policy.py`의 `PARITY_OVERHEAD_BASE` 39, `PARITY_OVERHEAD_PER_K` 6)이고 W_eff=W+δ다. `candidates3`는 m>0 후보 중 이 모형 크기가 1452 B를 넘는 것을 버리므로, parity 후보는 W ≤ 1413 − 6k에서만 있다. 실제 wire 크기는 아래 표와 설명으로 구분한다. `decide3.candidates3`로 W 1200~1452(1 B 간격), k 1~4, S 2000·9000·16000·30000 B, `c_pkt` 기본값을 모두 돌려 직접 확인한 상한은 k=1 W ≤ 1407, k=2 W ≤ 1401, k=3 W ≤ 1395, k=4 W ≤ 1389이다. 상한 아래에서 parity 후보가 빠진 W는 없었고, 네 S 값에서 결과가 같았다. 상한 위에서는 m=0 후보만 남는다. W 1406이면 k=2와 k=4에서 후보가 B0 (0,0,0) 하나, k=3에서 B0과 padding 17 B인 (17,0,0) 둘이다. W 1400이면 k=2는 parity 후보 14개가 있지만 k=3은 (0,0,0)·(23,0,0), k=4는 (0,0,0)뿐이다. 그래서 W 1406·k≥2와 W 1400·k≥3에서 v3.3.1-dev는 parity를 쓰지 않는다. 같은 계산을 HEAD(v3.3-dev, 상한 1472 B) 정책으로 돌리면 상한은 1427·1421·1415·1409였다. `docs/J6_preflight_budget.md`는 실측 문맥을 "W1280·1281·1406에서 k2"로 적고 있으므로, W 1406·k=2 실측에서는 이 정책이 PAD-FEC의 parity를 내지 않는다. W1 15셀은 모두 W 1280이라 이 소멸이 벤치에 나타나지 않는다. 계산 스크립트와 출력은 `C:\dev\codex_handoff\v33\runs\v33fix\P\scripts\parity_w_limit.py`, `parity_w_limit_v2.json`(HEAD 정책판은 `parity_w_limit_old.py`, `parity_w_limit_old.json`)이다.
@@ -164,9 +164,9 @@ auto3 client는 명시한 `-ips`가 1407을 넘으면 `auto3: no parity candidat
 
 `POLICY_VERSION`을 "v3.3.1-dev"로 바꾸고 기본 참조를 다시 만들어 WSL 임시 빌드로 관문을 돌렸다. PASS, problems 없음. 자세한 값과 옵션 뜻은 `docs/V33FIX_policy_go.md` 7절에 있다.
 
-### 패리티 후보 소멸 (A-policy new_problem 3)
+### parity 후보 소멸 (A-policy new_problem 3)
 
-5절에 W·k별 상한(k1·2·3·4에서 W ≤ 1407·1401·1395·1389)과 W 1406·k≥2, W 1400·k≥3에서 패리티를 쓰지 않는다는 사실을 적었다. README와 `docs/REPORT_CLAIMS_v33.md`에도 옮겼다. 실측(T7)에서 W를 이 상한 아래로 잡을지는 정하지 않았다.
+5절에 W·k별 상한(k1·2·3·4에서 W ≤ 1407·1401·1395·1389)과 W 1406·k≥2, W 1400·k≥3에서 parity를 쓰지 않는다는 사실을 적었다. README와 `docs/REPORT_CLAIMS_v33.md`에도 옮겼다. 실측(T7)에서 W를 이 상한 아래로 잡을지는 정하지 않았다.
 
 ### 평가 JSON 문구와 증거 경로 (A-policy new_problem 4·7, A-eval handoff 5)
 
@@ -180,11 +180,11 @@ auto3 client는 명시한 `-ips`가 1407을 넘으면 `auto3: no parity candidat
 
 ### README와 REPORT_CLAIMS
 
-`experiments/quicbed/policy3.go`의 `p3StateVersion = 11`(50행), `p3UDPMax = quicgoMaxIPS`(51행, `pfail_table.go` 35행의 1452), `p3CacheSchema = "padfec3.cache3/11"`(53행), `p3PolicyVersion = "v3.3.1-dev"`(56행)와 `padfec3/learn3.py` 25·26행을 직접 읽어 README 3행과 REPORT_CLAIMS의 값과 같음을 확인했다. README가 가리키는 V33FIX 문서 9개는 모두 있다. REPORT_CLAIMS의 v3.3.1-dev 절에는 v3.2-dev와 같다는 시험의 범위, `docs/V33FIX_evaluation.md` 8절의 쓸 수 있는/쓰면 안 되는 문장, 패리티 후보 소멸, c1 경로에 경보 장치가 없다는 점(A-eval handoff 4)을 출처 문서의 숫자 그대로 옮겼다. CONTEXT.md 행 번호 인용은 절 이름으로 바꾸고 기준 판을 밝혔다(D-docs new_problem 1).
+`experiments/quicbed/policy3.go`의 `p3StateVersion = 11`(50행), `p3UDPMax = quicgoMaxIPS`(51행, `pfail_table.go` 35행의 1452), `p3CacheSchema = "padfec3.cache3/11"`(53행), `p3PolicyVersion = "v3.3.1-dev"`(56행)와 `padfec3/learn3.py` 25·26행을 직접 읽어 README 3행과 REPORT_CLAIMS의 값과 같음을 확인했다. README가 가리키는 V33FIX 문서 9개는 모두 있다. REPORT_CLAIMS의 v3.3.1-dev 절에는 v3.2-dev와 같다는 시험의 범위, `docs/V33FIX_evaluation.md` 8절의 쓸 수 있는/쓰면 안 되는 문장, parity 후보 소멸, c1 경로에 경보 장치가 없다는 점(A-eval handoff 4)을 출처 문서의 숫자 그대로 옮겼다. CONTEXT.md 행 번호 인용은 절 이름으로 바꾸고 기준 판을 밝혔다(D-docs new_problem 1).
 
 ### 옛 설명 문서의 정정 줄
 
-`docs/E12_l1_go_contract.md`, `J1_disposition.md`, `J1_tail_design.md`, `J7_wire_contract.md`, `L1_benchmark_execution.md`, `L1_learning.md`, `L1_observation_contract.md`, `L2_learning.md`, `L3_monitor_design.md`, `L5_disposition.md`, `generation_paths.md` 11개 모두 제목 아래에 "2026-11-02 정정:" 문단을 하나 넣었다. 본문은 고치지 않았다. 문서마다 그 문서가 다루는 내용(E12는 참조 파일, J7은 W 상한, L3는 record_only 팔, L5는 1461 B 패리티, generation_paths는 gen_id)에 맞췄다. 빠진 문서는 없다. 정정 문단 때문에 이 문서들의 행 번호가 2씩 밀렸다. 그래서 REPORT_CLAIMS가 인용하던 `L1_observation_contract.md` 27행과 `L1_benchmark_execution.md` 11행을 29·13행으로 고쳤다. 감사 원문(`findings\v33audit_2026-11-01`)의 행 번호 인용은 HEAD 판 기준의 기록이라 그대로 두었다.
+`docs/E12_l1_go_contract.md`, `J1_disposition.md`, `J1_tail_design.md`, `J7_wire_contract.md`, `L1_benchmark_execution.md`, `L1_learning.md`, `L1_observation_contract.md`, `L2_learning.md`, `L3_monitor_design.md`, `L5_disposition.md`, `generation_paths.md` 11개 모두 제목 아래에 "2026-11-02 정정:" 문단을 하나 넣었다. 본문은 고치지 않았다. 문서마다 그 문서가 다루는 내용(E12는 참조 파일, J7은 W 상한, L3는 record_only 팔, L5는 1461 B parity, generation_paths는 gen_id)에 맞췄다. 빠진 문서는 없다. 정정 문단 때문에 이 문서들의 행 번호가 2씩 밀렸다. 그래서 REPORT_CLAIMS가 인용하던 `L1_observation_contract.md` 27행과 `L1_benchmark_execution.md` 11행을 29·13행으로 고쳤다. 감사 원문(`findings\v33audit_2026-11-01`)의 행 번호 인용은 HEAD 판 기준의 기록이라 그대로 두었다.
 
 ### `--history` 단위 시험 (D handoff 5)
 
@@ -210,7 +210,7 @@ pytest는 모두 `PYTHONDONTWRITEBYTECODE=1 python -I -B -m pytest -p no:cachepr
 
 ### 못 한 것과 사람이 정할 것
 
-- 실측(T7)에서 W를 패리티 상한(k=2면 1401) 아래로 잡을지, W 1406·k=2에서 패리티 없이 잴지.
+- 실측(T7)에서 W를 parity 상한(k=2면 1401) 아래로 잡을지, W 1406·k=2에서 parity 없이 잴지.
 - `g3/l1_go_reference_gen.py`와 `g3/v33/E12_l1_reference_v1.json`을 지울지.
 - 오프라인 분석(`replay_g3.py`)에서 1452 B를 넘는 명시 행동을 표시하거나 거를지.
 - `experiments/v33/v33fix_rejudge.py` 774행의 'pre-registered' 문구(목록 밖 파일).

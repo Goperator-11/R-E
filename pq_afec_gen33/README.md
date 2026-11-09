@@ -14,9 +14,9 @@
 
 `c1_seen`이 False인 목적지는 관측과 결정이 v3.2-dev와 같다. C1 회신을 보내지 않는 표준 서버가 여기에 속하고, qamp의 `-feedback` 기본값이 false이므로 기본 배포 경로도 이쪽이다. 손실 학습은 연결당 1비트 이진 우도를 쓰고, 명목 2-RTT·shield·guard 관측은 손실 학습에서 뺀다. 감시층의 가산 벌점과 16번째 결정마다의 재평가도 v3.2-dev 그대로다. 직전 활성 정책 v3.3-dev(L1, 상태 4)는 이 경로에서도 HCT 3등급 우도를 썼고, 독립 사건 세계 개발 시뮬레이션의 B6에서 v3.2-dev보다 연결당 6.372402 ms 느렸다(조정 경계 [5.165881, 7.578923] ms, `g3/v33/L1_benchmark_precision_v1.json`의 `current_none` 대 `v32` 비교, 감사 B-E1). 이 경로를 v3.2-dev와 같게 되돌려 그 회귀가 구조적으로 생기지 않게 했다.
 
-`c1_seen`이 True인 목적지는 L1 관측을 쓴다. 회신이 온 연결은 데이터그램 단위 우도로, 회신이 빠진 연결은 HCT 3등급 우도로 손실 사후분포를 갱신한다. 결정은 L3의 record_only 진단 팔(`g3/v33/policy_snapshots/L3_record_only_v1`)과 같다. 감시 가산 벌점을 쓰지 않고, `arrival_streak`가 0보다 큰 동안 16번째 재평가를 하지 않으며, β 반응도 없다.
+`c1_seen`이 True인 목적지는 L1 관측을 쓴다. 회신이 온 연결은 datagram 단위 우도로, 회신이 빠진 연결은 HCT 3등급 우도로 손실 사후분포를 갱신한다. 결정은 L3의 record_only 진단 팔(`g3/v33/policy_snapshots/L3_record_only_v1`)과 같다. 감시 가산 벌점을 쓰지 않고, `arrival_streak`가 0보다 큰 동안 16번째 재평가를 하지 않으며, β 반응도 없다.
 
-v3 패리티 데이터그램 크기 상한은 1452 B(`padfec/policy.py`의 `QUICGO_MAX_IPS`)다. 예전 상한 1472 B(MTU 1500에서 IPv4 UDP payload 최대)에서는 k=2·W=1406일 때 가장 작은 패리티도 1406+39+6×2 = 1457 B가 되어 quic-go 서버의 1452 B 수신 버퍼에서 잘렸다(감사 D-E4). gen-2 경로(`padfec/policy.py`의 `decide_v2`)는 바꾸지 않았다.
+v3 parity datagram 크기 상한은 1452 B(`padfec/policy.py`의 `QUICGO_MAX_IPS`)다. 예전 상한 1472 B(MTU 1500에서 IPv4 UDP payload 최대)에서는 k=2·W=1406일 때 가장 작은 parity도 1406+39+6×2 = 1457 B가 되어 quic-go 서버의 1452 B 수신 버퍼에서 잘렸다(감사 D-E4). gen-2 경로(`padfec/policy.py`의 `decide_v2`)는 바꾸지 않았다.
 
 이 상한 때문에 W와 k가 크면 parity 후보가 하나도 남지 않는다. 모형의 parity datagram 크기는 W_eff+39+6k B(W_eff=W+δ)이므로 parity 후보는 k=1이면 W ≤ 1407, k=2이면 W ≤ 1401, k=3이면 W ≤ 1395, k=4이면 W ≤ 1389에서만 있다(`decide3.candidates3` 계산, `docs/V33FIX_policy.md` 5절). k=2·W=1406은 B0만, k=3·W=1400은 B0과 δ=23 padding만 남는다. 봉인 3단계의 base W는 1280이고 k=2인 그 조건에서는 m>0 후보가 14개 남는다. 선택 뒤 W_eff=1406이 된 행은 봉인 g2auto 53,600행 중 6행이다. 이 빈도는 새 gen33 개발 측정값이 아니다. W1 개발 벤치 15셀도 모두 W 1280이다. 수치와 출처는 [알려진 한계](docs/FINAL_policy_limits.md)에 구분했다.
 
@@ -65,9 +65,9 @@ wsl -d Ubuntu -- bash experiments/quicbed/build_gen33.sh --race
 
 커밋 전 크기·개인키 검사 훅은 `tools/hooks/pre-commit`에 있다. 새로 clone한 사본에서는 `git config core.hooksPath tools/hooks`를 한 번 실행해야 작동한다. 자세한 내용은 `docs/S5_test_hygiene.md`의 마지막 절에 있다.
 
-`m_max`는 자동 후보 생성의 패리티 예산이며 0 이상 4 이하 정수다. `max_steps`는 음수가 아닌 정수다. `max_ips`는 `None`이나 0이면 분석용 무제한, 양수이면 1200 이상 정수로 지정한다. 명시적인 `actions` 목록은 분석·재생용 후보 집합을 직접 지정하며 이 생성 옵션을 적용하지 않는다. 1452 B 패리티 상한도 이 경로에는 걸리지 않는다(`docs/V33FIX_policy.md` 5절). 관측의 `later` 값은 `v3`, `g2`, `off` 중 하나여야 한다.
+`m_max`는 자동 후보 생성의 parity 예산이며 0 이상 4 이하 정수다. `max_steps`는 음수가 아닌 정수다. `max_ips`는 `None`이나 0이면 분석용 무제한, 양수이면 1200 이상 정수로 지정한다. 명시적인 `actions` 목록은 분석·재생용 후보 집합을 직접 지정하며 이 생성 옵션을 적용하지 않는다. 1452 B parity 상한도 이 경로에는 걸리지 않는다(`docs/V33FIX_policy.md` 5절). 관측의 `later` 값은 `v3`, `g2`, `off` 중 하나여야 한다.
 
-양수 `max_ips`의 자동 후보 생성은 패딩 크기와 패리티 개수의 상한까지 계산한다. 이 경로에서는 큰 `max_steps`를 주어도 상한을 넘는 단계를 반복하지 않는다. `max_ips=None/0`의 무제한 분석 모드와 raw `levers_s`는 여전히 `max_steps`에 비례해 계산한다. Python 비용 모형 캐시는 100,000개 계산 점까지 보관하며, FIFO로 제거한 값은 필요할 때 다시 계산한다. 이 상한은 Go의 100,000개 행 캐시와 단위가 다르다.
+양수 `max_ips`의 자동 후보 생성은 padding 크기와 parity 개수의 상한까지 계산한다. 이 경로에서는 큰 `max_steps`를 주어도 상한을 넘는 단계를 반복하지 않는다. `max_ips=None/0`의 무제한 분석 모드와 raw `levers_s`는 여전히 `max_steps`에 비례해 계산한다. Python 비용 모형 캐시는 100,000개 계산 점까지 보관하며, FIFO로 제거한 값은 필요할 때 다시 계산한다. 이 상한은 Go의 100,000개 행 캐시와 단위가 다르다.
 
 관측 처리에 실패하면 Python 학습 상태와 Go 목적지 캐시를 호출 전 상태로 유지한다. Go 캐시는 목적지 메타데이터도 검사하고 JSON 문서 뒤에 공백 이외의 데이터가 있으면 읽기를 거부한다. 유한한 두 잔차의 차이나 전이 기준값이 표현 범위를 넘는 경우도 상태를 바꾸기 전에 거부한다.
 
@@ -110,8 +110,8 @@ python -I -B experiments/adaptation_benchmark.py --out $env:TEMP\manual_adaptati
 python -I -B -m pytest tests/test_adaptation_benchmark.py -q -p no:cacheprovider
 ```
 
-원본·패리티 패킷마다 공통 균등 난수를 쓰고 경주 난수도 공유한다. 출력은 참 손실률에서 선택 행동의 기대 비용과 공통 후보 집합의 최소 기대 비용 차이인 `expected_regret_ms`를, 한 번 뽑은 `synthetic_cost_ms`와 구분한다. 이 모형의 회복 비용을 포함하므로 관측에는 `ok=True`를 전달한다. 준비 단계 비용은 비교에서 제외한다. 조건별·구간별 비용 차이는 모형 안의 기술 통계이며 검정과 신뢰구간을 계산하지 않는다. 네트워크 측정, 실제 HCT, v3.2나 v3.3.1-dev의 실측 성능, H4 확증을 뜻하지 않는다.
+원본·parity 패킷마다 공통 균등 난수를 쓰고 경주 난수도 공유한다. 출력은 참 손실률에서 선택 행동의 기대 비용과 공통 후보 집합의 최소 기대 비용 차이인 `expected_regret_ms`를, 한 번 뽑은 `synthetic_cost_ms`와 구분한다. 이 모형의 회복 비용을 포함하므로 관측에는 `ok=True`를 전달한다. 준비 단계 비용은 비교에서 제외한다. 조건별·구간별 비용 차이는 모형 안의 기술 통계이며 검정과 신뢰구간을 계산하지 않는다. 네트워크 측정, 실제 HCT, v3.2나 v3.3.1-dev의 실측 성능, H4 확증을 뜻하지 않는다.
 
-조건 안에서 `k`, 서버 바이트와 RTT는 고정하고 패킷 손실은 독립이라고 가정한다. 첫 비행의 실패에는 실제 재시도 궤적 대신 모형의 평균 회복 비용을 쓴다. `frozen_loss`는 손실 분포만 고정하며 전체 적응을 끈 비교군은 아니다. 최소 비용도 공통 후보 집합 안의 값이다.
+조건 안에서 `k`, 서버 바이트와 RTT는 고정하고 패킷 손실은 독립이라고 가정한다. first flight의 실패에는 실제 재시도 궤적 대신 모형의 평균 회복 비용을 쓴다. `frozen_loss`는 손실 분포만 고정하며 전체 적응을 끈 비교군은 아니다. 최소 비용도 공통 후보 집합 안의 값이다.
 
 출력 JSON에 합성 자료 표시, `confirmatory=false`, 네트워크 측정 0회, seed, 입력·적용 프로토콜 해시, 소스 해시와 잡음 테이프 해시를 남긴다. `--protocol`로 별도 프로토콜을 읽고 `--seed`를 반복해 seed 목록을 바꿀 수 있다. `--out`은 필수이며 입력 프로토콜이나 계산에 쓰는 소스를 덮어쓰려는 경로는 거부한다. 결과는 임시 파일 작성 후 교체한다. 기본값은 비용 모형 안에서 구현과 ablation을 점검하는 작은 개발 사례이므로, 비교군 간 차이가 없어도 그대로 출력한다.
