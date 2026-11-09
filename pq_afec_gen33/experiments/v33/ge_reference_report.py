@@ -133,7 +133,7 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(exist_ok=False)
     files = [Path(__file__),Path(ge.__file__),Path(worldsim.__file__),Path(policy.__file__),
-             Path(layout.__file__),Path(learn3.__file__),ROOT/"afec/channel.py",ROOT/"docs/J5_ge_contract.md"]
+             Path(layout.__file__),Path(learn3.__file__),ROOT/"afec/channel.py",ROOT/"docs/J5 버스트 참조 구현과 관측 계약.md"]
     before = {str(p.relative_to(ROOT)):digest(p) for p in files}
     timer = time.monotonic()
     results = dict(data_kind="development_reference_and_synthetic_diagnostic",

@@ -134,7 +134,7 @@ class CandidateArchiveTests(unittest.TestCase):
                 for category in ("scripts", "tests", "docs", "validation"):
                     self.assertTrue(entry[category], category)
                 self.assertEqual(bool(entry["snapshot"]), cid in WITH_SNAPSHOT)
-                self.assertIn("docs/FINAL_rejected_candidates.md", entry["docs"])
+                self.assertIn("docs/미채택 후보 평가 기록.md", entry["docs"])
                 self.assertEqual(bool(entry["go_flags"]), cid in {"M1", "M4"})
         self.assertTrue(by_id["CX1"]["scripts"])
         self.assertTrue(by_id["CX1"]["tests"])

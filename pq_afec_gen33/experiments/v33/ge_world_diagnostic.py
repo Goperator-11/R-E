@@ -44,7 +44,7 @@ def write(path,value):
 def sources():
     files=[Path(__file__),Path(ge.__file__),Path(__file__).with_name("worldsim.py"),
            Path(__file__).with_name("worldparams.json"),Path(__file__).with_name("bench_metrics.py"),
-           ROOT/"g3/v33/bench_protocol.json",ROOT/"docs/J5_world_diagnostic_plan.md"]
+           ROOT/"g3/v33/bench_protocol.json",ROOT/"docs/J5 세계 진단 계획.md"]
     files+=sorted((ROOT/"padfec").glob("*.py"))+sorted((ROOT/"padfec3").glob("*.py"))
     return {p.relative_to(ROOT).as_posix():sha(p) for p in files}
 

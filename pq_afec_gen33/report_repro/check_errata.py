@@ -215,7 +215,7 @@ def report_baseline():
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--errata", type=Path, default=REPO / "docs/REPORT_ERRATA.md")
+    parser.add_argument("--errata", type=Path, default=REPO / "docs/보고서 정오표.md")
     parser.add_argument("--content", type=Path, default=REPORT_ROOT / "content.py")
     parser.add_argument("--numbers", type=Path, default=REPORT_ROOT / "report_numbers.json")
     parser.add_argument("--claims", type=Path, default=REPO / "docs/CLAIMS.md")

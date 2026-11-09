@@ -124,7 +124,7 @@ def set_line_spacing(build_report, body_ls, heading_ls):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--errata", type=Path, default=REPO / "docs/REPORT_ERRATA.md")
+    parser.add_argument("--errata", type=Path, default=REPO / "docs/보고서 정오표.md")
     parser.add_argument("--tools", type=Path, default=Path(r"C:\hwp_work\rne_final\tools"))
     parser.add_argument("--current", type=Path, default=Path(r"C:\Users\scien\OneDrive\Desktop\양식.hwp"))
     parser.add_argument("--layout", type=Path, default=REPO / "report_repro/build_layout.json")

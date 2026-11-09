@@ -18,7 +18,7 @@ from experiments.v33 import bench_metrics, bench_report, oracle
 from experiments.v33.worldsim import Action, World, load_params
 
 
-RULES_PATH = ROOT / "docs" / "V33FIX_bench_rules.md"
+RULES_PATH = ROOT / "docs" / "v3.3.1 판정 규칙.md"
 RULE_BEGIN = "<!-- Z1-BEGIN -->"
 RULE_END = "<!-- Z1-END -->"
 RULE_SECTION_SHA256 = "124952bb4f4f287acafb9cb372d4decb58077e747eb53bbce7d85fe04672c2e0"

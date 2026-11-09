@@ -6,7 +6,7 @@ from padfec3 import decide3, layout, learn3
 
 
 def test_spec_v331_constants_match_current_policy():
-    text = (Path(__file__).resolve().parents[1] / "docs" / "SPEC_v3.3.1.md").read_text(encoding="utf-8")
+    text = (Path(__file__).resolve().parents[1] / "docs" / "PAD-FEC v3.3.1 명세.md").read_text(encoding="utf-8")
     scope = text.split("## 0. 범위\n", 1)[1].split("\n## 1.", 1)[0]
     rows = re.findall(r"^\| `([^`]+)` \| `([^`]+)` \|", scope, re.MULTILINE)
     assert len(rows) == len({name for name, _ in rows}), "duplicate specification constants"

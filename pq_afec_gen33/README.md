@@ -4,11 +4,11 @@
 
 `genconfig.json`의 `gen_id`는 세대 이름이다. 개발 측정 러너는 정책 판본을 `padfec3.learn3.POLICY_VERSION`에서 읽는다.
 
-보고서와 세대별 문서의 다른 수치는 [수치 대조표](docs/REPORT_NUMBERS_CROSSWALK.md), 원자료 위치와 배포 범위는 [보고서 원자료 위치표](report_repro/SOURCES.md)에서 확인한다.
+보고서와 세대별 문서의 다른 수치는 [수치 대조표](docs/보고서%20수치%20대조표.md), 원자료 위치와 배포 범위는 [보고서 원자료 위치표](report_repro/SOURCES.md)에서 확인한다.
 
 ## 활성 정책 v3.3.1-dev
 
-고착과 관측 한계, 모형·wire 상한, 보고서에서 붙여야 할 조건은 [활성 정책의 알려진 한계](docs/FINAL_policy_limits.md)에 모았다.
+고착과 관측 한계, 모형·wire 상한, 보고서에서 붙여야 할 조건은 [활성 정책의 알려진 한계](docs/활성%20정책의%20알려진%20한계.md)에 모았다.
 
 정책은 목적지마다 `c1_seen` 표지를 둔다. 그 목적지에서 C1 회신, 곧 출처가 `c1` 또는 `ack`인 `arrivals` 증거가 한 번이라도 들어오면 True가 되고 다시 False로 돌아가지 않는다.
 
@@ -18,19 +18,19 @@
 
 v3 parity datagram 크기 상한은 1452 B(`padfec/policy.py`의 `QUICGO_MAX_IPS`)다. 예전 상한 1472 B(MTU 1500에서 IPv4 UDP payload 최대)에서는 k=2·W=1406일 때 가장 작은 parity도 1406+39+6×2 = 1457 B가 되어 quic-go 서버의 1452 B 수신 버퍼에서 잘렸다(감사 D-E4). gen-2 경로(`padfec/policy.py`의 `decide_v2`)는 바꾸지 않았다.
 
-이 상한 때문에 W와 k가 크면 parity 후보가 하나도 남지 않는다. 모형의 parity datagram 크기는 W_eff+39+6k B(W_eff=W+δ)이므로 parity 후보는 k=1이면 W ≤ 1407, k=2이면 W ≤ 1401, k=3이면 W ≤ 1395, k=4이면 W ≤ 1389에서만 있다(`decide3.candidates3` 계산, `docs/V33FIX_policy.md` 5절). k=2·W=1406은 B0만, k=3·W=1400은 B0과 δ=23 padding만 남는다. 봉인 3단계의 base W는 1280이고 k=2인 그 조건에서는 m>0 후보가 14개 남는다. 선택 뒤 W_eff=1406이 된 행은 봉인 g2auto 53,600행 중 6행이다. 이 빈도는 새 gen33 개발 측정값이 아니다. W1 개발 벤치 15셀도 모두 W 1280이다. 수치와 출처는 [알려진 한계](docs/FINAL_policy_limits.md)에 구분했다.
+이 상한 때문에 W와 k가 크면 parity 후보가 하나도 남지 않는다. 모형의 parity datagram 크기는 W_eff+39+6k B(W_eff=W+δ)이므로 parity 후보는 k=1이면 W ≤ 1407, k=2이면 W ≤ 1401, k=3이면 W ≤ 1395, k=4이면 W ≤ 1389에서만 있다(`decide3.candidates3` 계산, `docs/v3.3.1 활성 정책 수정.md` 5절). k=2·W=1406은 B0만, k=3·W=1400은 B0과 δ=23 padding만 남는다. 봉인 3단계의 base W는 1280이고 k=2인 그 조건에서는 m>0 후보가 14개 남는다. 선택 뒤 W_eff=1406이 된 행은 봉인 g2auto 53,600행 중 6행이다. 이 빈도는 새 gen33 개발 측정값이 아니다. W1 개발 벤치 15셀도 모두 W 1280이다. 수치와 출처는 [알려진 한계](docs/활성%20정책의%20알려진%20한계.md)에 구분했다.
 
-이 버전의 네트워크 측정은 개발 측정뿐이고 확증 측정은 없다. 위의 B1~B12 값과 아래 시나리오 비교는 독립 사건 세계(`experiments/v33/worldsim.py`)의 개발 시뮬레이션이며, 측정값은 [X1](docs/X1_result.md), [X9](docs/X9_result.md), [X6](docs/X6_result.md)에 따로 있다. X6에서 표준 경로(none)는 v3.1과 구별되지 않았고, C1 경로는 S_rtt200에서 none보다 10.71 ms [6.73, 14.69] 느려 시뮬레이션과 방향이 달랐다. C1은 비표준·비인증 평문 부채널이고(`docs/c1_threat_model.md`), 세계 모형은 회신의 바이트·처리 비용·대기 시간을 HCT에 넣지 않는다(`docs/L1_observation_contract.md`). 보고서에 쓸 수 있는 말과 쓰면 안 되는 말은 `docs/REPORT_CLAIMS_v33.md`에 있다.
+이 버전의 네트워크 측정은 개발 측정뿐이고 확증 측정은 없다. 위의 B1~B12 값과 아래 시나리오 비교는 독립 사건 세계(`experiments/v33/worldsim.py`)의 개발 시뮬레이션이며, 측정값은 [X1](docs/X1_result.md), [X9](docs/X9_result.md), [X6](docs/X6_result.md)에 따로 있다. X6에서 표준 경로(none)는 v3.1과 구별되지 않았고, C1 경로는 S_rtt200에서 none보다 10.71 ms [6.73, 14.69] 느려 시뮬레이션과 방향이 달랐다. C1은 비표준·비인증 평문 부채널이고(`docs/C1 신뢰 경계.md`), 세계 모형은 회신의 바이트·처리 비용·대기 시간을 HCT에 넣지 않는다(`docs/L1 first flight 관측 계약.md`). 보고서에 쓸 수 있는 말과 쓰면 안 되는 말은 `docs/보고서 주장과 정정 목록.md`에 있다.
 
 이번 수정의 내역과 확인 결과는 다음 문서에 있다.
 
-- `docs/V33FIX_policy.md`
-- `docs/V33FIX_policy_go.md`
-- `docs/V33FIX_evaluation.md`
-- `docs/V33FIX_testbed.md`
-- `docs/T7_conditions_v31.md`
-- `docs/V33FIX_world.md`
-- `docs/V33FIX_bench_rules.md`
+- `docs/v3.3.1 활성 정책 수정.md`
+- `docs/v3.3.1 Go 정책과 관문.md`
+- `docs/v3.3.1 W1 재판정.md`
+- `docs/v3.3.1 Go 테스트베드 수정.md`
+- `docs/T7 비교 조건.md`
+- `docs/v3.3.1 세계 시뮬레이터와 판정 통계.md`
+- `docs/v3.3.1 판정 규칙.md`
 
 반복 작업의 운영 기록(과제 카드, 결정 장부, 작업 지시문, 일지, 아침 보고)과 저장소 위생·게시 절차 문서는 2026-11-08에 뺐다. 문서가 이 기록을 출처로 적은 곳은 커밋 `4f26a51`에서 확인한다.
 
@@ -57,15 +57,15 @@ python -I -B -m pytest -q -p no:cacheprovider
 wsl -d Ubuntu -- bash experiments/quicbed/build_gen33.sh --race
 ```
 
-커밋 `d67717d9b`(v3.3-dev) 기준 Windows 결과는 1792 passed, 2 skipped, 32 deselected, 하위 검사 4513 passed였고(`docs/S5_test_hygiene.md`), Go는 PASS 231, SKIP 2, FAIL 0이었다(감사 A-E8, WSL `~/quicbed_gen33/bin/go_test.txt`). 건너뛴 Go 시험 두 개(`TestHoldPythonReadFromReference`, `TestUDPHoldPythonReadBatchReference`)는 환경변수 `M1_REFERENCE_GZIP`이 없으면 돌지 않는다(`experiments/quicbed/qamp_hold_test.go`). v3.3.1-dev 수정 뒤의 수는 위 `docs/V33FIX_*.md` 문서에 적는다. 보고할 때는 'PASS 231, SKIP 2'처럼 통과와 건너뜀을 함께 적는다.
+커밋 `d67717d9b`(v3.3-dev) 기준 Windows 결과는 1792 passed, 2 skipped, 32 deselected, 하위 검사 4513 passed였고(`docs/S5 시험 정리와 재현 도구.md`), Go는 PASS 231, SKIP 2, FAIL 0이었다(감사 A-E8, WSL `~/quicbed_gen33/bin/go_test.txt`). 건너뛴 Go 시험 두 개(`TestHoldPythonReadFromReference`, `TestUDPHoldPythonReadBatchReference`)는 환경변수 `M1_REFERENCE_GZIP`이 없으면 돌지 않는다(`experiments/quicbed/qamp_hold_test.go`). v3.3.1-dev 수정 뒤의 수는 위 `docs/V33FIX_*.md` 문서에 적는다. 보고할 때는 'PASS 231, SKIP 2'처럼 통과와 건너뜀을 함께 적는다.
 
 빌드 스크립트는 WSL의 `~/quicbed_gen33` 아래에 매번 새 작업 폴더를 만들고 vet, Go 검사와 빌드를 실행한다. 소스에서 삭제한 예전 검사 파일이 빌드에 남지 않도록 한 조치다. `--race`를 주면 같은 소스에서 race 검사도 실행한다. 지속 저장 바이너리는 `~/quicbed_gen33/bin/qamp`다. `/tmp/qamp_gen33/qamp`에도 설치하지만 WSL이 종료된 뒤에는 임시 파일이 사라질 수 있으므로 대조 검사에는 지속 저장 경로를 쓴다. 빌드는 `-trimpath -buildvcs=false`를 사용하고 `qamp.buildinfo`에 Go 빌드 정보를 남긴다.
 
 빌더 격리 검사는 임시 컴파일러를 사용해 과거 파일 혼입과 작업 폴더 정리를 확인한다. WSL에서 `python3 -I -B -m unittest discover -s tests -p test_gen33_build_staging.py -v`로 실행한다.
 
-커밋 전 크기·개인키 검사 훅은 `tools/hooks/pre-commit`에 있다. 새로 clone한 사본에서는 `git config core.hooksPath tools/hooks`를 한 번 실행해야 작동한다. 자세한 내용은 `docs/S5_test_hygiene.md`의 마지막 절에 있다.
+커밋 전 크기·개인키 검사 훅은 `tools/hooks/pre-commit`에 있다. 새로 clone한 사본에서는 `git config core.hooksPath tools/hooks`를 한 번 실행해야 작동한다. 자세한 내용은 `docs/S5 시험 정리와 재현 도구.md`의 마지막 절에 있다.
 
-`m_max`는 자동 후보 생성의 parity 예산이며 0 이상 4 이하 정수다. `max_steps`는 음수가 아닌 정수다. `max_ips`는 `None`이나 0이면 분석용 무제한, 양수이면 1200 이상 정수로 지정한다. 명시적인 `actions` 목록은 분석·재생용 후보 집합을 직접 지정하며 이 생성 옵션을 적용하지 않는다. 1452 B parity 상한도 이 경로에는 걸리지 않는다(`docs/V33FIX_policy.md` 5절). 관측의 `later` 값은 `v3`, `g2`, `off` 중 하나여야 한다.
+`m_max`는 자동 후보 생성의 parity 예산이며 0 이상 4 이하 정수다. `max_steps`는 음수가 아닌 정수다. `max_ips`는 `None`이나 0이면 분석용 무제한, 양수이면 1200 이상 정수로 지정한다. 명시적인 `actions` 목록은 분석·재생용 후보 집합을 직접 지정하며 이 생성 옵션을 적용하지 않는다. 1452 B parity 상한도 이 경로에는 걸리지 않는다(`docs/v3.3.1 활성 정책 수정.md` 5절). 관측의 `later` 값은 `v3`, `g2`, `off` 중 하나여야 한다.
 
 양수 `max_ips`의 자동 후보 생성은 padding 크기와 parity 개수의 상한까지 계산한다. 이 경로에서는 큰 `max_steps`를 주어도 상한을 넘는 단계를 반복하지 않는다. `max_ips=None/0`의 무제한 분석 모드와 raw `levers_s`는 여전히 `max_steps`에 비례해 계산한다. Python 비용 모형 캐시는 100,000개 계산 점까지 보관하며, FIFO로 제거한 값은 필요할 때 다시 계산한다. 이 상한은 Go의 100,000개 행 캐시와 단위가 다르다.
 
@@ -79,7 +79,7 @@ WSL에서 Go와 Python을 대조한다. 기준 벡터와 추가 난수 표본, �
 python3 -I -B experiments/gate_v3_parity.py --out /tmp/manual_parity.json
 ```
 
-`--bin`을 주지 않으면 `genconfig.json`의 `~/quicbed_gen33/bin/qamp`를 쓴다. 설치본이 현재 소스와 다르면 기본 참조(v3.3.1-dev)와 상수·srcsha가 맞지 않으므로, `build_gen33.sh`로 다시 설치하거나 임시로 빌드한 바이너리를 `--bin`으로 준다. 관문은 `--out` 결과 파일의 부모 폴더에 fresh 입력 파일도 남긴다. 2026-11-02에 임시 빌드로 돌린 결과(PASS)는 `docs/V33FIX_policy_go.md` 7절에 있다.
+`--bin`을 주지 않으면 `genconfig.json`의 `~/quicbed_gen33/bin/qamp`를 쓴다. 설치본이 현재 소스와 다르면 기본 참조(v3.3.1-dev)와 상수·srcsha가 맞지 않으므로, `build_gen33.sh`로 다시 설치하거나 임시로 빌드한 바이너리를 `--bin`으로 준다. 관문은 `--out` 결과 파일의 부모 폴더에 fresh 입력 파일도 남긴다. 2026-11-02에 임시 빌드로 돌린 결과(PASS)는 `docs/v3.3.1 Go 정책과 관문.md` 7절에 있다.
 
 ## 과거 관측 재생
 
@@ -97,7 +97,7 @@ v3.3.1-dev의 네트워크 측정은 개발 측정 6건(M0 final_m0_iter022_2026
 
 과거 빌더와 자동 루프, `pipeline.py`, 단계별 봉인 러너의 CLI는 실행을 차단한다. 일회성 소스 패치 도구 두 개와 과거 race 탐침, `diag.sh`, `live_demo.sh`도 차단한다. 과거 자동 루프의 상태 조회도 차단한다. `padbed`를 불러올 때 결과·상태 폴더를 만들지 않으며, 바이너리 복사와 네트워크 설정·실행 진입점에서도 과거 실측을 거부한다. 기존 바이너리가 있어도 `--only-exact`로 과거 빌더를 건너뛰어 측정할 수 없다.
 
-이 사본은 위에 적힌 회귀검사, 격리된 빌드, Python·Go 대조와 개발 재생을 지원한다. 차단 여부는 `python -I -B -m pytest tests/test_gen33_runner_isolation.py -q -p no:cacheprovider`로 검사한다. 이 검사는 네트워크 측정과 빌드를 실행하지 않는다. 경로 설정과 역사 자료의 허용 범위는 `docs/generation_paths.md`에 있다.
+이 사본은 위에 적힌 회귀검사, 격리된 빌드, Python·Go 대조와 개발 재생을 지원한다. 차단 여부는 `python -I -B -m pytest tests/test_gen33_runner_isolation.py -q -p no:cacheprovider`로 검사한다. 이 검사는 네트워크 측정과 빌드를 실행하지 않는다. 경로 설정과 역사 자료의 허용 범위는 `docs/세대 경로와 역사 자료.md`에 있다.
 
 과거 저널은 저장소에 포함하지 않았으므로 재생 명령의 `--journal`에 보존한 외부 저널 경로를 지정한다. 테스트용 PKI 파일도 저장소에 없다.
 

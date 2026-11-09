@@ -6,7 +6,7 @@ import sys
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
-DOC = ROOT / "docs" / "CODE_MAP.md"
+DOC = ROOT / "docs" / "코드 지도.md"
 SECTION = "수량별 알고리즘 지도"
 ROWS = ("A_pre", "1-RTT 조건", "J3와 실패 가지", "arrivals 우도", "3등급 경계", "guard",
         "사전과 hazard", "S 추정과 n_need 오차", "J_TIE", "1452 B 상한", "codec 형식 차이")

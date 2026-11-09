@@ -207,7 +207,7 @@ def check_source_cells(rows, metadata):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--file", type=Path, default=REPORT_ROOT.parent / "docs" / "REPORT_NUMBERS_CROSSWALK.md")
+    parser.add_argument("--file", type=Path, default=REPORT_ROOT.parent / "docs" / "보고서 수치 대조표.md")
     parser.add_argument("--repo", type=Path)
     parser.add_argument("--out", type=Path)
     args = parser.parse_args(argv)

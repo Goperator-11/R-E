@@ -6372,7 +6372,7 @@
     },
     {
       "key": "candidates.final.count",
-      "source": "pq_afec_gen33/docs/FINAL_rejected_candidates.md",
+      "source": "pq_afec_gen33/docs/미채택 후보 평가 기록.md",
       "source_alias": "current_candidate_dispositions",
       "source_key": "level-2 candidate headings before the post-loop section",
       "source_sha256": "b9b0c77e7b3ad2a51ad88c01bc826f7e8858c9fb5c18afe67c8b625e29d2ac10",
@@ -6571,7 +6571,7 @@
     },
     {
       "key": "claims.initial_cwnd",
-      "source": "pq_afec_gen33/docs/REPORT_CLAIMS_v33.md",
+      "source": "pq_afec_gen33/docs/보고서 주장과 정정 목록.md",
       "source_alias": "current_claims",
       "source_key": "regex:initial cwnd[^\\n]{0,100}?IW는 (\\d+)패킷",
       "source_sha256": "b8e17cfc576c60556c040f1dcadbc0de3fa1a71cf601318d22c86e2ff25c966d",
@@ -8269,7 +8269,7 @@
     {
       "key": "BL-09",
       "source": [
-        "pq_afec_gen33/docs/FINAL_rejected_candidates.md",
+        "pq_afec_gen33/docs/미채택 후보 평가 기록.md",
         "pq_afec_gen33/g3/v33/V33FIX_replay_v1.json",
         "pq_afec_gen33/padfec/policy.py"
       ],
@@ -8302,7 +8302,7 @@
       "source": [
         "pq_afec_gen3/experiments/results/p21_gencompare_decisions.json",
         "pq_afec_gen31/experiments/results/p31_gencompare_decisions.json",
-        "pq_afec_gen33/docs/REPORT_CLAIMS_v33.md"
+        "pq_afec_gen33/docs/보고서 주장과 정정 목록.md"
       ],
       "source_key": [
         "v30_decisions.H1.run1.S_bigcert",
@@ -10220,7 +10220,7 @@
     },
     {
       "key": "trace.T137",
-      "source": "HO LOOP_STATE, G33/docs/V33FIX_evaluation.md 3행",
+      "source": "HO LOOP_STATE, G33/docs/v3.3.1 W1 재판정.md 3행",
       "source_key": "trace[136]",
       "source_kind": "audit_reference",
       "trace_ids": [

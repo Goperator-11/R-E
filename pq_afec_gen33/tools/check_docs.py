@@ -10,8 +10,8 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = "feb0b1850"
 CANONICAL = tuple("docs/" + name for name in (
-    "README.md", "SPEC_v3.3.1.md", "RESULTS_by_generation.md", "CLAIMS.md",
-    "REPRODUCE.md", "GLOSSARY.md", "ERRATA_frozen_generations.md"))
+    "README.md", "PAD-FEC v3.3.1 명세.md", "RESULTS_by_generation.md", "CLAIMS.md",
+    "재현 절차.md", "용어와 ID.md", "동결 세대 문서 정정표.md"))
 TRANSLATIONS = ("첫 비행", "패리티", "패딩", "신용", "핸드셰이크", "증폭 제한", "데이터그램")
 NEGATIONS = ("인용하지 않는다", "재현 안 됨", "쓰지 않는다", "근거로 쓰지 않는다")
 EXTERNAL = re.compile(r"(?<![A-Za-z0-9_])[A-Za-z]:[/\\]|/mnt/c(?:/|\b)|codex_handoff|claude_brain|AppData|볼트", re.I)
@@ -220,13 +220,13 @@ def check_file(root, path):
         valid_table = bool(header and row and len(header) == len(row) and code_ranges(line)[1])
         if header and row and not valid_table:
             errors.append(f"{label}:{number}: malformed table row")
-        if path.name == "ERRATA_frozen_generations.md" and valid_table and not separator(row):
+        if path.name == "동결 세대 문서 정정표.md" and valid_table and not separator(row):
             if "틀린 문장(원문 인용)" in header:
                 quoted = header.index("틀린 문장(원문 인용)")
                 styled = " | ".join(value for index, value in enumerate(row) if index != quoted)
         if "로컬 보존" not in line and EXTERNAL.search(line):
             errors.append(f"{label}:{number}: external location requires 로컬 보존")
-        if not (valid_table and (path.name == "CLAIMS.md" or "ERRATA" in path.name)):
+        if not (valid_table and (path.name == "CLAIMS.md" or "정정표" in path.name or "정오표" in path.name)):
             errors.extend(f"{label}:{number}: forbidden claim: {name}" for name in claim_violations(line))
         errors.extend(f"{label}:{number}: translated term: {word}" for word in TRANSLATIONS if word in styled)
         if "\u2014" in styled or "\u2013" in styled:
@@ -241,9 +241,9 @@ def check_file(root, path):
 
 
 def fixed_documents(root):
-    path = root / "docs/REPRODUCE.md"
+    path = root / "docs/재현 절차.md"
     if not path.is_file():
-        return [], [], ["docs/REPRODUCE.md: missing fixed-document table"]
+        return [], [], ["docs/재현 절차.md: missing fixed-document table"]
     internal, external, errors = [], [], []
     active, found = False, False
     for number, line, header, row, fenced in rows(path.read_text(encoding="utf-8-sig")):
@@ -255,21 +255,21 @@ def fixed_documents(root):
         found = True
         targets = re.findall(r"`([^`]+)`", row[0])
         if not targets or len(row) != len(FIXED_HEADER):
-            errors.append(f"docs/REPRODUCE.md:{number}: malformed fixed-document row")
+            errors.append(f"docs/재현 절차.md:{number}: malformed fixed-document row")
         for target in targets:
             resolved = (root / target).resolve()
             if not resolved.is_relative_to(root):
                 if "로컬 보존" not in line:
-                    errors.append(f"docs/REPRODUCE.md:{number}: external fixed path requires 로컬 보존")
+                    errors.append(f"docs/재현 절차.md:{number}: external fixed path requires 로컬 보존")
                 external.append(target)
             elif not resolved.is_file():
-                errors.append(f"docs/REPRODUCE.md:{number}: missing fixed document: {target}")
+                errors.append(f"docs/재현 절차.md:{number}: missing fixed document: {target}")
             else:
                 internal.append(resolved.relative_to(root).as_posix())
     if not found or not internal:
-        errors.append("docs/REPRODUCE.md: section 9 has no internal fixed-document table")
+        errors.append("docs/재현 절차.md: section 9 has no internal fixed-document table")
     if len(set(internal + external)) != len(internal + external):
-        errors.append("docs/REPRODUCE.md: duplicate fixed document")
+        errors.append("docs/재현 절차.md: duplicate fixed document")
     return internal, external, errors
 
 
@@ -330,9 +330,9 @@ def extract_ids(text):
 
 
 def check_ids(root):
-    glossary = root / "docs/GLOSSARY.md"
+    glossary = root / "docs/용어와 ID.md"
     if not glossary.is_file():
-        return ["docs/GLOSSARY.md: missing ID glossary"], []
+        return ["docs/용어와 ID.md: missing ID glossary"], []
     known = extract_ids(glossary.read_text(encoding="utf-8-sig"))
     used, errors = set(), []
     paths = [root / "README.md"] + sorted((root / "docs").rglob("*.md"))
@@ -385,7 +385,7 @@ def main(argv=None):
     for path in dict.fromkeys(paths):
         errors.extend(check_file(root, path))
     notes.insert(0, f"checked files {len(dict.fromkeys(paths))}")
-    if (root / "docs/REPRODUCE.md").is_file():
+    if (root / "docs/재현 절차.md").is_file():
         fixed_errors, fixed_notes = check_fixed(root)
         errors.extend(fixed_errors)
         notes.extend(fixed_notes)

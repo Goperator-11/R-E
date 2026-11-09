@@ -134,7 +134,7 @@ def main():
     args = parser.parse_args()
     args.out_dir.mkdir(parents=True, exist_ok=False)
     source_paths = [Path(__file__), ROOT / "experiments/v33/uplink_reference.py",
-                    ROOT / "docs/O2_uplink_contract.md"]
+                    ROOT / "docs/O2 업링크 불확실성 참조 계약.md"]
     source_paths += sorted((ROOT / "padfec3").glob("*.py")) + sorted((ROOT / "padfec").glob("*.py"))
     before = {str(p.relative_to(ROOT)): sha(p) for p in source_paths}
     started = dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).isoformat()

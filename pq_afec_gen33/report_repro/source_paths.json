@@ -85,10 +85,10 @@
     "pq_afec_gen33/padfec/policy.py"
   ],
   "current_claims": [
-    "pq_afec_gen33/docs/REPORT_CLAIMS_v33.md"
+    "pq_afec_gen33/docs/보고서 주장과 정정 목록.md"
   ],
   "current_candidate_dispositions": [
-    "pq_afec_gen33/docs/FINAL_rejected_candidates.md"
+    "pq_afec_gen33/docs/미채택 후보 평가 기록.md"
   ],
   "current_protocol": [
     "pq_afec_gen33/g3/v33/bench_protocol.json"

@@ -7,7 +7,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-DOC = ROOT / "docs" / "CODE_MAP.md"
+DOC = ROOT / "docs" / "코드 지도.md"
 CHECKER = ROOT / "tools" / "check_algorithm_map.py"
 QAMP = ROOT / "experiments" / "quicbed" / "qamp.go"
 ARCHIVE = ROOT / "g3" / "v33" / "CANDIDATE_ARCHIVE.json"
@@ -151,7 +151,7 @@ class CodeMapTests(unittest.TestCase):
         original = text()
         self.assertIn("`p3OneRTTOK`", original)
         with tempfile.TemporaryDirectory() as folder:
-            broken = Path(folder) / "CODE_MAP.md"
+            broken = Path(folder) / "코드 지도.md"
             broken.write_text(original.replace("`p3OneRTTOK`", "`p3OneRTTOKMissing`", 1), encoding="utf-8")
             result = run_checker("--quiet", "--doc", str(broken))
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)

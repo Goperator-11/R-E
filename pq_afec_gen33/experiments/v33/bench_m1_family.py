@@ -239,7 +239,7 @@ def freeze(plan_path, out, protocol_path, validated_path):
     aliases = [dict(r, generation=r["profile"] + "_" + r["role"] + "_" + r["observation_mode"], variant="full") for r in compact]
     equal(bench.file_hash(PATH), IMPORTED_SHA, "loaded family adapter")
     inputs.update(hashes([PATH, Path(legacy.__file__), Path(validation.__file__),
-                         ROOT / "docs/M1_mc_contract.md", ROOT / "experiments/v33/bench_m1_report.py",
+                         ROOT / "docs/M1 세계 간 MC 오차.md", ROOT / "experiments/v33/bench_m1_report.py",
                          ROOT / "experiments/v33/m1_fixed_world_report.py",
                          ROOT / "experiments/v33/m1_fixed_checks.py", collector.RUNS / "M1_fixed_checks_01.json"]))
     legacy.check_files(inputs)

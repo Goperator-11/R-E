@@ -26,7 +26,7 @@
 | v3.0 (`pq_afec_gen3`) | 2단계, 2026-10-02 두 회차 | H1 개선 주장 성립(큰cert +28.18 ms, RTT200 +11.35 ms). H2 실패(보류 셀 1개 열등), H3 통과, H4 적응 기여 확인 안 됨 |
 | v3.1 (`pq_afec_gen31`) | 3단계, 2026-10-02~10-03 두 회차 | H1 개선 주장 성립(큰cert +28.01 ms, RTT200 +12.38 ms). H2 실패(판정불능 1), H3 실패, H4 적응 기여 확인 안 됨 |
 | v3.2-dev (`pq_afec_gen32`) | 없음 | 구현 검사만 통과. [v3.2 검증 기록](pq_afec_gen32/g3/development_validation/README.md) |
-| v3.3.1-dev (`pq_afec_gen33`) | 없음 | 시뮬레이션과 구현 대조만. C1 회신이 없는 경로는 v3.2-dev와 결정이 같다. [정책 수정 기록](pq_afec_gen33/docs/V33FIX_policy.md), [주장 범위](pq_afec_gen33/docs/REPORT_CLAIMS_v33.md) |
+| v3.3.1-dev (`pq_afec_gen33`) | 없음 | 시뮬레이션과 구현 대조만. C1 회신이 없는 경로는 v3.2-dev와 결정이 같다. [정책 수정 기록](pq_afec_gen33/docs/v3.3.1%20활성%20정책%20수정.md), [주장 범위](pq_afec_gen33/docs/보고서%20주장과%20정정%20목록.md) |
 
 판정 근거는 각 폴더의 `g3/RESULT_*.md`와 `experiments/results/*_decisions.json`이다. 앞 세대의 판정을 다음 세대 개발본의 성능으로 쓰지 않는다. v3.1 폴더의 `SEAL_stage0.json`과 `SEAL_stage2.json`은 v3.0에서 물려받은 봉인이라 v3.1에서 고친 파일과 해시가 다르다. 그 두 봉인은 `pq_afec_gen3`에서 대조한다.
 

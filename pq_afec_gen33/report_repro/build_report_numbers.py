@@ -316,7 +316,7 @@ def write_trace(trace, entries):
         keys = [entry["key"] for entry in entries if index in entry["trace_ids"] and entry["status"] == "verified" and entry["source_kind"] != "aggregate"]
         cells = ["T%03d" % index] + row + [", ".join(keys) if keys else "미확인: 자동 수치 대조 없음"]
         lines.append("| " + " | ".join(str(cell).replace("|", "&#124;").replace("\n", "<br>") for cell in cells) + " |")
-    path = REPORT_ROOT.parent / "docs" / "REPORT_TRACE.md"
+    path = REPORT_ROOT.parent / "docs" / "보고서 출처 대조표.md"
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

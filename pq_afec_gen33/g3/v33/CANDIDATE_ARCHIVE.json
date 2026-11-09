@@ -4,7 +4,7 @@
   "summary": "미채택이거나 보류한 후보의 코드 흔적 색인이다. 파일은 옮기거나 지우지 않았다. 존재 검사는 snapshot, scripts, tests, docs에만 하고 validation은 경로 문자열로만 둔다. 배포본에는 validation 묶음 대부분이 없다.",
   "sources": [
     "docs/loop_record/final_audit_2026-11-06/backlog_triage.md 8절(후보 14개)",
-    "docs/FINAL_rejected_candidates.md",
+    "docs/미채택 후보 평가 기록.md",
     "CX1, AK1: 2026-11-07 최종 수정 설계의 LIM-CX1-PY, LIM-CX1-GO, LIM-AK1과 g3/v33/CX1_eval_v1.json"
   ],
   "status_values": {
@@ -72,12 +72,12 @@
         "tests/test_v33_learning_l2_report.py"
       ],
       "docs": [
-        "docs/L2_artifact_validation.md",
+        "docs/L2 출처와 산술 검증.md",
         "docs/L2_benchmark_plan.md",
-        "docs/L2_disposition.md",
-        "docs/L2_joint_report.md",
-        "docs/L2_learning.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/L2 후보 보류.md",
+        "docs/L2 공동 행동 평가.md",
+        "docs/L2 목적지별 등급 잡음 추정.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/L2_artifact_preparation",
@@ -122,9 +122,9 @@
         "tests/test_v33_learning_l3_report.py"
       ],
       "docs": [
-        "docs/L3_disposition.md",
-        "docs/L3_monitor_design.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/L3 판정.md",
+        "docs/L3 감시 설계.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/L3_analysis_preparation_v1",
@@ -168,9 +168,9 @@
         "tests/test_v33_learning_l5_report.py"
       ],
       "docs": [
-        "docs/L5_disposition.md",
+        "docs/L5 판정.md",
         "docs/L5_server_response.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/L5_analysis_preparation_v1",
@@ -210,9 +210,9 @@
         "tests/test_v33_learning_j1_report.py"
       ],
       "docs": [
-        "docs/J1_disposition.md",
-        "docs/J1_tail_design.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/J1 판정.md",
+        "docs/J1 둘째 비행 손실 꼬리.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/J1_analysis_preparation_v1",
@@ -253,9 +253,9 @@
         "tests/test_v33_learning_j6_report.py"
       ],
       "docs": [
-        "docs/J6_disposition.md",
+        "docs/J6 판정.md",
         "docs/J6_preflight_budget.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/J6_analysis_preparation_v1",
@@ -291,9 +291,9 @@
       ],
       "docs": [
         "docs/J7_evaluation_plan.md",
-        "docs/J7_family_and_report.md",
-        "docs/J7_wire_contract.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/J7 전체 행동 평가와 보고.md",
+        "docs/J7 parity 길이와 수신 상한.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/J7_checkpoint_v1",
@@ -350,14 +350,14 @@
       ],
       "docs": [
         "docs/M1_evaluation_plan.md",
-        "docs/M1_fixed_independent_check.md",
+        "docs/M1 고정 행동 표 독립 검사.md",
         "docs/M1_hold_contract.md",
-        "docs/M1_mc_contract.md",
-        "docs/M1_quic_queue_check.md",
-        "docs/M1_quic_reference_path_plan.md",
+        "docs/M1 세계 간 MC 오차.md",
+        "docs/M1 실제 QUIC 처리 순서 검증.md",
+        "docs/M1 실제 QUIC 기준 경로 시험 계획.md",
         "docs/M1_result.md",
-        "docs/M1_world_validity.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/M1 세계 비교의 유효 범위.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/M1_complete_inputs",
@@ -409,18 +409,18 @@
         "tests/test_v33_uplink_world_diagnostic.py"
       ],
       "docs": [
-        "docs/O2_reference_result.md",
-        "docs/O2_uplink_contract.md",
+        "docs/O2 참조와 추정기 진단 결과.md",
+        "docs/O2 업링크 불확실성 참조 계약.md",
         "docs/O2_world_diagnostic_plan.md",
-        "docs/O2_world_result.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/O2 세계 진단 결과.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/O2_reference_v1",
         "g3/v33/validation/O2_world_v1"
       ],
       "go_flags": [],
-      "inactive_reason": "모형 최대 후회 6.503042445 ms. 세계 240대조 중 16개가 6.5 ms 하한 초과. 근거 docs/O2_reference_result.md, docs/O2_world_result.md.",
+      "inactive_reason": "모형 최대 후회 6.503042445 ms. 세계 240대조 중 16개가 6.5 ms 하한 초과. 근거 docs/O2 참조와 추정기 진단 결과.md, docs/O2 세계 진단 결과.md.",
       "active_remnant": "활성 정책에 남은 것이 없다."
     },
     {
@@ -440,11 +440,11 @@
         "tests/test_v33_ge_world_diagnostic.py"
       ],
       "docs": [
-        "docs/J5_ge_contract.md",
-        "docs/J5_reference_result.md",
-        "docs/J5_world_diagnostic_plan.md",
-        "docs/J5_world_result.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/J5 버스트 참조 구현과 관측 계약.md",
+        "docs/J5 GE 참조와 조건부 추정 결과.md",
+        "docs/J5 세계 진단 계획.md",
+        "docs/J5 세계 진단과 보류 판정.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/J5_reference_v1",
@@ -470,18 +470,18 @@
         "tests/test_v33_rtt_trace_audit.py"
       ],
       "docs": [
-        "docs/O3_reference_result.md",
-        "docs/O3_rtt_contract.md",
-        "docs/O3_trace_audit_plan.md",
-        "docs/O3_trace_result.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/O3 RTT 참조 검증 결과.md",
+        "docs/O3 RTT 참조 계약.md",
+        "docs/O3 RTT trace 진단 계획.md",
+        "docs/O3 RTT trace 진단과 보류 판정.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/O3_reference_v1",
         "g3/v33/validation/O3_trace_v1"
       ],
       "go_flags": [],
-      "inactive_reason": "198연결 453 갱신 중 보정 입력을 채운 표본 0. 변동 4배 여유가 합성 2-RTT의 69.83~84.11%를 1-RTT로 분류. 근거 docs/O3_trace_result.md.",
+      "inactive_reason": "198연결 453 갱신 중 보정 입력을 채운 표본 0. 변동 4배 여유가 합성 2-RTT의 69.83~84.11%를 1-RTT로 분류. 근거 docs/O3 RTT trace 진단과 보류 판정.md.",
       "active_remnant": "활성 정책에 남은 것이 없다."
     },
     {
@@ -503,14 +503,14 @@
         "tests/test_v33_current_k_candidate.py"
       ],
       "docs": [
-        "docs/O4_current_k_contract.md",
-        "docs/O4_current_replay_plan.md",
-        "docs/O4_current_result.md",
-        "docs/O4_packetization_contract.md",
-        "docs/O4_reference_result.md",
-        "docs/O4_revisit_plan.md",
-        "docs/O4_token_result.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/O4 현재 연결 k 정책 후보 계약.md",
+        "docs/O4 현재 k 후보 W1 재생 계획.md",
+        "docs/O4 현재 k 후보 검증 결과.md",
+        "docs/O4 ClientHello 패킷 수 계약.md",
+        "docs/O4 ClientHello 패킷화 참조 결과.md",
+        "docs/O4 토큰·TLS 재개 k 검증 계획.md",
+        "docs/O4 토큰·TLS 재개 패킷화 결과.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/O4_current_v1",
@@ -518,7 +518,7 @@
         "g3/v33/validation/O4_token_v1"
       ],
       "go_flags": [],
-      "inactive_reason": "W1 900실행, 1,233,000연결 재생에서 결정이 같아 차이가 구조적으로 0. 후보별 k 변화와 송신 전 훅이 없다. 근거 docs/O4_current_result.md.",
+      "inactive_reason": "W1 900실행, 1,233,000연결 재생에서 결정이 같아 차이가 구조적으로 0. 후보별 k 변화와 송신 전 훅이 없다. 근거 docs/O4 현재 k 후보 검증 결과.md.",
       "active_remnant": "활성 정책에 남은 것이 없다."
     },
     {
@@ -538,14 +538,14 @@
         "tests/test_v33_recovery_world.py"
       ],
       "docs": [
-        "docs/J3_diagnostic_plan.md",
-        "docs/J3_recovery_contract.md",
-        "docs/J3_recovery_trace_contract.md",
-        "docs/J3_reference_result.md",
-        "docs/J3_trace_result.md",
-        "docs/J3_transport_result.md",
-        "docs/J3_transport_world_contract.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/J3 실패 비용 진단 계획.md",
+        "docs/J3 실패 뒤 두 단계 참조 계약.md",
+        "docs/J3 재전송 구간 관측 계약.md",
+        "docs/J3 두 단계 실패 비용 참조 결과.md",
+        "docs/J3 기존 재전송 관측 대조.md",
+        "docs/J3 재전송 전송 세계 진단.md",
+        "docs/J3 재전송 전송 세계 계약.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/J3_reference_v1",
@@ -553,7 +553,7 @@
         "g3/v33/validation/J3_transport_v1"
       ],
       "go_flags": [],
-      "inactive_reason": "참조 2% -49.257467 ms(표본 5건)로 ±10 ms 미통과, 15% +1.545667 ms. 72문맥 선택 변화 0. 세계와 -29.084599 ms. 근거 docs/J3_reference_result.md.",
+      "inactive_reason": "참조 2% -49.257467 ms(표본 5건)로 ±10 ms 미통과, 15% +1.545667 ms. 72문맥 선택 변화 0. 세계와 -29.084599 ms. 근거 docs/J3 두 단계 실패 비용 참조 결과.md.",
       "active_remnant": "활성 정책에 남은 것이 없다."
     },
     {
@@ -582,14 +582,14 @@
         "experiments/quicbed/qamp_revisit_test.go"
       ],
       "docs": [
-        "docs/M4_cache_result.md",
-        "docs/M4_guard_result.md",
-        "docs/M4_observation_cache_contract.md",
-        "docs/M4_reference_result.md",
-        "docs/M4_revisit_guard_contract.md",
-        "docs/M4_revisit_policy_contract.md",
-        "docs/server_support_signal.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/M4 재방문 관측 캐시 결과.md",
+        "docs/M4 고정 팔 전송 검증.md",
+        "docs/M4 재방문 관측 캐시 계약.md",
+        "docs/M4 토큰·Retry 참조와 검산.md",
+        "docs/M4 고정 팔 전송 규칙.md",
+        "docs/M4 토큰·Retry·복호 지원 참조 계약.md",
+        "docs/서버 복호 지원 신호 설계.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/M4_cache_v1",
@@ -608,7 +608,7 @@
           "switch": false
         }
       ],
-      "inactive_reason": "168연결 중 156개만 재생(12개 첫 원본 소거). 고정 팔 전송 검증까지이고 실제 입력 훅, W1 평가, Go 정책 채택이 없다. 근거 docs/M4_cache_result.md, docs/M4_guard_result.md.",
+      "inactive_reason": "168연결 중 156개만 재생(12개 첫 원본 소거). 고정 팔 전송 검증까지이고 실제 입력 훅, W1 평가, Go 정책 채택이 없다. 근거 docs/M4 재방문 관측 캐시 결과.md, docs/M4 고정 팔 전송 검증.md.",
       "active_remnant": "experiments/quicbed/revisit.go, revisit_guard.go는 qamp에 빌드되지만 -revisit-guard 기본 false다."
     },
     {
@@ -629,11 +629,11 @@
         "tests/test_v33_server_world_trace.py"
       ],
       "docs": [
-        "docs/J8_downlink_result.md",
-        "docs/J8_profiles.md",
-        "docs/J8_server_cost_contract.md",
-        "docs/J8_server_profile_contract.md",
-        "docs/FINAL_rejected_candidates.md"
+        "docs/J8 하향 손실과 서버 타이머 진단.md",
+        "docs/J8 서버 프로필 참조 결과.md",
+        "docs/J8 프로필별 복구 비용 계약.md",
+        "docs/J8 서버 프로필 참조 계약.md",
+        "docs/미채택 후보 평가 기록.md"
       ],
       "validation": [
         "g3/v33/validation/J8_cost_v1",
@@ -641,7 +641,7 @@
         "g3/v33/validation/J8_profile_v1"
       ],
       "go_flags": [],
-      "inactive_reason": "120조건 중 24조건에서 PTO 만료 이동 44건, 최대 192.184 ms. p_d>0은 J=None. W1 B7 판정은 안 바뀐다. 근거 docs/J8_downlink_result.md, docs/V33FIX_world.md 4절.",
+      "inactive_reason": "120조건 중 24조건에서 PTO 만료 이동 44건, 최대 192.184 ms. p_d>0은 J=None. W1 B7 판정은 안 바뀐다. 근거 docs/J8 하향 손실과 서버 타이머 진단.md, docs/v3.3.1 세계 시뮬레이터와 판정 통계.md 4절.",
       "active_remnant": "활성 정책에 남은 것이 없다."
     },
     {

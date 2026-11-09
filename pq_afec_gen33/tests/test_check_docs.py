@@ -24,7 +24,7 @@ def errors(root, text, name="docs/example.md"):
 
 def fixed_table(root):
     write(root, "docs/fixed.md")
-    return write(root, "docs/REPRODUCE.md", "## 9. 고정 문서\n\n"
+    return write(root, "docs/재현 절차.md", "## 9. 고정 문서\n\n"
                  "| 파일 | 누가 읽나 | 무엇이 깨지나 | 고쳐도 되는가 |\n"
                  "|---|---|---|---|\n"
                  "| `docs/fixed.md` | 검증기 | 해시 | 아니오 |\n"
@@ -77,7 +77,7 @@ def test_parent_and_export_excluded_paths_need_preservation(tmp_path):
 def test_claim_table_exception_does_not_cover_body_or_other_documents(tmp_path):
     table = "| 금지 주장 | 이유 |\n|---|---|\n| 예측이 맞는다 | 범위를 벗어남 |\n"
     assert errors(tmp_path, table, "docs/CLAIMS.md") == []
-    assert errors(tmp_path, table, "docs/ERRATA_frozen_generations.md") == []
+    assert errors(tmp_path, table, "docs/동결 세대 문서 정정표.md") == []
     assert any("forbidden claim" in error for error in errors(tmp_path, table))
     assert any("forbidden claim" in error for error in errors(tmp_path, table + "\n예측이 맞는다\n", "docs/CLAIMS.md"))
 
@@ -127,25 +127,25 @@ def test_frozen_errata_only_exempts_original_quote_cell(tmp_path):
     header = "| 파일 | 틀린 문장(원문 인용) | 맞는 문장 |\n|---|---|---|\n"
     quoted = "첫 비행 패리티 패딩 신용 핸드셰이크 증폭 제한 데이터그램 \u2014 \u2013 \U0001F680 1792 PASS 231"
     text = header + f"| 기록 | {quoted} | first flight |\n"
-    assert errors(tmp_path, text, "docs/ERRATA_frozen_generations.md") == []
+    assert errors(tmp_path, text, "docs/동결 세대 문서 정정표.md") == []
     for text in [header + f"| 기록 | 원문 | {quoted} |\n", header + "| 기록 | 원문 | 올바름 |\n\n" + quoted]:
-        found = errors(tmp_path, text, "docs/ERRATA_frozen_generations.md")
+        found = errors(tmp_path, text, "docs/동결 세대 문서 정정표.md")
         assert any("translated term" in error for error in found)
         assert any("em/en dash" in error for error in found)
         assert any("emoji" in error for error in found)
         assert any("obsolete test count" in error for error in found)
-    assert errors(tmp_path, header + "| C:/local | 원문 | 올바름 |", "docs/ERRATA_frozen_generations.md")
-    assert errors(tmp_path, header.replace("틀린 문장(원문 인용)", "다른 칸") + f"| 기록 | {quoted} | first flight |", "docs/ERRATA_frozen_generations.md")
+    assert errors(tmp_path, header + "| C:/local | 원문 | 올바름 |", "docs/동결 세대 문서 정정표.md")
+    assert errors(tmp_path, header.replace("틀린 문장(원문 인용)", "다른 칸") + f"| 기록 | {quoted} | first flight |", "docs/동결 세대 문서 정정표.md")
 
 
 def test_frozen_errata_empty_cells_and_unclosed_code_cannot_shift_exemption(tmp_path):
     header = "| 파일 | 틀린 문장(원문 인용) | 맞는 문장 |\n|---|---|---|\n"
     assert CHECK.cells("||원문|패딩|") == ["", "원문", "패딩"]
     for row in ["||원문|패딩|", "| 기록 | 원문 ` | 패딩 |", "| 기록 | 원문 | 패딩 ||"]:
-        found = errors(tmp_path, header + row, "docs/ERRATA_frozen_generations.md")
+        found = errors(tmp_path, header + row, "docs/동결 세대 문서 정정표.md")
         assert any("translated term" in error for error in found)
     assert CHECK.cells("| 기록 | ``인용 ` 안의 | 문자`` | 교정 |") == ["기록", "``인용 ` 안의 | 문자``", "교정"]
-    assert any("malformed table row" in error for error in errors(tmp_path, header + "| 기록 | 원문 ` | 교정 |", "docs/ERRATA_frozen_generations.md"))
+    assert any("malformed table row" in error for error in errors(tmp_path, header + "| 기록 | 원문 ` | 교정 |", "docs/동결 세대 문서 정정표.md"))
 
 
 def test_early_canonical_skips_missing_and_root_readme(tmp_path, capsys):
@@ -177,7 +177,7 @@ def test_fixed_table_missing_baseline_and_missing_table(tmp_path, monkeypatch):
     found, notes = CHECK.check_fixed(tmp_path)
     assert found == []
     assert any("기준 커밋 없음" in note for note in notes)
-    write(tmp_path, "docs/REPRODUCE.md", "## 8. 다른 절\n")
+    write(tmp_path, "docs/재현 절차.md", "## 8. 다른 절\n")
     assert CHECK.check_fixed(tmp_path)[0]
 
 
@@ -202,7 +202,7 @@ def test_index_fallback_and_loop_record_grouping(tmp_path, monkeypatch):
 
 
 def test_ids_find_missing_definitions_and_skip_loop_records(tmp_path):
-    write(tmp_path, "docs/GLOSSARY.md", "F40 CP-02 A2r1-09 D1~D3 Q-22\n")
+    write(tmp_path, "docs/용어와 ID.md", "F40 CP-02 A2r1-09 D1~D3 Q-22\n")
     write(tmp_path, "README.md", "F40 CP-02 A2r1-09 D2 Q-22\n")
     write(tmp_path, "docs/loop_record/raw.md", "F999\n")
     assert CHECK.check_ids(tmp_path)[0] == []

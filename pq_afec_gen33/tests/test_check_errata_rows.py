@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-ERRATA = ROOT / "docs/REPORT_ERRATA.md"
+ERRATA = ROOT / "docs/보고서 정오표.md"
 CHECKER = ROOT / "report_repro/check_errata.py"
 KEYS_CHECKER = ROOT / "report_repro/check_measure_keys.py"
 TABLE_BUILDER = ROOT / "report_repro/build_measure_table.py"

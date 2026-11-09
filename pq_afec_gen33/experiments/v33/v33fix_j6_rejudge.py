@@ -203,7 +203,7 @@ def forward_rule(benchmark, rejudged):
         rows.append({"candidate": pair[0], "baseline": pair[1], "scenario": row["scenario"], "status": gate["status"],
                      "adjusted_lower_ms": gate["adjusted_lower"], "adjusted_upper_ms": gate["adjusted_upper"]})
     failed = [row for row in rows if row["status"] != "pass"]
-    return {"rule": "docs/V33FIX_bench_rules.md 2.1: every deployment path, none included, must be noninferior to v32",
+    return {"rule": "docs/v3.3.1 판정 규칙.md 2.1: every deployment path, none included, must be noninferior to v32",
             "cells": rows, "not_passing": failed, "adopt_under_forward_rule": not failed}
 
 
