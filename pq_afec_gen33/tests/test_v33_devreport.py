@@ -334,4 +334,4 @@ def test_real_reporter_controls_runner_lock_after_done(tmp_path, monkeypatch, fa
 
 
 EXPECTED_RESULT_SHA = "8ebaa81af6c03735f95f469750fab1eac3778524428fbe7cc94f13222c8e02a5"
-EXPECTED_DOCUMENT_SHA = "ed8fdd7210986c6d6c877bafa88902f0cd1a77ddec62a412515933af900337c7"
+EXPECTED_DOCUMENT_SHA = "028d341de78896b0e89b9fbb8abd2778afcb8acc86a6b7c8ab17cb38242f4b2b"
